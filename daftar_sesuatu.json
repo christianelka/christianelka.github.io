@@ -1,0 +1,776 @@
+[
+    {
+        "kategori": "tokoh",
+        "nama": "Yesus Kristus",
+        "clue_teks": [
+            "Dia adalah Anak Allah yang datang ke dunia.",
+            "Dia melakukan banyak mujizat seperti menyembuhkan orang sakit.",
+            "Dia mengajar dengan perumpamaan.",
+            "Dia lahir di Betlehem."
+        ],
+        "clue_gerakan": [
+            "Berlutut berdoa.",
+            "Memecah roti dan anggur.",
+            "Berjalan di atas air.",
+            "Mengangkat tangan untuk memberkati.",
+            "Dibaptis di sungai."
+        ],
+        "clue_pembantu": "Mesias yang disalibkan."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Musa",
+        "clue_teks": [
+            "Dia memimpin bangsa Israel keluar dari Mesir.",
+            "Dia menerima Sepuluh Hukum di Gunung Sinai.",
+            "Dia membelah Laut Merah.",
+            "Dia dibesarkan di istana Firaun."
+        ],
+        "clue_gerakan": [
+            "Mengangkat tongkat.",
+            "Memukul batu untuk air.",
+            "Menulis di loh batu.",
+            "Berbicara dengan semak yang terbakar.",
+            "Memimpin orang banyak berjalan."
+        ],
+        "clue_pembantu": "Nabi yang membebaskan budak."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Daud",
+        "clue_teks": [
+            "Dia membunuh Goliat dengan ketapel.",
+            "Dia menjadi raja Israel.",
+            "Dia menulis banyak mazmur.",
+            "Dia adalah gembala domba."
+        ],
+        "clue_gerakan": [
+            "Melempar batu dengan ketapel.",
+            "Memainkan kecapi.",
+            "Menari di depan Tabut Perjanjian.",
+            "Berlutut dalam doa.",
+            "Memegang pedang."
+        ],
+        "clue_pembantu": "Raja pemazmur."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Adam dan Hawa",
+        "clue_teks": [
+            "Mereka adalah manusia pertama yang diciptakan.",
+            "Mereka tinggal di Taman Eden.",
+            "Mereka memakan buah terlarang.",
+            "Mereka diusir dari taman."
+        ],
+        "clue_gerakan": [
+            "Memetik buah dari pohon.",
+            "Berjalan telanjang lalu menutupi diri.",
+            "Berbicara dengan ular.",
+            "Bekerja di tanah.",
+            "Melahirkan anak."
+        ],
+        "clue_pembantu": "Pasangan pertama di Alkitab."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Nuh",
+        "clue_teks": [
+            "Dia membangun bahtera besar.",
+            "Dia menyelamatkan hewan dari banjir.",
+            "Dia berumur sangat panjang.",
+            "Allah membuat perjanjian pelangi dengannya."
+        ],
+        "clue_gerakan": [
+            "Memukul palu membangun kapal.",
+            "Menggiring hewan masuk.",
+            "Melihat burung merpati.",
+            "Berdoa di atas bahtera.",
+            "Menanam anggur."
+        ],
+        "clue_pembantu": "Pembuat bahtera banjir."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Abraham",
+        "clue_teks": [
+            "Dia dipanggil bapak orang beriman.",
+            "Dia meninggalkan Ur dan pindah ke Kanaan.",
+            "Dia hampir mengorbankan anaknya.",
+            "Allah berjanji keturunannya seperti bintang."
+        ],
+        "clue_gerakan": [
+            "Berjalan jauh dengan unta.",
+            "Memasang tenda.",
+            "Mengangkat pisau korban.",
+            "Menunjuk ke langit berbintang.",
+            "Berlutut menyembah Allah."
+        ],
+        "clue_pembantu": "Bapak bangsa yang beriman."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Yusuf",
+        "clue_teks": [
+            "Dia dijual saudara-saudaranya ke Mesir.",
+            "Dia dapat menafsirkan mimpi.",
+            "Dia menjadi penguasa kedua di Mesir.",
+            "Dia menyelamatkan keluarganya dari kelaparan."
+        ],
+        "clue_gerakan": [
+            "Memakai jubah warna-warni.",
+            "Dilempar ke dalam sumur.",
+            "Ditaruh di penjara.",
+            "Membuka lumbung gandum.",
+            "Memeluk ayahnya."
+        ],
+        "clue_pembantu": "Anak kesayangan yang menjadi penyelamat."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Salomo",
+        "clue_teks": [
+            "Dia adalah raja terbijaksana.",
+            "Dia membangun Bait Suci yang megah.",
+            "Dia menulis banyak amsal.",
+            "Dia memutuskan perkara bayi yang diperebutkan."
+        ],
+        "clue_gerakan": [
+            "Duduk di takhta emas.",
+            "Mengangkat pedang untuk membelah bayi.",
+            "Menulis dengan pena.",
+            "Membangun dengan alat-alat.",
+            "Menerima ratu dari jauh."
+        ],
+        "clue_pembantu": "Raja bijaksana pembangun Bait Suci."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Daniel",
+        "clue_teks": [
+            "Dia tidak mau makan makanan raja.",
+            "Dia dilempar ke gua singa.",
+            "Dia dapat menafsirkan mimpi raja.",
+            "Dia tetap berdoa meski dilarang."
+        ],
+        "clue_gerakan": [
+            "Berlutut menghadap Yerusalem.",
+            "Menolak makanan dengan tangan.",
+            "Berdiri di antara singa-singa.",
+            "Menulis di dinding.",
+            "Melihat tulisan tangan misterius."
+        ],
+        "clue_pembantu": "Nabi yang selamat dari singa."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Paulus",
+        "clue_teks": [
+            "Dia dulunya pemburu orang Kristen.",
+            "Dia bertobat di jalan menuju Damaskus.",
+            "Dia menulis banyak surat untuk jemaat.",
+            "Dia melakukan perjalanan misi ke berbagai kota."
+        ],
+        "clue_gerakan": [
+            "Jatuh dari kuda karena cahaya terang.",
+            "Menulis surat dengan pena.",
+            "Berlayar dengan kapal.",
+            "Berkhotbah di atas mimbar.",
+            "Dipenjara dengan rantai."
+        ],
+        "clue_pembantu": "Rasul yang dulunya penganiaya."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Penciptaan Dunia",
+        "clue_teks": [
+            "Terjadi dalam enam hari.",
+            "Dimulai dengan 'Jadilah terang'.",
+            "Manusia diciptakan terakhir.",
+            "Hari ketujuh adalah hari perhentian."
+        ],
+        "clue_gerakan": [
+            "Memisahkan terang dan gelap.",
+            "Membentuk tanah liat menjadi manusia.",
+            "Meniup nafas hidup.",
+            "Beristirahat setelah bekerja.",
+            "Melihat segala yang diciptakan."
+        ],
+        "clue_pembantu": "Awal mula segala sesuatu."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Air Bah Nuh",
+        "clue_teks": [
+            "Hujan turun 40 hari 40 malam.",
+            "Semua makhluk hidup binasa kecuali yang di kapal.",
+            "Setelah berhenti, muncul pelangi.",
+            "Dimulai karena kejahatan manusia."
+        ],
+        "clue_gerakan": [
+            "Membangun kapal besar.",
+            "Hewan berpasang-pasangan masuk.",
+            "Hujan deras turun terus.",
+            "Melepas burung merpati.",
+            "Keluar dari kapal dan korban persembahan."
+        ],
+        "clue_pembantu": "Banjir besar yang menutupi bumi."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Keluaran dari Mesir",
+        "clue_teks": [
+            "Dimulai dengan sepuluh tulah.",
+            "Laut Merah terbelah.",
+            "Bangsa Israel bebas dari perbudakan.",
+            "Firaun mengejar tapi tenggelam."
+        ],
+        "clue_gerakan": [
+            "Mengolesi darah di pintu.",
+            "Berjalan cepat dengan roti tak beragi.",
+            "Mengangkat tongkat membelah laut.",
+            "Berjalan di dasar laut yang kering.",
+            "Menyanyi dan menari kemenangan."
+        ],
+        "clue_pembantu": "Pembebasan dari tanah perbudakan."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Runtuhnya Tembok Yerikho",
+        "clue_teks": [
+            "Kota dikelilingi selama tujuh hari.",
+            "Imam membunyikan sangkakala.",
+            "Rakyat berteriak dengan suara keras.",
+            "Tembok runtuh tanpa perang."
+        ],
+        "clue_gerakan": [
+            "Berjalan mengelilingi kota.",
+            "Meniup sangkakala panjang.",
+            "Berteriak dengan keras.",
+            "Tembok roboh sendiri.",
+            "Masuk ke kota yang sudah terbuka."
+        ],
+        "clue_pembantu": "Kemenangan dengan cara ajaib."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Kelahiran Yesus",
+        "clue_teks": [
+            "Terjadi di kota Betlehem.",
+            "Bayi lahir di kandang hewan.",
+            "Gembala mendapat kabar dari malaikat.",
+            "Orang majus datang membawa persembahan."
+        ],
+        "clue_gerakan": [
+            "Mengetuk pintu rumah penginapan.",
+            "Melahirkan di kandang.",
+            "Membaringkan bayi di palungan.",
+            "Gembala berlari ke kandang.",
+            "Orang majus berlutut persembahan."
+        ],
+        "clue_pembantu": "Anak Allah lahir di tempat sederhana."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Penyaliban dan Kebangkitan Yesus",
+        "clue_teks": [
+            "Terjadi di bukit Golgota.",
+            "Hari ketiga bangkit dari kematian.",
+            "Kubur ditemukan kosong.",
+            "Menyelamatkan manusia dari dosa."
+        ],
+        "clue_gerakan": [
+            "Memanggul salib berat.",
+            "Dipaku di kayu salib.",
+            "Dikubur dalam gua.",
+            "Batu besar dibuka.",
+            "Menampakkan diri kepada murid-murid."
+        ],
+        "clue_pembantu": "Kematian yang mengalahkan maut."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Hari Pentakosta",
+        "clue_teks": [
+            "Roh Kudus turun seperti lidah api.",
+            "Murid-murid berbicara dalam berbagai bahasa.",
+            "Tiga ribu orang bertobat.",
+            "Dimulainya perkembangan gereja."
+        ],
+        "clue_gerakan": [
+            "Duduk bersama di ruang atas.",
+            "Lidah api hinggap di kepala.",
+            "Berbicara dengan bahasa asing.",
+            "Berkhotbah kepada orang banyak.",
+            "Membaptis orang-orang yang percaya."
+        ],
+        "clue_pembantu": "Lahirnya gereja mula-mula."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Pertobatan Paulus",
+        "clue_teks": [
+            "Terjadi di jalan menuju Damaskus.",
+            "Cahaya terang menyilaukan mata.",
+            "Suara dari langit bertanya mengapa menganiaya.",
+            "Buta selama tiga hari."
+        ],
+        "clue_gerakan": [
+            "Jatuh dari kuda.",
+            "Menutup mata karena silau.",
+            "Dituntun tangan karena buta.",
+            "Berdoa dan berpuasa.",
+            "Mata terbuka dan melihat lagi."
+        ],
+        "clue_pembantu": "Musuh menjadi pelayan setia."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Mukjizat Lima Roti Dua Ikan",
+        "clue_teks": [
+            "Lima ribu laki-laki diberi makan.",
+            "Dimulai dari bekal seorang anak.",
+            "Sisa makanan terkumpul dua belas bakul.",
+            "Terjadi di padang rumput."
+        ],
+        "clue_gerakan": [
+            "Duduk di rumput hijau.",
+            "Mengangkat roti dan ikan.",
+            "Memecah dan membagikan makanan.",
+            "Mengumpulkan sisa makanan.",
+            "Semua orang makan dan kenyang."
+        ],
+        "clue_pembantu": "Mukjizat makanan berlimpah."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Menara Babel",
+        "clue_teks": [
+            "Manusia ingin membangun menara sampai langit.",
+            "Allah mengacaukan bahasa mereka.",
+            "Manusia tersebar ke berbagai tempat.",
+            "Dimulai karena kesombongan manusia."
+        ],
+        "clue_gerakan": [
+            "Menyusun batu bata tinggi-tinggi.",
+            "Menunjuk ke langit.",
+            "Berbicara tapi tidak mengerti.",
+            "Meninggalkan pekerjaan.",
+            "Berpencar ke segala arah."
+        ],
+        "clue_pembantu": "Kesombongan yang dihentikan Allah."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Simson",
+        "clue_teks": [
+            "Dia memiliki kekuatan super di rambutnya.",
+            "Dia membunuh singa dengan tangan kosong.",
+            "Dia dikhianati oleh Delila.",
+            "Dia meruntuhkan kuil dengan pilar."
+        ],
+        "clue_gerakan": [
+            "Merobek singa dengan tangan.",
+            "Memukul dengan tulang rahang keledai.",
+            "Memotong rambut dengan gunting.",
+            "Mendorong pilar besar.",
+            "Mengikat ekor rubah dengan obor."
+        ],
+        "clue_pembantu": "Hakim kuat yang kehilangan kekuatan."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Rahab",
+        "clue_teks": [
+            "Dia menyembunyikan mata-mata Israel.",
+            "Dia tinggal di tembok kota Yerikho.",
+            "Dia diselamatkan dengan tali merah.",
+            "Dia dulunya berprofesi tidak terhormat."
+        ],
+        "clue_gerakan": [
+            "Menurunkan tali dari jendela.",
+            "Menyembunyikan orang di loteng.",
+            "Mengikat tali merah di jendela.",
+            "Berbohong pada raja untuk melindungi.",
+            "Keluar dari rumah yang selamat."
+        ],
+        "clue_pembantu": "Pelacur yang menjadi pahlawan."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Rut",
+        "clue_teks": [
+            "Dia setia mengikuti mertua.",
+            "Dia memungut bulir gandum di ladang.",
+            "Dia dari bangsa Moab.",
+            "Dia menikah dengan Boas."
+        ],
+        "clue_gerakan": [
+            "Membungkuk memungut gandum.",
+            "Berjalan mengikuti mertua.",
+            "Tidur di dekat kaki seseorang.",
+            "Bekerja di ladang seharian.",
+            "Memeluk mertua dengan kasih."
+        ],
+        "clue_pembantu": "Menantu setia yang berkat."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Ester",
+        "clue_teks": [
+            "Dia menjadi ratu Persia.",
+            "Dia menyelamatkan bangsa Yahudi.",
+            "Dia berpuasa tiga hari sebelum bertindak.",
+            "Dia mengalahkan rencana jahat Haman."
+        ],
+        "clue_gerakan": [
+            "Memakai mahkota ratu.",
+            "Berpuasa dan berlutut.",
+            "Menghadap raja tanpa dipanggil.",
+            "Mengadakan perjamuan untuk raja.",
+            "Menunjuk dengan jari pada musuh."
+        ],
+        "clue_pembantu": "Ratu berani penyelamat bangsa."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Gideon",
+        "clue_teks": [
+            "Dia mengalahkan Midian dengan 300 orang.",
+            "Dia meminta tanda dengan bulu domba.",
+            "Dia meniup sangkakala dan memecah buyung.",
+            "Dia dipanggil malaikat saat mengirik gandum."
+        ],
+        "clue_gerakan": [
+            "Mengirik gandum di tempat pemerasan.",
+            "Meletakkan bulu domba di tanah.",
+            "Meniup sangkakala dengan keras.",
+            "Memecah buyung tanah liat.",
+            "Menyalakan obor di malam hari."
+        ],
+        "clue_pembantu": "Hakim pemberani dengan strategi unik."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Yakub",
+        "clue_teks": [
+            "Dia bergulat dengan malaikat semalam.",
+            "Dia menipu kakaknya untuk hak sulung.",
+            "Dia bermimpi tentang tangga ke surga.",
+            "Dia memiliki dua belas anak laki-laki."
+        ],
+        "clue_gerakan": [
+            "Bergulat dengan seseorang hingga fajar.",
+            "Menyuap dengan semangkuk masakan.",
+            "Tidur dengan batu sebagai bantal.",
+            "Menggembala domba bertahun-tahun.",
+            "Pincang berjalan setelah bergulat."
+        ],
+        "clue_pembantu": "Penipu yang menjadi bapa bangsa."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Yunus",
+        "clue_teks": [
+            "Dia melarikan diri dari tugas Allah.",
+            "Dia ditelan ikan besar selama tiga hari.",
+            "Dia memberitakan pertobatan di Niniwe.",
+            "Dia marah karena Allah mengampuni."
+        ],
+        "clue_gerakan": [
+            "Berlari ke arah berlawanan.",
+            "Naik kapal laut untuk melarikan diri.",
+            "Dilempar ke laut oleh awak kapal.",
+            "Keluar dari perut ikan.",
+            "Duduk marah di bawah pohon."
+        ],
+        "clue_pembantu": "Nabi pelarian yang belajar kasih."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Elia",
+        "clue_teks": [
+            "Dia menantang 450 nabi Baal.",
+            "Dia naik ke surga dengan kereta api.",
+            "Dia membangkitkan anak janda.",
+            "Dia bersembunyi di sungai Kerit."
+        ],
+        "clue_gerakan": [
+            "Menuangkan air di atas korban bakaran.",
+            "Berdoa dengan berlutut dan kepala di lutut.",
+            "Naik kereta api yang berapi-api.",
+            "Diberi makan burung gagak.",
+            "Berlari lebih cepat dari kereta."
+        ],
+        "clue_pembantu": "Nabi api yang terangkat hidup."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Elisya",
+        "clue_teks": [
+            "Dia menerima dua bagian roh Elia.",
+            "Dia menyembuhkan Naaman dari kusta.",
+            "Dia membuat kapak mengapung.",
+            "Dia memperbanyak minyak janda."
+        ],
+        "clue_gerakan": [
+            "Membelah sungai Yordan dengan jubah.",
+            "Melempar garam ke mata air.",
+            "Melempar kayu ke air.",
+            "Menuang minyak ke banyak bejana.",
+            "Meletakkan tangan di atas anak mati."
+        ],
+        "clue_pembantu": "Penerus Elia yang berkuasa dua kali."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Yohanes Pembaptis",
+        "clue_teks": [
+            "Dia adalah suara yang berseruan di padang gurun.",
+            "Dia membaptis Yesus di sungai Yordan.",
+            "Dia makan belalang dan madu hutan.",
+            "Dia dipenggal karena menentang raja."
+        ],
+        "clue_gerakan": [
+            "Mencelupkan orang ke dalam air.",
+            "Makan serangga dan madu.",
+            "Berpakaian kulit unta.",
+            "Menunjuk dengan jari pada Yesus.",
+            "Kepala disajikan di atas piring."
+        ],
+        "clue_pembantu": "Pembaptis yang mempersiapkan jalan."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Maria",
+        "clue_teks": [
+            "Dia dikunjungi malaikat Gabriel.",
+            "Dia melahirkan Yesus sebagai perawan.",
+            "Dia menyimpan semua perkara di hatinya.",
+            "Dia hadir saat penyaliban anaknya."
+        ],
+        "clue_gerakan": [
+            "Berlutut ketika malaikat datang.",
+            "Melahirkan di kandang hewan.",
+            "Memeluk bayi di palungan.",
+            "Berdiri di bawah salib.",
+            "Mengurapi kaki Yesus dengan minyak."
+        ],
+        "clue_pembantu": "Ibu Yesus yang terpilih."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Petrus",
+        "clue_teks": [
+            "Dia berjalan di atas air lalu tenggelam.",
+            "Dia menyangkal Yesus tiga kali.",
+            "Dia memotong telinga prajurit.",
+            "Dia menerima kunci kerajaan surga."
+        ],
+        "clue_gerakan": [
+            "Melangkah di atas air.",
+            "Menggelengkan kepala menolak.",
+            "Mengayunkan pedang memotong.",
+            "Menangis dengan pahit.",
+            "Menerima kunci dari tangan."
+        ],
+        "clue_pembantu": "Murid impulsif yang menjadi batu karang."
+    },
+    {
+        "kategori": "tokoh",
+        "nama": "Stefanus",
+        "clue_teks": [
+            "Dia adalah diaken pertama yang mati syahid.",
+            "Dia dilempari batu sampai mati.",
+            "Dia melihat Yesus berdiri di sebelah kanan Allah.",
+            "Dia berdoa untuk pengampunan pembunuhnya."
+        ],
+        "clue_gerakan": [
+            "Melayani meja dengan setia.",
+            "Menatap ke langit dengan wajah bersinar.",
+            "Berlutut saat dilempari batu.",
+            "Mengangkat tangan berdoa untuk musuh.",
+            "Jatuh tertidur dalam kematian."
+        ],
+        "clue_pembantu": "Martir pertama yang mengampuni."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Sodom dan Gomora",
+        "clue_teks": [
+            "Dua kota yang dihancurkan karena dosa.",
+            "Lot dan keluarganya diselamatkan malaikat.",
+            "Istri Lot menjadi tiang garam.",
+            "Abraham memohon pengampunan untuk kota itu."
+        ],
+        "clue_gerakan": [
+            "Api dan belerang turun dari langit.",
+            "Lari cepat tanpa menoleh ke belakang.",
+            "Menoleh dan membeku menjadi tiang.",
+            "Berlutut memohon belas kasihan.",
+            "Dua kota terbakar habis."
+        ],
+        "clue_pembantu": "Penghancuran kota karena kemaksiatan."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Yakub Bergulat dengan Malaikat",
+        "clue_teks": [
+            "Terjadi di tepi sungai Yabok.",
+            "Berlangsung sepanjang malam hingga fajar.",
+            "Yakub menang tapi pincang.",
+            "Namanya diubah menjadi Israel."
+        ],
+        "clue_gerakan": [
+            "Bergulat saling menjatuhkan.",
+            "Memegang erat tidak mau lepas.",
+            "Pinggul terlepas dari sendinya.",
+            "Berjalan pincang setelahnya.",
+            "Diberkati dengan nama baru."
+        ],
+        "clue_pembantu": "Pergulatan yang mengubah identitas."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Yunus dan Ikan Besar",
+        "clue_teks": [
+            "Yunus ditelan ikan raksasa di laut.",
+            "Dia berdoa dari dalam perut ikan.",
+            "Setelah tiga hari dimuntahkan ke darat.",
+            "Dimulai karena Yunus menolak ke Niniwe."
+        ],
+        "clue_gerakan": [
+            "Dilempar dari kapal ke laut.",
+            "Ditelan oleh mulut ikan besar.",
+            "Berdoa dengan putus asa di dalam.",
+            "Dimuntahkan ke pantai.",
+            "Bangun dan pergi ke Niniwe."
+        ],
+        "clue_pembantu": "Pelarian yang berakhir di perut ikan."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Elia Naik ke Surga",
+        "clue_teks": [
+            "Elia terangkat dengan kereta api.",
+            "Elisya melihat dan meminta dua bagian roh.",
+            "Jubah Elia jatuh untuk Elisya.",
+            "Tidak mengalami kematian."
+        ],
+        "clue_gerakan": [
+            "Kereta api turun dari langit.",
+            "Naik dengan angin badai.",
+            "Jubah jatuh dari atas.",
+            "Elisya memungut jubah.",
+            "Menghilang ke atas awan."
+        ],
+        "clue_pembantu": "Terangkat hidup-hidup ke surga."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Pembakaran Tiga Sahabat Daniel",
+        "clue_teks": [
+            "Sadrakh, Mesakh, dan Abednego dibakar.",
+            "Mereka menolak menyembah patung emas.",
+            "Ada orang keempat dalam api.",
+            "Keluar tanpa bau hangus sedikitpun."
+        ],
+        "clue_gerakan": [
+            "Menolak sujud pada patung.",
+            "Diikat dan dilempar ke perapian.",
+            "Berjalan bebas di dalam api.",
+            "Ada sosok keempat berjalan bersama.",
+            "Keluar tanpa luka bakar."
+        ],
+        "clue_pembantu": "Kesetiaan yang dilindungi dalam api."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Perjamuan Kawin di Kana",
+        "clue_teks": [
+            "Mujizat pertama yang dilakukan Yesus.",
+            "Air diubah menjadi anggur terbaik.",
+            "Maria meminta Yesus bertindak.",
+            "Terjadi di pesta pernikahan."
+        ],
+        "clue_gerakan": [
+            "Mengisi tempayan dengan air.",
+            "Menciduk air yang berubah jadi anggur.",
+            "Menyajikan kepada pengantin.",
+            "Tamu heran dengan anggur terbaik.",
+            "Murid-murid percaya pada Yesus."
+        ],
+        "clue_pembantu": "Mujizat pertama dari air jadi anggur."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Lazarus Dibangkitkan",
+        "clue_teks": [
+            "Lazarus sudah mati empat hari.",
+            "Maria dan Martha berduka cita.",
+            "Yesus menangis melihat dukacita.",
+            "Batu kubur digulingkan."
+        ],
+        "clue_gerakan": [
+            "Terbaring mati selama empat hari.",
+            "Tubuh dibungkus kain kafan.",
+            "Batu besar digulingkan dari kubur.",
+            "Berteriak keluar dari kubur.",
+            "Kain kafan dilepaskan."
+        ],
+        "clue_pembantu": "Kematian yang dikalahkan setelah empat hari."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Kenaikan Yesus ke Surga",
+        "clue_teks": [
+            "Yesus terangkat di depan murid-murid.",
+            "Awan menutupi Dia dari pandangan.",
+            "Dua malaikat berpakaian putih muncul.",
+            "Terjadi di Bukit Zaitun."
+        ],
+        "clue_gerakan": [
+            "Mengangkat tangan memberkati.",
+            "Kaki terangkat dari tanah.",
+            "Awan menutupi tubuh yang naik.",
+            "Murid-murid menatap ke langit.",
+            "Malaikat berbicara pada murid."
+        ],
+        "clue_pembantu": "Kepulangan Anak Allah ke surga."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Penyembuhan Sepuluh Orang Kusta",
+        "clue_teks": [
+            "Sepuluh orang kusta disembuhkan Yesus.",
+            "Hanya satu yang kembali mengucap syukur.",
+            "Yang bersyukur adalah orang Samaria.",
+            "Sembilan lainnya lupa berterima kasih."
+        ],
+        "clue_gerakan": [
+            "Berdiri jauh-jauh dari Yesus.",
+            "Berteriak minta belas kasihan.",
+            "Berjalan untuk memperlihatkan diri.",
+            "Kulit menjadi bersih saat berjalan.",
+            "Satu orang berlutut bersyukur."
+        ],
+        "clue_pembantu": "Mukjizat yang mengajar syukur."
+    },
+    {
+        "kategori": "kejadian",
+        "nama": "Transfigurasi Yesus",
+        "clue_teks": [
+            "Wajah Yesus bersinar seperti matahari.",
+            "Pakaian-Nya putih bercahaya.",
+            "Musa dan Elia muncul berbicara dengan-Nya.",
+            "Suara Allah berbicara dari awan."
+        ],
+        "clue_gerakan": [
+            "Naik ke gunung tinggi untuk berdoa.",
+            "Wajah berubah bersinar terang.",
+            "Pakaian menjadi putih bercahaya.",
+            "Dua tokoh masa lalu muncul.",
+            "Murid-murid jatuh tersungkur takut."
+        ],
+        "clue_pembantu": "Kemuliaan ilahi yang tersingkap."
+    }
+]
