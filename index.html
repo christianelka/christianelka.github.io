@@ -6,6 +6,8 @@
     <title>🎮 Permainan Youth - Tebak Alkitab Bersama!</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="game-data.js"></script>
     <style>
         * {
             margin: 0;
@@ -237,6 +239,17 @@
             color: #333;
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
         .team-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -437,6 +450,219 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-animation {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Success Animation */
+        .success-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            animation: successBounce 0.6s ease-out;
+        }
+
+        @keyframes successBounce {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        /* Wrong Answer Animation */
+        .wrong-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        .wrong-icon {
+            font-size: 4rem;
+            color: #dc3545;
+            animation: wrongShake 0.6s ease-out;
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Particle Effects */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: particleFloat 2s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Button Hover Effects */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Card Hover Effects */
+        .menu-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .menu-card:hover::after {
+            transform: translateX(100%);
+        }
+
+        /* Score Animation */
+        .score-animation {
+            position: absolute;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2rem;
+            animation: scoreFloat 1s ease-out forwards;
+        }
+
+        @keyframes scoreFloat {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Modal Animation */
+        .modal-content {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Clue Reveal Animation */
+        .clue-container {
+            animation: clueReveal 0.5s ease-out;
+        }
+
+        @keyframes clueReveal {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .data-info {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -450,6 +676,13 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-animation"></div>
+        <div class="loading-text" id="loadingText">Memuat Permainan...</div>
+        <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Tebak Alkitab Bersama!</div>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-gamepad"></i> Permainan Youth - Tebak Alkitab Bersama!</h1>
@@ -461,22 +694,7 @@
             <span>Memuat data permainan...</span>
         </div>
 
-        <div class="data-info" id="dataError" style="display: none; background: rgba(220, 53, 69, 0.1); border-color: rgba(220, 53, 69, 0.3);">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>Gagal memuat file TXT. Pilih salah satu solusi:</span>
-            <br><br>
-            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                <button class="btn btn-warning" onclick="useSampleData()">
-                    <i class="fas fa-database"></i> Gunakan Data Sample
-                </button>
-                <button class="btn btn-info" onclick="selectTXTFile()">
-                    <i class="fas fa-file-upload"></i> Pilih File TXT
-                </button>
-                <button class="btn btn-success" onclick="openWithCORS()">
-                    <i class="fas fa-browser"></i> Buka dengan CORS Disabled
-                </button>
-            </div>
-        </div>
+
 
         <div class="game-status" id="gameStatus">
             <div class="status-item">
@@ -647,113 +865,36 @@
             teamsPlayedThisRound: []
         };
 
-        // Load data from JSON file
+        // Game data embedded directly in JavaScript
+        // Game data loaded from external JavaScript file
         let daftarSesuatu = [];
         
-        // Function to load TXT data (simpler, no CORS issues)
+        // Function to load game data from external JS file
         async function loadGameData() {
-            console.log('Attempting to load game data from TXT file...');
+            console.log('Loading game data from external JS file...');
             
-            try {
-                // Method 1: Try loading TXT file
-                const response = await fetch('daftar_sesuatu.txt');
-                if (response.ok) {
-                    const textData = await response.text();
-                    const data = parseTXTData(textData);
-                    if (data && data.length > 0) {
-                        daftarSesuatu = data;
-                        console.log(`✅ Successfully loaded ${daftarSesuatu.length} game items from TXT`);
-                        showAlert(`✅ Berhasil memuat ${daftarSesuatu.length} item permainan dari file TXT!`, 'success');
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.log('TXT loading failed:', error.message);
+            // Check if gameData is available from external file
+            if (typeof window.gameData !== 'undefined' && window.gameData.length > 0) {
+                daftarSesuatu = window.gameData;
+                console.log(`✅ Successfully loaded ${daftarSesuatu.length} game items from game-data.js`);
+                showAlert(`✅ Berhasil memuat ${daftarSesuatu.length} item permainan dari file eksternal!`, 'success');
+                return;
+            } else {
+                console.log('External data loading failed, using sample data...');
+                useSampleData();
             }
-            
-            // Method 2: Show error panel with options
-            console.log('TXT loading failed, showing error panel...');
-            showErrorPanel();
         }
 
-        // Function to show error panel with options
+        // Function to show error panel with options (simplified)
         function showErrorPanel() {
             document.getElementById('dataInfo').style.display = 'none';
             document.getElementById('dataError').style.display = 'block';
         }
 
-        // Parse TXT data into JSON format
-        function parseTXTData(textData) {
-            const lines = textData.split('\n');
-            const items = [];
-            
-            for (let line of lines) {
-                line = line.trim();
-                
-                // Skip empty lines and comments
-                if (!line || line.startsWith('#')) {
-                    continue;
-                }
-                
-                // Parse line: NAMA|KATEGORI|CLUE_TEKS|CLUE_GERAKAN|CLUE_PEMBANTU
-                const parts = line.split('|');
-                if (parts.length >= 5) {
-                    const item = {
-                        nama: parts[0].trim(),
-                        kategori: parts[1].trim(),
-                        clue_teks: parts[2].split(',').map(c => c.trim()),
-                        clue_gerakan: parts[3].split(',').map(c => c.trim()),
-                        clue_pembantu: parts[4].trim()
-                    };
-                    items.push(item);
-                }
-            }
-            
-            return items;
-        }
-
-        // TXT file selector method
-        function showTXTFileSelector() {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = '.txt';
-            fileInput.style.display = 'none';
-            
-            fileInput.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const data = parseTXTData(e.target.result);
-                            if (data && data.length > 0) {
-                                daftarSesuatu = data;
-                                // Hide error panel and show success
-                                document.getElementById('dataInfo').style.display = 'none';
-                                document.getElementById('dataError').style.display = 'none';
-                                updateGameStatus();
-                                showAlert(`✅ Berhasil memuat ${daftarSesuatu.length} item dari file TXT!`, 'success');
-                            } else {
-                                throw new Error('No valid data found');
-                            }
-                        } catch (error) {
-                            console.error('Error parsing selected TXT file:', error);
-                            showAlert('❌ File TXT tidak valid! Pastikan format sesuai.', 'danger');
-                            useSampleData();
-                        }
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            
-            document.body.appendChild(fileInput);
-            fileInput.click();
-            document.body.removeChild(fileInput);
-        }
-
         // Utility functions
         function showModal(modalId) {
             document.getElementById(modalId).classList.add('show');
+            playSound('click');
         }
 
         function closeModal(modalId) {
@@ -761,14 +902,58 @@
         }
 
         function showAlert(message, type = 'info') {
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.innerHTML = message;
-            document.querySelector('.container').appendChild(alert);
+            playSound('click');
             
-            setTimeout(() => {
-                alert.remove();
-            }, 3000);
+            const alertConfig = {
+                title: getAlertTitle(type),
+                text: message,
+                icon: getAlertIcon(type),
+                confirmButtonText: 'OK',
+                confirmButtonColor: getAlertColor(type),
+                timer: type === 'success' ? 2000 : 3000,
+                timerProgressBar: true,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            };
+            
+            Swal.fire(alertConfig);
+        }
+
+        function getAlertTitle(type) {
+            switch(type) {
+                case 'success': return 'Berhasil!';
+                case 'error': 
+                case 'danger': return 'Error!';
+                case 'warning': return 'Peringatan!';
+                case 'info': return 'Informasi';
+                default: return 'Notifikasi';
+            }
+        }
+
+        function getAlertIcon(type) {
+            switch(type) {
+                case 'success': return 'success';
+                case 'error': 
+                case 'danger': return 'error';
+                case 'warning': return 'warning';
+                case 'info': return 'info';
+                default: return 'info';
+            }
+        }
+
+        function getAlertColor(type) {
+            switch(type) {
+                case 'success': return '#28a745';
+                case 'error': 
+                case 'danger': return '#dc3545';
+                case 'warning': return '#ffc107';
+                case 'info': return '#17a2b8';
+                default: return '#667eea';
+            }
         }
 
         function updateGameStatus() {
@@ -791,7 +976,7 @@
         function addCandidate() {
             const name = document.getElementById('candidateName').value.trim();
             if (!name) {
-                showAlert('Nama tidak boleh kosong!', 'danger');
+                showErrorDialog('Nama tidak boleh kosong!');
                 return;
             }
             
@@ -803,6 +988,8 @@
             gameState.candidates.push(name);
             document.getElementById('candidateName').value = '';
             displayCandidates();
+            playSound('click');
+            showSuccessDialog(`${name} berhasil ditambahkan sebagai calon ketua!`);
         }
 
         function displayCandidates() {
@@ -827,7 +1014,7 @@
         function finalizeTeams() {
             const teamCount = parseInt(document.getElementById('teamCountInput').value);
             if (teamCount < 2 || teamCount > gameState.candidates.length) {
-                showAlert('Jumlah tim tidak valid!', 'danger');
+                showErrorDialog('Jumlah tim tidak valid!');
                 return;
             }
             
@@ -847,14 +1034,14 @@
             
             updateGameStatus();
             closeModal('ketuaModal');
-            showAlert('Tim berhasil dibuat!', 'success');
+            showSuccessDialog('Tim berhasil dibuat!', 'Tim Siap!');
         }
 
         // Tim functions
         function addMember() {
             const name = document.getElementById('memberName').value.trim();
             if (!name) {
-                showAlert('Nama tidak boleh kosong!', 'danger');
+                showErrorDialog('Nama tidak boleh kosong!');
                 return;
             }
             
@@ -871,7 +1058,8 @@
             
             document.getElementById('memberName').value = '';
             displayTeams();
-            showAlert(`${name} bergabung dengan ${selectedTeam}!`, 'success');
+            showSuccessDialog(`${name} bergabung dengan ${selectedTeam}!`);
+            playSound('click');
         }
 
         function getOptimalTeamAssignment() {
@@ -1017,6 +1205,11 @@
             document.getElementById('guessInput').value = '';
             
             showNextClue();
+            
+            // Update tombol "Clue Berikutnya" saat mulai turn baru
+            setTimeout(() => {
+                updateNextClueButton();
+            }, 100);
         }
 
         function showNextClue() {
@@ -1050,6 +1243,28 @@
             `;
             
             gameState.currentClueIndex++;
+            
+            // Update tombol "Clue Berikutnya" berdasarkan sisa clue
+            updateNextClueButton();
+        }
+
+        function updateNextClueButton() {
+            const nextClueButton = document.querySelector('button[onclick="nextClue()"]');
+            if (nextClueButton) {
+                if (gameState.remainingClues <= 1) {
+                    // Disable tombol jika clue sisa 1 atau kurang
+                    nextClueButton.disabled = true;
+                    nextClueButton.style.opacity = '0.5';
+                    nextClueButton.style.cursor = 'not-allowed';
+                    nextClueButton.innerHTML = '<i class="fas fa-ban"></i> Clue Habis';
+                } else {
+                    // Enable tombol jika masih ada clue
+                    nextClueButton.disabled = false;
+                    nextClueButton.style.opacity = '1';
+                    nextClueButton.style.cursor = 'pointer';
+                    nextClueButton.innerHTML = '<i class="fas fa-arrow-right"></i> Clue Berikutnya';
+                }
+            }
         }
 
         function nextClue() {
@@ -1059,6 +1274,8 @@
             } else {
                 showNextClue();
             }
+            // Update tombol setelah mengurangi remainingClues
+            updateNextClueButton();
         }
 
         function submitGuess() {
@@ -1071,20 +1288,26 @@
             const isCorrect = isCorrectGuess(guess, gameState.currentItem.nama);
             
             if (isCorrect) {
-                // Jawaban benar, lanjut ke tim berikutnya
-                endTurn(true, guess);
+                // Jawaban benar
+                showSuccessAnimation();
+                setTimeout(() => {
+                    endTurn(true, guess);
+                }, 1000);
             } else {
-                // Jawaban salah, lanjut dengan clue berikutnya
-                showWrongAnswer();
-                gameState.remainingClues--;
-                document.getElementById('guessInput').value = '';
-                
-                // Tampilkan clue berikutnya atau akhiri giliran jika clue habis
-                if (gameState.remainingClues <= 0) {
-                    endTurn(false, guess);
-                } else {
-                    showNextClue();
-                }
+                // Jawaban salah
+                showWrongAnimation();
+                setTimeout(() => {
+                    showWrongAnswer();
+                    gameState.remainingClues--;
+                    document.getElementById('guessInput').value = '';
+                    
+                    // Tampilkan clue berikutnya atau akhiri giliran jika clue habis
+                    if (gameState.remainingClues <= 0) {
+                        endTurn(false, guess);
+                    } else {
+                        showNextClue();
+                    }
+                }, 1000);
             }
         }
 
@@ -1167,6 +1390,12 @@
                         <p>Sisa clue: ${gameState.remainingClues}</p>
                     </div>
                 `;
+                
+                // Show score animation
+                const scoreElement = document.querySelector('.score-board');
+                if (scoreElement) {
+                    showScoreAnimation(score, scoreElement);
+                }
             } else {
                 // Tampilkan semua clue yang tersedia
                 let allCluesHTML = '<h4>Semua Clue:</h4><ul>';
@@ -1255,9 +1484,31 @@
             gameState.roundNumber++;
             gameState.teamsPlayedThisRound = [];
             
-            document.getElementById('gameResult').innerHTML = '';
-            document.getElementById('guessInput').value = '';
+            // Restore game modal content
+            const gameContent = document.getElementById('gameContent');
+            gameContent.innerHTML = `
+                <div class="current-player" id="currentPlayer">
+                    <h3>Giliran: <span id="currentTeam">-</span></h3>
+                    <p>Penebak: <span id="currentGuesser">-</span></p>
+                </div>
+                
+                <div class="game-area">
+                    <div id="clueDisplay"></div>
+                    <div class="guess-input">
+                        <input type="text" id="guessInput" class="form-control" placeholder="Masukkan tebakan Anda...">
+                        <button class="btn btn-success" onclick="submitGuess()">Tebak!</button>
+                        <button class="btn btn-secondary" onclick="nextClue()">Clue Berikutnya</button>
+                    </div>
+                    <div id="gameResult"></div>
+                </div>
+            `;
+            
             startTurn();
+            
+            // Update tombol setelah restore game content
+            setTimeout(() => {
+                updateNextClueButton();
+            }, 200);
         }
 
         function endGame() {
@@ -1371,37 +1622,44 @@
             showModal('statusModal');
         }
 
-        // Function to select TXT file manually
+        // Function to select TXT file manually (now shows info)
         function selectTXTFile() {
-            showTXTFileSelector();
+            showAlert('Data game sudah di-embed langsung dalam aplikasi. Tidak perlu file eksternal!', 'info');
         }
 
         // Function to open browser with CORS disabled
         function openWithCORS() {
-            const currentURL = window.location.href;
-            const instructions = `
-Untuk membuka browser dengan CORS disabled:
-
-1. Tutup browser ini
-2. Buka Command Prompt/Terminal
-3. Jalankan salah satu perintah:
-
-Brave:
-brave.exe --disable-web-security --user-data-dir="C:/temp/brave_dev"
-
-Chrome:
-chrome.exe --disable-web-security --user-data-dir="C:/temp/chrome_dev"
-
-Firefox:
-firefox.exe --disable-web-security
-
-Edge:
-msedge.exe --disable-web-security --user-data-dir="C:/temp/edge_dev"
-
-4. Buka file index.html di browser yang baru
-            `;
-            
-            alert(instructions);
+            Swal.fire({
+                title: '🌐 Buka dengan CORS Disabled',
+                html: `
+                    <div style="text-align: left;">
+                        <p><strong>Untuk membuka browser dengan CORS disabled:</strong></p>
+                        <ol style="text-align: left; margin: 10px 0;">
+                            <li>Tutup browser ini</li>
+                            <li>Buka Command Prompt/Terminal</li>
+                            <li>Jalankan salah satu perintah:</li>
+                        </ol>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                            <p><strong>Brave:</strong></p>
+                            <code>brave.exe --disable-web-security --user-data-dir="C:/temp/brave_dev"</code>
+                            <br><br>
+                            <p><strong>Chrome:</strong></p>
+                            <code>chrome.exe --disable-web-security --user-data-dir="C:/temp/chrome_dev"</code>
+                            <br><br>
+                            <p><strong>Firefox:</strong></p>
+                            <code>firefox.exe --disable-web-security</code>
+                            <br><br>
+                            <p><strong>Edge:</strong></p>
+                            <code>msedge.exe --disable-web-security --user-data-dir="C:/temp/edge_dev"</code>
+                        </div>
+                        <p><strong>4.</strong> Buka file index.html di browser yang baru</p>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#667eea',
+                width: '600px'
+            });
         }
 
         // Function to use sample data
@@ -1486,10 +1744,197 @@ msedge.exe --disable-web-security --user-data-dir="C:/temp/edge_dev"
             showAlert('✅ Berhasil menggunakan data sample!', 'success');
         }
 
-        // Initialize
-        loadGameData().then(() => {
-            updateGameStatus();
-        });
+        // Sound Effects (using Web Audio API)
+        let audioContext;
+        let sounds = {};
+
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                createSounds();
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function createSounds() {
+            // Success sound
+            sounds.success = createTone(800, 0.3, 0.1);
+            sounds.wrong = createTone(200, 0.3, 0.1);
+            sounds.click = createTone(400, 0.1, 0.05);
+            sounds.point = createTone(600, 0.2, 0.1);
+        }
+
+        function createTone(frequency, duration, volume) {
+            return function() {
+                if (!audioContext) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            };
+        }
+
+        function playSound(soundName) {
+            if (sounds[soundName]) {
+                sounds[soundName]();
+            }
+        }
+
+        // Animation Functions
+        function showLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.classList.remove('hidden');
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.classList.add('hidden');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+
+        function showSuccessAnimation() {
+            const animation = document.createElement('div');
+            animation.className = 'success-animation';
+            animation.innerHTML = '<div class="success-icon">✅</div>';
+            document.body.appendChild(animation);
+            
+            playSound('success');
+            createParticles();
+            
+            setTimeout(() => {
+                animation.remove();
+            }, 1000);
+        }
+
+        function showWrongAnimation() {
+            const animation = document.createElement('div');
+            animation.className = 'wrong-animation';
+            animation.innerHTML = '<div class="wrong-icon">❌</div>';
+            document.body.appendChild(animation);
+            
+            playSound('wrong');
+            
+            setTimeout(() => {
+                animation.remove();
+            }, 1000);
+        }
+
+        function createParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'particles';
+            document.body.appendChild(particlesContainer);
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+            
+            setTimeout(() => {
+                particlesContainer.remove();
+            }, 2000);
+        }
+
+        function showScoreAnimation(score, element) {
+            const scoreAnim = document.createElement('div');
+            scoreAnim.className = 'score-animation';
+            scoreAnim.textContent = `+${score}`;
+            scoreAnim.style.left = element.offsetLeft + element.offsetWidth / 2 + 'px';
+            scoreAnim.style.top = element.offsetTop + 'px';
+            document.body.appendChild(scoreAnim);
+            
+            playSound('point');
+            
+            setTimeout(() => {
+                scoreAnim.remove();
+            }, 1000);
+        }
+
+        function updateLoadingText(text) {
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText) {
+                loadingText.textContent = text;
+            }
+        }
+
+        // SweetAlert Helper Functions
+        function showConfirmDialog(message, onConfirm, title = 'Konfirmasi') {
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#dc3545',
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    onConfirm();
+                }
+            });
+        }
+
+        function showSuccessDialog(message, title = 'Berhasil!') {
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: 'success',
+                confirmButtonColor: '#28a745',
+                timer: 2000,
+                timerProgressBar: true
+            });
+        }
+
+        function showErrorDialog(message, title = 'Error!') {
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: 'error',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+
+        // Initialize with loading screen
+        showLoadingScreen();
+        initAudio();
+        
+        // Simulate loading process
+        setTimeout(() => {
+            updateLoadingText('Memuat data permainan...');
+        }, 1000);
+        
+        setTimeout(() => {
+            updateLoadingText('Menyiapkan antarmuka...');
+        }, 2000);
+        
+        setTimeout(() => {
+            updateLoadingText('Hampir selesai...');
+        }, 3000);
+        
+        setTimeout(() => {
+            loadGameData().then(() => {
+                updateGameStatus();
+                hideLoadingScreen();
+            });
+        }, 4000);
     </script>
 </body>
 </html> 
