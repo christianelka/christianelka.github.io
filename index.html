@@ -1117,6 +1117,121 @@
                 padding: 5px;
             }
         }
+
+        /* Footer Styles */
+        .footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 50px;
+            padding: 30px 0;
+            color: white;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-text {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-text p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .footer-text p:first-child {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .footer-link i {
+            font-size: 1rem;
+        }
+
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                margin-top: 30px;
+                padding: 20px 0;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .footer-text {
+                min-width: auto;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+
+            .footer-link {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer {
+                margin-top: 20px;
+                padding: 15px 0;
+            }
+
+            .footer-text p {
+                font-size: 0.8rem;
+            }
+
+            .footer-text p:first-child {
+                font-size: 0.9rem;
+            }
+
+            .footer-links {
+                gap: 10px;
+            }
+
+            .footer-link {
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1291,8 +1406,25 @@
             <div id="statusContent"></div>
         </div>
     </div>
-</body>
-</html>
-    </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>&copy; 2025 Permainan Youth - Tebak Alkitab Bersama!</p>
+                    <p>Crafted with ❤️ Christian Anelka Manik</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" onclick="showAbout()" class="footer-link">
+                        <i class="fas fa-info-circle"></i> Tentang
+                    </a>
+                    <a href="#" onclick="showHelp()" class="footer-link">
+                        <i class="fas fa-question-circle"></i> Bantuan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html> 
