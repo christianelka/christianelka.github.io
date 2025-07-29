@@ -21,6 +21,229 @@ let gameState = {
 // Game data loaded from external JavaScript file
 let daftarSesuatu = [];
 
+// Session Storage Management
+const SESSION_KEYS = {
+    TEAMS: 'game_teams',
+    TEAM_LEADERS: 'game_team_leaders',
+    CURRENT_TURN: 'game_current_turn',
+    CURRENT_ITEM: 'game_current_item',
+    CURRENT_CLUE_INDEX: 'game_current_clue_index',
+    SCORES: 'game_scores',
+    USED_ITEMS: 'game_used_items',
+    GAME_STATE: 'game_state',
+    CANDIDATES: 'game_candidates'
+};
+
+// Session Storage Functions
+function saveToSession(key, data) {
+    try {
+        sessionStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+        console.error('Error saving to session storage:', error);
+    }
+}
+
+function loadFromSession(key) {
+    try {
+        const data = sessionStorage.getItem(key);
+        return data ? JSON.parse(data) : null;
+    } catch (error) {
+        console.error('Error loading from session storage:', error);
+        return null;
+    }
+}
+
+function clearSession() {
+    try {
+        Object.values(SESSION_KEYS).forEach(key => {
+            sessionStorage.removeItem(key);
+        });
+    } catch (error) {
+        console.error('Error clearing session storage:', error);
+    }
+}
+
+function saveGameState() {
+    saveToSession(SESSION_KEYS.TEAMS, gameState.teams);
+    saveToSession(SESSION_KEYS.TEAM_LEADERS, Object.values(gameState.teams).map(team => team.ketua));
+    saveToSession(SESSION_KEYS.CURRENT_TURN, gameState.currentTeam);
+    saveToSession(SESSION_KEYS.CURRENT_ITEM, gameState.currentItem);
+    saveToSession(SESSION_KEYS.CURRENT_CLUE_INDEX, gameState.currentClueIndex);
+    saveToSession(SESSION_KEYS.SCORES, gameState.scores);
+    saveToSession(SESSION_KEYS.USED_ITEMS, gameState.usedItems);
+    saveToSession(SESSION_KEYS.GAME_STATE, gameState);
+    saveToSession(SESSION_KEYS.CANDIDATES, gameState.candidates);
+}
+
+function loadGameState() {
+    const savedTeams = loadFromSession(SESSION_KEYS.TEAMS);
+    const savedTeamLeaders = loadFromSession(SESSION_KEYS.TEAM_LEADERS);
+    const savedCurrentTurn = loadFromSession(SESSION_KEYS.CURRENT_TURN);
+    const savedCurrentItem = loadFromSession(SESSION_KEYS.CURRENT_ITEM);
+    const savedCurrentClueIndex = loadFromSession(SESSION_KEYS.CURRENT_CLUE_INDEX);
+    const savedScores = loadFromSession(SESSION_KEYS.SCORES);
+    const savedUsedItems = loadFromSession(SESSION_KEYS.USED_ITEMS);
+    const savedGameState = loadFromSession(SESSION_KEYS.GAME_STATE);
+    const savedCandidates = loadFromSession(SESSION_KEYS.CANDIDATES);
+
+    if (savedTeams) gameState.teams = savedTeams;
+    if (savedTeamLeaders) {
+        // Restore team leaders to their respective teams
+        Object.keys(gameState.teams).forEach((teamKey, index) => {
+            if (savedTeamLeaders[index]) {
+                gameState.teams[teamKey].ketua = savedTeamLeaders[index];
+            }
+        });
+    }
+    if (savedCurrentTurn !== null) gameState.currentTeam = savedCurrentTurn;
+    if (savedCurrentItem) gameState.currentItem = savedCurrentItem;
+    if (savedCurrentClueIndex !== null) gameState.currentClueIndex = savedCurrentClueIndex;
+    if (savedScores) gameState.scores = savedScores;
+    if (savedUsedItems) gameState.usedItems = savedUsedItems;
+    if (savedGameState) {
+        // Merge saved game state with current gameState
+        Object.assign(gameState, savedGameState);
+    }
+    if (savedCandidates) gameState.candidates = savedCandidates;
+
+    return {
+        hasTeams: !!savedTeams,
+        hasGameState: !!savedGameState,
+        hasCandidates: !!savedCandidates
+    };
+}
+
+// Page Leave Confirmation
+let hasUnsavedChanges = false;
+let isGameActive = false;
+
+function setUnsavedChanges(value = true) {
+    hasUnsavedChanges = value;
+}
+
+function setGameActive(value = true) {
+    isGameActive = value;
+}
+
+function showLeaveConfirmation() {
+    if (!hasUnsavedChanges && !isGameActive) return true;
+    
+    return new Promise((resolve) => {
+        Swal.fire({
+            title: '⚠️ Perhatian!',
+            html: `
+                <div style="text-align: left;">
+                    <p style="margin-bottom: 15px; color: #721c24;">
+                        <strong>Anda akan meninggalkan halaman ini!</strong>
+                    </p>
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #721c24;">
+                            <strong>⚠️ Data permainan akan hilang jika:</strong>
+                        </p>
+                        <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #721c24;">
+                            <li>Halaman di-refresh (F5)</li>
+                            <li>Tab browser ditutup</li>
+                            <li>Pindah ke halaman lain</li>
+                            <li>Koneksi internet terputus</li>
+                        </ul>
+                    </div>
+                    <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8;">
+                        <p style="margin: 0; color: #0c5460;">
+                            <strong>💡 Tips:</strong> Gunakan fitur "Skor Sementara" untuk menyimpan progress permainan.
+                        </p>
+                    </div>
+                </div>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Tetap Tinggalkan',
+            cancelButtonText: 'Kembali ke Permainan',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            width: '500px'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Clear session storage when user confirms leaving
+                clearSession();
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+}
+
+// Event Listeners for Page Leave
+function setupPageLeaveListeners() {
+    // Before unload event
+    window.addEventListener('beforeunload', (e) => {
+        if (hasUnsavedChanges || isGameActive) {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        }
+    });
+
+    // Page visibility change
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && (hasUnsavedChanges || isGameActive)) {
+            // Save state when page becomes hidden
+            saveGameState();
+        }
+    });
+
+    // Page focus/blur events
+    window.addEventListener('blur', () => {
+        if (hasUnsavedChanges || isGameActive) {
+            saveGameState();
+        }
+    });
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+        if (hasUnsavedChanges || isGameActive) {
+            e.preventDefault();
+            showLeaveConfirmation().then((confirmed) => {
+                if (confirmed) {
+                    window.history.go(-1);
+                } else {
+                    // Push current state back
+                    window.history.pushState(null, '', window.location.href);
+                }
+            });
+        }
+    });
+
+    // Prevent default back button behavior
+    window.history.pushState(null, '', window.location.href);
+}
+
+// Keyboard shortcuts
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // F5 refresh prevention
+        if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+            e.preventDefault();
+            showLeaveConfirmation().then((confirmed) => {
+                if (confirmed) {
+                    window.location.reload();
+                }
+            });
+        }
+        
+        // Ctrl+Shift+R (hard refresh)
+        if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+            e.preventDefault();
+            showLeaveConfirmation().then((confirmed) => {
+                if (confirmed) {
+                    window.location.reload(true);
+                }
+            });
+        }
+    });
+}
+
 // Function to load game data from external JS file
 async function loadGameData() {
     console.log('Loading game data from external JS file...');
@@ -138,6 +361,9 @@ function updateGameStatus() {
     if (gameStatusElement && teamCount > 0) {
         gameStatusElement.classList.add('show');
     }
+    
+    // Save to session storage after updating game status
+    saveGameState();
 }
 
 // Ketua functions
@@ -160,6 +386,11 @@ function addCandidate() {
     candidateNameInput.value = '';
     displayCandidates();
     playSound('click');
+    
+    // Save to session storage
+    saveToSession(SESSION_KEYS.CANDIDATES, gameState.candidates);
+    setUnsavedChanges(true);
+    
     showSuccessDialog(`${name} berhasil ditambahkan sebagai calon ketua!`);
 }
 
@@ -185,6 +416,9 @@ function displayCandidates() {
             ketuaSelection.classList.remove('hidden');
         }
     }
+    
+    // Save to session storage after displaying candidates
+    saveToSession(SESSION_KEYS.CANDIDATES, gameState.candidates);
 }
 
 function finalizeTeams() {
@@ -210,6 +444,10 @@ function finalizeTeams() {
         };
         gameState.scores[teamKey] = 0;
     }
+    
+    // Save to session storage
+    saveGameState();
+    setUnsavedChanges(true);
     
     updateGameStatus();
     closeModal('ketuaModal');
@@ -240,6 +478,10 @@ function addMember() {
     
     memberNameInput.value = '';
     displayTeams();
+    
+    // Save to session storage
+    saveGameState();
+    setUnsavedChanges(true);
     showSuccessDialog(`${name} bergabung dengan ${selectedTeam}!`);
     playSound('click');
 }
@@ -334,6 +576,9 @@ function displayTeams() {
         <p><strong>Selisih:</strong> ${maxMembers - minMembers} orang</p>
     `;
     container.appendChild(statsDiv);
+    
+    // Save to session storage after displaying teams
+    saveGameState();
 }
 
 // Game functions
@@ -347,6 +592,11 @@ function startGame() {
     gameState.roundNumber = 1;
     gameState.teamsPlayedThisRound = [];
     gameState.currentTeam = Object.keys(gameState.teams)[0];
+    
+    // Save to session storage
+    saveGameState();
+    setGameActive(true);
+    setUnsavedChanges(true);
     
     showModal('gameModal');
     startTurn();
@@ -380,6 +630,9 @@ function startTurn() {
     
     gameState.currentClueIndex = 0;
     gameState.remainingClues = 10;
+    
+    // Save to session storage
+    saveGameState();
     
     const currentTeamElement = document.getElementById('currentTeam');
     const currentGuesserElement = document.getElementById('currentGuesser');
@@ -434,6 +687,9 @@ function showNextClue() {
     
     gameState.currentClueIndex++;
     
+    // Save to session storage
+    saveGameState();
+    
     // Update tombol "Clue Berikutnya" berdasarkan sisa clue
     updateNextClueButton();
 }
@@ -455,10 +711,17 @@ function updateNextClueButton() {
         nextClueButton.style.cursor = 'pointer';
         nextClueButton.innerHTML = '<i class="fas fa-arrow-right"></i> Clue Berikutnya';
     }
+    
+    // Save to session storage after updating button state
+    saveGameState();
 }
 
 function nextClue() {
     gameState.remainingClues--;
+    
+    // Save to session storage
+    saveGameState();
+    
     if (gameState.remainingClues <= 0) {
         endTurn(false);
     } else {
@@ -493,6 +756,9 @@ function submitGuess() {
             showWrongAnswer();
             gameState.remainingClues--;
             guessInput.value = '';
+            
+            // Save to session storage
+            saveGameState();
             
             // Tampilkan clue berikutnya atau akhiri giliran jika clue habis
             if (gameState.remainingClues <= 0) {
@@ -558,6 +824,9 @@ function showWrongAnswer() {
         </div>
     `;
     
+    // Save to session storage
+    saveGameState();
+    
     // Hapus pesan setelah 2 detik
     setTimeout(() => {
         if (resultDiv) {
@@ -578,6 +847,9 @@ function endTurn(isCorrect, guess = '') {
         sesuatu: gameState.currentItem.nama,
         benar: isCorrect
     });
+    
+    // Save to session storage
+    saveGameState();
     
     let resultHTML = '';
     if (isCorrect) {
@@ -633,6 +905,9 @@ function nextTeam() {
     
     gameState.currentTeam = teamKeys[nextIndex];
     
+    // Save to session storage
+    saveGameState();
+    
     // Cek apakah semua tim sudah bermain di ronde ini
     if (gameState.teamsPlayedThisRound.length >= teamKeys.length) {
         // Satu ronde selesai - show round completion UI
@@ -681,12 +956,18 @@ function showRoundCompletion() {
     `;
     
     gameContent.innerHTML = roundCompletionHTML;
+    
+    // Save to session storage after showing round completion
+    saveGameState();
 }
 
 function continueGame() {
     // Reset tracking untuk ronde baru
     gameState.roundNumber++;
     gameState.teamsPlayedThisRound = [];
+    
+    // Save to session storage
+    saveGameState();
     
     // Restore game modal content
     const gameContent = document.getElementById('gameContent');
@@ -718,6 +999,10 @@ function continueGame() {
 }
 
 function endGame() {
+    setGameActive(false);
+    setUnsavedChanges(false);
+    clearSession();
+    
     closeModal('gameModal');
     showScoreBoard();
 }
@@ -759,10 +1044,16 @@ function showScoreBoard() {
     
     content.innerHTML = html;
     showModal('scoreModal');
+    
+    // Save to session storage after showing score board
+    saveGameState();
 }
 
 function showScoreSementara() {
     showScoreBoard();
+    
+    // Save to session storage after showing score sementara
+    saveGameState();
 }
 
 function showStatusItem() {
@@ -830,6 +1121,9 @@ function showStatusItem() {
     
     content.innerHTML = html;
     showModal('statusModal');
+    
+    // Save to session storage after showing status item
+    saveGameState();
 }
 
 // Function to select TXT file manually (now shows info)
@@ -1157,6 +1451,9 @@ function showErrorDialog(message, title = 'Error!') {
 function initializeGame() {
     showLoadingScreen();
 
+    // Load saved game state from session storage
+    const savedState = loadGameState();
+    
     // Simulate loading process
     setTimeout(() => {
         updateLoadingText('Memuat data permainan...');
@@ -1172,8 +1469,46 @@ function initializeGame() {
 
     setTimeout(() => {
         loadGameData().then(() => {
+            // Restore game state if available
+            if (savedState.hasTeams || savedState.hasGameState) {
+                updateLoadingText('Memulihkan sesi permainan...');
+                
+                // Update displays
+                if (savedState.hasCandidates) {
+                    displayCandidates();
+                }
+            }
+            
             updateGameStatus();
             hideLoadingScreen();
+            
+            // Show recovery message if game was in progress
+            if (savedState.hasGameState && gameState.currentTeam) {
+                setTimeout(() => {
+                    Swal.fire({
+                        title: '🔄 Sesi Permainan Ditemukan!',
+                        html: `
+                            <div style="text-align: left;">
+                                <p>Permainan sebelumnya terdeteksi dan telah dipulihkan.</p>
+                                <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8; margin: 15px 0;">
+                                    <p style="margin: 0; color: #0c5460;">
+                                        <strong>📊 Status Permainan:</strong>
+                                    </p>
+                                    <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #0c5460;">
+                                        <li>Tim: ${Object.keys(gameState.teams).length}</li>
+                                        <li>Item digunakan: ${gameState.usedItems.length}</li>
+                                        <li>Tim saat ini: ${gameState.currentTeam}</li>
+                                    </ul>
+                                </div>
+                                <p><strong>💡 Tips:</strong> Klik "Mulai Bermain" untuk melanjutkan permainan.</p>
+                            </div>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'Mengerti',
+                        confirmButtonColor: '#667eea'
+                    });
+                }, 500);
+            }
         });
     }, 4000);
 }
@@ -1201,6 +1536,48 @@ function initializeAudioOnInteraction() {
 document.addEventListener('click', initializeAudioOnInteraction);
 document.addEventListener('touchstart', initializeAudioOnInteraction);
 document.addEventListener('keydown', initializeAudioOnInteraction);
+
+// Setup page leave listeners and keyboard shortcuts
+setupPageLeaveListeners();
+setupKeyboardShortcuts();
+
+// Function to clear session and reload
+function clearSessionAndReload() {
+    Swal.fire({
+        title: '🔄 Reset Permainan',
+        html: `
+            <div style="text-align: left;">
+                <p>Anda yakin ingin mereset permainan?</p>
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 15px 0;">
+                    <p style="margin: 0; color: #856404;">
+                        <strong>⚠️ Perhatian:</strong> Semua data permainan akan dihapus:
+                    </p>
+                    <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #856404;">
+                        <li>Tim dan anggota</li>
+                        <li>Skor permainan</li>
+                        <li>Progress permainan</li>
+                        <li>Item yang sudah digunakan</li>
+                    </ul>
+                </div>
+                <p><strong>💡 Tips:</strong> Gunakan fitur "Skor Sementara" untuk menyimpan progress sebelum reset.</p>
+            </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Reset!',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            clearSession();
+            setGameActive(false);
+            setUnsavedChanges(false);
+            window.location.reload();
+        }
+    });
+}
 
 // Footer Functions
 function showAbout() {
