@@ -1200,4 +1200,154 @@ function initializeAudioOnInteraction() {
 // Add event listeners for user interaction
 document.addEventListener('click', initializeAudioOnInteraction);
 document.addEventListener('touchstart', initializeAudioOnInteraction);
-document.addEventListener('keydown', initializeAudioOnInteraction); 
+document.addEventListener('keydown', initializeAudioOnInteraction);
+
+// Footer Functions
+function showAbout() {
+    Swal.fire({
+        title: '📖 Tentang Permainan',
+        html: `
+            <div style="text-align: left;">
+                <h4>🎮 Permainan Youth - Tebak Alkitab Bersama!</h4>
+                <p><strong>Versi:</strong> 1.0.0</p>
+                <p><strong>Deskripsi:</strong></p>
+                <p>Permainan interaktif untuk menguji pengetahuan Alkitab melalui permainan tebak-tebakan. 
+                Pemain dibagi menjadi tim dan harus menebak tokoh atau kejadian Alkitab berdasarkan clue yang diberikan.</p>
+                
+                <h5>🎯 Fitur Utama:</h5>
+                <div style="margin: 10px 0; padding-left: 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>✓</strong> Pembagian tim otomatis dengan ketua
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>✓</strong> Sistem clue bertingkat (teks, gerakan, pembantu)
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>✓</strong> Perhitungan skor otomatis
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>✓</strong> Antarmuka responsif untuk mobile
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>✓</strong> Efek suara dan animasi
+                    </div>
+                </div>
+                
+                <h5>📚 Kategori Item:</h5>
+                <div style="margin: 10px 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(25, 118, 210, 0.1); border-radius: 8px; border-left: 3px solid #1976d2;">
+                        <strong>👤 Tokoh Penting:</strong> Abraham, Musa, Daud, Yesus, Paulus
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(245, 124, 0, 0.1); border-radius: 8px; border-left: 3px solid #f57c00;">
+                        <strong>📅 Kejadian Besar:</strong> Air Bah, Menara Babel, Kelahiran Yesus, Salib, Pentakosta
+                    </div>
+                </div>
+                
+                <p><strong>Dibuat dengan:</strong> HTML5, CSS3, JavaScript, SweetAlert2, Font Awesome</p>
+            </div>
+        `,
+        icon: 'info',
+        confirmButtonText: 'Mengerti',
+        confirmButtonColor: '#667eea',
+        width: '600px'
+    });
+}
+
+function showHelp() {
+    Swal.fire({
+        title: '❓ Bantuan & Cara Bermain',
+        html: `
+            <div style="text-align: left;">
+                <h4>🎮 Cara Bermain:</h4>
+                
+                <h5>1️⃣ Persiapan Tim:</h5>
+                <div style="margin: 10px 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border-left: 3px solid #28a745;">
+                        <strong>1.</strong> Klik "Tentukan Ketua" untuk menambah calon ketua
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border-left: 3px solid #28a745;">
+                        <strong>2.</strong> Pilih jumlah tim (minimal 2 tim)
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border-left: 3px solid #28a745;">
+                        <strong>3.</strong> Klik "Tentukan Tim" untuk menambah anggota tim
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border-left: 3px solid #28a745;">
+                        <strong>4.</strong> Anggota akan otomatis dibagi secara seimbang
+                    </div>
+                </div>
+                
+                <h5>2️⃣ Memulai Permainan:</h5>
+                <div style="margin: 10px 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>1.</strong> Klik "Mulai Bermain" untuk memulai
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>2.</strong> Setiap tim mendapat giliran secara bergantian
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>3.</strong> Satu anggota tim akan dipilih sebagai penebak
+                    </div>
+                </div>
+                
+                <h5>3️⃣ Sistem Clue:</h5>
+                <div style="margin: 10px 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(220, 53, 69, 0.1); border-radius: 8px; border-left: 3px solid #dc3545;">
+                        <strong>🔤 Teks:</strong> Petunjuk berupa kata-kata
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 3px solid #ffc107;">
+                        <strong>🤸 Gerakan:</strong> Petunjuk berupa gerakan tubuh
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(23, 162, 184, 0.1); border-radius: 8px; border-left: 3px solid #17a2b8;">
+                        <strong>💡 Pembantu:</strong> Petunjuk tambahan (kitab, lokasi, dll)
+                    </div>
+                </div>
+                
+                <h5>4️⃣ Sistem Skor:</h5>
+                <div style="margin: 10px 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border-left: 3px solid #28a745;">
+                        <strong>✅ Jawaban benar:</strong> 10 poin + (sisa clue × 2)
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(220, 53, 69, 0.1); border-radius: 8px; border-left: 3px solid #dc3545;">
+                        <strong>❌ Jawaban salah:</strong> 0 poin
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(108, 117, 125, 0.1); border-radius: 8px; border-left: 3px solid #6c757d;">
+                        <strong>📊 Maksimal:</strong> 10 clue per giliran
+                    </div>
+                </div>
+                
+                <h5>5️⃣ Fitur Tambahan:</h5>
+                <div style="margin: 10px 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>📈 Skor Sementara:</strong> Lihat skor saat ini
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>📋 Status Item:</strong> Lihat item yang sudah digunakan
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+                        <strong>🏆 Skor Akhir:</strong> Lihat hasil akhir permainan
+                    </div>
+                </div>
+                
+                <h5>💡 Tips:</h5>
+                <div style="margin: 10px 0;">
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 3px solid #ffc107;">
+                        <strong>💡</strong> Gunakan clue secara bertahap
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 3px solid #ffc107;">
+                        <strong>📚</strong> Perhatikan kategori item (Tokoh/Kejadian)
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 3px solid #ffc107;">
+                        <strong>🤝</strong> Kerjasama tim sangat penting
+                    </div>
+                    <div style="margin: 8px 0; padding: 8px 12px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 3px solid #ffc107;">
+                        <strong>🎯</strong> Jawaban tidak harus 100% tepat (80% kemiripan)
+                    </div>
+                </div>
+            </div>
+        `,
+        icon: 'question',
+        confirmButtonText: 'Mengerti',
+        confirmButtonColor: '#667eea',
+        width: '600px'
+    });
+} 
