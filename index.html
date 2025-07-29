@@ -865,29 +865,103 @@
                 return;
             }
             
-            // Random team assignment
-            const teamKeys = Object.keys(gameState.teams);
-            const randomTeam = teamKeys[Math.floor(Math.random() * teamKeys.length)];
-            gameState.teams[randomTeam].anggota.push(name);
+            // Smart team assignment dengan auto-balance
+            const selectedTeam = getOptimalTeamAssignment();
+            gameState.teams[selectedTeam].anggota.push(name);
             
             document.getElementById('memberName').value = '';
             displayTeams();
-            showAlert(`${name} bergabung dengan ${randomTeam}!`, 'success');
+            showAlert(`${name} bergabung dengan ${selectedTeam}!`, 'success');
+        }
+
+        function getOptimalTeamAssignment() {
+            const teamKeys = Object.keys(gameState.teams);
+            const teamSizes = teamKeys.map(teamKey => ({
+                team: teamKey,
+                size: gameState.teams[teamKey].anggota.length
+            }));
+            
+            // Urutkan tim berdasarkan jumlah anggota (terkecil dulu)
+            teamSizes.sort((a, b) => a.size - b.size);
+            
+            const minSize = teamSizes[0].size;
+            const maxSize = teamSizes[teamSizes.length - 1].size;
+            const sizeDifference = maxSize - minSize;
+            
+            // Jika selisih >= 2, pilih tim dengan anggota paling sedikit
+            if (sizeDifference >= 2) {
+                const smallestTeams = teamSizes.filter(team => team.size === minSize);
+                // Jika ada beberapa tim dengan ukuran sama, pilih secara random
+                const randomIndex = Math.floor(Math.random() * smallestTeams.length);
+                return smallestTeams[randomIndex].team;
+            } else {
+                // Jika selisih < 2, pilih secara random
+                const randomIndex = Math.floor(Math.random() * teamKeys.length);
+                return teamKeys[randomIndex];
+            }
         }
 
         function displayTeams() {
             const container = document.getElementById('teamsDisplay');
             container.innerHTML = '';
             
-            Object.entries(gameState.teams).forEach(([teamKey, team]) => {
+            // Hitung statistik tim
+            const teamStats = Object.entries(gameState.teams).map(([teamKey, team]) => ({
+                key: teamKey,
+                ketua: team.ketua,
+                anggota: team.anggota,
+                totalMembers: team.anggota.length + 1, // +1 untuk ketua
+                anggotaList: team.anggota.join(', ') || 'Belum ada'
+            }));
+            
+            // Urutkan berdasarkan jumlah anggota (terbanyak dulu)
+            teamStats.sort((a, b) => b.totalMembers - a.totalMembers);
+            
+            teamStats.forEach((team, index) => {
                 const card = document.createElement('div');
                 card.className = 'team-card';
+                
+                // Tentukan warna border berdasarkan ukuran tim
+                let borderColor = '#667eea'; // default
+                if (team.totalMembers === Math.max(...teamStats.map(t => t.totalMembers))) {
+                    borderColor = '#28a745'; // hijau untuk tim terbesar
+                } else if (team.totalMembers === Math.min(...teamStats.map(t => t.totalMembers))) {
+                    borderColor = '#ffc107'; // kuning untuk tim terkecil
+                }
+                
+                card.style.borderLeftColor = borderColor;
                 card.innerHTML = `
-                    <h4>${teamKey} - ${team.ketua}</h4>
-                    <p>Anggota: ${team.anggota.join(', ') || 'Belum ada'}</p>
+                    <h4>${team.key} - ${team.ketua}</h4>
+                    <p><strong>Total: ${team.totalMembers} orang</strong></p>
+                    <p>Anggota: ${team.anggotaList}</p>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+                        ${team.totalMembers === Math.max(...teamStats.map(t => t.totalMembers)) ? '🟢 Tim terbesar' : 
+                          team.totalMembers === Math.min(...teamStats.map(t => t.totalMembers)) ? '🟡 Tim terkecil' : 
+                          '⚪ Tim seimbang'}
+                    </div>
                 `;
                 container.appendChild(card);
             });
+            
+            // Tampilkan statistik pembagian
+            const totalMembers = teamStats.reduce((sum, team) => sum + team.totalMembers, 0);
+            const avgMembers = (totalMembers / teamStats.length).toFixed(1);
+            const maxMembers = Math.max(...teamStats.map(t => t.totalMembers));
+            const minMembers = Math.min(...teamStats.map(t => t.totalMembers));
+            
+            const statsDiv = document.createElement('div');
+            statsDiv.className = 'team-card';
+            statsDiv.style.background = '#f8f9fa';
+            statsDiv.style.marginTop = '15px';
+            statsDiv.innerHTML = `
+                <h4>📊 Statistik Pembagian Tim</h4>
+                <p><strong>Total Anggota:</strong> ${totalMembers} orang</p>
+                <p><strong>Rata-rata per Tim:</strong> ${avgMembers} orang</p>
+                <p><strong>Tim Terbesar:</strong> ${maxMembers} orang</p>
+                <p><strong>Tim Terkecil:</strong> ${minMembers} orang</p>
+                <p><strong>Selisih:</strong> ${maxMembers - minMembers} orang</p>
+            `;
+            container.appendChild(statsDiv);
         }
 
         // Game functions
