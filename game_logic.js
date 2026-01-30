@@ -108,10 +108,169 @@ const Game = {
     // Sudden death
     suddenDeathPlayers: [],
     isSuddenDeath: false,
+    // Animation state
+    currentScreen: 'welcome',
 
+    // Initialize loading screen and effects
+    init() {
+        this.createParticles();
+        this.setupRippleEffect();
+
+        // Hide loading screen after 2.5 seconds
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+            }
+        }, 2500);
+    },
+
+    // Create floating particles background
+    createParticles() {
+        const container = document.getElementById('particles-container');
+        if (!container) return;
+
+        const particleCount = 20;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            // Random size
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+
+            // Random horizontal position
+            particle.style.left = Math.random() * 100 + '%';
+
+            // Random animation duration
+            const duration = Math.random() * 20 + 15;
+            particle.style.animationDuration = duration + 's';
+
+            // Random delay
+            particle.style.animationDelay = Math.random() * 20 + 's';
+
+            // Random color variation
+            const colors = [
+                'rgba(139, 92, 246, 0.6)',  // purple
+                'rgba(6, 182, 212, 0.6)',   // cyan
+                'rgba(244, 114, 182, 0.5)', // pink
+            ];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+
+            container.appendChild(particle);
+        }
+    },
+
+    // Spawn confetti for victory
+    spawnConfetti() {
+        const container = document.getElementById('confetti-container');
+        if (!container) return;
+
+        container.innerHTML = ''; // Clear existing
+
+        const confettiCount = 100;
+        const colors = ['#8b5cf6', '#06b6d4', '#f472b6', '#22c55e', '#f59e0b', '#ef4444'];
+        const shapes = ['square', 'rectangle', 'circle'];
+
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+
+            // Random color
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.backgroundColor = color;
+
+            // Random shape
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            if (shape === 'circle') {
+                confetti.style.borderRadius = '50%';
+            } else if (shape === 'rectangle') {
+                confetti.style.width = '5px';
+                confetti.style.height = '12px';
+            }
+
+            // Random position
+            confetti.style.left = Math.random() * 100 + '%';
+
+            // Random animation duration
+            const duration = Math.random() * 2 + 2;
+            confetti.style.animationDuration = duration + 's';
+
+            // Random delay for staggered effect
+            confetti.style.animationDelay = Math.random() * 1 + 's';
+
+            // Random rotation
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            container.appendChild(confetti);
+        }
+
+        // Remove confetti after animation
+        setTimeout(() => {
+            container.innerHTML = '';
+        }, 5000);
+    },
+
+    // Setup ripple effect on buttons
+    setupRippleEffect() {
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-glow, .btn-outline-glow');
+            if (!btn) return;
+
+            this.createRipple(e, btn);
+        });
+    },
+
+    // Create ripple animation
+    createRipple(event, button) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+
+        const rect = button.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (event.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (event.clientY - rect.top - size / 2) + 'px';
+
+        button.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 600);
+    },
+
+    // Enhanced showScreen with smooth transitions
     showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-        document.getElementById('screen-' + id).classList.remove('hidden');
+        const currentScreenEl = document.getElementById('screen-' + this.currentScreen);
+        const newScreenEl = document.getElementById('screen-' + id);
+
+        if (!newScreenEl) return;
+
+        // Exit animation for current screen
+        if (currentScreenEl && this.currentScreen !== id) {
+            currentScreenEl.classList.add('screen-exit');
+
+            setTimeout(() => {
+                document.querySelectorAll('.screen').forEach(s => {
+                    s.classList.add('hidden');
+                    s.classList.remove('screen-exit', 'screen-enter');
+                });
+
+                // Show and animate new screen
+                newScreenEl.classList.remove('hidden');
+                newScreenEl.classList.add('screen-enter');
+
+                this.currentScreen = id;
+            }, 300);
+        } else {
+            // First load - no exit animation
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            newScreenEl.classList.remove('hidden');
+            newScreenEl.classList.add('screen-enter');
+            this.currentScreen = id;
+        }
     },
 
     // Show modal popup instead of alert
@@ -721,6 +880,7 @@ const Game = {
     showFinalScreen(winner, wonByGuess = false) {
         this.showScreen('final');
         this.playSound('win');
+        this.spawnConfetti(); // Victory confetti!
 
         // Update statistics
         this.stats.gamesPlayed++;
