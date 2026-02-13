@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderator Dashboard — Valentine Mission</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { outfit: ['Outfit', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #e11d48, #f43f5e);
+            color: white;
+            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.3);
+        }
+
+        /* Ticket print styles */
+        .ticket-card {
+            border: 2px dashed #fda4af;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Print-specific */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #printArea,
+            #printArea *,
+            #printAreaHunt,
+            #printAreaHunt * {
+                visibility: visible;
+            }
+
+            #printArea,
+            #printAreaHunt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+            .ticket-card {
+                border: 2px dashed #888 !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .qr-hunt-card {
+                border: 2px dashed #888 !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* Smooth tab content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* QR grid */
+        .qr-item canvas {
+            border-radius: 8px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Guide section styles */
+        .guide-section h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #be123c;
+        }
+
+        .guide-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            color: #9f1239;
+        }
+
+        .guide-section blockquote {
+            border-left: 3px solid #fda4af;
+            padding: 0.75rem 1rem;
+            background: #fff1f2;
+            border-radius: 0 8px 8px 0;
+            margin: 0.5rem 0;
+        }
+
+        .guide-section table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .guide-section th {
+            background: #ffe4e6;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .guide-section td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #fecdd3;
+        }
+
+        .guide-section code {
+            background: #fee2e2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-rose-700 via-rose-600 to-pink-600 text-white py-6 px-4 shadow-lg">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-black flex items-center gap-2">
+                    🎮 Moderator Dashboard
+                </h1>
+                <p class="text-rose-200 text-sm mt-1">Valentine Mission — Panel Kontrol</p>
+            </div>
+            <a href="valentine_mission.html" target="_blank"
+                class="bg-white/20 hover:bg-white/30 border border-white/30 px-4 py-2 rounded-xl text-sm font-medium transition-all">
+                Buka Game →
+            </a>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="max-w-6xl mx-auto px-4 mt-6 no-print">
+        <div class="flex gap-2 overflow-x-auto pb-2">
+            <button onclick="switchTab('guide')"
+                class="tab-btn active flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-sm transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+                📋 Panduan
+            </button>
+            <button onclick="switchTab('tickets')"
+                class="tab-btn flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-sm transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+                🎫 Cetak Tiket
+            </button>
+            <button onclick="switchTab('qr')"
+                class="tab-btn flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-sm transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+                📱 QR Code
+            </button>
+            <button onclick="switchTab('wyr')"
+                class="tab-btn flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-sm transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+                🎲 Would You Rather
+            </button>
+            <button onclick="switchTab('qrhunt')"
+                class="tab-btn flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-sm transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+                🏷️ Cetak QR Hunt
+            </button>
+            <button onclick="switchTab('sebarqr')"
+                class="tab-btn flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-sm transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+                📍 Sebar QR
+            </button>
+            <button onclick="switchTab('database')"
+                class="tab-btn flex-shrink-0 px-5 py-3 rounded-xl font-semibold text-sm transition-all bg-gray-100 text-gray-600 hover:bg-gray-200">
+                📊 Database
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- TAB 1: PANDUAN -->
+    <!-- ============================================ -->
+    <div id="tab-guide" class="tab-content active max-w-6xl mx-auto px-4 py-6">
+        <!-- Sub-tabs for guide -->
+        <div class="flex gap-2 mb-6 no-print">
+            <button onclick="switchGuide('moderator')" id="gbtn-moderator"
+                class="guide-btn px-4 py-2 rounded-lg text-sm font-medium bg-rose-100 text-rose-700 border-2 border-rose-300">
+                📋 Panduan Moderator
+            </button>
+            <button onclick="switchGuide('peserta')" id="gbtn-peserta"
+                class="guide-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 border-2 border-transparent hover:bg-gray-200">
+                🎤 Skrip ke Peserta
+            </button>
+        </div>
+
+        <!-- GUIDE: Moderator -->
+        <div id="guide-moderator"
+            class="guide-panel bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 guide-section">
+            <h1 class="text-xl font-black text-rose-700 mb-1">📋 PANDUAN MODERATOR — Valentine Mission</h1>
+            <p class="text-gray-500 text-sm mb-6">Pelajari sebelum acara dimulai</p>
+
+            <h2>🎯 Ringkasan Game</h2>
+            <p class="text-gray-600 mb-3"><strong>Valentine Mission</strong> adalah game interaktif berbasis web (dibuka
+                lewat HP) untuk acara pemuda gereja. Durasi estimasi: <strong>30–60 menit</strong>.</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <div class="bg-rose-50 rounded-xl p-3 text-center">
+                    <div class="text-2xl mb-1">🎫</div>
+                    <div class="text-xs text-gray-500">Login Tiket</div>
+                </div>
+                <div class="bg-rose-50 rounded-xl p-3 text-center">
+                    <div class="text-2xl mb-1">🔍</div>
+                    <div class="text-xs text-gray-500">Cari Pasangan</div>
+                </div>
+                <div class="bg-rose-50 rounded-xl p-3 text-center">
+                    <div class="text-2xl mb-1">🗺️</div>
+                    <div class="text-xs text-gray-500">Scavenger Hunt</div>
+                </div>
+                <div class="bg-rose-50 rounded-xl p-3 text-center">
+                    <div class="text-2xl mb-1">🏆</div>
+                    <div class="text-xs text-gray-500">Mission Complete</div>
+                </div>
+            </div>
+
+            <h2>🧱 Persiapan — Tiket</h2>
+            <p class="text-gray-600 mb-2">Total 40 tiket. Tiket <strong>ganjil = Pencari (Seeker)</strong>, tiket
+                <strong>genap = Pemegang (Holder)</strong>. Acak pembagian!
+            </p>
+            <div class="overflow-x-auto mb-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tiket</th>
+                            <th>Pair</th>
+                            <th>Pencari (Ganjil)</th>
+                            <th>Pemegang (Genap)</th>
+                            <th>Kode</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guideTicketTable"></tbody>
+                </table>
+            </div>
+
+            <h2>🗺️ Persiapan — 5 Pos Scavenger Hunt</h2>
+            <p class="text-gray-600 mb-2">Letakkan penanda/petunjuk fisik di lokasi berikut:</p>
+            <div class="overflow-x-auto mb-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Lokasi</th>
+                            <th>Kode</th>
+                            <th>Petunjuk di HP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guideHuntTable"></tbody>
+                </table>
+            </div>
+
+            <h2>🎲 Would You Rather — Cara Main (dari Moderator)</h2>
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+                <ol class="list-decimal list-inside text-gray-700 space-y-1 text-sm">
+                    <li>Buka tab <strong>"🎲 Would You Rather"</strong> di dashboard moderator</li>
+                    <li>Klik <strong>"🎰 Acak Pasangan!"</strong> — sistem memilih 1 pria + 1 wanita random</li>
+                    <li>Panggil kedua peserta maju, suruh mereka <strong>suit</strong></li>
+                    <li>Klik tombol pemenang suit → dia jadi <strong>Pemilih Opsi</strong></li>
+                    <li>Tampilkan 2 opsi. Pemilih pilih salah satu</li>
+                    <li><strong>Peserta yang kalah suit</strong> harus mempraktekkan opsi yang dipilih! 🎭</li>
+                    <li>Klik "Pertanyaan Berikutnya" untuk ronde baru</li>
+                </ol>
+            </div>
+
+            <h2>⏱️ Saran Rundown</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Kegiatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>00:00</td>
+                        <td>Pembukaan & penjelasan game</td>
+                    </tr>
+                    <tr>
+                        <td>00:10</td>
+                        <td>Bagikan tiket acak</td>
+                    </tr>
+                    <tr>
+                        <td>00:15</td>
+                        <td>Peserta login di HP</td>
+                    </tr>
+                    <tr>
+                        <td>00:20</td>
+                        <td><strong>FASE 1:</strong> Cari pasangan</td>
+                    </tr>
+                    <tr>
+                        <td>00:30</td>
+                        <td><strong>FASE 2:</strong> Scavenger Hunt</td>
+                    </tr>
+                    <tr>
+                        <td>00:50</td>
+                        <td>Kumpul kembali</td>
+                    </tr>
+                    <tr>
+                        <td>00:55</td>
+                        <td>Would You Rather di proyektor</td>
+                    </tr>
+                    <tr>
+                        <td>01:10</td>
+                        <td>Penutupan & refleksi</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🚨 Troubleshooting</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Masalah</th>
+                        <th>Solusi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lupa nomor tiket</td>
+                        <td>Cek daftar tiket di tab "Database"</td>
+                    </tr>
+                    <tr>
+                        <td>Kode partner salah terus</td>
+                        <td>Pastikan menemukan pasangan yang BENAR</td>
+                    </tr>
+                    <tr>
+                        <td>Game stuck / error</td>
+                        <td>Klik tombol 🔄 (reset) di pojok kanan bawah game</td>
+                    </tr>
+                    <tr>
+                        <td>HP tidak bisa buka game</td>
+                        <td>Pastikan terhubung ke WiFi yang sama</td>
+                    </tr>
+                    <tr>
+                        <td>Peserta kurang dari 40</td>
+                        <td>Gunakan tiket sepasang (ganjil + genap)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- GUIDE: Skrip Peserta -->
+        <div id="guide-peserta"
+            class="guide-panel hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 guide-section">
+            <h1 class="text-xl font-black text-rose-700 mb-1">🎤 SKRIP MODERATOR — Penjelasan ke Peserta</h1>
+            <p class="text-gray-500 text-sm mb-6">Bacakan atau parafrasekan sesuai gaya kamu!</p>
+
+            <h2>🔊 PEMBUKAAN</h2>
+            <blockquote>
+                <em>"Hai semuanya! Selamat datang di acara Valentine kita hari ini! 🎉"</em><br>
+                <em>"Hari ini kita akan main game yang seru banget, namanya... <strong>VALENTINE MISSION!</strong>
+                    💘"</em><br>
+                <em>"Game ini dimainkan lewat HP kalian masing-masing. Jadi pastikan HP-nya sudah siap ya!"</em>
+            </blockquote>
+
+            <h2>📱 LANGKAH 1: Buka Game</h2>
+            <blockquote>
+                <em>"Sekarang, buka browser di HP kalian dan ketik alamat ini:"</em><br>
+                <div class="bg-white border-2 border-rose-300 rounded-lg px-4 py-2 my-2 text-center font-mono text-rose-700 font-bold"
+                    id="guideUrlDisplay">
+                    http://______/youth/valentine_mission.html
+                </div>
+                <em>"Atau scan QR Code yang ditampilkan di layar!"</em>
+            </blockquote>
+
+            <h2>🎫 LANGKAH 2: Tiket & Login</h2>
+            <blockquote>
+                <em>"Saya akan bagikan tiket ke masing-masing orang. Setiap orang dapat SATU tiket nomor 1–40."</em><br>
+                <em>"Masukkan nomor tiket, lalu tekan <strong>Mulai Misi!</strong>"</em><br><br>
+                <em>"Setelah login, kalian akan mendapat ROLE — ada dua jenis:"</em><br>
+                🔍 <em>"<strong>PENCARI (Seeker)</strong> — Tugasmu MENCARI pasanganmu!"</em><br>
+                📦 <em>"<strong>PEMEGANG (Holder)</strong> — Kamu punya KODE RAHASIA. Tunggu partnermu!"</em><br><br>
+                <em>"Nama pasangan kalian akan muncul di layar HP!"</em>
+            </blockquote>
+
+            <h2>🔍 LANGKAH 3: Misi 1 — Temukan Pasangan</h2>
+            <blockquote>
+                <em>"Setelah login, kalian akan melihat AYAT ALKITAB di HP. Baca baik-baik dan hapalkan 1 KATA dari ayat
+                    itu!"</em><br>
+                <em>"Di HP kalian juga tertera nama tokoh kalian dan nama pasangan yang harus dicari."</em><br>
+                <em>"Contoh: Kalau kamu <strong>Adam</strong>, cari <strong>Hawa</strong> di ruangan ini!"</em><br><br>
+                1️⃣ <em>"<strong>Pencari:</strong> Keliling ruangan, tanya 'Kamu siapa?' — kalau ketemu, minta KODE
+                    RAHASIA."</em><br>
+                2️⃣ <em>"<strong>Pemegang:</strong> Tunggu ditemukan. Tunjukkan kode kamu."</em><br>
+                3️⃣ <em>"<strong>Pencari</strong> masukkan kode → Kalau benar, lanjut! 🎉"</em><br>
+                4️⃣ <em>"<strong>Pemegang</strong> tekan tombol hijau untuk lanjut."</em><br><br>
+                ⚠️ <em>"INGAT: Jangan kasih kode ke sembarang orang!"</em>
+            </blockquote>
+
+            <h2>🗺️ LANGKAH 4: Misi 2 — Scavenger Hunt</h2>
+            <blockquote>
+                <em>"Setelah ketemu pasangan, MISI BELUM SELESAI! Kalian berdua harus menyelesaikan <strong>Scavenger
+                        Hunt</strong>!"</em><br>
+                <em>"Di HP akan muncul PETUNJUK. Baca, cari lokasinya, temukan QR CODE tersembunyi."</em><br>
+                <em>"Scan QR atau masukkan kode yang tertera di QR!"</em><br>
+                <em>"Ada <strong>5 POS</strong>. Setiap pasangan punya RUTE UNIK, jadi kode kalian berbeda dari pasangan
+                    lain!"</em><br>
+                <em>"Kerjakan BERSAMA pasangan! 👫"</em>
+            </blockquote>
+
+            <h2>🏆 LANGKAH 5: Mission Complete!</h2>
+            <blockquote>
+                <em>"Selesaikan semua 5 pos → layar <strong>MISSION COMPLETE!</strong> 🏆"</em><br>
+                <em>"Kembali ke ruangan utama dan tunggu teman lain selesai."</em><br>
+                <em>"Nanti kita main game seru <strong>Would You Rather</strong> bareng-bareng di proyektor! 🎬"</em>
+            </blockquote>
+
+            <h2>🎲 LANGKAH 6: Would You Rather (Bonus!)</h2>
+            <blockquote>
+                <em>"Setelah semua selesai, kita main WOULD YOU RATHER!"</em><br>
+                <em>"Moderator akan memilih 1 pria dan 1 wanita secara ACAK dari tiket."</em><br>
+                <em>"Kedua orang maju, lalu SUIT! Pemenang suit = MEMILIH opsi. Yang kalah = MEMPRAKTEKKAN! 😂"</em><br>
+                <em>"Siap? Ini pasti seru dan bikin ngakak!"</em>
+            </blockquote>
+
+            <h2>📌 RULES</h2>
+            <blockquote>
+                1. <em>"Jangan kasih tahu nama/kode ke orang yang bukan pasanganmu"</em><br>
+                2. <em>"Scavenger Hunt harus bareng pasangan"</em><br>
+                3. <em>"Jangan berlari di gedung gereja"</em><br>
+                4. <em>"Jangan buka kode lokasi yang bukan pos kalian"</em><br>
+                5. <em>"Kalau bingung/error, hubungi panitia"</em>
+            </blockquote>
+
+            <h2>🚀 MULAI!</h2>
+            <blockquote class="bg-rose-100 border-l-rose-500">
+                <em>"Sudah siap? Tiket sudah di tangan?"</em><br>
+                <em>"Buka HP, masukkan nomor tiket... dan..."</em><br>
+                <strong class="text-xl text-rose-700">"VALENTINE MISSION... DIMULAI!!! 🚀💘🎉"</strong>
+            </blockquote>
+
+            <h2>💡 Tips Moderator</h2>
+            <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+                <li><strong>Energi tinggi!</strong> Buat suasana seru sejak awal</li>
+                <li><strong>Demo di proyektor</strong> — buka game dengan tiket dummy</li>
+                <li><strong>Repeat rules</strong> — peserta sering lupa saat excited</li>
+                <li><strong>Sebar panitia</strong> di masing-masing pos</li>
+                <li><strong>Siapkan WiFi stabil</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 2: CETAK TIKET -->
+    <!-- ============================================ -->
+    <div id="tab-tickets" class="tab-content max-w-6xl mx-auto px-4 py-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 no-print">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">🎫 Cetak Tiket</h2>
+                <p class="text-gray-500 text-sm">40 tiket siap dicetak. Gunting di garis putus-putus.</p>
+            </div>
+            <div class="flex gap-2">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Range:</label>
+                    <input type="number" id="ticketFrom" min="1" max="40" value="1"
+                        class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                    <span class="text-gray-400">—</span>
+                    <input type="number" id="ticketTo" min="1" max="40" value="40"
+                        class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                </div>
+                <button onclick="generateTickets()"
+                    class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
+                    Generate
+                </button>
+                <button onclick="window.print()"
+                    class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1">
+                    🖨️ Print / PDF
+                </button>
+            </div>
+        </div>
+
+        <div id="printArea">
+            <div id="ticketGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Tickets generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 3: QR CODE -->
+    <!-- ============================================ -->
+    <div id="tab-qr" class="tab-content max-w-6xl mx-auto px-4 py-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 no-print">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">📱 QR Code Generator</h2>
+                <p class="text-gray-500 text-sm">QR menuju halaman game. Print dan tempel di ruangan.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">URL Game</label>
+            <div class="flex gap-2">
+                <input type="text" id="gameUrl" value="" placeholder="http://example.com/youth/valentine_mission.html"
+                    class="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-rose-400">
+                <button onclick="generateQR()"
+                    class="bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-xl text-sm font-semibold transition-colors">
+                    Generate QR
+                </button>
+            </div>
+        </div>
+
+        <!-- QR Output -->
+        <div id="qrOutput" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Large QR for projector -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+                    <h3 class="font-bold text-gray-700 mb-4">QR Besar (Proyektor)</h3>
+                    <div id="qrLarge" class="inline-block bg-white p-4 rounded-xl border-4 border-rose-100"></div>
+                    <p class="text-gray-500 text-sm mt-4">Scan untuk buka game Valentine Mission 💘</p>
+                    <p id="qrUrlDisplay" class="text-rose-600 text-xs font-mono mt-1 break-all"></p>
+                </div>
+                <!-- Small QR cards for sticker/print -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h3 class="font-bold text-gray-700 mb-4 text-center">QR Kecil (untuk dicetak)</h3>
+                    <div class="grid grid-cols-2 gap-4" id="qrSmallGrid">
+                        <!-- Generated by JS -->
+                    </div>
+                    <button onclick="printQR()"
+                        class="mt-4 w-full bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
+                        🖨️ Print QR Cards
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 4: WOULD YOU RATHER (Moderator Game) -->
+    <!-- ============================================ -->
+    <div id="tab-wyr" class="tab-content max-w-6xl mx-auto px-4 py-6">
+        <div class="mb-6 no-print">
+            <h2 class="text-xl font-bold text-gray-800">🎲 Would You Rather — Cringe Edition 🙈</h2>
+            <p class="text-gray-500 text-sm">Tampilkan di proyektor! Moderator menjalankan game ini.</p>
+            <div class="flex items-center gap-3 mt-3">
+                <label class="text-sm text-gray-600 font-medium">Tiket Peserta:</label>
+                <input type="number" id="wyrTicketFrom" min="1" max="40" value="1"
+                    class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                <span class="text-gray-400">—</span>
+                <input type="number" id="wyrTicketTo" min="1" max="40" value="40"
+                    class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                <span class="text-xs text-gray-400">(Ganjil = Pria, Genap = Wanita)</span>
+            </div>
+            <div id="wyrStats" class="mt-2 text-xs text-gray-400"></div>
+        </div>
+
+        <!-- STEP 1: Pick Random Pair -->
+        <div id="wyrStep1" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-6">
+            <div class="text-center mb-6">
+                <span
+                    class="inline-block bg-rose-100 text-rose-600 font-bold text-sm px-4 py-1.5 rounded-full mb-4">Langkah
+                    1</span>
+                <h3 class="text-2xl font-black text-gray-800">🎲 Pilih Pasangan Random</h3>
+                <p class="text-gray-500 text-sm mt-1">Tekan tombol untuk memilih 1 pria dan 1 wanita secara acak dari
+                    tiket</p>
+            </div>
+            <div class="text-center">
+                <button onclick="wyrPickPair()"
+                    class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold py-4 px-10 rounded-2xl text-lg shadow-lg shadow-rose-500/20 transition-all hover:scale-105">
+                    🎰 Acak Pasangan!
+                </button>
+            </div>
+            <div id="wyrPairResult" class="hidden mt-8">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="bg-blue-50 rounded-2xl p-6 text-center border-2 border-blue-200">
+                        <div class="text-4xl mb-2">👦</div>
+                        <p class="text-xs text-blue-400 uppercase tracking-widest mb-1">Pria</p>
+                        <p class="text-3xl font-black text-blue-700">Tiket <span id="wyrMaleTicket">-</span></p>
+                    </div>
+                    <div class="bg-pink-50 rounded-2xl p-6 text-center border-2 border-pink-200">
+                        <div class="text-4xl mb-2">👧</div>
+                        <p class="text-xs text-pink-400 uppercase tracking-widest mb-1">Wanita</p>
+                        <p class="text-3xl font-black text-pink-700">Tiket <span id="wyrFemaleTicket">-</span></p>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button onclick="wyrGoToSuit()"
+                        class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl transition-colors">
+                        Lanjut — Suit! →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: Suit -->
+        <div id="wyrStep2" class="hidden bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-6">
+            <div class="text-center mb-6">
+                <span
+                    class="inline-block bg-amber-100 text-amber-600 font-bold text-sm px-4 py-1.5 rounded-full mb-4">Langkah
+                    2</span>
+                <h3 class="text-2xl font-black text-gray-800">✊✋✌️ SUIT!</h3>
+                <p class="text-gray-500 text-sm mt-1">Kedua peserta suit. Pemenang = <strong>Pemilih Opsi</strong>,
+                    Kalah = <strong>Mempraktekkan</strong></p>
+            </div>
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
+                <div class="text-center">
+                    <p class="text-lg font-bold text-gray-700 mb-2">👦 Tiket <span id="wyrSuitMale">-</span>
+                        &nbsp;VS&nbsp; 👧 Tiket <span id="wyrSuitFemale">-</span></p>
+                    <p class="text-gray-500 text-sm">Moderator: suruh mereka suit secara langsung!</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <p class="text-gray-600 mb-4">Siapa yang menang suit?</p>
+                <div class="flex justify-center gap-4">
+                    <button onclick="wyrSuitWinner('male')"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl transition-colors text-lg">
+                        👦 Pria Menang
+                    </button>
+                    <button onclick="wyrSuitWinner('female')"
+                        class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-xl transition-colors text-lg">
+                        👧 Wanita Menang
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Show Question -->
+        <div id="wyrStep3" class="hidden">
+            <div
+                class="bg-gradient-to-br from-rose-50 to-pink-50 rounded-3xl p-8 mb-6 shadow-sm border border-rose-100">
+                <div class="text-center mb-2">
+                    <span id="wyrCounter"
+                        class="inline-block bg-rose-100 text-rose-600 font-bold text-sm px-4 py-1.5 rounded-full">1 /
+                        20</span>
+                </div>
+                <div id="wyrRoleInfo" class="text-center mb-4">
+                    <p class="text-sm text-gray-500">🏆 <span id="wyrChooserLabel"
+                            class="font-bold text-gray-700">-</span> = MEMILIH opsi &nbsp;|&nbsp; 🎭 <span
+                            id="wyrActorLabel" class="font-bold text-gray-700">-</span> = MEMPRAKTEKKAN</p>
+                </div>
+                <h3 class="text-center text-2xl font-black text-gray-800 mb-8">Would You Rather...? 🤔</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl p-6 border-2 border-rose-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                        onclick="wyrChoose('A')">
+                        <div class="text-center">
+                            <span
+                                class="inline-block bg-rose-500 text-white font-bold text-lg w-10 h-10 rounded-full leading-10 mb-4">A</span>
+                            <p id="wyrOptA" class="text-gray-700 font-medium text-lg leading-relaxed"></p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 border-2 border-pink-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                        onclick="wyrChoose('B')">
+                        <div class="text-center">
+                            <span
+                                class="inline-block bg-pink-500 text-white font-bold text-lg w-10 h-10 rounded-full leading-10 mb-4">B</span>
+                            <p id="wyrOptB" class="text-gray-700 font-medium text-lg leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- After choice -->
+            <div id="wyrChoiceResult"
+                class="hidden bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl p-6 mb-6 border border-amber-200">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🎭</div>
+                    <p class="text-lg font-bold text-gray-800 mb-2"><span id="wyrActorName">-</span> harus
+                        mempraktekkan:</p>
+                    <p id="wyrChosenOpt" class="text-xl font-black text-rose-600 leading-relaxed px-4"></p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex items-center justify-between gap-4 no-print">
+                <button onclick="wyrReset()"
+                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-4 rounded-xl transition-colors text-lg">
+                    🔄 Ronde Baru
+                </button>
+                <button onclick="wyrNextQuestion()" id="wyrNextBtn"
+                    class="flex-1 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold py-4 rounded-xl transition-colors text-lg">
+                    Pertanyaan Berikutnya →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 5: CETAK QR HUNT -->
+    <!-- ============================================ -->
+    <div id="tab-qrhunt" class="tab-content max-w-6xl mx-auto px-4 py-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 no-print">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">🏷️ Cetak QR Code — Scavenger Hunt</h2>
+                <p class="text-gray-500 text-sm">QR code unik per pasangan. Gunting dan sebar di lokasi!</p>
+            </div>
+            <div class="flex gap-2 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Pair:</label>
+                    <input type="number" id="qrHuntFrom" min="1" max="20" value="1"
+                        class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                    <span class="text-gray-400">—</span>
+                    <input type="number" id="qrHuntTo" min="1" max="20" value="20"
+                        class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                </div>
+                <button onclick="generateQRHunt()"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
+                    Generate
+                </button>
+                <button onclick="printQRHunt()"
+                    class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1">
+                    🖨️ Print QR Hunt
+                </button>
+            </div>
+        </div>
+
+        <div id="printAreaHunt">
+            <div id="qrHuntGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- QR cards generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 6: SEBAR QR (Distribution Guide) -->
+    <!-- ============================================ -->
+    <div id="tab-sebarqr" class="tab-content max-w-6xl mx-auto px-4 py-6">
+        <div class="mb-6 no-print">
+            <h2 class="text-xl font-bold text-gray-800">📍 Panduan Sebar QR Code</h2>
+            <p class="text-gray-500 text-sm">Kumpulan QR dikelompokkan berdasarkan LOKASI. Satu lokasi bisa punya banyak
+                QR dari pasangan yang berbeda.</p>
+            <div class="flex items-center gap-3 mt-3">
+                <label class="text-sm text-gray-600 font-medium">Pair:</label>
+                <input type="number" id="sebarFrom" min="1" max="20" value="1"
+                    class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                <span class="text-gray-400">—</span>
+                <input type="number" id="sebarTo" min="1" max="20" value="20"
+                    class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
+                <button onclick="generateSebarQR()"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
+                    Generate
+                </button>
+            </div>
+        </div>
+        <div id="sebarQRContent">
+            <!-- Generated by JS -->
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 6: DATABASE -->
+    <!-- ============================================ -->
+    <div id="tab-database" class="tab-content max-w-6xl mx-auto px-4 py-6">
+        <div class="mb-6 no-print">
+            <h2 class="text-xl font-bold text-gray-800">📊 Database Game</h2>
+            <p class="text-gray-500 text-sm">Semua data yang ter-hardcode di game</p>
+        </div>
+
+        <!-- Sub-tabs -->
+        <div class="flex gap-2 mb-6 no-print">
+            <button onclick="switchDB('couples')" id="dbtn-couples"
+                class="db-btn px-4 py-2 rounded-lg text-sm font-medium bg-rose-100 text-rose-700 border-2 border-rose-300">
+                💑 Pasangan (20)
+            </button>
+            <button onclick="switchDB('hunt')" id="dbtn-hunt"
+                class="db-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 border-2 border-transparent hover:bg-gray-200">
+                🗺️ Hunt Stations (5)
+            </button>
+            <button onclick="switchDB('wyr')" id="dbtn-wyr"
+                class="db-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 border-2 border-transparent hover:bg-gray-200">
+                🤔 WYR (10)
+            </button>
+        </div>
+
+        <!-- DB: Couples -->
+        <div id="db-couples" class="db-panel bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-rose-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">ID</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Tiket Ganjil</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Role A (Pencari)</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Tiket Genap</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Role B (Pemegang)</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Kode Rahasia</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Kategori</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbCouplesBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DB: Hunt -->
+        <div id="db-hunt" class="db-panel hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-emerald-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold text-emerald-700">Pasangan</th>
+                            <th class="px-4 py-3 text-left font-semibold text-emerald-700">Pos</th>
+                            <th class="px-4 py-3 text-left font-semibold text-emerald-700">Kode QR</th>
+                            <th class="px-4 py-3 text-left font-semibold text-emerald-700">Petunjuk</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbHuntBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DB: WYR -->
+        <div id="db-wyr" class="db-panel hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-purple-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold text-purple-700">#</th>
+                            <th class="px-4 py-3 text-left font-semibold text-purple-700">Opsi A</th>
+                            <th class="px-4 py-3 text-left font-semibold text-purple-700">Opsi B</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbWyrBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="valentine_data.js"></script>
+    <script>
+
+        // ==========================================
+        // TAB SWITCHING
+        // ==========================================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => { t.classList.remove('active'); });
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.classList.add('bg-gray-100', 'text-gray-600');
+            });
+
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            const btns = document.querySelectorAll('.tab-btn');
+            const idx = { guide: 0, tickets: 1, qr: 2, wyr: 3, qrhunt: 4, database: 5 }[tab];
+            btns[idx].classList.add('active');
+            btns[idx].classList.remove('bg-gray-100', 'text-gray-600');
+
+            if (tab === 'tickets') generateTickets();
+            if (tab === 'wyr') initWYR();
+            if (tab === 'qrhunt') generateQRHunt();
+        }
+
+        function switchGuide(which) {
+            document.querySelectorAll('.guide-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.guide-btn').forEach(b => {
+                b.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-300');
+                b.classList.add('bg-gray-100', 'text-gray-600', 'border-transparent');
+            });
+
+            document.getElementById(`guide-${which}`).classList.remove('hidden');
+            const btn = document.getElementById(`gbtn-${which}`);
+            btn.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-300');
+            btn.classList.remove('bg-gray-100', 'text-gray-600', 'border-transparent');
+        }
+
+        function switchDB(which) {
+            document.querySelectorAll('.db-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.db-btn').forEach(b => {
+                b.classList.remove('bg-rose-100', 'text-rose-700', 'border-rose-300');
+                b.classList.add('bg-gray-100', 'text-gray-600', 'border-transparent');
+            });
+
+            document.getElementById(`db-${which}`).classList.remove('hidden');
+            const btn = document.getElementById(`dbtn-${which}`);
+            btn.classList.add('bg-rose-100', 'text-rose-700', 'border-rose-300');
+            btn.classList.remove('bg-gray-100', 'text-gray-600', 'border-transparent');
+        }
+
+        // ==========================================
+        // TICKET GENERATION (number only)
+        // ==========================================
+        function generateTickets() {
+            const from = parseInt(document.getElementById('ticketFrom').value) || 1;
+            const to = parseInt(document.getElementById('ticketTo').value) || 40;
+            const grid = document.getElementById('ticketGrid');
+            grid.innerHTML = '';
+
+            for (let t = from; t <= to; t++) {
+                const card = document.createElement('div');
+                card.className = 'ticket-card bg-white rounded-xl p-4 relative';
+                card.innerHTML = `
+            <div class="text-center">
+                <div class="text-3xl mb-1">💘</div>
+                <div class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Valentine Mission</div>
+                <div class="w-full h-px bg-gray-200 my-3"></div>
+                <div class="text-[10px] text-gray-400 mb-1">Tiket No.</div>
+                <div class="text-5xl font-black text-rose-600 my-2">${t}</div>
+                <div class="w-full h-px bg-gray-200 my-3"></div>
+                <div class="text-[9px] text-gray-300">Masukkan nomor ini di HP</div>
+            </div>
+            `;
+                grid.appendChild(card);
+            }
+        }
+
+        // ==========================================
+        // QR CODE GENERATION
+        // ==========================================
+        function generateQR() {
+            const url = document.getElementById('gameUrl').value.trim();
+            if (!url) {
+                alert('Masukkan URL game terlebih dahulu!');
+                return;
+            }
+
+            document.getElementById('qrOutput').classList.remove('hidden');
+            document.getElementById('qrUrlDisplay').textContent = url;
+
+            // Large QR
+            const qrLargeEl = document.getElementById('qrLarge');
+            qrLargeEl.innerHTML = '';
+            new QRCode(qrLargeEl, {
+                text: url,
+                width: 280,
+                height: 280,
+                colorDark: "#881337",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Small QR cards (6 copies)
+            const smallGrid = document.getElementById('qrSmallGrid');
+            smallGrid.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const card = document.createElement('div');
+                card.className = 'text-center bg-gray-50 rounded-xl p-3 border border-gray-200';
+                const qrDiv = document.createElement('div');
+                qrDiv.className = 'inline-block mb-1';
+                card.appendChild(qrDiv);
+
+                const label = document.createElement('p');
+                label.className = 'text-[9px] text-gray-400 font-medium';
+                label.textContent = 'Scan untuk main! 💘';
+                card.appendChild(label);
+
+                smallGrid.appendChild(card);
+
+                new QRCode(qrDiv, {
+                    text: url,
+                    width: 100,
+                    height: 100,
+                    colorDark: "#881337",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+        }
+
+        function printQR() {
+            window.print();
+        }
+
+        // ==========================================
+        // POPULATE DATABASE TABLES
+        // ==========================================
+        function populateDB() {
+            // Couples
+            const cBody = document.getElementById('dbCouplesBody');
+            couplesData.forEach(c => {
+                const oddTicket = c.id * 2 - 1;
+                const evenTicket = c.id * 2;
+                cBody.innerHTML += `
+            <tr class="hover:bg-rose-50/50 border-b border-gray-100">
+                <td class="px-4 py-3 font-bold text-rose-600">${c.id}</td>
+                <td class="px-4 py-3"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full text-xs font-bold">${oddTicket}</span></td>
+                <td class="px-4 py-3 font-medium">${c.roleA}</td>
+                <td class="px-4 py-3"><span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full text-xs font-bold">${evenTicket}</span></td>
+                <td class="px-4 py-3 font-medium">${c.roleB}</td>
+                <td class="px-4 py-3"><code class="bg-rose-50 text-rose-700 px-2 py-1 rounded font-mono text-xs font-bold">${c.code}</code></td>
+                <td class="px-4 py-3 text-xs text-gray-500">${c.verseRef || ''}</td>
+            </tr>`;
+            });
+
+            // Hunt Stations (per couple)
+            const hBody = document.getElementById('dbHuntBody');
+            const allHunt = getAllHuntData();
+            allHunt.forEach(h => {
+                h.stations.forEach((s, i) => {
+                    hBody.innerHTML += `
+            <tr class="hover:bg-emerald-50/50 border-b border-gray-100">
+                <td class="px-4 py-3 text-xs">${i === 0 ? `<span class="font-bold text-emerald-700">#${h.pairId} ${h.couple.roleA} & ${h.couple.roleB}</span>` : ''}</td>
+                <td class="px-4 py-3 font-bold text-emerald-600">${s.stage}</td>
+                <td class="px-4 py-3"><code class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded font-mono text-xs font-bold">${s.locationCode}</code></td>
+                <td class="px-4 py-3 text-gray-600 text-xs">${s.clue}</td>
+            </tr>`;
+                });
+            });
+
+            // WYR
+            const wBody = document.getElementById('dbWyrBody');
+            wyrData.forEach(q => {
+                wBody.innerHTML += `
+            <tr class="hover:bg-purple-50/50 border-b border-gray-100">
+                <td class="px-4 py-3 font-bold text-purple-600">${q.id}</td>
+                <td class="px-4 py-3 text-gray-700">${q.optA}</td>
+                <td class="px-4 py-3 text-gray-700">${q.optB}</td>
+            </tr>`;
+            });
+
+            // Guide ticket table
+            const gBody = document.getElementById('guideTicketTable');
+            if (gBody) {
+                couplesData.forEach(c => {
+                    const odd = c.id * 2 - 1;
+                    const even = c.id * 2;
+                    gBody.innerHTML += `<tr><td>${odd}, ${even}</td><td>${c.id}</td><td>${c.roleA}</td><td>${c.roleB}</td><td><code>${c.code}</code></td></tr>`;
+                });
+            }
+
+            // Guide hunt table (show all routes)
+            const ghBody = document.getElementById('guideHuntTable');
+            if (ghBody) {
+                const allH = getAllHuntData();
+                allH.forEach(h => {
+                    const codes = h.stations.map(s => s.locationCode).join(', ');
+                    ghBody.innerHTML += `<tr><td>${h.pairId}</td><td>${h.couple.roleA} & ${h.couple.roleB}</td><td><code>${codes}</code></td></tr>`;
+                });
+            }
+        }
+
+        // ==========================================
+        // WOULD YOU RATHER - FULL GAME FLOW
+        // ==========================================
+        let wyrMaleTicket = null;
+        let wyrFemaleTicket = null;
+        let wyrChooser = null; // 'male' or 'female'
+        let wyrActor = null;
+        let wyrUsedMale = [];       // tickets used in current cycle
+        let wyrUsedFemale = [];     // tickets used in current cycle
+        let wyrUsedQuestions = [];   // question IDs already shown
+        let wyrPairHistory = [];     // [{m, f}] pairs that played together (persists across resets)
+        let wyrRoundNum = 0;
+
+        function wyrGetRange() {
+            const from = parseInt(document.getElementById('wyrTicketFrom').value) || 1;
+            const to = parseInt(document.getElementById('wyrTicketTo').value) || 40;
+            return { from: Math.min(from, to), to: Math.max(from, to) };
+        }
+
+        function wyrGetPools() {
+            const { from, to } = wyrGetRange();
+            const allMale = [];
+            const allFemale = [];
+            for (let i = from; i <= to; i++) {
+                if (i % 2 !== 0) allMale.push(i);  // odd = male
+                else allFemale.push(i);             // even = female
+            }
+            return { allMale, allFemale };
+        }
+
+        function initWYR() {
+            wyrUsedMale = [];
+            wyrUsedFemale = [];
+            wyrUsedQuestions = [];
+            wyrPairHistory = [];
+            wyrRoundNum = 0;
+            wyrReset();
+            wyrUpdateStats();
+        }
+
+        function wyrUpdateStats() {
+            const { allMale, allFemale } = wyrGetPools();
+            const availM = allMale.filter(t => !wyrUsedMale.includes(t)).length;
+            const availF = allFemale.filter(t => !wyrUsedFemale.includes(t)).length;
+            const availQ = wyrData.length - wyrUsedQuestions.length;
+            const el = document.getElementById('wyrStats');
+            if (el) {
+                el.textContent = `Ronde: ${wyrRoundNum} | Pria tersisa: ${availM}/${allMale.length} | Wanita tersisa: ${availF}/${allFemale.length} | Soal tersisa: ${availQ}/${wyrData.length}`;
+            }
+        }
+
+        function wyrReset() {
+            // Show step 1, hide 2 and 3
+            document.getElementById('wyrStep1').classList.remove('hidden');
+            document.getElementById('wyrStep2').classList.add('hidden');
+            document.getElementById('wyrStep3').classList.add('hidden');
+            document.getElementById('wyrPairResult').classList.add('hidden');
+            document.getElementById('wyrChoiceResult').classList.add('hidden');
+        }
+
+        function wyrPickPair() {
+            const { allMale, allFemale } = wyrGetPools();
+
+            if (allMale.length === 0 || allFemale.length === 0) {
+                alert('Range tiket tidak valid! Pastikan ada tiket ganjil (pria) dan genap (wanita).');
+                return;
+            }
+
+            // Get available tickets (not yet used this cycle)
+            let availMale = allMale.filter(t => !wyrUsedMale.includes(t));
+            let availFemale = allFemale.filter(t => !wyrUsedFemale.includes(t));
+
+            // If all used, reset cycle but keep pair history
+            if (availMale.length === 0) {
+                wyrUsedMale = [];
+                availMale = [...allMale];
+            }
+            if (availFemale.length === 0) {
+                wyrUsedFemale = [];
+                availFemale = [...allFemale];
+            }
+
+            // Try to find a pair that hasn't played together before
+            let maleTicket = null;
+            let femaleTicket = null;
+            let attempts = 0;
+            const maxAttempts = availMale.length * availFemale.length;
+
+            // Shuffle available pools for randomness
+            const shuffledMale = [...availMale].sort(() => Math.random() - 0.5);
+            const shuffledFemale = [...availFemale].sort(() => Math.random() - 0.5);
+
+            let found = false;
+            for (const m of shuffledMale) {
+                for (const f of shuffledFemale) {
+                    const alreadyPaired = wyrPairHistory.some(p => p.m === m && p.f === f);
+                    if (!alreadyPaired) {
+                        maleTicket = m;
+                        femaleTicket = f;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+
+            // If all possible pairs exhausted, reset pair history
+            if (!found) {
+                wyrPairHistory = [];
+                maleTicket = shuffledMale[0];
+                femaleTicket = shuffledFemale[0];
+            }
+
+            wyrMaleTicket = maleTicket;
+            wyrFemaleTicket = femaleTicket;
+
+            wyrUsedMale.push(wyrMaleTicket);
+            wyrUsedFemale.push(wyrFemaleTicket);
+            wyrPairHistory.push({ m: wyrMaleTicket, f: wyrFemaleTicket });
+
+            document.getElementById('wyrMaleTicket').textContent = wyrMaleTicket;
+            document.getElementById('wyrFemaleTicket').textContent = wyrFemaleTicket;
+            document.getElementById('wyrPairResult').classList.remove('hidden');
+            wyrUpdateStats();
+        }
+
+        function wyrGoToSuit() {
+            document.getElementById('wyrStep1').classList.add('hidden');
+            document.getElementById('wyrStep2').classList.remove('hidden');
+            document.getElementById('wyrSuitMale').textContent = wyrMaleTicket;
+            document.getElementById('wyrSuitFemale').textContent = wyrFemaleTicket;
+        }
+
+        function wyrSuitWinner(winner) {
+            wyrChooser = winner;
+            wyrActor = winner === 'male' ? 'female' : 'male';
+
+            const chooserLabel = wyrChooser === 'male' ? `👦 Pria Tiket ${wyrMaleTicket}` : `👧 Wanita Tiket ${wyrFemaleTicket}`;
+            const actorLabel = wyrActor === 'male' ? `👦 Pria Tiket ${wyrMaleTicket}` : `👧 Wanita Tiket ${wyrFemaleTicket}`;
+
+            document.getElementById('wyrChooserLabel').textContent = chooserLabel;
+            document.getElementById('wyrActorLabel').textContent = actorLabel;
+
+            // Pick a random unused question
+            let availQ = wyrData.filter(q => !wyrUsedQuestions.includes(q.id));
+            if (availQ.length === 0) {
+                wyrUsedQuestions = []; // reset questions pool
+                availQ = [...wyrData];
+            }
+            const picked = availQ[Math.floor(Math.random() * availQ.length)];
+            wyrUsedQuestions.push(picked.id);
+
+            // Show question
+            document.getElementById('wyrStep2').classList.add('hidden');
+            document.getElementById('wyrStep3').classList.remove('hidden');
+            document.getElementById('wyrChoiceResult').classList.add('hidden');
+            document.getElementById('wyrOptA').textContent = picked.optA;
+            document.getElementById('wyrOptB').textContent = picked.optB;
+            document.getElementById('wyrCounter').textContent = `Soal ${wyrUsedQuestions.length} / ${wyrData.length}`;
+
+            // Store current question for wyrChoose
+            wyrCurrentQuestion = picked;
+            wyrRoundNum++;
+            wyrUpdateStats();
+        }
+
+        let wyrCurrentQuestion = null;
+
+        function wyrChoose(option) {
+            if (!wyrCurrentQuestion) return;
+            const chosenText = option === 'A' ? wyrCurrentQuestion.optA : wyrCurrentQuestion.optB;
+            const actorName = wyrActor === 'male' ? `👦 Pria Tiket ${wyrMaleTicket}` : `👧 Wanita Tiket ${wyrFemaleTicket}`;
+
+            document.getElementById('wyrActorName').textContent = actorName;
+            document.getElementById('wyrChosenOpt').textContent = chosenText;
+            document.getElementById('wyrChoiceResult').classList.remove('hidden');
+        }
+
+        function wyrNextQuestion() {
+            wyrReset(); // go back to step 1 for new pair
+        }
+
+        // ==========================================
+        // QR HUNT GENERATION (with range filter)
+        // ==========================================
+        function generateQRHunt() {
+            const from = parseInt(document.getElementById('qrHuntFrom').value) || 1;
+            const to = parseInt(document.getElementById('qrHuntTo').value) || 20;
+            const grid = document.getElementById('qrHuntGrid');
+            grid.innerHTML = '';
+
+            const allData = getAllHuntData();
+            const filtered = allData.filter(h => h.pairId >= from && h.pairId <= to);
+
+            filtered.forEach(h => {
+                h.stations.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'qr-hunt-card bg-white rounded-xl p-4 border-2 border-dashed border-gray-300 text-center';
+
+                    const qrDiv = document.createElement('div');
+                    qrDiv.className = 'inline-block mb-3';
+                    card.appendChild(qrDiv);
+
+                    const info = document.createElement('div');
+                    info.innerHTML = `
+                        <p class="text-xs font-bold text-gray-800 mb-1">Pos ${s.stage}</p>
+                        <p class="text-[9px] text-gray-400 mt-1">✂️ Gunting & tempel di lokasi</p>
+                    `;
+                    card.appendChild(info);
+                    grid.appendChild(card);
+
+                    new QRCode(qrDiv, {
+                        text: s.locationCode,
+                        width: 100,
+                        height: 100,
+                        colorDark: "#065f46",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                });
+            });
+        }
+
+        function printQRHunt() {
+            // Temporarily hide printArea (tickets) so only printAreaHunt prints
+            const ticketArea = document.getElementById('printArea');
+            if (ticketArea) ticketArea.style.display = 'none';
+            window.print();
+            if (ticketArea) ticketArea.style.display = '';
+        }
+
+        // ==========================================
+        // SEBAR QR - DISTRIBUTION GUIDE BY LOCATION
+        // ==========================================
+        function generateSebarQR() {
+            const from = parseInt(document.getElementById('sebarFrom').value) || 1;
+            const to = parseInt(document.getElementById('sebarTo').value) || 20;
+            const container = document.getElementById('sebarQRContent');
+            container.innerHTML = '';
+
+            // Build a map: locationIndex -> [{pairId, stage, code}]
+            const locationMap = {};
+
+            for (let p = from; p <= to; p++) {
+                const route = routeMap[p - 1];
+                const codes = huntCodes[p - 1];
+                if (!route || !codes) continue;
+
+                route.forEach((locIdx, stageIdx) => {
+                    if (!locationMap[locIdx]) {
+                        locationMap[locIdx] = {
+                            clue: locationPool[locIdx].clue,
+                            items: []
+                        };
+                    }
+                    locationMap[locIdx].items.push({
+                        pairId: p,
+                        stage: stageIdx + 1,
+                        code: codes[stageIdx]
+                    });
+                });
+            }
+
+            // Sort by location index
+            const sortedLocations = Object.keys(locationMap)
+                .map(Number)
+                .sort((a, b) => a - b);
+
+            if (sortedLocations.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-8">Tidak ada data untuk range ini.</p>';
+                return;
+            }
+
+            // Summary
+            const totalQR = sortedLocations.reduce((sum, idx) => sum + locationMap[idx].items.length, 0);
+            const summaryEl = document.createElement('div');
+            summaryEl.className = 'bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6';
+            summaryEl.innerHTML = `
+                <p class="text-sm text-emerald-800 font-medium">📊 Total: <strong>${totalQR} QR code</strong> tersebar di <strong>${sortedLocations.length} lokasi</strong> (Pair ${from}–${to})</p>
+                <p class="text-xs text-emerald-600 mt-1">💡 Setiap lokasi bisa punya beberapa QR dari pasangan berbeda. Tempel SEMUA QR di lokasi yang sama supaya peserta harus coba satu-satu!</p>
+            `;
+            container.appendChild(summaryEl);
+
+            // Render each location
+            sortedLocations.forEach((locIdx, i) => {
+                const loc = locationMap[locIdx];
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-4';
+
+                // Header with location number and clue
+                let headerHTML = `
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <span class="text-lg font-black text-emerald-700">${i + 1}</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 text-sm">Lokasi #${locIdx + 1}</h3>
+                            <p class="text-gray-600 text-sm mt-1">${loc.clue}</p>
+                        </div>
+                        <span class="flex-shrink-0 bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">${loc.items.length} QR</span>
+                    </div>
+                `;
+
+                // Table of codes
+                let tableHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
+                                    <th class="px-3 py-2 rounded-l-lg">Pair</th>
+                                    <th class="px-3 py-2">Pos Ke-</th>
+                                    <th class="px-3 py-2 rounded-r-lg">Kode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                loc.items.forEach(item => {
+                    tableHTML += `
+                        <tr class="border-b border-gray-50 hover:bg-emerald-50/50">
+                            <td class="px-3 py-2 font-medium text-gray-700">#${item.pairId}</td>
+                            <td class="px-3 py-2 text-gray-500">Pos ${item.stage}</td>
+                            <td class="px-3 py-2"><code class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-mono text-xs font-bold">${item.code}</code></td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                card.innerHTML = headerHTML + tableHTML;
+                container.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // AUTO-DETECT URL
+        // ==========================================
+        function autoDetectUrl() {
+            const base = window.location.href.replace('moderator.html', 'valentine_mission.html');
+            document.getElementById('gameUrl').value = base;
+            document.getElementById('guideUrlDisplay').textContent = base;
+        }
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            populateDB();
+            generateTickets();
+            autoDetectUrl();
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-gray-400 text-xs mt-8">
+        ©
+        <script>document.write(new Date().getFullYear())</script>. Crafted with ♥ by <a
+            href="https://wa.me/6281351880960" target="_blank"
+            class="text-gray-500 hover:text-gray-700 transition-colors underline">Timothee Creative</a>
+    </footer>
+
+</body>
+
+</html>

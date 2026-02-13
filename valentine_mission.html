@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Mission 💘</title>
+    <meta name="description"
+        content="Valentine Mission — Game interaktif untuk acara pemuda gereja. Temukan pasanganmu, selesaikan misi, dan menangkan bersama!">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { outfit: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        rose: {
+                            50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af',
+                            400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c',
+                            800: '#9f1239', 900: '#881337', 950: '#4c0519'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #4c0519 0%, #881337 25%, #9f1239 50%, #be123c 75%, #4c0519 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Floating hearts background */
+        .hearts-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart-float {
+            position: absolute;
+            font-size: 1.2rem;
+            opacity: 0.08;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.08;
+            }
+
+            90% {
+                opacity: 0.08;
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Phase transitions */
+        .phase {
+            display: none;
+        }
+
+        .phase.active {
+            display: flex;
+            animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Shake animation for errors */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translateX(-2px);
+            }
+
+            20%,
+            80% {
+                transform: translateX(4px);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            60% {
+                transform: translateX(6px);
+            }
+        }
+
+        /* Pulse glow */
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(251, 113, 133, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(251, 113, 133, 0.6), 0 0 60px rgba(244, 63, 94, 0.3);
+            }
+        }
+
+        /* Success pop */
+        .success-pop {
+            animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes successPop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Confetti */
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotateZ(0deg) rotateX(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotateZ(720deg) rotateX(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Card glass effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Button ripple */
+        .btn-valentine {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-valentine:active {
+            transform: scale(0.96);
+        }
+
+        .btn-valentine .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Progress bar animation */
+        .progress-fill {
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Typing cursor */
+        .blink-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Toast */
+        .toast {
+            animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .toast.hide {
+            animation: toastOut 0.3s ease forwards;
+        }
+
+        @keyframes toastIn {
+            from {
+                transform: translateY(20px) scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastOut {
+            to {
+                transform: translateY(-20px) scale(0.95);
+                opacity: 0;
+            }
+        }
+
+        /* Ticket number input styling */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        /* WYR card flip */
+        .wyr-option {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .wyr-option:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(244, 63, 94, 0.3);
+        }
+
+        /* Stamp animation */
+        .stamp-in {
+            animation: stampIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes stampIn {
+            0% {
+                transform: scale(3) rotate(-15deg);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(0.9) rotate(2deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(251, 113, 133, 0.3);
+            border-radius: 4px;
+        }
+
+        /* Admin panel slide */
+        .admin-panel {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    </style>
+</head>
+
+<body class="font-outfit text-white min-h-screen flex items-center justify-center p-4">
+
+    <!-- Floating Hearts Background -->
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2"></div>
+
+    <!-- ============================================ -->
+    <!-- PHASE 0: LOGIN -->
+    <!-- ============================================ -->
+    <section id="phase-login"
+        class="phase active flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-8">
+            <div class="text-6xl mb-4 success-pop">💘</div>
+            <h1
+                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-rose-200 via-pink-200 to-rose-300 bg-clip-text text-transparent">
+                Valentine Mission
+            </h1>
+            <p class="text-rose-300/70 text-sm font-light">Youth Church Event • 2026</p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 w-full">
+            <div class="text-center mb-6">
+                <div
+                    class="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-400/20 rounded-full px-4 py-1.5 text-xs text-rose-300">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    Event Aktif
+                </div>
+            </div>
+
+            <label class="block text-sm font-medium text-rose-200 mb-2">Nomor Tiket Kamu</label>
+            <div class="relative mb-6">
+                <input type="number" id="ticketInput" min="1" max="40" placeholder="Masukkan 1 - 40" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30
+                    focus:outline-none focus:ring-2 focus:ring-rose-400/50 focus:border-rose-400/50 transition-all">
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🎫</div>
+            </div>
+
+            <button onclick="handleLogin()" id="loginBtn" class="btn-valentine w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
+                text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-rose-500/30 pulse-glow">
+                Mulai Misi! 🚀
+            </button>
+
+            <p class="text-center text-rose-300/40 text-xs mt-4">Masukkan nomor sesuai tiket yang kamu dapat</p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHASE 1: FIND PARTNER -->
+    <!-- ============================================ -->
+    <section id="phase-partner"
+        class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-6">
+            <div class="text-5xl mb-3">🔍</div>
+            <h2 class="text-2xl font-bold text-rose-100">Misi 1: Temukan Pasanganmu</h2>
+            <p class="text-rose-300/60 text-sm mt-1">Cari Partner-mu di ruangan ini!</p>
+        </div>
+
+        <!-- Bible Verse Card -->
+        <div id="verseCard" class="glass-card rounded-2xl p-6 w-full mb-4">
+            <div class="text-center">
+                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-2">📖 Ayat untuk Pasanganmu</p>
+                <p id="verseRef" class="text-amber-300 font-bold text-sm mb-3"></p>
+                <p id="verseText" class="text-rose-100/90 text-sm leading-relaxed italic mb-4 px-2"></p>
+                <div class="bg-rose-500/20 border border-rose-400/20 rounded-xl p-3">
+                    <p class="text-rose-200 text-xs">💡 Baca dan hapalkan <strong class="text-amber-300">1 kata</strong>
+                        dari ayat ini.<br>Ucapkan kata itu berulang kali sambil mencari pasanganmu!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 w-full mb-4">
+            <!-- Role display -->
+            <div class="text-center mb-6">
+                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Kamu adalah</p>
+                <div id="myRoleName"
+                    class="text-4xl font-black bg-gradient-to-r from-amber-200 to-yellow-300 bg-clip-text text-transparent">
+                </div>
+                <div id="myRoleBadge" class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium"></div>
+            </div>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-rose-400/30 to-transparent my-4"></div>
+
+            <!-- Target display -->
+            <div class="text-center mb-6">
+                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Temukan</p>
+                <div id="targetName" class="text-3xl font-bold text-rose-200"></div>
+            </div>
+
+            <!-- Role B: Show code -->
+            <div id="holderSection" class="hidden">
+                <div
+                    class="bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-400/20 rounded-2xl p-5 text-center">
+                    <p class="text-amber-200/80 text-xs uppercase tracking-widest mb-2">Kode Rahasiamu</p>
+                    <div id="secretCodeDisplay" class="text-4xl font-black tracking-[0.3em] text-amber-300"></div>
+                    <p class="text-amber-200/50 text-xs mt-3">Tunjukkan kode ini saat partnermu menemukanmu</p>
+                </div>
+                <button onclick="handleHolderConfirm()" class="btn-valentine w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600
+                    text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/20">
+                    Partner Sudah Menemukan Saya! ✅
+                </button>
+            </div>
+
+            <!-- Role A: Input code -->
+            <div id="seekerSection" class="hidden">
+                <div
+                    class="bg-gradient-to-br from-rose-500/20 to-pink-500/10 border border-rose-400/20 rounded-2xl p-5">
+                    <p class="text-rose-200/80 text-xs uppercase tracking-widest mb-3 text-center">Masukkan Kode Partner
+                    </p>
+                    <input type="text" id="codeInput" placeholder="KODE RAHASIA" class="w-full bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center text-2xl font-bold tracking-[0.2em] text-white placeholder-white/20 uppercase
+                        focus:outline-none focus:ring-2 focus:ring-rose-400/50 transition-all mb-3">
+                    <button onclick="handleCodeSubmit()" id="codeSubmitBtn" class="btn-valentine w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
+                        text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-500/20">
+                        Verifikasi Kode ✓
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Waiting hint for holder -->
+        <div id="holderWaiting" class="hidden text-center">
+            <div class="glass-card rounded-2xl px-6 py-4 inline-flex items-center gap-3">
+                <div class="flex gap-1">
+                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0s"></span>
+                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0.1s"></span>
+                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0.2s"></span>
+                </div>
+                <span class="text-rose-300/70 text-sm">Menunggu partnermu menemukanmu...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHASE 2: SCAVENGER HUNT -->
+    <!-- ============================================ -->
+    <section id="phase-hunt" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-4">
+            <div class="text-5xl mb-3">🗺️</div>
+            <h2 class="text-2xl font-bold text-rose-100">Misi 2: Scavenger Hunt</h2>
+            <p class="text-rose-300/60 text-sm mt-1">Pecahkan petunjuk bersama pasanganmu!</p>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="w-full glass-card rounded-2xl p-4 mb-4">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-rose-300/60">Progress</span>
+                <span id="huntProgressText" class="text-xs font-bold text-rose-300">0 / 5</span>
+            </div>
+            <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                <div id="huntProgressBar"
+                    class="progress-fill h-full bg-gradient-to-r from-rose-500 to-pink-400 rounded-full"
+                    style="width: 0%"></div>
+            </div>
+            <!-- Station dots -->
+            <div class="flex justify-between mt-3 px-1">
+                <div id="dot-0"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    1</div>
+                <div id="dot-1"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    2</div>
+                <div id="dot-2"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    3</div>
+                <div id="dot-3"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    4</div>
+                <div id="dot-4"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    5</div>
+            </div>
+        </div>
+
+        <!-- Current Clue Card -->
+        <div class="glass-card rounded-3xl p-8 w-full mb-4" id="clueCard">
+            <div class="flex items-center gap-2 mb-4">
+                <span id="stageIcon" class="text-2xl">📍</span>
+                <div>
+                    <p class="text-xs text-rose-300/60 uppercase tracking-widest">Pos</p>
+                    <p id="stageNumber" class="text-lg font-bold text-rose-200">1</p>
+                </div>
+            </div>
+
+            <div id="clueText"
+                class="text-base text-rose-100/90 leading-relaxed mb-6 p-4 bg-white/5 rounded-2xl border border-white/10">
+                <!-- Clue text here -->
+            </div>
+
+            <div class="relative">
+                <input type="text" id="locationInput" placeholder="JAWABAN KODE LOKASI" class="w-full bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center text-xl font-bold tracking-[0.15em] text-white placeholder-white/20 uppercase
+                    focus:outline-none focus:ring-2 focus:ring-rose-400/50 transition-all mb-3">
+                <button onclick="handleHuntSubmit()" id="huntSubmitBtn" class="btn-valentine w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600
+                    text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/20">
+                    Cek Jawaban 🔓
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHASE 3: VICTORY -->
+    <!-- ============================================ -->
+    <section id="phase-done" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-6">
+            <div class="text-7xl mb-4 stamp-in">🏆</div>
+            <h2
+                class="text-3xl font-black bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-2">
+                Mission Complete!
+            </h2>
+            <p class="text-rose-300/70 text-sm">Kalian berhasil menyelesaikan semua misi!</p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 w-full mb-4">
+            <div class="text-center">
+                <div
+                    class="bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-400/20 rounded-2xl p-6 mb-4">
+                    <p class="text-amber-200/60 text-xs uppercase tracking-widest mb-2">Pasangan</p>
+                    <div id="victoryPairName" class="text-2xl font-bold text-amber-200 mb-1"></div>
+                    <div class="w-12 h-px bg-amber-400/30 mx-auto my-3"></div>
+                    <p class="text-amber-200/60 text-xs uppercase tracking-widest mb-1">Selesai pada</p>
+                    <div id="victoryTimestamp" class="text-lg font-medium text-amber-300"></div>
+                </div>
+
+                <div class="flex items-center justify-center gap-2 text-rose-300/50 text-sm">
+                    <span>✅</span>
+                    <span>Semua misi telah diselesaikan</span>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ============================================ -->
+    <!-- RESET BUTTON (always visible for testing) -->
+    <!-- ============================================ -->
+    <button onclick="resetGame()" title="Reset Game" class="fixed bottom-4 right-4 z-30 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10
+        flex items-center justify-center text-white/30 hover:text-white/60 transition-all text-sm">
+        🔄
+    </button>
+
+    <script src="valentine_data.js"></script>
+    <script>
+
+        // ==========================================
+        // STATE
+        // ==========================================
+        let state = {
+            ticketId: null,
+            role: null,      // 'A' (Seeker) or 'B' (Holder)
+            pairId: null,
+            currentPhase: 'Login',  // Login, Partner, Hunt, Done
+            huntProgress: 0,
+            completedAt: null
+        };
+
+        let adminTapCount = 0;
+        let adminTapTimer = null;
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        function init() {
+            createFloatingHearts();
+            loadState();
+            showPhase(state.currentPhase);
+            setupEnterKeys();
+        }
+
+        function setupEnterKeys() {
+            document.getElementById('ticketInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            document.getElementById('codeInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleCodeSubmit();
+            });
+            document.getElementById('locationInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleHuntSubmit();
+            });
+        }
+
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        function saveState() {
+            localStorage.setItem('vm_state', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('vm_state');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                } catch (e) {
+                    localStorage.removeItem('vm_state');
+                }
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Reset game? Semua progress akan hilang.')) {
+                localStorage.removeItem('vm_state');
+                state = { ticketId: null, role: null, pairId: null, currentPhase: 'Login', huntProgress: 0, completedAt: null };
+                showPhase('Login');
+                showToast('Game direset! 🔄', 'info');
+            }
+        }
+
+        // ==========================================
+        // PHASE MANAGEMENT
+        // ==========================================
+        function showPhase(phaseName) {
+            const phases = document.querySelectorAll('.phase');
+            phases.forEach(p => p.classList.remove('active'));
+
+            const phaseMap = {
+                'Login': 'phase-login',
+                'Partner': 'phase-partner',
+                'Hunt': 'phase-hunt',
+                'Done': 'phase-done'
+            };
+
+            const targetId = phaseMap[phaseName];
+            if (targetId) {
+                setTimeout(() => {
+                    const el = document.getElementById(targetId);
+                    el.classList.add('active');
+
+                    // Setup phase-specific UI
+                    if (phaseName === 'Partner') setupPartnerPhase();
+                    if (phaseName === 'Hunt') setupHuntPhase();
+                    if (phaseName === 'Done') setupDonePhase();
+                }, 100);
+            }
+        }
+
+        // ==========================================
+        // PHASE 0: LOGIN
+        // ==========================================
+        function handleLogin() {
+            const input = document.getElementById('ticketInput');
+            const ticketNum = parseInt(input.value);
+
+            if (!ticketNum || ticketNum < 1 || ticketNum > 40) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Masukkan nomor tiket antara 1-40! 🎫', 'error');
+                return;
+            }
+
+            state.ticketId = ticketNum;
+            state.pairId = Math.ceil(ticketNum / 2);
+            state.role = (ticketNum % 2 !== 0) ? 'A' : 'B';
+            state.currentPhase = 'Partner';
+            saveState();
+
+            showToast(`Tiket #${ticketNum} — Kamu adalah ${state.role === 'A' ? 'Pencari (Seeker)' : 'Pemegang (Holder)'}`, 'success');
+            showPhase('Partner');
+        }
+
+        // ==========================================
+        // PHASE 1: FIND PARTNER
+        // ==========================================
+        function setupPartnerPhase() {
+            const couple = couplesData[state.pairId - 1];
+            if (!couple) return;
+
+            const myName = state.role === 'A' ? couple.roleA : couple.roleB;
+            const targetName = state.role === 'A' ? couple.roleB : couple.roleA;
+
+            document.getElementById('myRoleName').textContent = myName;
+            document.getElementById('targetName').textContent = targetName;
+
+            // Show Bible verse
+            if (couple.verse) {
+                document.getElementById('verseRef').textContent = couple.verseRef;
+                document.getElementById('verseText').textContent = '"' + couple.verse + '"';
+                document.getElementById('verseCard').style.display = 'block';
+            }
+
+            const badge = document.getElementById('myRoleBadge');
+
+            if (state.role === 'A') {
+                badge.textContent = '🔍 Pencari (Seeker)';
+                badge.className = 'inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-400/20';
+                document.getElementById('seekerSection').classList.remove('hidden');
+                document.getElementById('holderSection').classList.add('hidden');
+                document.getElementById('holderWaiting').classList.add('hidden');
+            } else {
+                badge.textContent = '📦 Pemegang (Holder)';
+                badge.className = 'inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-400/20';
+                document.getElementById('holderSection').classList.remove('hidden');
+                document.getElementById('seekerSection').classList.add('hidden');
+                document.getElementById('holderWaiting').classList.remove('hidden');
+                document.getElementById('secretCodeDisplay').textContent = couple.code;
+            }
+        }
+
+        function handleCodeSubmit() {
+            const input = document.getElementById('codeInput');
+            const userCode = input.value.trim().toUpperCase();
+            const couple = couplesData[state.pairId - 1];
+
+            if (!userCode) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Masukkan kode dari pasanganmu! 🔑', 'error');
+                return;
+            }
+
+            if (userCode !== couple.code) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Kode salah! Coba lagi 😅', 'error');
+                input.value = '';
+                return;
+            }
+
+            // Success!
+            state.currentPhase = 'Hunt';
+            state.huntProgress = 0;
+            saveState();
+
+            launchConfetti();
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
+
+            setTimeout(() => showPhase('Hunt'), 800);
+        }
+
+        function handleHolderConfirm() {
+            const couple = couplesData[state.pairId - 1];
+            state.currentPhase = 'Hunt';
+            state.huntProgress = 0;
+            saveState();
+
+            launchConfetti();
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
+            setTimeout(() => showPhase('Hunt'), 800);
+        }
+
+        // ==========================================
+        // PHASE 2: SCAVENGER HUNT
+        // ==========================================
+        function setupHuntPhase() {
+            updateHuntUI();
+        }
+
+        function updateHuntUI() {
+            const route = getHuntRoute(state.pairId);
+            const progress = state.huntProgress;
+            const total = route.length;
+
+            // Update progress
+            document.getElementById('huntProgressText').textContent = `${progress} / ${total}`;
+            document.getElementById('huntProgressBar').style.width = `${(progress / total) * 100}%`;
+
+            // Update dots
+            for (let i = 0; i < total; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < progress) {
+                    dot.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center text-xs font-bold text-white transition-all shadow-lg shadow-emerald-500/30';
+                    dot.textContent = '✓';
+                } else if (i === progress) {
+                    dot.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-400 flex items-center justify-center text-xs font-bold text-white transition-all shadow-lg shadow-rose-500/30 animate-pulse';
+                    dot.textContent = i + 1;
+                } else {
+                    dot.className = 'w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white/40 transition-all';
+                    dot.textContent = i + 1;
+                }
+            }
+
+            // Show current clue
+            if (progress < total) {
+                const station = route[progress];
+                document.getElementById('stageNumber').textContent = station.stage;
+                document.getElementById('clueText').innerHTML = station.clue;
+                document.getElementById('locationInput').value = '';
+                document.getElementById('clueCard').style.display = 'block';
+
+                const icons = ['📍', '🎯', '🧩', '🔎', '🏁'];
+                document.getElementById('stageIcon').textContent = icons[progress] || '📍';
+            }
+        }
+
+        function handleHuntSubmit() {
+            const input = document.getElementById('locationInput');
+            const answer = input.value.trim().toUpperCase();
+            const route = getHuntRoute(state.pairId);
+            const station = route[state.huntProgress];
+
+            if (!answer) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Masukkan kode lokasi! 📍', 'error');
+                return;
+            }
+
+            if (answer !== station.locationCode) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Kode salah! Mungkin bukan QR milikmu. Cari lagi 🔍', 'error');
+                input.value = '';
+                return;
+            }
+
+            // Correct!
+            state.huntProgress++;
+            saveState();
+
+            if (state.huntProgress >= route.length) {
+                state.currentPhase = 'Done';
+                state.completedAt = new Date().toISOString();
+                saveState();
+
+                launchConfetti();
+                launchConfetti();
+                showToast('🎉 Semua pos selesai! Mission Complete!', 'success');
+
+                setTimeout(() => showPhase('Done'), 1000);
+            } else {
+                showToast(`✅ Pos ${state.huntProgress} selesai! Lanjut ke pos berikutnya.`, 'success');
+                updateHuntUI();
+            }
+        }
+
+        // ==========================================
+        // PHASE 3: VICTORY & ADMIN
+        // ==========================================
+        function setupDonePhase() {
+            const couple = couplesData[state.pairId - 1];
+            if (couple) {
+                document.getElementById('victoryPairName').textContent = `${couple.roleA} & ${couple.roleB}`;
+            }
+
+            if (state.completedAt) {
+                const d = new Date(state.completedAt);
+                const timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('victoryTimestamp').textContent = `${timeStr} — ${dateStr}`;
+            } else {
+                document.getElementById('victoryTimestamp').textContent = '-';
+            }
+
+            // Launch confetti on first view
+            setTimeout(() => launchConfetti(), 500);
+        }
+
+
+        // ==========================================
+        // EFFECTS
+        // ==========================================
+        function createFloatingHearts() {
+            const container = document.getElementById('heartsBg');
+            const hearts = ['💕', '💗', '💖', '💘', '❤️', '💝', '🤍', '🩷'];
+
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('span');
+                heart.className = 'heart-float';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (8 + Math.random() * 12) + 's';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+                container.appendChild(heart);
+            }
+        }
+
+        function launchConfetti() {
+            const colors = ['#f43f5e', '#fb7185', '#fda4af', '#fecdd3', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#f472b6'];
+            const shapes = ['circle', 'square'];
+
+            for (let i = 0; i < 60; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+
+                if (shapes[Math.floor(Math.random() * shapes.length)] === 'circle') {
+                    piece.style.borderRadius = '50%';
+                } else {
+                    piece.style.borderRadius = '2px';
+                    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }
+
+                document.body.appendChild(piece);
+
+                setTimeout(() => piece.remove(), 4000);
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+
+            const bgColors = {
+                'success': 'bg-emerald-500/90 border-emerald-400/30',
+                'error': 'bg-rose-500/90 border-rose-400/30',
+                'info': 'bg-blue-500/90 border-blue-400/30'
+            };
+
+            const icons = { 'success': '✅', 'error': '❌', 'info': 'ℹ️' };
+
+            toast.className = `toast ${bgColors[type]} border backdrop-blur-lg rounded-2xl px-5 py-3 text-white text-sm font-medium shadow-2xl flex items-center gap-2 min-w-[280px] max-w-[90vw]`;
+            toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Button ripple effect
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.btn-valentine');
+            if (!btn) return;
+
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        // ==========================================
+        // BOOT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-0 left-0 right-0 z-20 text-center py-2 text-rose-300/30 text-[10px] tracking-wide">
+        ©
+        <script>document.write(new Date().getFullYear())</script>. Crafted with ♥ by <a
+            href="https://wa.me/6281351880960" target="_blank"
+            class="text-rose-300/50 hover:text-rose-300/80 transition-colors underline">Timothee Creative</a>
+    </footer>
+
+</body>
+
+</html>

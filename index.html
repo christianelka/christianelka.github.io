@@ -4,1387 +4,1213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agen Terang vs Agen Gelap</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    <title>🧪 Valentine Mission — TEST MODE</title>
+    <meta name="description" content="Test mode for Valentine Mission game. Uses dummy data for testing purposes.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        :root {
-            --primary: #8b5cf6;
-            --secondary: #06b6d4;
-            --accent: #f472b6;
-            --dark: #0f172a;
-            --darker: #020617;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --glass: rgba(255, 255, 255, 0.05);
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { outfit: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        rose: {
+                            50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af',
+                            400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c',
+                            800: '#9f1239', 900: '#881337', 950: '#4c0519'
+                        }
+                    }
+                }
+            }
         }
-
+    </script>
+    <style>
         * {
-            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
         }
 
         body {
-            background: linear-gradient(-45deg, var(--darker), #1e1b4b, #1e293b, var(--dark));
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #4c0519 0%, #881337 25%, #9f1239 50%, #be123c 75%, #4c0519 100%);
             min-height: 100vh;
-            color: #e2e8f0;
             overflow-x: hidden;
         }
 
-        @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        /* ========== LOADING SCREEN ========== */
-        .loading-screen {
+        .hearts-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--darker), #1e1b4b);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .loading-logo {
-            font-size: 5rem;
-            animation: loadingPulse 1.5s ease-in-out infinite, loadingFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes loadingPulse {
-
-            0%,
-            100% {
-                filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.6));
-            }
-
-            50% {
-                filter: drop-shadow(0 0 40px rgba(139, 92, 246, 1));
-            }
-        }
-
-        @keyframes loadingFloat {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .loading-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 1.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientShift 3s ease infinite;
-        }
-
-        @keyframes gradientShift {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        .loading-bar-container {
-            width: 200px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin-top: 2rem;
-            overflow: hidden;
-        }
-
-        .loading-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-            background-size: 200% 100%;
-            border-radius: 2px;
-            width: 0%;
-            animation: loadingProgress 2s ease-out forwards, shimmerBar 1s ease infinite;
-        }
-
-        @keyframes loadingProgress {
-            0% {
-                width: 0%;
-            }
-
-            50% {
-                width: 70%;
-            }
-
-            100% {
-                width: 100%;
-            }
-        }
-
-        @keyframes shimmerBar {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        .loading-tip {
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.5);
-            animation: fadeInOut 4s ease infinite;
-        }
-
-        @keyframes fadeInOut {
-
-            0%,
-            100% {
-                opacity: 0.3;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
-        }
-
-        /* ========== PARTICLE BACKGROUND ========== */
-        .particles-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             pointer-events: none;
             z-index: 0;
             overflow: hidden;
         }
 
-        .particle {
+        .heart-float {
             position: absolute;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.8) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: particleFloat linear infinite;
+            font-size: 1.2rem;
+            opacity: 0.08;
+            animation: floatUp linear infinite;
         }
 
-        @keyframes particleFloat {
+        @keyframes floatUp {
             0% {
-                transform: translateY(100vh) rotate(0deg);
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
                 opacity: 0;
             }
 
             10% {
-                opacity: 1;
+                opacity: 0.08;
             }
 
             90% {
-                opacity: 1;
+                opacity: 0.08;
             }
 
             100% {
-                transform: translateY(-100px) rotate(360deg);
+                transform: translateY(-10vh) rotate(360deg) scale(1.2);
                 opacity: 0;
             }
         }
 
-        /* ========== ENHANCED SCREEN TRANSITIONS ========== */
-        .screen {
-            position: relative;
-            z-index: 1;
+        .phase {
+            display: none;
         }
 
-        .screen-enter {
-            animation: screenEnter 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        .phase.active {
+            display: flex;
+            animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .screen-exit {
-            animation: screenExit 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-        }
-
-        @keyframes screenEnter {
-            0% {
+        @keyframes fadeSlideIn {
+            from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(30px) scale(0.96);
             }
 
-            100% {
+            to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
 
-        @keyframes screenExit {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translateX(-2px);
             }
 
-            100% {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.98);
+            20%,
+            80% {
+                transform: translateX(4px);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            60% {
+                transform: translateX(6px);
             }
         }
 
-        /* ========== 3D CARD FLIP ========== */
-        .role-card {
-            perspective: 1000px;
-            transform-style: preserve-3d;
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
         }
 
-        .role-card-inner {
-            position: relative;
-            width: 100%;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-        }
-
-        .role-card.flipped .role-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .role-card-front,
-        .role-card-back {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-
-        .role-card-back {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            transform: rotateY(180deg);
-        }
-
-        .role-card.revealed {
-            animation: cardGlow 2s ease-in-out infinite;
-        }
-
-        @keyframes cardGlow {
+        @keyframes pulseGlow {
 
             0%,
             100% {
-                box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+                box-shadow: 0 0 20px rgba(251, 113, 133, 0.3);
             }
 
             50% {
-                box-shadow: 0 0 40px rgba(6, 182, 212, 0.6);
+                box-shadow: 0 0 40px rgba(251, 113, 133, 0.6), 0 0 60px rgba(244, 63, 94, 0.3);
             }
         }
 
-        /* ========== CONFETTI ========== */
-        .confetti-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9998;
-            overflow: hidden;
+        .success-pop {
+            animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        .confetti {
-            position: absolute;
+        @keyframes successPop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .confetti-piece {
+            position: fixed;
             width: 10px;
             height: 10px;
+            top: -10px;
+            z-index: 9999;
+            pointer-events: none;
             animation: confettiFall linear forwards;
         }
 
         @keyframes confettiFall {
             0% {
-                transform: translateY(-100px) rotate(0deg);
+                transform: translateY(0) rotateZ(0deg) rotateX(0deg);
                 opacity: 1;
             }
 
             100% {
-                transform: translateY(100vh) rotate(720deg);
+                transform: translateY(100vh) rotateZ(720deg) rotateX(360deg);
                 opacity: 0;
             }
         }
 
-        /* ========== RIPPLE EFFECT ========== */
-        .btn-glow,
-        .btn-outline-glow {
-            position: relative;
-            overflow: hidden;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .ripple {
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-valentine {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-valentine:active {
+            transform: scale(0.96);
+        }
+
+        .btn-valentine .ripple {
             position: absolute;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.4);
             transform: scale(0);
-            animation: rippleEffect 0.6s linear;
+            animation: ripple 0.6s linear;
             pointer-events: none;
         }
 
-        @keyframes rippleEffect {
+        @keyframes ripple {
             to {
                 transform: scale(4);
                 opacity: 0;
             }
         }
 
-        /* ========== ANIMATED GRADIENT TEXT ========== */
-        .gradient-text-animated {
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--primary));
-            background-size: 300% 100%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientMove 4s ease infinite;
+        .progress-fill {
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes gradientMove {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+        .toast {
+            animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* ========== TIMER PULSE ========== */
-        .timer-ring.warning {
-            animation: timerPulse 0.5s ease infinite;
+        .toast.hide {
+            animation: toastOut 0.3s ease forwards;
         }
 
-        @keyframes timerPulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .timer-ring.danger .timer-inner {
-            color: #ef4444;
-            animation: timerShake 0.3s ease infinite;
-        }
-
-        @keyframes timerShake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-2px);
-            }
-
-            75% {
-                transform: translateX(2px);
-            }
-        }
-
-        /* ========== PLAYER BADGE ENTRANCE ========== */
-        .player-badge {
-            animation: badgeSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes badgeSlideIn {
-            0% {
-                opacity: 0;
-                transform: translateX(-30px) scale(0.8);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-        }
-
-        .player-badge.removing {
-            animation: badgeSlideOut 0.3s ease forwards;
-        }
-
-        @keyframes badgeSlideOut {
-            0% {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: translateX(30px) scale(0.8);
-            }
-        }
-
-        /* ========== VOTE BUTTON ANIMATION ========== */
-        .vote-btn {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .vote-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .vote-btn.selected {
-            animation: voteSelected 0.4s ease;
-        }
-
-        @keyframes voteSelected {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1.05);
-            }
-        }
-
-        /* ========== SCORE COUNTER ANIMATION ========== */
-        .score-row {
-            animation: scoreSlideIn 0.5s ease;
-        }
-
-        .score-row:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .score-row:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .score-row:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .score-row:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .score-row:nth-child(5) {
-            animation-delay: 0.5s;
-        }
-
-        @keyframes scoreSlideIn {
-            0% {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* ========== MODAL ANIMATION ========== */
-        .modal.show .modal-content {
-            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes modalPop {
-            0% {
-                opacity: 0;
-                transform: scale(0.8) translateY(20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* ========== GLASS CARD HOVER ENHANCED ========== */
-        .glass-card {
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-        }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            transition: left 0.5s ease;
-            pointer-events: none;
-        }
-
-        .glass-card:hover::before {
-            left: 100%;
-        }
-
-        .screen {
-            animation: fadeInScale 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        @keyframes fadeInScale {
-            0% {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px -12px rgba(139, 92, 246, 0.2);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .btn-glow {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: none;
-            border-radius: 1rem;
-            padding: 0.875rem 2rem;
-            font-weight: 600;
-            color: white;
-            transition: all 0.3s;
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-glow:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 50px rgba(139, 92, 246, 0.6);
-            color: white;
-        }
-
-        .btn-outline-glow {
-            background: transparent;
-            border: 2px solid var(--primary);
-            border-radius: 1rem;
-            padding: 0.875rem 2rem;
-            font-weight: 600;
-            color: var(--primary);
-            transition: all 0.3s;
-        }
-
-        .btn-outline-glow:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .player-badge {
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
+        @keyframes toastIn {
             from {
+                transform: translateY(20px) scale(0.95);
                 opacity: 0;
-                transform: translateX(-20px);
             }
 
             to {
+                transform: translateY(0) scale(1);
                 opacity: 1;
-                transform: translateX(0);
             }
         }
 
-        .role-card {
-            background: linear-gradient(135deg, var(--dark), #1e293b);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            text-align: center;
-            border: 2px solid var(--primary);
-            cursor: pointer;
-            transition: all 0.5s;
-        }
-
-        .role-card.revealed {
-            border-color: var(--secondary);
-        }
-
-        .role-card:hover {
-            transform: scale(1.02);
-        }
-
-        .timer-ring {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: conic-gradient(var(--primary) var(--progress, 100%), rgba(255, 255, 255, 0.1) 0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .timer-inner {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
-        .vote-btn {
-            background: var(--glass);
-            border: 2px solid transparent;
-            border-radius: 1rem;
-            padding: 1rem;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .vote-btn:hover,
-        .vote-btn.selected {
-            border-color: var(--accent);
-            background: rgba(244, 114, 182, 0.2);
-        }
-
-        .score-row {
-            background: var(--glass);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .form-control {
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1rem;
-            color: white;
-            padding: 0.875rem 1.25rem;
-        }
-
-        .form-control:focus {
-            background: var(--glass);
-            border-color: var(--primary);
-            color: white;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
-        }
-
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .screen {
-            min-height: 100vh;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .screen {
-                padding: 2rem;
+        @keyframes toastOut {
+            to {
+                transform: translateY(-20px) scale(0.95);
+                opacity: 0;
             }
         }
 
-        .role-box {
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1rem;
-            text-align: center;
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
-        .ayat-badge {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            border-radius: 0.75rem;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            display: inline-block;
-            margin-top: 0.5rem;
-            position: relative;
-            overflow: hidden;
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
         }
 
-        .ayat-badge::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            animation: shimmer 3s infinite;
+        .stamp-in {
+            animation: stampIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        @keyframes shimmer {
+        @keyframes stampIn {
             0% {
-                transform: translateX(-100%) rotate(45deg);
+                transform: scale(3) rotate(-15deg);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(0.9) rotate(2deg);
+                opacity: 1;
             }
 
             100% {
-                transform: translateX(100%) rotate(45deg);
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
             }
         }
 
-        .role-box {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        ::-webkit-scrollbar {
+            width: 4px;
         }
 
-        .role-box:hover {
-            transform: scale(1.03);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
 
-        .floating-guide-btn {
+        ::-webkit-scrollbar-thumb {
+            background: rgba(251, 113, 133, 0.3);
+            border-radius: 4px;
+        }
+
+        /* Guide Modal */
+        .guide-overlay {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 1000;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            display: flex;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
             align-items: center;
             justify-content: center;
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+        }
+
+        .guide-overlay.active {
+            display: flex;
+        }
+
+        .guide-modal {
+            background: white;
+            border-radius: 1.5rem;
+            max-width: 440px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: fadeSlideIn 0.4s ease forwards;
+        }
+
+        .guide-modal h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .guide-modal h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #be123c;
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .guide-modal p,
+        .guide-modal li {
+            font-size: 0.85rem;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .guide-modal ul {
+            padding-left: 1.25rem;
+            list-style: disc;
+        }
+
+        .guide-modal .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 1rem 0;
+        }
+
+        /* Test mode banner */
+        .test-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 90;
+            background: linear-gradient(90deg, #f59e0b, #f97316);
             color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 4px 8px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Debug panel */
+        .debug-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 80;
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        .floating-guide-btn:hover {
-            background: var(--primary);
             color: white;
-            transform: rotate(15deg) scale(1.1);
-        }
-
-        @media (max-width: 576px) {
-            .floating-guide-btn {
-                top: 0.5rem;
-                right: 0.5rem;
-                width: 2.5rem;
-                height: 2.5rem;
-            }
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .form-check-input:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .form-check-switch-custom {
+            padding: 8px 12px;
+            font-size: 0.7rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-top: 2px solid #f59e0b;
         }
 
-        .role-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.5rem;
+        .debug-panel code {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.7rem;
         }
 
-        @media (max-width: 400px) {
-            .role-preview-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .debug-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 600;
         }
 
-        /* Responsive Fixes */
-        @media (max-width: 576px) {
-            .glass-card {
-                padding: 1rem !important;
-            }
-
-            h2,
-            .h2 {
-                font-size: 1.25rem !important;
-            }
-
-            h3,
-            .h3 {
-                font-size: 1.15rem !important;
-            }
-
-            .btn-glow,
-            .btn-outline-glow {
-                padding: 0.75rem 1rem;
-                font-size: 0.875rem;
-            }
-
-            .form-check-switch-custom {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .form-check-switch-custom .form-check-input {
-                margin-left: 0;
-                align-self: flex-start;
-            }
-
-            .role-preview-grid {
-                gap: 0.25rem;
-            }
-
-            .role-box {
-                padding: 0.5rem;
-            }
-
-            .role-box i {
-                font-size: 1rem !important;
-            }
-
-            .role-box small {
-                font-size: 0.6rem !important;
-            }
-
-            .role-box .h5 {
-                font-size: 1rem !important;
-            }
-
-            .timer-ring {
-                width: 80px;
-                height: 80px;
-            }
-
-            .timer-inner {
-                width: 64px;
-                height: 64px;
-                font-size: 1.25rem;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .role-preview-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Very small screens */
-        @media (max-width: 360px) {
-            .container {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            .glass-card {
-                padding: 0.75rem !important;
-            }
+        .debug-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
         }
     </style>
 </head>
 
-<body>
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-logo">
-            <i class="bi bi-lightbulb-fill" style="color: #8b5cf6;"></i>
+<body class="font-outfit text-white min-h-screen flex items-center justify-center p-4 pt-8 pb-14">
+
+    <!-- Test Mode Banner -->
+    <div class="test-banner">⚠️ TEST MODE — Data Dummy • Tidak Memengaruhi Game Asli</div>
+
+    <!-- Floating Hearts Background -->
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-8 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2"></div>
+
+    <!-- ============================================ -->
+    <!-- GUIDE POPUP MODAL -->
+    <!-- ============================================ -->
+    <div id="guideOverlay" class="guide-overlay" onclick="if(event.target===this)closeGuide()">
+        <div class="guide-modal">
+            <div class="flex items-center justify-between mb-2">
+                <h2>📋 Panduan Permainan</h2>
+                <button onclick="closeGuide()"
+                    class="text-gray-400 hover:text-gray-600 text-xl font-bold leading-none">&times;</button>
+            </div>
+            <p class="text-gray-500 text-xs mb-3">Valentine Mission — Petunjuk untuk Peserta</p>
+            <div class="divider"></div>
+
+            <h3>🎫 Langkah 1: Ambil Tiket</h3>
+            <p>Kamu akan mendapat tiket bernomor. Masukkan nomor tiket di halaman game untuk memulai.</p>
+            <ul>
+                <li>Tiket ganjil (1, 3, 5...) = <strong>Pencari (Seeker)</strong></li>
+                <li>Tiket genap (2, 4, 6...) = <strong>Pemegang (Holder)</strong></li>
+            </ul>
+
+            <h3>🔍 Langkah 2: Temukan Pasanganmu</h3>
+            <p>Setelah login, kamu akan melihat karakter yang kamu mainkan dan siapa yang harus kamu cari.</p>
+            <ul>
+                <li>📖 <strong>Baca ayat</strong> yang muncul di layar dan hapalkan <strong>1 kata</strong> darinya.
+                </li>
+                <li>Sambil mencari, ucapkan kata itu berulang — pasanganmu akan mengenalimu!</li>
+                <li><strong>Pencari:</strong> Cari pasanganmu dan minta kode rahasianya, lalu masukkan di HP.</li>
+                <li><strong>Pemegang:</strong> Tunggu dengan menunjukkan kode rahasiamu. Setelah ditemukan, klik tombol
+                    konfirmasi.</li>
+            </ul>
+
+            <h3>🗺️ Langkah 3: Scavenger Hunt</h3>
+            <p>Setelah menemukan pasangan, kalian akan menyelesaikan <strong>5 pos</strong> bersama.</p>
+            <ul>
+                <li>Setiap pos memberi <strong>clue lokasi</strong>. Pergi ke lokasi itu!</li>
+                <li>Di lokasi, <strong>scan QR code</strong> yang tertempel.</li>
+                <li>Masukkan <strong>kode</strong> yang muncul setelah scan ke HP.</li>
+                <li>⚠️ Hati-hati! Ada banyak QR di satu lokasi — tidak semuanya punyamu!</li>
+            </ul>
+
+
+
+            <div class="divider"></div>
+            <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 mt-2">
+                <p class="text-rose-700 text-xs font-medium">💡 Tips: Jangan lupa bersenang-senang dan semangat! Game
+                    ini dibuat untuk mempererat persahabatan. 🥰</p>
+            </div>
+
+            <button onclick="closeGuide()"
+                class="w-full mt-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold py-3 rounded-xl text-sm">
+                Mengerti! Mulai Bermain 🚀
+            </button>
         </div>
-        <div class="loading-title">Agen Terang vs Agen Gelap</div>
-        <div class="loading-bar-container">
-            <div class="loading-bar"></div>
-        </div>
-        <div class="loading-tip">Menyiapkan permainan...</div>
     </div>
 
-    <!-- Particle Background -->
-    <div class="particles-container" id="particles-container"></div>
+    <!-- ============================================ -->
+    <!-- PHASE 0: LOGIN -->
+    <!-- ============================================ -->
+    <section id="phase-login"
+        class="phase active flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-8">
+            <div class="text-6xl mb-4 success-pop">🧪</div>
+            <h1
+                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent">
+                Valentine Mission
+            </h1>
+            <p class="text-rose-300/70 text-sm font-light">🧪 TEST MODE — Data Dummy</p>
+        </div>
 
-    <!-- Confetti Container -->
-    <div class="confetti-container" id="confetti-container"></div>
+        <div class="glass-card rounded-3xl p-8 w-full">
+            <div class="text-center mb-6">
+                <div
+                    class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/20 rounded-full px-4 py-1.5 text-xs text-amber-300">
+                    <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
+                    Test Mode Aktif
+                </div>
+            </div>
 
-    <!-- Floating Guide Button -->
-    <button class="floating-guide-btn" data-bs-toggle="modal" data-bs-target="#guideModal" title="Panduan Game">
-        <i class="bi bi-book"></i>
+            <label class="block text-sm font-medium text-rose-200 mb-2">Nomor Tiket Kamu</label>
+            <div class="relative mb-4">
+                <input type="number" id="ticketInput" min="1" max="6" placeholder="Masukkan 1 - 6" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30
+                    focus:outline-none focus:ring-2 focus:ring-rose-400/50 focus:border-rose-400/50 transition-all">
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🎫</div>
+            </div>
+
+            <!-- Quick ticket buttons for testing -->
+            <div class="grid grid-cols-6 gap-2 mb-4">
+                <button onclick="quickLogin(1)"
+                    class="bg-blue-500/20 border border-blue-400/20 rounded-xl py-2 text-xs font-bold text-blue-300 hover:bg-blue-500/30 transition-colors">#1</button>
+                <button onclick="quickLogin(2)"
+                    class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-colors">#2</button>
+                <button onclick="quickLogin(3)"
+                    class="bg-blue-500/20 border border-blue-400/20 rounded-xl py-2 text-xs font-bold text-blue-300 hover:bg-blue-500/30 transition-colors">#3</button>
+                <button onclick="quickLogin(4)"
+                    class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-colors">#4</button>
+                <button onclick="quickLogin(5)"
+                    class="bg-blue-500/20 border border-blue-400/20 rounded-xl py-2 text-xs font-bold text-blue-300 hover:bg-blue-500/30 transition-colors">#5</button>
+                <button onclick="quickLogin(6)"
+                    class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-colors">#6</button>
+            </div>
+            <p class="text-center text-rose-300/40 text-[10px] mb-4">🔵 Ganjil = Pencari &nbsp;|&nbsp; 🟡 Genap =
+                Pemegang</p>
+
+            <button onclick="handleLogin()" id="loginBtn" class="btn-valentine w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
+                text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-rose-500/30 pulse-glow">
+                Mulai Misi! 🚀
+            </button>
+
+            <p class="text-center text-rose-300/40 text-xs mt-4">Tiket 1-6 tersedia (3 pasangan dummy)</p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHASE 1: FIND PARTNER -->
+    <!-- ============================================ -->
+    <section id="phase-partner"
+        class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-6">
+            <div class="text-5xl mb-3">🔍</div>
+            <h2 class="text-2xl font-bold text-rose-100">Misi 1: Temukan Pasanganmu</h2>
+            <p class="text-rose-300/60 text-sm mt-1">Cari Partner-mu di ruangan ini!</p>
+        </div>
+
+        <!-- Bible Verse Card -->
+        <div id="verseCard" class="glass-card rounded-2xl p-6 w-full mb-4">
+            <div class="text-center">
+                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-2">📖 Ayat untuk Pasanganmu</p>
+                <p id="verseRef" class="text-amber-300 font-bold text-sm mb-3"></p>
+                <p id="verseText" class="text-rose-100/90 text-sm leading-relaxed italic mb-4 px-2"></p>
+                <div class="bg-rose-500/20 border border-rose-400/20 rounded-xl p-3">
+                    <p class="text-rose-200 text-xs">💡 Baca dan hapalkan <strong class="text-amber-300">1 kata</strong>
+                        dari ayat ini.<br>Ucapkan kata itu berulang kali sambil mencari pasanganmu!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 w-full mb-4">
+            <div class="text-center mb-6">
+                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Kamu adalah</p>
+                <div id="myRoleName"
+                    class="text-4xl font-black bg-gradient-to-r from-amber-200 to-yellow-300 bg-clip-text text-transparent">
+                </div>
+                <div id="myRoleBadge" class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium"></div>
+            </div>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-rose-400/30 to-transparent my-4"></div>
+
+            <div class="text-center mb-6">
+                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Temukan</p>
+                <div id="targetName" class="text-3xl font-bold text-rose-200"></div>
+            </div>
+
+            <!-- Role B: Show code -->
+            <div id="holderSection" class="hidden">
+                <div
+                    class="bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-400/20 rounded-2xl p-5 text-center">
+                    <p class="text-amber-200/80 text-xs uppercase tracking-widest mb-2">Kode Rahasiamu</p>
+                    <div id="secretCodeDisplay" class="text-4xl font-black tracking-[0.3em] text-amber-300"></div>
+                    <p class="text-amber-200/50 text-xs mt-3">Tunjukkan kode ini saat partnermu menemukanmu</p>
+                </div>
+                <button onclick="handleHolderConfirm()" class="btn-valentine w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600
+                    text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/20">
+                    Partner Sudah Menemukan Saya! ✅
+                </button>
+            </div>
+
+            <!-- Role A: Input code -->
+            <div id="seekerSection" class="hidden">
+                <div
+                    class="bg-gradient-to-br from-rose-500/20 to-pink-500/10 border border-rose-400/20 rounded-2xl p-5">
+                    <p class="text-rose-200/80 text-xs uppercase tracking-widest mb-3 text-center">Masukkan Kode Partner
+                    </p>
+                    <input type="text" id="codeInput" placeholder="KODE RAHASIA" class="w-full bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center text-2xl font-bold tracking-[0.2em] text-white placeholder-white/20 uppercase
+                        focus:outline-none focus:ring-2 focus:ring-rose-400/50 transition-all mb-3">
+                    <button onclick="handleCodeSubmit()" id="codeSubmitBtn" class="btn-valentine w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
+                        text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-500/20">
+                        Verifikasi Kode ✓
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="holderWaiting" class="hidden text-center">
+            <div class="glass-card rounded-2xl px-6 py-4 inline-flex items-center gap-3">
+                <div class="flex gap-1">
+                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0s"></span>
+                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0.1s"></span>
+                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0.2s"></span>
+                </div>
+                <span class="text-rose-300/70 text-sm">Menunggu partnermu menemukanmu...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHASE 2: SCAVENGER HUNT -->
+    <!-- ============================================ -->
+    <section id="phase-hunt" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-4">
+            <div class="text-5xl mb-3">🗺️</div>
+            <h2 class="text-2xl font-bold text-rose-100">Misi 2: Scavenger Hunt</h2>
+            <p class="text-rose-300/60 text-sm mt-1">Pecahkan petunjuk bersama pasanganmu!</p>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="w-full glass-card rounded-2xl p-4 mb-4">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-rose-300/60">Progress</span>
+                <span id="huntProgressText" class="text-xs font-bold text-rose-300">0 / 3</span>
+            </div>
+            <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                <div id="huntProgressBar"
+                    class="progress-fill h-full bg-gradient-to-r from-rose-500 to-pink-400 rounded-full"
+                    style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between mt-3 px-1">
+                <div id="dot-0"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    1</div>
+                <div id="dot-1"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    2</div>
+                <div id="dot-2"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    3</div>
+            </div>
+        </div>
+
+        <!-- Current Clue Card -->
+        <div class="glass-card rounded-3xl p-8 w-full mb-4" id="clueCard">
+            <div class="flex items-center gap-2 mb-4">
+                <span id="stageIcon" class="text-2xl">📍</span>
+                <div>
+                    <p class="text-xs text-rose-300/60 uppercase tracking-widest">Pos</p>
+                    <p id="stageNumber" class="text-lg font-bold text-rose-200">1</p>
+                </div>
+            </div>
+
+            <div id="clueText"
+                class="text-base text-rose-100/90 leading-relaxed mb-6 p-4 bg-white/5 rounded-2xl border border-white/10">
+            </div>
+
+            <div class="relative">
+                <input type="text" id="locationInput" placeholder="JAWABAN KODE LOKASI" class="w-full bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center text-xl font-bold tracking-[0.15em] text-white placeholder-white/20 uppercase
+                    focus:outline-none focus:ring-2 focus:ring-rose-400/50 transition-all mb-3">
+                <button onclick="handleHuntSubmit()" id="huntSubmitBtn" class="btn-valentine w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600
+                    text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/20">
+                    Cek Jawaban 🔓
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHASE 3: VICTORY -->
+    <!-- ============================================ -->
+    <section id="phase-done" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-6">
+            <div class="text-7xl mb-4 stamp-in">🏆</div>
+            <h2
+                class="text-3xl font-black bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-2">
+                Mission Complete!
+            </h2>
+            <p class="text-rose-300/70 text-sm">Kalian berhasil menyelesaikan semua misi!</p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 w-full mb-4">
+            <div class="text-center">
+                <div
+                    class="bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-400/20 rounded-2xl p-6 mb-4">
+                    <p class="text-amber-200/60 text-xs uppercase tracking-widest mb-2">Pasangan</p>
+                    <div id="victoryPairName" class="text-2xl font-bold text-amber-200 mb-1"></div>
+                    <div class="w-12 h-px bg-amber-400/30 mx-auto my-3"></div>
+                    <p class="text-amber-200/60 text-xs uppercase tracking-widest mb-1">Selesai pada</p>
+                    <div id="victoryTimestamp" class="text-lg font-medium text-amber-300"></div>
+                </div>
+                <div class="flex items-center justify-center gap-2 text-rose-300/50 text-sm">
+                    <span>✅</span>
+                    <span>Semua misi telah diselesaikan (TEST MODE)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- FLOATING BUTTONS -->
+    <!-- ============================================ -->
+    <!-- Guide Button -->
+    <button onclick="openGuide()" title="Panduan Permainan"
+        class="fixed bottom-12 left-4 z-30 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/30 px-4 py-3 flex items-center gap-2 transition-all hover:scale-105 text-sm">
+        📋 Panduan
     </button>
 
-    <!-- Screen: Welcome -->
-    <div id="screen-welcome" class="screen d-flex align-items-center justify-content-center">
-        <div class="glass-card p-4 p-md-5 text-center" style="max-width: 500px; width: 100%;">
-            <div class="mb-4">
-                <i class="bi bi-lightbulb-fill gradient-text" style="font-size: 4rem;"></i>
-            </div>
-            <h1 class="gradient-text fw-bold mb-2" style="font-size: 2rem;">Agen Terang</h1>
-            <p class="text-secondary mb-4">vs Agen Gelap</p>
-            <p class="small text-secondary mb-4">Permainan Social Deduction bertema Alkitab</p>
-            <div class="mb-4">
-                <label class="form-label">Jumlah Pemain (min. 4)</label>
-                <input type="number" id="playerCount" class="form-control text-center" min="4" value="6">
-            </div>
-            <p class="small text-secondary mb-4"><i class="bi bi-shuffle me-1"></i>Tingkat kesulitan acak setiap
-                permainan</p>
-            <button class="btn btn-glow w-100 mb-3" onclick="Game.startSetup()">
-                <i class="bi bi-gear-fill me-2"></i>Atur Permainan
-            </button>
-            <div class="row g-2 mb-3">
-                <div class="col-6">
-                    <button class="btn btn-outline-glow w-100" onclick="Game.enableSound()" id="btnEnableSound">
-                        <i class="bi bi-volume-up me-2"></i>Suara
-                    </button>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-outline-glow w-100" data-bs-toggle="modal" data-bs-target="#guideModal">
-                        <i class="bi bi-book me-2"></i>Panduan
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- Reset Button -->
+    <button onclick="resetGame()" title="Reset Game" class="fixed bottom-12 right-4 z-30 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/15
+        flex items-center justify-center text-white/50 hover:text-white/80 transition-all text-sm">
+        🔄
+    </button>
+
+    <!-- ============================================ -->
+    <!-- DEBUG PANEL -->
+    <!-- ============================================ -->
+    <div class="debug-panel">
+        <span class="text-amber-400 font-bold">🧪 DEBUG:</span>
+        <span>Phase: <code id="debugPhase">Login</code></span>
+        <span>Tiket: <code id="debugTicket">-</code></span>
+        <span>Pair: <code id="debugPair">-</code></span>
+        <span>Hunt: <code id="debugHunt">0/3</code></span>
+        <button class="debug-btn" onclick="showAllCodes()">📄 Lihat Semua Kode</button>
+        <button class="debug-btn" onclick="skipToHunt()">⏩ Skip ke Hunt</button>
+        <button class="debug-btn" onclick="skipToDone()">⏩ Skip ke Selesai</button>
     </div>
 
-    <!-- Screen: Role Config -->
-    <div id="screen-config" class="screen hidden d-flex align-items-center justify-content-center">
-        <div class="glass-card p-4 p-md-5" style="max-width: 500px; width: 100%;">
-            <h2 class="gradient-text text-center mb-4">Konfigurasi Peran</h2>
-            <p class="text-center text-secondary mb-4">Total <span id="configPlayerCount"
-                    class="text-info fw-bold">6</span> pemain</p>
-
-            <div class="row g-3 mb-4">
-                <div class="col-6">
-                    <label class="form-label"><i class="bi bi-moon-stars-fill text-secondary me-1"></i>Agen
-                        Gelap</label>
-                    <input type="number" id="darkCount" class="form-control text-center" min="1" value="1"
-                        onchange="Game.updateConfigPreview()">
-                </div>
-                <div class="col-6">
-                    <label class="form-label"><i class="bi bi-question-circle-fill text-info me-1"></i>Murid
-                        Bingung</label>
-                    <input type="number" id="confusedCount" class="form-control text-center" min="0" value="1"
-                        onchange="Game.updateConfigPreview()">
-                </div>
-                <div class="col-6">
-                    <label class="form-label"><i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>Nabi
-                        Palsu</label>
-                    <input type="number" id="falseProphetCount" class="form-control text-center" min="0" value="0"
-                        onchange="Game.updateConfigPreview()">
-                    <small class="text-secondary">Tahu kata, tapi membingungkan!</small>
-                </div>
-            </div>
-
-            <!-- Duo Mode Toggle -->
-            <div class="role-box mb-4">
-                <div class="form-check-switch-custom">
-                    <label class="form-check-label" for="duoModeCheck">
-                        <i class="bi bi-people-fill me-1"></i>Duo Mode (2+ Agen Gelap saling tahu)
-                    </label>
-                    <div class="form-check form-switch p-0 m-0">
-                        <input class="form-check-input ms-0" type="checkbox" id="duoModeCheck"
-                            style="width: 3rem; height: 1.5rem; cursor: pointer;">
-                    </div>
-                </div>
-                <small class="text-secondary d-block mt-1">Jika aktif, semua Agen Gelap akan mengetahui identitas satu
-                    sama lain</small>
-            </div>
-
-            <div class="role-preview-grid mb-4">
-                <div class="role-box">
-                    <i class="bi bi-lightbulb-fill text-warning d-block" style="font-size: 1.25rem;"></i>
-                    <small class="text-secondary">Terang</small>
-                    <div class="h5 mb-0" id="previewLight">4</div>
-                </div>
-                <div class="role-box">
-                    <i class="bi bi-moon-stars-fill text-secondary d-block" style="font-size: 1.25rem;"></i>
-                    <small class="text-secondary">Gelap</small>
-                    <div class="h5 mb-0" id="previewDark">1</div>
-                </div>
-                <div class="role-box">
-                    <i class="bi bi-question-circle-fill text-info d-block" style="font-size: 1.25rem;"></i>
-                    <small class="text-secondary">Bingung</small>
-                    <div class="h5 mb-0" id="previewConfused">1</div>
-                </div>
-                <div class="role-box">
-                    <i class="bi bi-exclamation-triangle-fill text-danger d-block" style="font-size: 1.25rem;"></i>
-                    <small class="text-secondary">N.Palsu</small>
-                    <div class="h5 mb-0" id="previewFalseProphet">0</div>
-                </div>
-            </div>
-
-            <button class="btn btn-glow w-100" onclick="Game.confirmConfig()">
-                <i class="bi bi-people-fill me-2"></i>Daftarkan Pemain
-            </button>
-        </div>
-    </div>
-
-    <!-- Screen: Player Setup -->
-    <div id="screen-setup" class="screen hidden">
-        <div class="container" style="max-width: 600px;">
-            <div class="glass-card p-4">
-                <h2 class="gradient-text text-center mb-4">Daftarkan Pemain</h2>
-                <div class="input-group mb-3">
-                    <input type="text" id="playerNameInput" class="form-control" placeholder="Nama pemain..."
-                        maxlength="20">
-                    <button class="btn btn-glow" onclick="Game.addPlayer()"><i class="bi bi-plus-lg"></i></button>
-                </div>
-                <div id="playerList" class="mb-4"></div>
-                <p class="text-center text-secondary mb-3">
-                    <span id="playerProgress">0</span>/<span id="playerTotal">6</span> pemain terdaftar
-                </p>
-                <button id="btnStartGame" class="btn btn-glow w-100" onclick="Game.startGame()" disabled>
-                    <i class="bi bi-play-fill me-2"></i>Mulai Permainan
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen: Role Reveal -->
-    <div id="screen-role" class="screen hidden">
-        <div class="container text-center" style="max-width: 500px;">
-            <div class="glass-card p-4 p-md-5">
-                <h3 class="mb-4">Giliran <span id="rolePlayerName" class="gradient-text">Pemain</span></h3>
-                <div id="roleCard" class="role-card mb-4" onclick="Game.revealRole()">
-                    <div id="roleHidden">
-                        <i class="bi bi-question-circle" style="font-size: 5rem; opacity: 0.5;"></i>
-                        <p class="mt-3 text-secondary">Tap untuk melihat peranmu</p>
-                    </div>
-                    <div id="roleRevealed" class="hidden">
-                        <div id="roleIcon" style="font-size: 4rem;"></div>
-                        <h2 id="roleName" class="mt-3 mb-2"></h2>
-                        <p id="roleWord" class="h3 text-info mb-2"></p>
-                        <div id="roleAyat" class="ayat-badge hidden"></div>
-                        <p id="roleDesc" class="text-secondary small mt-3"></p>
-                    </div>
-                </div>
-                <button id="btnNextRole" class="btn btn-glow w-100 hidden" onclick="Game.nextRole()">
-                    Lanjut <i class="bi bi-arrow-right ms-2"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen: Discussion (Real-world clues) -->
-    <div id="screen-discuss" class="screen hidden">
-        <div class="container text-center" style="max-width: 600px;">
-            <div class="glass-card p-4">
-                <span class="badge bg-secondary mb-3">Ronde <span id="currentRound">1</span></span>
-                <div class="timer-ring mx-auto mb-3" id="discussTimer">
-                    <div class="timer-inner" id="discussTimerText">600</div>
-                </div>
-                <h2 class="gradient-text mb-2">Waktu Diskusi & Clue!</h2>
-                <p class="text-secondary mb-3">Berikan clue secara lisan sesuai urutan</p>
-
-                <!-- Clue Order -->
-                <div class="role-box mb-3">
-                    <p class="mb-2 text-secondary small"><i class="bi bi-list-ol me-1"></i>Urutan Memberikan Clue:</p>
-                    <div id="clueOrderList" class="text-start small"></div>
-                </div>
-
-                <!-- Eliminated Players -->
-                <div id="eliminatedBox" class="role-box mb-3 hidden">
-                    <p class="mb-1 text-secondary small"><i class="bi bi-x-circle me-1"></i>Tereliminasi:</p>
-                    <div id="eliminatedList" class="text-danger small"></div>
-                </div>
-
-                <div class="row g-2 mb-3">
-                    <div class="col-6">
-                        <button class="btn btn-outline-glow w-100" onclick="Game.showModeratorView()">
-                            <i class="bi bi-eye me-1"></i>Moderator
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <button class="btn btn-glow w-100" onclick="Game.startVoting()">
-                            <i class="bi bi-hand-index-thumb me-1"></i>Voting
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen: Voting -->
-    <div id="screen-vote" class="screen hidden">
-        <div class="container" style="max-width: 600px;">
-            <div class="glass-card p-4">
-                <h3 class="text-center mb-2">Giliran <span id="votePlayerName" class="gradient-text">Pemain</span></h3>
-                <p class="text-center text-secondary mb-4">Pilih pemain yang mencurigakan</p>
-                <div id="voteList" class="row g-2 mb-4"></div>
-                <button id="btnSubmitVote" class="btn btn-glow w-100" onclick="Game.submitVote()" disabled>Konfirmasi
-                    Pilihan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen: Reveal -->
-    <div id="screen-reveal" class="screen hidden">
-        <div class="container text-center" style="max-width: 500px;">
-            <div class="glass-card p-4 p-md-5">
-                <h2 id="revealTitle" class="gradient-text mb-4"></h2>
-                <div id="revealIcon" style="font-size: 5rem;" class="mb-3"></div>
-                <h3 id="revealPlayer" class="mb-2"></h3>
-                <p id="revealRole" class="h5 mb-4"></p>
-                <div id="guessSection" class="hidden mb-4">
-                    <p class="text-secondary">Kesempatan menebak kata!</p>
-                    <div class="input-group">
-                        <input type="text" id="guessInput" class="form-control" placeholder="Tebak kata...">
-                        <button class="btn btn-glow" onclick="Game.submitGuess()">Tebak</button>
-                    </div>
-                </div>
-                <button id="btnContinue" class="btn btn-glow w-100" onclick="Game.continueGame()">Lanjutkan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Screen: Final Score -->
-    <div id="screen-final" class="screen hidden">
-        <div class="container" style="max-width: 600px;">
-            <div class="glass-card p-4 text-center">
-                <p class="text-secondary mb-2">Permainan ke-<span id="finalGameNumber">1</span></p>
-                <h1 class="gradient-text mb-4">🏆 Hasil Akhir</h1>
-                <div id="winnerAnnounce" class="mb-4"></div>
-                <h5 class="text-start mb-3">Papan Skor:</h5>
-                <div id="finalScores" class="mb-4"></div>
-                <div class="role-box mb-4">
-                    <p class="mb-1 text-secondary small">Kata yang dicari</p>
-                    <h3 id="finalWord" class="text-info mb-1"></h3>
-                    <small class="text-success"><i class="bi bi-book me-1"></i><span id="finalAyat"></span></small>
-                </div>
-                <div class="row g-2">
-                    <div class="col-6">
-                        <button class="btn btn-glow w-100" onclick="Game.continueWithSamePlayers()">
-                            <i class="bi bi-arrow-right-circle me-2"></i>Lanjut
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <button class="btn btn-outline-glow w-100" onclick="Game.restart()">
-                            <i class="bi bi-arrow-repeat me-2"></i>Mulai Ulang
-                        </button>
-                    </div>
-                </div>
-                <p class="small text-secondary mt-3 mb-0">Lanjut = pemain tetap, kata baru | Mulai Ulang = dari awal</p>
-                <div id="sessionStats" class="text-center mt-2"></div>
-            </div>
-        </div>
-    </div>
-    <!-- Game Modal -->
-    <div class="modal fade" id="gameModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content"
-                style="background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5rem;">
-                <div class="modal-body text-center p-4">
-                    <div id="modalIcon" style="font-size: 4rem;" class="mb-3"></div>
-                    <h4 id="modalTitle" class="gradient-text mb-3"></h4>
-                    <p id="modalMessage" class="text-secondary"></p>
-                    <button type="button" class="btn btn-glow w-100 mt-3" data-bs-dismiss="modal"
-                        id="modalCloseBtn">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Moderator Modal -->
-    <div class="modal fade" id="moderatorModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content"
-                style="background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5rem;">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title gradient-text"><i class="bi bi-eye me-2"></i>Mode Moderator</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="role-box mb-3 text-center">
-                        <p class="small text-secondary mb-1">Kata Rahasia</p>
-                        <h4 id="modWord" class="text-info mb-1"></h4>
-                        <p class="small text-secondary mb-1">Kata Bingung</p>
-                        <h5 id="modConfusedWord" class="text-warning mb-1"></h5>
-                        <small id="modAyat" class="text-success"></small>
-                    </div>
-                    <p class="small text-secondary mb-2">Daftar Peran:</p>
-                    <div id="modRoleList"></div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-glow w-100" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Guide Modal -->
-    <div class="modal fade" id="guideModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-            <div class="modal-content"
-                style="background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5rem;">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title gradient-text"><i class="bi bi-book me-2"></i>Panduan & Tips Moderator</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <!-- Nav Tabs -->
-                    <ul class="nav nav-pills nav-fill mb-4 bg-dark p-1 rounded-pill" id="guideTabs">
-                        <li class="nav-item">
-                            <a class="nav-link active rounded-pill px-2 py-1 small" data-bs-toggle="tab"
-                                href="#howToPlay">Alur</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link rounded-pill px-2 py-1 small" data-bs-toggle="tab"
-                                href="#rolesGuide">Peran</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link rounded-pill px-2 py-1 small" data-bs-toggle="tab"
-                                href="#tipsGuide">Tips</a>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content">
-                        <!-- How To Play -->
-                        <div class="tab-pane fade show active" id="howToPlay">
-                            <h6 class="text-info"><i class="bi bi-1-circle me-2"></i>Persiapan</h6>
-                            <p class="small text-secondary">Tentukan jumlah pemain dan peran. Moderator memastikan semua
-                                pemain siap menyimak.</p>
-
-                            <h6 class="text-info"><i class="bi bi-2-circle me-2"></i>Pembagian Peran</h6>
-                            <p class="small text-secondary">Pemain melihat peran masing-masing secara bergantian.
-                                Pastikan tidak ada yang mengintip!</p>
-
-                            <h6 class="text-info"><i class="bi bi-3-circle me-2"></i>Diskusi & Clue</h6>
-                            <p class="small text-secondary">Setiap pemain menyebutkan 1 kata petunjuk sesuai urutan acak
-                                yang muncul di layar.</p>
-
-                            <h6 class="text-info"><i class="bi bi-4-circle me-2"></i>Voting & Eliminasi</h6>
-                            <p class="small text-secondary">Setelah diskusi, pilih satu orang yang paling dicurigai
-                                sebagai Agen Gelap. Jika tebakan salah, tantangan meningkat!</p>
-                        </div>
-
-                        <!-- Roles Guide -->
-                        <div class="tab-pane fade" id="rolesGuide">
-                            <div class="role-box mb-3 border-warning">
-                                <h6 class="text-warning mb-1">💡 Agen Terang</h6>
-                                <p class="small text-secondary mb-0">Tahu kata yang benar. Harus memberikan clue yang
-                                    jelas buat sesama tim, tapi jangan terlalu terbuka supaya tidak ditebak musuh.</p>
-                            </div>
-                            <div class="role-box mb-3 border-danger">
-                                <h6 class="text-danger mb-1">🌙 Agen Gelap</h6>
-                                <p class="small text-secondary mb-0">Tidak tahu kata rahasia. Tugasnya pura-pura tahu
-                                    dan mengikuti alur clue pemain lain.</p>
-                            </div>
-                            <div class="role-box mb-3 border-info">
-                                <h6 class="text-info mb-1">❓ Murid Bingung</h6>
-                                <p class="small text-secondary mb-0">Dapat kata yang mirip (misal: "Musa" vs "Harun").
-                                    Harus jeli mencari tahu apakah dia di tim Terang atau bukan.</p>
-                            </div>
-                            <div class="role-box mb-3 border-danger">
-                                <h6 class="text-danger mb-1">⚠️ Nabi Palsu</h6>
-                                <p class="small text-secondary mb-0">Tahu kata rahasia, tapi misinya menyabotase!
-                                    Berikan clue yang "benar" tapi sedikit melenceng untuk membingungkan Agen Terang.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Tips & Tricks -->
-                        <div class="tab-pane fade" id="tipsGuide">
-                            <ul class="small text-secondary list-unstyled">
-                                <li class="mb-2"><i
-                                        class="bi bi-check2-circle text-success me-2"></i><strong>Atmosfer</strong>:
-                                    Gunakan background music menegangkan untuk menambah keseruan.</li>
-                                <li class="mb-2"><i
-                                        class="bi bi-check2-circle text-success me-2"></i><strong>Teguran</strong>:
-                                    Jangan biarkan diskusi berlarut-larut. Moderator harus tegas soal waktu.</li>
-                                <li class="mb-2"><i
-                                        class="bi bi-check2-circle text-success me-2"></i><strong>Acting</strong>:
-                                    Dorong Agen Gelap untuk berani berargumen dan menyalahkan orang lain.</li>
-                                <li class="mb-2"><i
-                                        class="bi bi-check2-circle text-success me-2"></i><strong>Kreativitas</strong>:
-                                    Clue tidak boleh berupa nama kata itu sendiri. Gunakan sifat, sejarah, atau ayat.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-glow w-100" data-bs-dismiss="modal">Saya Mengerti!</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="game_logic.js"></script>
     <script>
-        // Initialize game animations
-        document.addEventListener('DOMContentLoaded', function () {
-            Game.init();
+        // ==========================================
+        // DUMMY TEST DATA (3 pairs, 6 tickets)
+        // ==========================================
+        const couplesData = [
+            { id: 1, roleA: "Test Adam", roleB: "Test Hawa", code: "EDEN", verseRef: "Kejadian 2:24", verse: "Sebab itu seorang laki-laki akan meninggalkan ayahnya dan ibunya dan bersatu dengan isterinya." },
+            { id: 2, roleA: "Test Abraham", roleB: "Test Sara", code: "FAITH", verseRef: "Kejadian 12:2", verse: "Aku akan membuat engkau menjadi bangsa yang besar, dan memberkati engkau." },
+            { id: 3, roleA: "Test Boas", roleB: "Test Rut", code: "BARLEY", verseRef: "Rut 1:16", verse: "Ke mana engkau pergi, ke situ jugalah aku pergi." }
+        ];
+
+        // Simplified locations for testing (3 locations)
+        const testLocations = [
+            { clue: "🏛️ \"Test Lokasi 1 — Cari di dekat mimbar!\"" },
+            { clue: "🎵 \"Test Lokasi 2 — Cari di tempat alat musik!\"" },
+            { clue: "📖 \"Test Lokasi 3 — Cari di ruang belajar!\"" }
+        ];
+
+        // Test routes: each pair visits 3 locations with simple codes
+        const testRoutes = {
+            1: [
+                { stage: 1, clue: testLocations[0].clue, locationCode: "ALPHA" },
+                { stage: 2, clue: testLocations[1].clue, locationCode: "BETA" },
+                { stage: 3, clue: testLocations[2].clue, locationCode: "GAMMA" }
+            ],
+            2: [
+                { stage: 1, clue: testLocations[1].clue, locationCode: "DELTA" },
+                { stage: 2, clue: testLocations[2].clue, locationCode: "EPSILON" },
+                { stage: 3, clue: testLocations[0].clue, locationCode: "ZETA" }
+            ],
+            3: [
+                { stage: 1, clue: testLocations[2].clue, locationCode: "ETA" },
+                { stage: 2, clue: testLocations[0].clue, locationCode: "THETA" },
+                { stage: 3, clue: testLocations[1].clue, locationCode: "IOTA" }
+            ]
+        };
+
+        function getHuntRoute(pairId) {
+            return testRoutes[pairId] || testRoutes[1];
+        }
+
+        // ==========================================
+        // STATE (separate localStorage key from real game)
+        // ==========================================
+        const STORAGE_KEY = 'vm_test_state';
+        let state = {
+            ticketId: null,
+            role: null,
+            pairId: null,
+            currentPhase: 'Login',
+            huntProgress: 0,
+            completedAt: null
+        };
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        function init() {
+            createFloatingHearts();
+            loadState();
+            showPhase(state.currentPhase);
+            setupEnterKeys();
+            updateDebug();
+        }
+
+        function setupEnterKeys() {
+            document.getElementById('ticketInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            document.getElementById('codeInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleCodeSubmit();
+            });
+            document.getElementById('locationInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleHuntSubmit();
+            });
+        }
+
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            updateDebug();
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try { state = JSON.parse(saved); } catch (e) { localStorage.removeItem(STORAGE_KEY); }
+            }
+        }
+
+        function resetGame() {
+            localStorage.removeItem(STORAGE_KEY);
+            state = { ticketId: null, role: null, pairId: null, currentPhase: 'Login', huntProgress: 0, completedAt: null };
+            showPhase('Login');
+            showToast('Game direset! 🔄', 'info');
+            updateDebug();
+        }
+
+        function updateDebug() {
+            document.getElementById('debugPhase').textContent = state.currentPhase;
+            document.getElementById('debugTicket').textContent = state.ticketId || '-';
+            document.getElementById('debugPair').textContent = state.pairId || '-';
+            const route = state.pairId ? getHuntRoute(state.pairId) : [];
+            document.getElementById('debugHunt').textContent = `${state.huntProgress}/${route.length || 3}`;
+        }
+
+        // ==========================================
+        // PHASE MANAGEMENT
+        // ==========================================
+        function showPhase(phaseName) {
+            const phases = document.querySelectorAll('.phase');
+            phases.forEach(p => p.classList.remove('active'));
+
+            const phaseMap = {
+                'Login': 'phase-login',
+                'Partner': 'phase-partner',
+                'Hunt': 'phase-hunt',
+                'Done': 'phase-done'
+            };
+
+            const targetId = phaseMap[phaseName];
+            if (targetId) {
+                setTimeout(() => {
+                    document.getElementById(targetId).classList.add('active');
+                    if (phaseName === 'Partner') setupPartnerPhase();
+                    if (phaseName === 'Hunt') setupHuntPhase();
+                    if (phaseName === 'Done') setupDonePhase();
+                }, 100);
+            }
+            updateDebug();
+        }
+
+        // ==========================================
+        // PHASE 0: LOGIN
+        // ==========================================
+        function quickLogin(num) {
+            document.getElementById('ticketInput').value = num;
+            handleLogin();
+        }
+
+        function handleLogin() {
+            const input = document.getElementById('ticketInput');
+            const ticketNum = parseInt(input.value);
+
+            if (!ticketNum || ticketNum < 1 || ticketNum > 6) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Masukkan nomor tiket antara 1-6! 🎫', 'error');
+                return;
+            }
+
+            state.ticketId = ticketNum;
+            state.pairId = Math.ceil(ticketNum / 2);
+            state.role = (ticketNum % 2 !== 0) ? 'A' : 'B';
+            state.currentPhase = 'Partner';
+            saveState();
+
+            showToast(`Tiket #${ticketNum} — ${state.role === 'A' ? 'Pencari (Seeker)' : 'Pemegang (Holder)'}`, 'success');
+            showPhase('Partner');
+        }
+
+        // ==========================================
+        // PHASE 1: FIND PARTNER
+        // ==========================================
+        function setupPartnerPhase() {
+            const couple = couplesData[state.pairId - 1];
+            if (!couple) return;
+
+            const myName = state.role === 'A' ? couple.roleA : couple.roleB;
+            const targetName = state.role === 'A' ? couple.roleB : couple.roleA;
+
+            document.getElementById('myRoleName').textContent = myName;
+            document.getElementById('targetName').textContent = targetName;
+
+            if (couple.verse) {
+                document.getElementById('verseRef').textContent = couple.verseRef;
+                document.getElementById('verseText').textContent = '"' + couple.verse + '"';
+                document.getElementById('verseCard').style.display = 'block';
+            }
+
+            const badge = document.getElementById('myRoleBadge');
+
+            if (state.role === 'A') {
+                badge.textContent = '🔍 Pencari (Seeker)';
+                badge.className = 'inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-400/20';
+                document.getElementById('seekerSection').classList.remove('hidden');
+                document.getElementById('holderSection').classList.add('hidden');
+                document.getElementById('holderWaiting').classList.add('hidden');
+            } else {
+                badge.textContent = '📦 Pemegang (Holder)';
+                badge.className = 'inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-400/20';
+                document.getElementById('holderSection').classList.remove('hidden');
+                document.getElementById('seekerSection').classList.add('hidden');
+                document.getElementById('holderWaiting').classList.remove('hidden');
+                document.getElementById('secretCodeDisplay').textContent = couple.code;
+            }
+        }
+
+        function handleCodeSubmit() {
+            const input = document.getElementById('codeInput');
+            const userCode = input.value.trim().toUpperCase();
+            const couple = couplesData[state.pairId - 1];
+
+            if (!userCode) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Masukkan kode dari pasanganmu! 🔑', 'error');
+                return;
+            }
+
+            if (userCode !== couple.code) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Kode salah! Coba lagi 😅', 'error');
+                input.value = '';
+                return;
+            }
+
+            state.currentPhase = 'Hunt';
+            state.huntProgress = 0;
+            saveState();
+            launchConfetti();
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
+            setTimeout(() => showPhase('Hunt'), 800);
+        }
+
+        function handleHolderConfirm() {
+            const couple = couplesData[state.pairId - 1];
+            state.currentPhase = 'Hunt';
+            state.huntProgress = 0;
+            saveState();
+            launchConfetti();
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
+            setTimeout(() => showPhase('Hunt'), 800);
+        }
+
+        // ==========================================
+        // PHASE 2: SCAVENGER HUNT 
+        // ==========================================
+        function setupHuntPhase() { updateHuntUI(); }
+
+        function updateHuntUI() {
+            const route = getHuntRoute(state.pairId);
+            const progress = state.huntProgress;
+            const total = route.length;
+
+            document.getElementById('huntProgressText').textContent = `${progress} / ${total}`;
+            document.getElementById('huntProgressBar').style.width = `${(progress / total) * 100}%`;
+
+            for (let i = 0; i < total; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (!dot) continue;
+                if (i < progress) {
+                    dot.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center text-xs font-bold text-white transition-all shadow-lg shadow-emerald-500/30';
+                    dot.textContent = '✓';
+                } else if (i === progress) {
+                    dot.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-400 flex items-center justify-center text-xs font-bold text-white transition-all shadow-lg shadow-rose-500/30 animate-pulse';
+                    dot.textContent = i + 1;
+                } else {
+                    dot.className = 'w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white/40 transition-all';
+                    dot.textContent = i + 1;
+                }
+            }
+
+            if (progress < total) {
+                const station = route[progress];
+                document.getElementById('stageNumber').textContent = station.stage;
+                document.getElementById('clueText').innerHTML = station.clue;
+                document.getElementById('locationInput').value = '';
+                document.getElementById('clueCard').style.display = 'block';
+
+                const icons = ['📍', '🎯', '🧩'];
+                document.getElementById('stageIcon').textContent = icons[progress] || '📍';
+            }
+            updateDebug();
+        }
+
+        function handleHuntSubmit() {
+            const input = document.getElementById('locationInput');
+            const answer = input.value.trim().toUpperCase();
+            const route = getHuntRoute(state.pairId);
+            const station = route[state.huntProgress];
+
+            if (!answer) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Masukkan kode lokasi! 📍', 'error');
+                return;
+            }
+
+            if (answer !== station.locationCode) {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Kode salah! Coba lagi 🔍', 'error');
+                input.value = '';
+                return;
+            }
+
+            state.huntProgress++;
+            saveState();
+
+            if (state.huntProgress >= route.length) {
+                state.currentPhase = 'Done';
+                state.completedAt = new Date().toISOString();
+                saveState();
+                launchConfetti();
+                launchConfetti();
+                showToast('🎉 Semua pos selesai! Mission Complete!', 'success');
+                setTimeout(() => showPhase('Done'), 1000);
+            } else {
+                showToast(`✅ Pos ${state.huntProgress} selesai! Lanjut ke pos berikutnya.`, 'success');
+                updateHuntUI();
+            }
+        }
+
+        // ==========================================
+        // PHASE 3: VICTORY
+        // ==========================================
+        function setupDonePhase() {
+            const couple = couplesData[state.pairId - 1];
+            if (couple) {
+                document.getElementById('victoryPairName').textContent = `${couple.roleA} & ${couple.roleB}`;
+            }
+            if (state.completedAt) {
+                const d = new Date(state.completedAt);
+                const timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('victoryTimestamp').textContent = `${timeStr} — ${dateStr}`;
+            } else {
+                document.getElementById('victoryTimestamp').textContent = '-';
+            }
+            setTimeout(() => launchConfetti(), 500);
+        }
+
+        // ==========================================
+        // GUIDE POPUP
+        // ==========================================
+        function openGuide() {
+            document.getElementById('guideOverlay').classList.add('active');
+        }
+        function closeGuide() {
+            document.getElementById('guideOverlay').classList.remove('active');
+        }
+
+        // ==========================================
+        // DEBUG HELPERS
+        // ==========================================
+        function showAllCodes() {
+            let msg = '📄 DUMMY DATA — SEMUA KODE\n\n';
+            msg += '=== PARTNER CODES ===\n';
+            couplesData.forEach(c => {
+                msg += `Pair ${c.id}: ${c.roleA} & ${c.roleB} → Code: ${c.code}\n`;
+            });
+            msg += '\n=== HUNT CODES ===\n';
+            Object.keys(testRoutes).forEach(p => {
+                msg += `\nPair ${p}:\n`;
+                testRoutes[p].forEach(s => {
+                    msg += `  Pos ${s.stage}: ${s.locationCode}\n`;
+                });
+            });
+            alert(msg);
+        }
+
+        function skipToHunt() {
+            if (!state.ticketId) {
+                showToast('Login dulu dengan tiket! 🎫', 'error');
+                return;
+            }
+            state.currentPhase = 'Hunt';
+            state.huntProgress = 0;
+            saveState();
+            showPhase('Hunt');
+            showToast('⏩ Skipped to Scavenger Hunt', 'info');
+        }
+
+        function skipToDone() {
+            if (!state.ticketId) {
+                showToast('Login dulu dengan tiket! 🎫', 'error');
+                return;
+            }
+            state.currentPhase = 'Done';
+            state.completedAt = new Date().toISOString();
+            saveState();
+            showPhase('Done');
+            showToast('⏩ Skipped to Done', 'info');
+        }
+
+        // ==========================================
+        // EFFECTS
+        // ==========================================
+        function createFloatingHearts() {
+            const container = document.getElementById('heartsBg');
+            const hearts = ['💕', '💗', '💖', '💘', '❤️', '💝', '🤍', '🩷'];
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('span');
+                heart.className = 'heart-float';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (8 + Math.random() * 12) + 's';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+                container.appendChild(heart);
+            }
+        }
+
+        function launchConfetti() {
+            const colors = ['#f43f5e', '#fb7185', '#fda4af', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#f472b6'];
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+                piece.style.animationDelay = Math.random() * 0.5 + 's';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 4000);
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgColors = {
+                'success': 'bg-emerald-500/90 border-emerald-400/30',
+                'error': 'bg-rose-500/90 border-rose-400/30',
+                'info': 'bg-blue-500/90 border-blue-400/30'
+            };
+            const icons = { 'success': '✅', 'error': '❌', 'info': 'ℹ️' };
+            toast.className = `toast ${bgColors[type]} border backdrop-blur-lg rounded-2xl px-5 py-3 text-white text-sm font-medium shadow-2xl flex items-center gap-2 min-w-[280px] max-w-[90vw]`;
+            toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Button ripple effect
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.btn-valentine');
+            if (!btn) return;
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
         });
 
-        // Prevent accidental page refresh during game
-        window.addEventListener('beforeunload', function (e) {
-            // Check if game is active (not on welcome screen and has players)
-            const isOnWelcome = !document.getElementById('screen-welcome').classList.contains('hidden');
-            if (Game.players.length > 0 && !isOnWelcome) {
-                e.preventDefault();
-                e.returnValue = 'Permainan sedang berlangsung. Yakin ingin meninggalkan halaman?';
-                return e.returnValue;
-            }
-        });
+        // ==========================================
+        // BOOT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', init);
     </script>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-10 left-0 right-0 z-20 text-center py-1 text-rose-300/30 text-[10px] tracking-wide">
+        ©
+        <script>document.write(new Date().getFullYear())</script>. Crafted with ♥ by <a
+            href="https://wa.me/6281351880960" target="_blank"
+            class="text-rose-300/50 hover:text-rose-300/80 transition-colors underline">Timothee Creative</a>
+    </footer>
+
 </body>
 
 </html>
