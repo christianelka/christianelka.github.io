@@ -348,10 +348,49 @@
     <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2"></div>
 
     <!-- ============================================ -->
+    <!-- PHASE -1: ACCESS GATE -->
+    <!-- ============================================ -->
+    <section id="phase-gate"
+        class="phase active flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-8">
+            <div class="text-6xl mb-4 success-pop">🔐</div>
+            <h1
+                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-rose-200 via-pink-200 to-rose-300 bg-clip-text text-transparent">
+                Valentine Mission
+            </h1>
+            <p class="text-rose-300/70 text-sm font-light">Youth Church Event • 2026</p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 w-full">
+            <div class="text-center mb-6">
+                <div
+                    class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/20 rounded-full px-4 py-1.5 text-xs text-amber-300">
+                    <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
+                    Kode Akses Diperlukan
+                </div>
+            </div>
+
+            <label class="block text-sm font-medium text-rose-200 mb-2">Masukkan Kode Akses</label>
+            <div class="relative mb-6">
+                <input type="text" id="gateInput" placeholder="Kode dari moderator" autocomplete="off"
+                    spellcheck="false" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30 uppercase tracking-widest
+                    focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition-all">
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🔑</div>
+            </div>
+
+            <button onclick="handleGate()" id="gateBtn" class="btn-valentine w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600
+                text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-amber-500/30 pulse-glow">
+                Masuk 🚪
+            </button>
+
+            <p class="text-center text-rose-300/40 text-xs mt-4">Dapatkan kode akses dari moderator saat acara</p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
     <!-- PHASE 0: LOGIN -->
     <!-- ============================================ -->
-    <section id="phase-login"
-        class="phase active flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+    <section id="phase-login" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
         <div class="text-center mb-8">
             <div class="text-6xl mb-4 success-pop">💘</div>
             <h1
@@ -372,7 +411,7 @@
 
             <label class="block text-sm font-medium text-rose-200 mb-2">Nomor Tiket Kamu</label>
             <div class="relative mb-6">
-                <input type="number" id="ticketInput" min="1" max="40" placeholder="Masukkan 1 - 40" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30
+                <input type="number" id="ticketInput" min="1" placeholder="Nomor tiket" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30
                     focus:outline-none focus:ring-2 focus:ring-rose-400/50 focus:border-rose-400/50 transition-all">
                 <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🎫</div>
             </div>
@@ -422,8 +461,8 @@
 
             <div class="w-full h-px bg-gradient-to-r from-transparent via-rose-400/30 to-transparent my-4"></div>
 
-            <!-- Target display -->
-            <div class="text-center mb-6">
+            <!-- Target display (hidden until verified) -->
+            <div id="targetSection" class="text-center mb-6" style="display: none;">
                 <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Temukan</p>
                 <div id="targetName" class="text-3xl font-bold text-rose-200"></div>
             </div>
@@ -603,11 +642,28 @@
         function init() {
             createFloatingHearts();
             loadState();
+
+            // Check if access code was already entered this session
+            const hasAccess = sessionStorage.getItem('vm_access') === 'granted';
+            if (!hasAccess) {
+                state.currentPhase = 'Gate';
+            } else if (state.currentPhase === 'Gate') {
+                state.currentPhase = 'Login';
+            }
+
             showPhase(state.currentPhase);
             setupEnterKeys();
+
+            // Set ticket input limits
+            const ticketInput = document.getElementById('ticketInput');
+            ticketInput.max = 40;
+            ticketInput.placeholder = 'Masukkan 1 - 40';
         }
 
         function setupEnterKeys() {
+            document.getElementById('gateInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleGate();
+            });
             document.getElementById('ticketInput').addEventListener('keyup', e => {
                 if (e.key === 'Enter') handleLogin();
             });
@@ -620,7 +676,27 @@
         }
 
         // ==========================================
-        // STATE MANAGEMENT
+        // ACCESS GATE
+        // ==========================================
+        function handleGate() {
+            const input = document.getElementById('gateInput');
+            const code = input.value.trim().toUpperCase();
+
+            if (code !== 'DEMN') {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Kode akses salah! Tanya moderator ya 😉', 'error');
+                input.value = '';
+                return;
+            }
+
+            sessionStorage.setItem('vm_access', 'granted');
+            showToast('Akses diberikan! Selamat datang 🎉', 'success');
+            showPhase('Login');
+        }
+
+        // ==========================================
+        // GAME HANDLERS
         // ==========================================
         function saveState() {
             localStorage.setItem('vm_state', JSON.stringify(state));
@@ -654,6 +730,7 @@
             phases.forEach(p => p.classList.remove('active'));
 
             const phaseMap = {
+                'Gate': 'phase-gate',
                 'Login': 'phase-login',
                 'Partner': 'phase-partner',
                 'Hunt': 'phase-hunt',
@@ -689,8 +766,9 @@
             }
 
             state.ticketId = ticketNum;
-            state.pairId = Math.ceil(ticketNum / 2);
-            state.role = (ticketNum % 2 !== 0) ? 'A' : 'B';
+            const mapping = ticketMap[ticketNum];
+            state.pairId = mapping.pairId;
+            state.role = mapping.role;
             state.currentPhase = 'Partner';
             saveState();
 
@@ -706,10 +784,9 @@
             if (!couple) return;
 
             const myName = state.role === 'A' ? couple.roleA : couple.roleB;
-            const targetName = state.role === 'A' ? couple.roleB : couple.roleA;
 
             document.getElementById('myRoleName').textContent = myName;
-            document.getElementById('targetName').textContent = targetName;
+            document.getElementById('targetSection').style.display = 'none';
 
             // Show Bible verse
             if (couple.verse) {
@@ -761,10 +838,14 @@
             state.huntProgress = 0;
             saveState();
 
-            launchConfetti();
-            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
+            // Reveal partner name
+            document.getElementById('targetSection').style.display = 'block';
+            document.getElementById('targetName').textContent = (state.role === 'A') ? couple.roleB : couple.roleA;
 
-            setTimeout(() => showPhase('Hunt'), 800);
+            launchConfetti();
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success', 5000);
+
+            setTimeout(() => showPhase('Hunt'), 5000);
         }
 
         function handleHolderConfirm() {
@@ -773,9 +854,13 @@
             state.huntProgress = 0;
             saveState();
 
+            // Reveal partner name
+            document.getElementById('targetSection').style.display = 'block';
+            document.getElementById('targetName').textContent = (state.role === 'A') ? couple.roleB : couple.roleA;
+
             launchConfetti();
-            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
-            setTimeout(() => showPhase('Hunt'), 800);
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success', 5000);
+            setTimeout(() => showPhase('Hunt'), 5000);
         }
 
         // ==========================================
@@ -930,7 +1015,7 @@
             }
         }
 
-        function showToast(message, type = 'info') {
+        function showToast(message, type = 'info', duration = 3000) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
 
@@ -950,7 +1035,7 @@
             setTimeout(() => {
                 toast.classList.add('hide');
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, duration);
         }
 
         // Button ripple effect

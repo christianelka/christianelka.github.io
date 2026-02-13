@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧪 Valentine Mission — TEST MODE</title>
-    <meta name="description" content="Test mode for Valentine Mission game. Uses dummy data for testing purposes.">
+    <title>Valentine Mission 💘</title>
+    <meta name="description"
+        content="Valentine Mission — Game interaktif untuk acara pemuda gereja. Temukan pasanganmu, selesaikan misi, dan menangkan bersama!">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
@@ -38,6 +39,7 @@
             overflow-x: hidden;
         }
 
+        /* Floating hearts background */
         .hearts-bg {
             position: fixed;
             inset: 0;
@@ -73,6 +75,7 @@
             }
         }
 
+        /* Phase transitions */
         .phase {
             display: none;
         }
@@ -94,6 +97,7 @@
             }
         }
 
+        /* Shake animation for errors */
         .shake {
             animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
         }
@@ -122,6 +126,7 @@
             }
         }
 
+        /* Pulse glow */
         .pulse-glow {
             animation: pulseGlow 2s ease-in-out infinite;
         }
@@ -138,6 +143,7 @@
             }
         }
 
+        /* Success pop */
         .success-pop {
             animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
@@ -158,6 +164,7 @@
             }
         }
 
+        /* Confetti */
         .confetti-piece {
             position: fixed;
             width: 10px;
@@ -180,6 +187,7 @@
             }
         }
 
+        /* Card glass effect */
         .glass-card {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px);
@@ -194,6 +202,7 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
+        /* Button ripple */
         .btn-valentine {
             position: relative;
             overflow: hidden;
@@ -220,10 +229,24 @@
             }
         }
 
+        /* Progress bar animation */
         .progress-fill {
             transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* Typing cursor */
+        .blink-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Toast */
         .toast {
             animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -251,6 +274,7 @@
             }
         }
 
+        /* Ticket number input styling */
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -262,6 +286,17 @@
             appearance: textfield;
         }
 
+        /* WYR card flip */
+        .wyr-option {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .wyr-option:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(244, 63, 94, 0.3);
+        }
+
+        /* Stamp animation */
         .stamp-in {
             animation: stampIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
@@ -283,6 +318,7 @@
             }
         }
 
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -296,207 +332,33 @@
             border-radius: 4px;
         }
 
-        /* Guide Modal */
-        .guide-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .guide-overlay.active {
-            display: flex;
-        }
-
-        .guide-modal {
-            background: white;
-            border-radius: 1.5rem;
-            max-width: 440px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 2rem;
-            animation: fadeSlideIn 0.4s ease forwards;
-        }
-
-        .guide-modal h2 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #1f2937;
-            margin-bottom: 1rem;
-        }
-
-        .guide-modal h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #be123c;
-            margin-bottom: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .guide-modal p,
-        .guide-modal li {
-            font-size: 0.85rem;
-            color: #4b5563;
-            line-height: 1.6;
-        }
-
-        .guide-modal ul {
-            padding-left: 1.25rem;
-            list-style: disc;
-        }
-
-        .guide-modal .divider {
-            height: 1px;
-            background: #e5e7eb;
-            margin: 1rem 0;
-        }
-
-        /* Test mode banner */
-        .test-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 90;
-            background: linear-gradient(90deg, #f59e0b, #f97316);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-align: center;
-            padding: 4px 8px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-
-        /* Debug panel */
-        .debug-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 80;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 8px 12px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            border-top: 2px solid #f59e0b;
-        }
-
-        .debug-panel code {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.7rem;
-        }
-
-        .debug-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            cursor: pointer;
-            white-space: nowrap;
-            font-weight: 600;
-        }
-
-        .debug-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
+        /* Admin panel slide */
+        .admin-panel {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
     </style>
 </head>
 
-<body class="font-outfit text-white min-h-screen flex items-center justify-center p-4 pt-8 pb-14">
-
-    <!-- Test Mode Banner -->
-    <div class="test-banner">⚠️ TEST MODE — Data Dummy • Tidak Memengaruhi Game Asli</div>
+<body class="font-outfit text-white min-h-screen flex items-center justify-center p-4">
 
     <!-- Floating Hearts Background -->
     <div class="hearts-bg" id="heartsBg"></div>
 
     <!-- Toast Container -->
-    <div id="toastContainer" class="fixed top-8 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2"></div>
+    <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2"></div>
 
     <!-- ============================================ -->
-    <!-- GUIDE POPUP MODAL -->
+    <!-- PHASE -1: ACCESS GATE -->
     <!-- ============================================ -->
-    <div id="guideOverlay" class="guide-overlay" onclick="if(event.target===this)closeGuide()">
-        <div class="guide-modal">
-            <div class="flex items-center justify-between mb-2">
-                <h2>📋 Panduan Permainan</h2>
-                <button onclick="closeGuide()"
-                    class="text-gray-400 hover:text-gray-600 text-xl font-bold leading-none">&times;</button>
-            </div>
-            <p class="text-gray-500 text-xs mb-3">Valentine Mission — Petunjuk untuk Peserta</p>
-            <div class="divider"></div>
-
-            <h3>🎫 Langkah 1: Ambil Tiket</h3>
-            <p>Kamu akan mendapat tiket bernomor. Masukkan nomor tiket di halaman game untuk memulai.</p>
-            <ul>
-                <li>Tiket ganjil (1, 3, 5...) = <strong>Pencari (Seeker)</strong></li>
-                <li>Tiket genap (2, 4, 6...) = <strong>Pemegang (Holder)</strong></li>
-            </ul>
-
-            <h3>🔍 Langkah 2: Temukan Pasanganmu</h3>
-            <p>Setelah login, kamu akan melihat karakter yang kamu mainkan dan siapa yang harus kamu cari.</p>
-            <ul>
-                <li>📖 <strong>Baca ayat</strong> yang muncul di layar dan hapalkan <strong>1 kata</strong> darinya.
-                </li>
-                <li>Sambil mencari, ucapkan kata itu berulang — pasanganmu akan mengenalimu!</li>
-                <li><strong>Pencari:</strong> Cari pasanganmu dan minta kode rahasianya, lalu masukkan di HP.</li>
-                <li><strong>Pemegang:</strong> Tunggu dengan menunjukkan kode rahasiamu. Setelah ditemukan, klik tombol
-                    konfirmasi.</li>
-            </ul>
-
-            <h3>🗺️ Langkah 3: Scavenger Hunt</h3>
-            <p>Setelah menemukan pasangan, kalian akan menyelesaikan <strong>5 pos</strong> bersama.</p>
-            <ul>
-                <li>Setiap pos memberi <strong>clue lokasi</strong>. Pergi ke lokasi itu!</li>
-                <li>Di lokasi, <strong>scan QR code</strong> yang tertempel.</li>
-                <li>Masukkan <strong>kode</strong> yang muncul setelah scan ke HP.</li>
-                <li>⚠️ Hati-hati! Ada banyak QR di satu lokasi — tidak semuanya punyamu!</li>
-            </ul>
-
-
-
-            <div class="divider"></div>
-            <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 mt-2">
-                <p class="text-rose-700 text-xs font-medium">💡 Tips: Jangan lupa bersenang-senang dan semangat! Game
-                    ini dibuat untuk mempererat persahabatan. 🥰</p>
-            </div>
-
-            <button onclick="closeGuide()"
-                class="w-full mt-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold py-3 rounded-xl text-sm">
-                Mengerti! Mulai Bermain 🚀
-            </button>
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- PHASE 0: LOGIN -->
-    <!-- ============================================ -->
-    <section id="phase-login"
+    <section id="phase-gate"
         class="phase active flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
         <div class="text-center mb-8">
-            <div class="text-6xl mb-4 success-pop">🧪</div>
+            <div class="text-6xl mb-4 success-pop">🔐</div>
             <h1
-                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent">
+                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-rose-200 via-pink-200 to-rose-300 bg-clip-text text-transparent">
                 Valentine Mission
             </h1>
-            <p class="text-rose-300/70 text-sm font-light">🧪 TEST MODE — Data Dummy</p>
+            <p class="text-rose-300/70 text-sm font-light">Youth Church Event • 2026</p>
         </div>
 
         <div class="glass-card rounded-3xl p-8 w-full">
@@ -504,41 +366,62 @@
                 <div
                     class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/20 rounded-full px-4 py-1.5 text-xs text-amber-300">
                     <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
-                    Test Mode Aktif
+                    Kode Akses Diperlukan
+                </div>
+            </div>
+
+            <label class="block text-sm font-medium text-rose-200 mb-2">Masukkan Kode Akses</label>
+            <div class="relative mb-6">
+                <input type="text" id="gateInput" placeholder="Kode dari moderator" autocomplete="off"
+                    spellcheck="false" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30 uppercase tracking-widest
+                    focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition-all">
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🔑</div>
+            </div>
+
+            <button onclick="handleGate()" id="gateBtn" class="btn-valentine w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600
+                text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-amber-500/30 pulse-glow">
+                Masuk 🚪
+            </button>
+
+            <p class="text-center text-rose-300/40 text-xs mt-4">Dapatkan kode akses dari moderator saat acara</p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PHASE 0: LOGIN -->
+    <!-- ============================================ -->
+    <section id="phase-login" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
+        <div class="text-center mb-8">
+            <div class="text-6xl mb-4 success-pop">💘</div>
+            <h1
+                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-rose-200 via-pink-200 to-rose-300 bg-clip-text text-transparent">
+                Valentine Mission
+            </h1>
+            <p class="text-rose-300/70 text-sm font-light">Youth Church Event • 2026</p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 w-full">
+            <div class="text-center mb-6">
+                <div
+                    class="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-400/20 rounded-full px-4 py-1.5 text-xs text-rose-300">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    Event Aktif
                 </div>
             </div>
 
             <label class="block text-sm font-medium text-rose-200 mb-2">Nomor Tiket Kamu</label>
-            <div class="relative mb-4">
-                <input type="number" id="ticketInput" min="1" max="6" placeholder="Masukkan 1 - 6" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30
+            <div class="relative mb-6">
+                <input type="number" id="ticketInput" min="1" placeholder="Nomor tiket" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30
                     focus:outline-none focus:ring-2 focus:ring-rose-400/50 focus:border-rose-400/50 transition-all">
                 <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🎫</div>
             </div>
-
-            <!-- Quick ticket buttons for testing -->
-            <div class="grid grid-cols-6 gap-2 mb-4">
-                <button onclick="quickLogin(1)"
-                    class="bg-blue-500/20 border border-blue-400/20 rounded-xl py-2 text-xs font-bold text-blue-300 hover:bg-blue-500/30 transition-colors">#1</button>
-                <button onclick="quickLogin(2)"
-                    class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-colors">#2</button>
-                <button onclick="quickLogin(3)"
-                    class="bg-blue-500/20 border border-blue-400/20 rounded-xl py-2 text-xs font-bold text-blue-300 hover:bg-blue-500/30 transition-colors">#3</button>
-                <button onclick="quickLogin(4)"
-                    class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-colors">#4</button>
-                <button onclick="quickLogin(5)"
-                    class="bg-blue-500/20 border border-blue-400/20 rounded-xl py-2 text-xs font-bold text-blue-300 hover:bg-blue-500/30 transition-colors">#5</button>
-                <button onclick="quickLogin(6)"
-                    class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 text-xs font-bold text-amber-300 hover:bg-amber-500/30 transition-colors">#6</button>
-            </div>
-            <p class="text-center text-rose-300/40 text-[10px] mb-4">🔵 Ganjil = Pencari &nbsp;|&nbsp; 🟡 Genap =
-                Pemegang</p>
 
             <button onclick="handleLogin()" id="loginBtn" class="btn-valentine w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
                 text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-rose-500/30 pulse-glow">
                 Mulai Misi! 🚀
             </button>
 
-            <p class="text-center text-rose-300/40 text-xs mt-4">Tiket 1-6 tersedia (3 pasangan dummy)</p>
+            <p class="text-center text-rose-300/40 text-xs mt-4">Masukkan nomor sesuai tiket yang kamu dapat</p>
         </div>
     </section>
 
@@ -567,6 +450,7 @@
         </div>
 
         <div class="glass-card rounded-3xl p-8 w-full mb-4">
+            <!-- Role display -->
             <div class="text-center mb-6">
                 <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Kamu adalah</p>
                 <div id="myRoleName"
@@ -577,7 +461,8 @@
 
             <div class="w-full h-px bg-gradient-to-r from-transparent via-rose-400/30 to-transparent my-4"></div>
 
-            <div class="text-center mb-6">
+            <!-- Target display (hidden until verified) -->
+            <div id="targetSection" class="text-center mb-6" style="display: none;">
                 <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Temukan</p>
                 <div id="targetName" class="text-3xl font-bold text-rose-200"></div>
             </div>
@@ -612,6 +497,7 @@
             </div>
         </div>
 
+        <!-- Waiting hint for holder -->
         <div id="holderWaiting" class="hidden text-center">
             <div class="glass-card rounded-2xl px-6 py-4 inline-flex items-center gap-3">
                 <div class="flex gap-1">
@@ -638,13 +524,14 @@
         <div class="w-full glass-card rounded-2xl p-4 mb-4">
             <div class="flex items-center justify-between mb-2">
                 <span class="text-xs text-rose-300/60">Progress</span>
-                <span id="huntProgressText" class="text-xs font-bold text-rose-300">0 / 3</span>
+                <span id="huntProgressText" class="text-xs font-bold text-rose-300">0 / 5</span>
             </div>
             <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
                 <div id="huntProgressBar"
                     class="progress-fill h-full bg-gradient-to-r from-rose-500 to-pink-400 rounded-full"
                     style="width: 0%"></div>
             </div>
+            <!-- Station dots -->
             <div class="flex justify-between mt-3 px-1">
                 <div id="dot-0"
                     class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
@@ -655,6 +542,12 @@
                 <div id="dot-2"
                     class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
                     3</div>
+                <div id="dot-3"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    4</div>
+                <div id="dot-4"
+                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
+                    5</div>
             </div>
         </div>
 
@@ -670,6 +563,7 @@
 
             <div id="clueText"
                 class="text-base text-rose-100/90 leading-relaxed mb-6 p-4 bg-white/5 rounded-2xl border border-white/10">
+                <!-- Clue text here -->
             </div>
 
             <div class="relative">
@@ -706,95 +600,41 @@
                     <p class="text-amber-200/60 text-xs uppercase tracking-widest mb-1">Selesai pada</p>
                     <div id="victoryTimestamp" class="text-lg font-medium text-amber-300"></div>
                 </div>
+
                 <div class="flex items-center justify-center gap-2 text-rose-300/50 text-sm">
                     <span>✅</span>
-                    <span>Semua misi telah diselesaikan (TEST MODE)</span>
+                    <span>Semua misi telah diselesaikan</span>
                 </div>
             </div>
         </div>
+
     </section>
 
     <!-- ============================================ -->
-    <!-- FLOATING BUTTONS -->
+    <!-- RESET BUTTON (always visible for testing) -->
     <!-- ============================================ -->
-    <!-- Guide Button -->
-    <button onclick="openGuide()" title="Panduan Permainan"
-        class="fixed bottom-12 left-4 z-30 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg shadow-rose-500/30 px-4 py-3 flex items-center gap-2 transition-all hover:scale-105 text-sm">
-        📋 Panduan
-    </button>
-
-    <!-- Reset Button -->
-    <button onclick="resetGame()" title="Reset Game" class="fixed bottom-12 right-4 z-30 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/15
-        flex items-center justify-center text-white/50 hover:text-white/80 transition-all text-sm">
+    <button onclick="resetGame()" title="Reset Game" class="fixed bottom-4 right-4 z-30 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10
+        flex items-center justify-center text-white/30 hover:text-white/60 transition-all text-sm">
         🔄
     </button>
 
-    <!-- ============================================ -->
-    <!-- DEBUG PANEL -->
-    <!-- ============================================ -->
-    <div class="debug-panel">
-        <span class="text-amber-400 font-bold">🧪 DEBUG:</span>
-        <span>Phase: <code id="debugPhase">Login</code></span>
-        <span>Tiket: <code id="debugTicket">-</code></span>
-        <span>Pair: <code id="debugPair">-</code></span>
-        <span>Hunt: <code id="debugHunt">0/3</code></span>
-        <button class="debug-btn" onclick="showAllCodes()">📄 Lihat Semua Kode</button>
-        <button class="debug-btn" onclick="skipToHunt()">⏩ Skip ke Hunt</button>
-        <button class="debug-btn" onclick="skipToDone()">⏩ Skip ke Selesai</button>
-    </div>
-
+    <script src="valentine_data.js"></script>
     <script>
-        // ==========================================
-        // DUMMY TEST DATA (3 pairs, 6 tickets)
-        // ==========================================
-        const couplesData = [
-            { id: 1, roleA: "Test Adam", roleB: "Test Hawa", code: "EDEN", verseRef: "Kejadian 2:24", verse: "Sebab itu seorang laki-laki akan meninggalkan ayahnya dan ibunya dan bersatu dengan isterinya." },
-            { id: 2, roleA: "Test Abraham", roleB: "Test Sara", code: "FAITH", verseRef: "Kejadian 12:2", verse: "Aku akan membuat engkau menjadi bangsa yang besar, dan memberkati engkau." },
-            { id: 3, roleA: "Test Boas", roleB: "Test Rut", code: "BARLEY", verseRef: "Rut 1:16", verse: "Ke mana engkau pergi, ke situ jugalah aku pergi." }
-        ];
-
-        // Simplified locations for testing (3 locations)
-        const testLocations = [
-            { clue: "🏛️ \"Test Lokasi 1 — Cari di dekat mimbar!\"" },
-            { clue: "🎵 \"Test Lokasi 2 — Cari di tempat alat musik!\"" },
-            { clue: "📖 \"Test Lokasi 3 — Cari di ruang belajar!\"" }
-        ];
-
-        // Test routes: each pair visits 3 locations with simple codes
-        const testRoutes = {
-            1: [
-                { stage: 1, clue: testLocations[0].clue, locationCode: "ALPHA" },
-                { stage: 2, clue: testLocations[1].clue, locationCode: "BETA" },
-                { stage: 3, clue: testLocations[2].clue, locationCode: "GAMMA" }
-            ],
-            2: [
-                { stage: 1, clue: testLocations[1].clue, locationCode: "DELTA" },
-                { stage: 2, clue: testLocations[2].clue, locationCode: "EPSILON" },
-                { stage: 3, clue: testLocations[0].clue, locationCode: "ZETA" }
-            ],
-            3: [
-                { stage: 1, clue: testLocations[2].clue, locationCode: "ETA" },
-                { stage: 2, clue: testLocations[0].clue, locationCode: "THETA" },
-                { stage: 3, clue: testLocations[1].clue, locationCode: "IOTA" }
-            ]
-        };
-
-        function getHuntRoute(pairId) {
-            return testRoutes[pairId] || testRoutes[1];
-        }
 
         // ==========================================
-        // STATE (separate localStorage key from real game)
+        // STATE
         // ==========================================
-        const STORAGE_KEY = 'vm_test_state';
         let state = {
             ticketId: null,
-            role: null,
+            role: null,      // 'A' (Seeker) or 'B' (Holder)
             pairId: null,
-            currentPhase: 'Login',
+            currentPhase: 'Login',  // Login, Partner, Hunt, Done
             huntProgress: 0,
             completedAt: null
         };
+
+        let adminTapCount = 0;
+        let adminTapTimer = null;
 
         // ==========================================
         // INIT
@@ -802,12 +642,28 @@
         function init() {
             createFloatingHearts();
             loadState();
+
+            // Check if access code was already entered this session
+            const hasAccess = sessionStorage.getItem('vm_access') === 'granted';
+            if (!hasAccess) {
+                state.currentPhase = 'Gate';
+            } else if (state.currentPhase === 'Gate') {
+                state.currentPhase = 'Login';
+            }
+
             showPhase(state.currentPhase);
             setupEnterKeys();
-            updateDebug();
+
+            // Set ticket input limits
+            const ticketInput = document.getElementById('ticketInput');
+            ticketInput.max = 40;
+            ticketInput.placeholder = 'Masukkan 1 - 40';
         }
 
         function setupEnterKeys() {
+            document.getElementById('gateInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleGate();
+            });
             document.getElementById('ticketInput').addEventListener('keyup', e => {
                 if (e.key === 'Enter') handleLogin();
             });
@@ -820,34 +676,50 @@
         }
 
         // ==========================================
+        // ACCESS GATE
+        // ==========================================
+        function handleGate() {
+            const input = document.getElementById('gateInput');
+            const code = input.value.trim().toUpperCase();
+
+            if (code !== 'DEMN') {
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                showToast('Kode akses salah! Tanya moderator ya 😉', 'error');
+                input.value = '';
+                return;
+            }
+
+            sessionStorage.setItem('vm_access', 'granted');
+            showToast('Akses diberikan! Selamat datang 🎉', 'success');
+            showPhase('Login');
+        }
+
+        // ==========================================
         // STATE MANAGEMENT
         // ==========================================
         function saveState() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            updateDebug();
+            localStorage.setItem('vm_state', JSON.stringify(state));
         }
 
         function loadState() {
-            const saved = localStorage.getItem(STORAGE_KEY);
+            const saved = localStorage.getItem('vm_state');
             if (saved) {
-                try { state = JSON.parse(saved); } catch (e) { localStorage.removeItem(STORAGE_KEY); }
+                try {
+                    state = JSON.parse(saved);
+                } catch (e) {
+                    localStorage.removeItem('vm_state');
+                }
             }
         }
 
         function resetGame() {
-            localStorage.removeItem(STORAGE_KEY);
-            state = { ticketId: null, role: null, pairId: null, currentPhase: 'Login', huntProgress: 0, completedAt: null };
-            showPhase('Login');
-            showToast('Game direset! 🔄', 'info');
-            updateDebug();
-        }
-
-        function updateDebug() {
-            document.getElementById('debugPhase').textContent = state.currentPhase;
-            document.getElementById('debugTicket').textContent = state.ticketId || '-';
-            document.getElementById('debugPair').textContent = state.pairId || '-';
-            const route = state.pairId ? getHuntRoute(state.pairId) : [];
-            document.getElementById('debugHunt').textContent = `${state.huntProgress}/${route.length || 3}`;
+            if (confirm('Reset game? Semua progress akan hilang.')) {
+                localStorage.removeItem('vm_state');
+                state = { ticketId: null, role: null, pairId: null, currentPhase: 'Login', huntProgress: 0, completedAt: null };
+                showPhase('Login');
+                showToast('Game direset! 🔄', 'info');
+            }
         }
 
         // ==========================================
@@ -858,6 +730,7 @@
             phases.forEach(p => p.classList.remove('active'));
 
             const phaseMap = {
+                'Gate': 'phase-gate',
                 'Login': 'phase-login',
                 'Partner': 'phase-partner',
                 'Hunt': 'phase-hunt',
@@ -867,41 +740,39 @@
             const targetId = phaseMap[phaseName];
             if (targetId) {
                 setTimeout(() => {
-                    document.getElementById(targetId).classList.add('active');
+                    const el = document.getElementById(targetId);
+                    el.classList.add('active');
+
+                    // Setup phase-specific UI
                     if (phaseName === 'Partner') setupPartnerPhase();
                     if (phaseName === 'Hunt') setupHuntPhase();
                     if (phaseName === 'Done') setupDonePhase();
                 }, 100);
             }
-            updateDebug();
         }
 
         // ==========================================
         // PHASE 0: LOGIN
         // ==========================================
-        function quickLogin(num) {
-            document.getElementById('ticketInput').value = num;
-            handleLogin();
-        }
-
         function handleLogin() {
             const input = document.getElementById('ticketInput');
             const ticketNum = parseInt(input.value);
 
-            if (!ticketNum || ticketNum < 1 || ticketNum > 6) {
+            if (!ticketNum || ticketNum < 1 || ticketNum > 40) {
                 input.classList.add('shake');
                 setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Masukkan nomor tiket antara 1-6! 🎫', 'error');
+                showToast('Masukkan nomor tiket antara 1-40! 🎫', 'error');
                 return;
             }
 
             state.ticketId = ticketNum;
-            state.pairId = Math.ceil(ticketNum / 2);
-            state.role = (ticketNum % 2 !== 0) ? 'A' : 'B';
+            const mapping = ticketMap[ticketNum];
+            state.pairId = mapping.pairId;
+            state.role = mapping.role;
             state.currentPhase = 'Partner';
             saveState();
 
-            showToast(`Tiket #${ticketNum} — ${state.role === 'A' ? 'Pencari (Seeker)' : 'Pemegang (Holder)'}`, 'success');
+            showToast(`Tiket #${ticketNum} — Kamu adalah ${state.role === 'A' ? 'Pencari (Seeker)' : 'Pemegang (Holder)'}`, 'success');
             showPhase('Partner');
         }
 
@@ -913,11 +784,11 @@
             if (!couple) return;
 
             const myName = state.role === 'A' ? couple.roleA : couple.roleB;
-            const targetName = state.role === 'A' ? couple.roleB : couple.roleA;
 
             document.getElementById('myRoleName').textContent = myName;
-            document.getElementById('targetName').textContent = targetName;
+            document.getElementById('targetSection').style.display = 'none';
 
+            // Show Bible verse
             if (couple.verse) {
                 document.getElementById('verseRef').textContent = couple.verseRef;
                 document.getElementById('verseText').textContent = '"' + couple.verse + '"';
@@ -962,12 +833,19 @@
                 return;
             }
 
+            // Success!
             state.currentPhase = 'Hunt';
             state.huntProgress = 0;
             saveState();
+
+            // Reveal partner name
+            document.getElementById('targetSection').style.display = 'block';
+            document.getElementById('targetName').textContent = (state.role === 'A') ? couple.roleB : couple.roleA;
+
             launchConfetti();
-            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
-            setTimeout(() => showPhase('Hunt'), 800);
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success', 5000);
+
+            setTimeout(() => showPhase('Hunt'), 5000);
         }
 
         function handleHolderConfirm() {
@@ -975,27 +853,35 @@
             state.currentPhase = 'Hunt';
             state.huntProgress = 0;
             saveState();
+
+            // Reveal partner name
+            document.getElementById('targetSection').style.display = 'block';
+            document.getElementById('targetName').textContent = (state.role === 'A') ? couple.roleB : couple.roleA;
+
             launchConfetti();
-            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success');
-            setTimeout(() => showPhase('Hunt'), 800);
+            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success', 5000);
+            setTimeout(() => showPhase('Hunt'), 5000);
         }
 
         // ==========================================
-        // PHASE 2: SCAVENGER HUNT 
+        // PHASE 2: SCAVENGER HUNT
         // ==========================================
-        function setupHuntPhase() { updateHuntUI(); }
+        function setupHuntPhase() {
+            updateHuntUI();
+        }
 
         function updateHuntUI() {
             const route = getHuntRoute(state.pairId);
             const progress = state.huntProgress;
             const total = route.length;
 
+            // Update progress
             document.getElementById('huntProgressText').textContent = `${progress} / ${total}`;
             document.getElementById('huntProgressBar').style.width = `${(progress / total) * 100}%`;
 
+            // Update dots
             for (let i = 0; i < total; i++) {
                 const dot = document.getElementById(`dot-${i}`);
-                if (!dot) continue;
                 if (i < progress) {
                     dot.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center text-xs font-bold text-white transition-all shadow-lg shadow-emerald-500/30';
                     dot.textContent = '✓';
@@ -1008,6 +894,7 @@
                 }
             }
 
+            // Show current clue
             if (progress < total) {
                 const station = route[progress];
                 document.getElementById('stageNumber').textContent = station.stage;
@@ -1015,10 +902,9 @@
                 document.getElementById('locationInput').value = '';
                 document.getElementById('clueCard').style.display = 'block';
 
-                const icons = ['📍', '🎯', '🧩'];
+                const icons = ['📍', '🎯', '🧩', '🔎', '🏁'];
                 document.getElementById('stageIcon').textContent = icons[progress] || '📍';
             }
-            updateDebug();
         }
 
         function handleHuntSubmit() {
@@ -1037,11 +923,12 @@
             if (answer !== station.locationCode) {
                 input.classList.add('shake');
                 setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Kode salah! Coba lagi 🔍', 'error');
+                showToast('Kode salah! Mungkin bukan QR milikmu. Cari lagi 🔍', 'error');
                 input.value = '';
                 return;
             }
 
+            // Correct!
             state.huntProgress++;
             saveState();
 
@@ -1049,9 +936,11 @@
                 state.currentPhase = 'Done';
                 state.completedAt = new Date().toISOString();
                 saveState();
+
                 launchConfetti();
                 launchConfetti();
                 showToast('🎉 Semua pos selesai! Mission Complete!', 'success');
+
                 setTimeout(() => showPhase('Done'), 1000);
             } else {
                 showToast(`✅ Pos ${state.huntProgress} selesai! Lanjut ke pos berikutnya.`, 'success');
@@ -1060,13 +949,14 @@
         }
 
         // ==========================================
-        // PHASE 3: VICTORY
+        // PHASE 3: VICTORY & ADMIN
         // ==========================================
         function setupDonePhase() {
             const couple = couplesData[state.pairId - 1];
             if (couple) {
                 document.getElementById('victoryPairName').textContent = `${couple.roleA} & ${couple.roleB}`;
             }
+
             if (state.completedAt) {
                 const d = new Date(state.completedAt);
                 const timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -1075,61 +965,11 @@
             } else {
                 document.getElementById('victoryTimestamp').textContent = '-';
             }
+
+            // Launch confetti on first view
             setTimeout(() => launchConfetti(), 500);
         }
 
-        // ==========================================
-        // GUIDE POPUP
-        // ==========================================
-        function openGuide() {
-            document.getElementById('guideOverlay').classList.add('active');
-        }
-        function closeGuide() {
-            document.getElementById('guideOverlay').classList.remove('active');
-        }
-
-        // ==========================================
-        // DEBUG HELPERS
-        // ==========================================
-        function showAllCodes() {
-            let msg = '📄 DUMMY DATA — SEMUA KODE\n\n';
-            msg += '=== PARTNER CODES ===\n';
-            couplesData.forEach(c => {
-                msg += `Pair ${c.id}: ${c.roleA} & ${c.roleB} → Code: ${c.code}\n`;
-            });
-            msg += '\n=== HUNT CODES ===\n';
-            Object.keys(testRoutes).forEach(p => {
-                msg += `\nPair ${p}:\n`;
-                testRoutes[p].forEach(s => {
-                    msg += `  Pos ${s.stage}: ${s.locationCode}\n`;
-                });
-            });
-            alert(msg);
-        }
-
-        function skipToHunt() {
-            if (!state.ticketId) {
-                showToast('Login dulu dengan tiket! 🎫', 'error');
-                return;
-            }
-            state.currentPhase = 'Hunt';
-            state.huntProgress = 0;
-            saveState();
-            showPhase('Hunt');
-            showToast('⏩ Skipped to Scavenger Hunt', 'info');
-        }
-
-        function skipToDone() {
-            if (!state.ticketId) {
-                showToast('Login dulu dengan tiket! 🎫', 'error');
-                return;
-            }
-            state.currentPhase = 'Done';
-            state.completedAt = new Date().toISOString();
-            saveState();
-            showPhase('Done');
-            showToast('⏩ Skipped to Done', 'info');
-        }
 
         // ==========================================
         // EFFECTS
@@ -1137,7 +977,8 @@
         function createFloatingHearts() {
             const container = document.getElementById('heartsBg');
             const hearts = ['💕', '💗', '💖', '💘', '❤️', '💝', '🤍', '🩷'];
-            for (let i = 0; i < 15; i++) {
+
+            for (let i = 0; i < 20; i++) {
                 const heart = document.createElement('span');
                 heart.className = 'heart-float';
                 heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
@@ -1150,42 +991,58 @@
         }
 
         function launchConfetti() {
-            const colors = ['#f43f5e', '#fb7185', '#fda4af', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#f472b6'];
-            for (let i = 0; i < 50; i++) {
+            const colors = ['#f43f5e', '#fb7185', '#fda4af', '#fecdd3', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#f472b6'];
+            const shapes = ['circle', 'square'];
+
+            for (let i = 0; i < 60; i++) {
                 const piece = document.createElement('div');
                 piece.className = 'confetti-piece';
                 piece.style.left = Math.random() * 100 + 'vw';
                 piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
                 piece.style.animationDelay = Math.random() * 0.5 + 's';
-                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+
+                if (shapes[Math.floor(Math.random() * shapes.length)] === 'circle') {
+                    piece.style.borderRadius = '50%';
+                } else {
+                    piece.style.borderRadius = '2px';
+                    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }
+
                 document.body.appendChild(piece);
+
                 setTimeout(() => piece.remove(), 4000);
             }
         }
 
-        function showToast(message, type = 'info') {
+        function showToast(message, type = 'info', duration = 3000) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
+
             const bgColors = {
                 'success': 'bg-emerald-500/90 border-emerald-400/30',
                 'error': 'bg-rose-500/90 border-rose-400/30',
                 'info': 'bg-blue-500/90 border-blue-400/30'
             };
+
             const icons = { 'success': '✅', 'error': '❌', 'info': 'ℹ️' };
+
             toast.className = `toast ${bgColors[type]} border backdrop-blur-lg rounded-2xl px-5 py-3 text-white text-sm font-medium shadow-2xl flex items-center gap-2 min-w-[280px] max-w-[90vw]`;
             toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
+
             container.appendChild(toast);
+
             setTimeout(() => {
                 toast.classList.add('hide');
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, duration);
         }
 
         // Button ripple effect
         document.addEventListener('click', e => {
             const btn = e.target.closest('.btn-valentine');
             if (!btn) return;
+
             const ripple = document.createElement('span');
             ripple.className = 'ripple';
             const rect = btn.getBoundingClientRect();
@@ -1204,7 +1061,7 @@
     </script>
 
     <!-- Footer -->
-    <footer class="fixed bottom-10 left-0 right-0 z-20 text-center py-1 text-rose-300/30 text-[10px] tracking-wide">
+    <footer class="fixed bottom-0 left-0 right-0 z-20 text-center py-2 text-rose-300/30 text-[10px] tracking-wide">
         ©
         <script>document.write(new Date().getFullYear())</script>. Crafted with ♥ by <a
             href="https://wa.me/6281351880960" target="_blank"

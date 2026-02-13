@@ -3,11 +3,11 @@
 // ==========================================
 
 const couplesData = [
-    { id: 1, roleA: "Adam", roleB: "Hawa", code: "EDEN", verseRef: "Kejadian 2:24", verse: "Sebab itu seorang laki-laki akan meninggalkan ayahnya dan ibunya dan bersatu dengan isterinya, sehingga keduanya menjadi satu daging." },
-    { id: 2, roleA: "Abraham", roleB: "Sara", code: "FAITH", verseRef: "Kejadian 12:2", verse: "Aku akan membuat engkau menjadi bangsa yang besar, dan memberkati engkau serta membuat namamu masyhur; dan engkau akan menjadi berkat." },
+    { id: 1, roleA: "Adam", roleB: "Hawa", code: "GARDEN", verseRef: "Kejadian 2:24", verse: "Sebab itu seorang laki-laki akan meninggalkan ayahnya dan ibunya dan bersatu dengan isterinya, sehingga keduanya menjadi satu daging." },
+    { id: 2, roleA: "Abraham", roleB: "Sara", code: "PROMISE", verseRef: "Kejadian 12:2", verse: "Aku akan membuat engkau menjadi bangsa yang besar, dan memberkati engkau serta membuat namamu masyhur; dan engkau akan menjadi berkat." },
     { id: 3, roleA: "Ishak", roleB: "Ribka", code: "WELL", verseRef: "Kejadian 24:67", verse: "Lalu Ishak membawa Ribka ke dalam kemah Sara, ibunya, dan ia mengambil Ribka, dan Ribka menjadi isterinya, dan Ishak mencintai dia." },
     { id: 4, roleA: "Yakub", roleB: "Rahel", code: "LABAN", verseRef: "Kejadian 29:20", verse: "Jadi bekerjalah Yakub tujuh tahun lamanya untuk mendapat Rahel, tetapi yang tujuh tahun itu dianggapnya seperti beberapa hari saja, karena cintanya kepada Rahel." },
-    { id: 5, roleA: "Boas", roleB: "Rut", code: "BARLEY", verseRef: "Rut 1:16", verse: "Ke mana engkau pergi, ke situ jugalah aku pergi, dan di mana engkau bermalam, di situ jugalah aku bermalam; bangsamulah bangsaku dan Allahmulah Allahku." },
+    { id: 5, roleA: "Boas", roleB: "Rut", code: "HARVEST", verseRef: "Rut 1:16", verse: "Ke mana engkau pergi, ke situ jugalah aku pergi, dan di mana engkau bermalam, di situ jugalah aku bermalam; bangsamulah bangsaku dan Allahmulah Allahku." },
     { id: 6, roleA: "Elkana", roleB: "Hana", code: "PRAYER", verseRef: "1 Samuel 1:27", verse: "Untuk anak ini aku berdoa, dan TUHAN telah memberikan kepadaku apa yang aku minta kepada-Nya." },
     { id: 7, roleA: "Daud", roleB: "Abigail", code: "KING", verseRef: "1 Samuel 25:32", verse: "Terpujilah TUHAN, Allah Israel, yang telah mengutus engkau pada hari ini untuk menemui aku." },
     { id: 8, roleA: "Salomo", roleB: "Gadis Sulam", code: "SONG", verseRef: "Kidung Agung 8:7", verse: "Air yang banyak tak dapat memadamkan cinta, sungai-sungai tak dapat menghanyutkannya." },
@@ -24,6 +24,73 @@ const couplesData = [
     { id: 19, roleA: "Harun", roleB: "Elisyeba", code: "PRIEST", verseRef: "Keluaran 6:23", verse: "Harun mengambil Elisyeba anak Aminadab saudara perempuan Nahason menjadi isterinya." },
     { id: 20, roleA: "Kaleb", roleB: "Akhsa", code: "SPRING", verseRef: "Yosua 15:17", verse: "Otniel anak Kenas saudara Kaleb merebut kota itu dan Kaleb memberikan Akhsa anaknya kepadanya menjadi isteri." }
 ];
+
+// ==========================================
+// TICKET MAP — Group-of-4 pairing system
+// Role A = Pencari (Seeker), Role B = Pemegang (Holder)
+// NO gender rule — any ticket can be any role!
+//
+// Every 4 tickets form a mini-group (1-4, 5-8, ..., 37-40).
+// Within each group, 2 random pairs are formed. Any ticket
+// can be paired with any other, and roles are random too.
+// 3 pairing combos × 2 role combos per pair = very random!
+//
+// NO CONFIG NEEDED. Just distribute tickets in groups of 4.
+// ==========================================
+
+// Seeded PRNG (mulberry32) — same result every page load
+function _seedRng(seed) {
+    return function () {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+
+function _buildTicketMap() {
+    const map = {};
+    const rng = _seedRng(2026);
+    let pairId = 1;
+
+    // 3 ways to pair 4 tickets [a,b,c,d] into 2 pairs:
+    const pairingOptions = [
+        [[0, 1], [2, 3]],  // (a,b) + (c,d)
+        [[0, 2], [1, 3]],  // (a,c) + (b,d)
+        [[0, 3], [1, 2]]   // (a,d) + (b,c)
+    ];
+
+    for (let blockStart = 1; blockStart <= 40; blockStart += 4) {
+        const tickets = [];
+        for (let i = 0; i < 4 && blockStart + i <= 40; i++) {
+            tickets.push(blockStart + i);
+        }
+
+        if (tickets.length === 4) {
+            // Pick a random pairing from 3 options
+            const pick = Math.floor(rng() * 3);
+            const pairs = pairingOptions[pick];
+
+            for (const [i, j] of pairs) {
+                // Randomly assign who is A (Seeker) and who is B (Holder)
+                const swapRole = rng() > 0.5;
+                map[tickets[i]] = { pairId, role: swapRole ? 'B' : 'A' };
+                map[tickets[j]] = { pairId, role: swapRole ? 'A' : 'B' };
+                pairId++;
+            }
+        } else {
+            // Partial group (2 tickets): direct pair, random roles
+            const swapRole = rng() > 0.5;
+            map[tickets[0]] = { pairId, role: swapRole ? 'B' : 'A' };
+            map[tickets[1]] = { pairId, role: swapRole ? 'A' : 'B' };
+            pairId++;
+        }
+    }
+
+    return map;
+}
+
+const ticketMap = _buildTicketMap();
 
 // ==========================================
 // HUNT STATIONS — Location Pool (25 locations)

@@ -267,8 +267,8 @@
             </div>
 
             <h2>🧱 Persiapan — Tiket</h2>
-            <p class="text-gray-600 mb-2">Total 40 tiket. Tiket <strong>ganjil = Pencari (Seeker)</strong>, tiket
-                <strong>genap = Pemegang (Holder)</strong>. Acak pembagian!
+            <p class="text-gray-600 mb-2">Total 40 tiket. Setiap 4 tiket membentuk 2 pasangan acak.
+                Role <strong>Pencari (Seeker)</strong> dan <strong>Pemegang (Holder)</strong> diacak otomatis!
             </p>
             <div class="overflow-x-auto mb-4">
                 <table>
@@ -276,8 +276,8 @@
                         <tr>
                             <th>Tiket</th>
                             <th>Pair</th>
-                            <th>Pencari (Ganjil)</th>
-                            <th>Pemegang (Genap)</th>
+                            <th>Pencari (A)</th>
+                            <th>Pemegang (B)</th>
                             <th>Kode</th>
                         </tr>
                     </thead>
@@ -590,7 +590,7 @@
                 <span class="text-gray-400">—</span>
                 <input type="number" id="wyrTicketTo" min="1" max="40" value="40"
                     class="w-16 border rounded-lg px-2 py-1 text-sm text-center">
-                <span class="text-xs text-gray-400">(Ganjil = Pria, Genap = Wanita)</span>
+                <span class="text-xs text-gray-400">(Pasangan acak per grup 4 tiket)</span>
             </div>
             <div id="wyrStats" class="mt-2 text-xs text-gray-400"></div>
         </div>
@@ -819,9 +819,9 @@
                     <thead class="bg-rose-50">
                         <tr>
                             <th class="px-4 py-3 text-left font-semibold text-rose-700">ID</th>
-                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Tiket Ganjil</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Tiket Pencari (A)</th>
                             <th class="px-4 py-3 text-left font-semibold text-rose-700">Role A (Pencari)</th>
-                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Tiket Genap</th>
+                            <th class="px-4 py-3 text-left font-semibold text-rose-700">Tiket Pemegang (B)</th>
                             <th class="px-4 py-3 text-left font-semibold text-rose-700">Role B (Pemegang)</th>
                             <th class="px-4 py-3 text-left font-semibold text-rose-700">Kode Rahasia</th>
                             <th class="px-4 py-3 text-left font-semibold text-rose-700">Kategori</th>
@@ -1004,17 +1004,26 @@
         // POPULATE DATABASE TABLES
         // ==========================================
         function populateDB() {
-            // Couples
+            // Couples — lookup tickets from ticketMap
             const cBody = document.getElementById('dbCouplesBody');
             couplesData.forEach(c => {
-                const oddTicket = c.id * 2 - 1;
-                const evenTicket = c.id * 2;
+                // Find which tickets map to this pair
+                let ticketsA = [];
+                let ticketsB = [];
+                for (const [ticket, mapping] of Object.entries(ticketMap)) {
+                    if (mapping.pairId === c.id) {
+                        if (mapping.role === 'A') ticketsA.push(ticket);
+                        else ticketsB.push(ticket);
+                    }
+                }
+                const displayA = ticketsA.join(', ') || '-';
+                const displayB = ticketsB.join(', ') || '-';
                 cBody.innerHTML += `
             <tr class="hover:bg-rose-50/50 border-b border-gray-100">
                 <td class="px-4 py-3 font-bold text-rose-600">${c.id}</td>
-                <td class="px-4 py-3"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full text-xs font-bold">${oddTicket}</span></td>
+                <td class="px-4 py-3"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full text-xs font-bold">${displayA}</span></td>
                 <td class="px-4 py-3 font-medium">${c.roleA}</td>
-                <td class="px-4 py-3"><span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full text-xs font-bold">${evenTicket}</span></td>
+                <td class="px-4 py-3"><span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full text-xs font-bold">${displayB}</span></td>
                 <td class="px-4 py-3 font-medium">${c.roleB}</td>
                 <td class="px-4 py-3"><code class="bg-rose-50 text-rose-700 px-2 py-1 rounded font-mono text-xs font-bold">${c.code}</code></td>
                 <td class="px-4 py-3 text-xs text-gray-500">${c.verseRef || ''}</td>
@@ -1051,9 +1060,12 @@
             const gBody = document.getElementById('guideTicketTable');
             if (gBody) {
                 couplesData.forEach(c => {
-                    const odd = c.id * 2 - 1;
-                    const even = c.id * 2;
-                    gBody.innerHTML += `<tr><td>${odd}, ${even}</td><td>${c.id}</td><td>${c.roleA}</td><td>${c.roleB}</td><td><code>${c.code}</code></td></tr>`;
+                    // Find tickets from ticketMap
+                    let tickets = [];
+                    for (const [ticket, mapping] of Object.entries(ticketMap)) {
+                        if (mapping.pairId === c.id) tickets.push(ticket);
+                    }
+                    gBody.innerHTML += `<tr><td>${tickets.join(', ')}</td><td>${c.id}</td><td>${c.roleA}</td><td>${c.roleB}</td><td><code>${c.code}</code></td></tr>`;
                 });
             }
 
@@ -1268,13 +1280,17 @@
                     card.className = 'qr-hunt-card bg-white rounded-xl p-4 border-2 border-dashed border-gray-300 text-center';
 
                     const qrDiv = document.createElement('div');
-                    qrDiv.className = 'inline-block mb-3';
+                    qrDiv.className = 'inline-block mb-2';
                     card.appendChild(qrDiv);
+
+                    // Extract short location hint from clue (text after last period/quote)
+                    const clueText = s.clue.replace(/^.*?\"/, '').replace(/\"$/, '');
+                    const shortHint = clueText.split('.').pop().trim() || clueText;
 
                     const info = document.createElement('div');
                     info.innerHTML = `
-                        <p class="text-xs font-bold text-gray-800 mb-1">Pos ${s.stage}</p>
-                        <p class="text-[9px] text-gray-400 mt-1">✂️ Gunting & tempel di lokasi</p>
+                        <p class="text-[8px] text-gray-500 leading-tight mb-1">${shortHint}</p>
+                        <p class="text-[7px] text-gray-300 mt-1">✂️ Gunting & tempel di lokasi</p>
                     `;
                     card.appendChild(info);
                     grid.appendChild(card);
@@ -1283,7 +1299,7 @@
                         text: s.locationCode,
                         width: 100,
                         height: 100,
-                        colorDark: "#065f46",
+                        colorDark: "#000000",
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.M
                     });
