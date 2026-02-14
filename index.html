@@ -716,8 +716,9 @@
         function resetGame() {
             if (confirm('Reset game? Semua progress akan hilang.')) {
                 localStorage.removeItem('vm_state');
-                state = { ticketId: null, role: null, pairId: null, currentPhase: 'Login', huntProgress: 0, completedAt: null };
-                showPhase('Login');
+                sessionStorage.removeItem('vm_access');
+                state = { ticketId: null, role: null, pairId: null, currentPhase: 'Gate', huntProgress: 0, completedAt: null };
+                showPhase('Gate');
                 showToast('Game direset! 🔄', 'info');
             }
         }
