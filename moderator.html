@@ -172,6 +172,49 @@
 
 <body class="bg-gray-50 min-h-screen">
 
+    <!-- ACCESS GATE OVERLAY -->
+    <div id="modGateOverlay"
+        class="fixed inset-0 z-[9999] bg-gradient-to-br from-rose-900 via-rose-800 to-pink-900 flex items-center justify-center">
+        <div
+            class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 w-full max-w-sm mx-4 text-center">
+            <div class="text-5xl mb-4">🔐</div>
+            <h2 class="text-2xl font-black text-white mb-1">Moderator Access</h2>
+            <p class="text-rose-200/60 text-sm mb-6">Masukkan kode akses moderator</p>
+            <input type="text" id="modGateInput" placeholder="Kode akses" autocomplete="off" spellcheck="false" class="w-full bg-white/10 border border-white/20 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30 uppercase tracking-widest
+                focus:outline-none focus:ring-2 focus:ring-rose-400/50 mb-4">
+            <button onclick="handleModGate()" class="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
+                text-white font-bold text-lg py-3 rounded-2xl shadow-lg transition-all">
+                Masuk 🚪
+            </button>
+            <p id="modGateError" class="text-red-300 text-sm mt-3 hidden">Kode salah!</p>
+        </div>
+    </div>
+    <script>
+        function handleModGate() {
+            const input = document.getElementById('modGateInput');
+            const code = input.value.trim().toUpperCase();
+            if (code === 'AYAM') {
+                sessionStorage.setItem('mod_access', 'granted');
+                document.getElementById('modGateOverlay').style.display = 'none';
+            } else {
+                document.getElementById('modGateError').classList.remove('hidden');
+                input.value = '';
+                input.focus();
+            }
+        }
+        // Check on load
+        if (sessionStorage.getItem('mod_access') === 'granted') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('modGateOverlay').style.display = 'none';
+            });
+        }
+        // Enter key support
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('modGateInput').addEventListener('keyup', e => {
+                if (e.key === 'Enter') handleModGate();
+            });
+        });
+    </script>
     <!-- Header -->
     <header class="bg-gradient-to-r from-rose-700 via-rose-600 to-pink-600 text-white py-6 px-4 shadow-lg">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
