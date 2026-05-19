@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Kiro Chat - AI assistant powered by 9router" />
+  <title>Kiro Chat</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.11/dist/purify.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <button class="btn-new-chat" id="btn-new-chat" title="Percakapan baru">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Chat baru</span>
+      </button>
+    </div>
+
+    <nav class="conversation-list" id="conversation-list" aria-label="Daftar percakapan"></nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-icon" id="btn-settings" title="Pengaturan" aria-label="Pengaturan">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Pengaturan</span>
+      </button>
+      <button class="btn-icon" id="btn-theme" title="Ganti tema" aria-label="Ganti tema">
+        <svg id="icon-theme" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="btn-icon mobile-only" id="btn-toggle-sidebar" aria-label="Toggle sidebar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title">
+        <span class="brand">Kiro Chat</span>
+        <span class="model-badge" id="model-badge">kr/claude-opus-4.7</span>
+      </div>
+      <div class="status" id="status" aria-live="polite">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Mengecek koneksi…</span>
+      </div>
+    </header>
+
+    <section class="chat" id="chat" aria-live="polite">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">✦</div>
+        <h1>Kiro Chat</h1>
+        <p>AI assistant berbasis 9router lokal Anda. Mulai mengetik di bawah.</p>
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="Jelaskan perbedaan antara HTTP/2 dan HTTP/3 secara singkat.">Jelaskan HTTP/2 vs HTTP/3</button>
+          <button class="suggestion" data-prompt="Tulis fungsi JavaScript debounce dengan TypeScript types.">Fungsi debounce di TS</button>
+          <button class="suggestion" data-prompt="Bantu saya brainstorm ide proyek portfolio untuk fullstack developer.">Ide proyek portfolio</button>
+          <button class="suggestion" data-prompt="Apa itu CORS dan kapan saya perlu khawatir tentangnya?">Apa itu CORS?</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="composer">
+      <form class="composer-form" id="composer-form">
+        <div class="composer-box">
+          <textarea
+            id="input"
+            class="composer-input"
+            placeholder="Ketik pesan… (Enter untuk kirim, Shift+Enter untuk baris baru)"
+            rows="1"
+            autocomplete="off"
+          ></textarea>
+          <div class="composer-actions">
+            <button type="button" class="btn-icon ghost" id="btn-clear" title="Hapus chat ini" aria-label="Hapus chat">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>
+            <button type="submit" class="btn-send" id="btn-send" title="Kirim" aria-label="Kirim pesan">
+              <svg id="icon-send" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <svg id="icon-stop" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            </button>
+          </div>
+        </div>
+        <p class="footnote">Powered by <a href="https://github.com/decolua/9router" target="_blank" rel="noopener">9router</a> · Pesan disimpan lokal di browser Anda.</p>
+      </form>
+    </footer>
+  </main>
+
+  <dialog id="settings-modal" class="modal">
+    <form method="dialog" class="modal-content" id="settings-form">
+      <header class="modal-header">
+        <h2>Pengaturan</h2>
+        <button type="button" class="btn-icon" id="btn-close-settings" aria-label="Tutup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+
+      <div class="modal-body">
+        <label class="field">
+          <span class="field-label">Endpoint 9router</span>
+          <input type="url" id="cfg-endpoint" placeholder="http://localhost:20128/v1" required />
+          <small class="field-hint">URL dasar 9router. Default jalan di port 20128.</small>
+        </label>
+
+        <label class="field">
+          <span class="field-label">API Key</span>
+          <input type="password" id="cfg-api-key" placeholder="sk-9r-…" autocomplete="off" />
+          <small class="field-hint">Copy dari dashboard 9router → API Keys. Disimpan di localStorage browser.</small>
+        </label>
+
+        <label class="field">
+          <span class="field-label">Model</span>
+          <input type="text" id="cfg-model" placeholder="kr/claude-opus-4.7" required />
+          <small class="field-hint">Format: <code>provider/model</code>. Contoh: <code>kr/claude-opus-4.7</code>, <code>kr/claude-sonnet-4.5</code>.</small>
+        </label>
+
+        <label class="field">
+          <span class="field-label">System Prompt</span>
+          <textarea id="cfg-system" rows="4" placeholder="Anda adalah asisten yang ramah dan ringkas."></textarea>
+          <small class="field-hint">Instruksi persona/perilaku. Kosongkan untuk default.</small>
+        </label>
+
+        <label class="field row">
+          <span class="field-label">Streaming</span>
+          <input type="checkbox" id="cfg-stream" checked />
+          <small class="field-hint">Tampilkan respons token-by-token.</small>
+        </label>
+
+        <label class="field row">
+          <span class="field-label">Temperature</span>
+          <input type="number" id="cfg-temperature" min="0" max="2" step="0.1" value="0.7" />
+        </label>
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn-secondary" id="btn-test-connection">Tes koneksi</button>
+        <span class="grow"></span>
+        <button type="button" class="btn-secondary" id="btn-cancel-settings">Batal</button>
+        <button type="submit" class="btn-primary" id="btn-save-settings">Simpan</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
