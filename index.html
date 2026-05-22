@@ -341,6 +341,59 @@
 
 <body class="font-outfit text-white min-h-screen flex items-center justify-center p-4">
 
+    <div id="testerRedirect" style="position:fixed;inset:0;background:rgba(8,4,16,0.92);backdrop-filter:blur(10px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:'Outfit',sans-serif;">
+        <div style="width:100%;max-width:460px;background:#16162a;border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:32px 28px;box-shadow:0 24px 60px rgba(0,0,0,0.6);text-align:center;color:#e8e8f0;">
+            <div style="width:60px;height:60px;margin:0 auto 18px;border-radius:16px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);display:flex;align-items:center;justify-content:center;color:#fff;">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <h1 style="font-size:22px;font-weight:700;margin:0 0 8px;">Halo Tester!</h1>
+            <p style="font-size:14px;line-height:1.6;color:#b8b8cc;margin:0 0 22px;">
+                Sepertinya Anda sedikit salah alamat. Halaman uji coba <strong style="color:#fff;">EscBot</strong> ada di URL berbeda. Klik tombol di bawah untuk lanjut ke sana.
+            </p>
+            <a id="testerRedirectGo" href="escalation-chatbot/" style="display:block;padding:13px 16px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border-radius:12px;font-size:14px;font-weight:600;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;">
+                Buka EscBot
+            </a>
+            <p style="margin:18px 0 0;font-size:11px;color:#7a7a90;line-height:1.5;">
+                Bukan tester? <a href="#stay" id="testerRedirectStay" style="color:#a29bfe;text-decoration:none;">Tetap di halaman ini</a>
+            </p>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var overlay = document.getElementById('testerRedirect');
+            var stayBtn = document.getElementById('testerRedirectStay');
+            var goBtn = document.getElementById('testerRedirectGo');
+            if (!overlay) return;
+
+            document.body.style.overflow = 'hidden';
+
+            function dismiss() {
+                overlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            if (window.location.hash === '#stay') {
+                dismiss();
+                return;
+            }
+
+            stayBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                history.replaceState(null, '', '#stay');
+                dismiss();
+            });
+
+            goBtn.addEventListener('mouseenter', function () {
+                goBtn.style.transform = 'translateY(-1px)';
+                goBtn.style.boxShadow = '0 8px 24px rgba(108,92,231,0.45)';
+            });
+            goBtn.addEventListener('mouseleave', function () {
+                goBtn.style.transform = '';
+                goBtn.style.boxShadow = '';
+            });
+        })();
+    </script>
+
     <!-- Floating Hearts Background -->
     <div class="hearts-bg" id="heartsBg"></div>
 

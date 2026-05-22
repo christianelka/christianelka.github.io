@@ -14,6 +14,11 @@
         settingsBtn: document.getElementById('settingsBtn'),
         settingsModal: document.getElementById('settingsModal'),
         closeSettings: document.getElementById('closeSettings'),
+        guideBtn: document.getElementById('guideBtn'),
+        guideModal: document.getElementById('guideModal'),
+        closeGuide: document.getElementById('closeGuide'),
+        guideStart: document.getElementById('guideStart'),
+        guideDontShow: document.getElementById('guideDontShow'),
         cfgProvider: document.getElementById('cfgProvider'),
         cfgBaseUrl: document.getElementById('cfgBaseUrl'),
         cfgModel: document.getElementById('cfgModel'),
@@ -60,6 +65,7 @@
     initEvents();
     refreshAiUi();
     refreshCorrectionStats();
+    maybeShowGuide();
 
     function initStats() {
         els.totalEntries.textContent = data.length;
@@ -143,6 +149,10 @@
         els.importCorrections.addEventListener('click', () => els.importFileInput.click());
         els.importFileInput.addEventListener('change', importCorrectionsFromFile);
         els.clearCorrections.addEventListener('click', clearCorrectionsConfirm);
+
+        if (els.guideBtn) els.guideBtn.addEventListener('click', openGuide);
+        if (els.closeGuide) els.closeGuide.addEventListener('click', closeGuide);
+        if (els.guideStart) els.guideStart.addEventListener('click', closeGuide);
 
         document.querySelectorAll('.modal-backdrop').forEach(modal => {
             modal.addEventListener('click', e => {
@@ -598,6 +608,30 @@
         corrections.clearAll();
         refreshCorrectionStats();
         showToast('Koreksi dihapus', 'success');
+    }
+
+    function maybeShowGuide() {
+        if (!els.guideModal) return;
+        try {
+            if (localStorage.getItem('escbot_guide_seen_v1') === '1') return;
+        } catch (e) {}
+        setTimeout(() => { els.guideModal.hidden = false; }, 250);
+    }
+
+    function openGuide() {
+        if (!els.guideModal) return;
+        if (els.guideDontShow) els.guideDontShow.checked = false;
+        els.guideModal.hidden = false;
+    }
+
+    function closeGuide() {
+        if (!els.guideModal) return;
+        try {
+            if (els.guideDontShow && els.guideDontShow.checked) {
+                localStorage.setItem('escbot_guide_seen_v1', '1');
+            }
+        } catch (e) {}
+        els.guideModal.hidden = true;
     }
 
     function showToast(message, type) {

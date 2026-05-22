@@ -173,9 +173,14 @@
                     </div>
                     <span>EscBot</span>
                 </div>
-                <button class="icon-btn" id="settingsBtn" title="Pengaturan AI" aria-label="Pengaturan AI">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </button>
+                <div class="header-actions">
+                    <button class="icon-btn" id="guideBtn" title="Panduan Tester" aria-label="Panduan Tester">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+                    <button class="icon-btn" id="settingsBtn" title="Pengaturan AI" aria-label="Pengaturan AI">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </button>
+                </div>
             </div>
             <div class="sidebar-content">
                 <button class="new-chat-btn" id="newChatBtn">
@@ -273,6 +278,11 @@
                     </button>
                 </div>
                 <p class="input-hint">Enter untuk kirim, Shift+Enter untuk baris baru. Klik hashtag untuk menyalin, atau ikon koreksi untuk mengajari bot.</p>
+                <p class="app-footer">
+                    Crafted with
+                    <svg class="footer-heart" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    by <strong>El Artemis</strong>
+                </p>
             </div>
         </main>
     </div>
@@ -376,6 +386,109 @@
                 <div class="modal-footer">
                     <button class="btn-secondary" id="cancelCorrection">Batal</button>
                     <button class="btn-primary" id="confirmCorrection" disabled>Simpan Koreksi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop guide-backdrop" id="guideModal" hidden>
+        <div class="modal guide-modal">
+            <div class="modal-header">
+                <h2>Panduan Tester EscBot</h2>
+                <button class="icon-btn" id="closeGuide" aria-label="Tutup">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body guide-body">
+                <p class="guide-intro">
+                    Hai! Terima kasih sudah bantu nge-tes EscBot. Tujuan tes ini sederhana:
+                    <strong>cek apakah hashtag eskalasi yang muncul sudah sesuai</strong> dengan konteks yang Anda ketik. Kalau belum sesuai, Anda tinggal koreksi.
+                    Hasil koreksi nanti dipakai untuk memperbaiki database hashtag.
+                </p>
+
+                <div class="guide-callout info">
+                    <strong>Catatan AI Mode:</strong> AI saat ini hanya berjalan di lokal saya. Untuk versi online <em>coming soon</em>. Anda bisa abaikan toggle AI Mode, pengaturan AI, dan tombol Test Koneksi - <strong>pencarian lokal sudah cukup untuk kebutuhan tes</strong>.
+                </div>
+
+                <h3 class="guide-section-title">Cara pakai</h3>
+
+                <ol class="guide-steps">
+                    <li>
+                        <span class="guide-step-num">1</span>
+                        <div>
+                            <strong>Ketik notes / konteks di kolom chat</strong> di bagian bawah, lalu tekan <kbd>Enter</kbd>.
+                            <div class="guide-step-hint">Contoh: <em>"kendala tagihan MEC bookpayment"</em>, <em>"aktivasi paket flash corporate"</em>, atau notes asli dari case yang Anda tangani.</div>
+                            <div class="guide-step-hint">Tekan <kbd>Shift</kbd> + <kbd>Enter</kbd> kalau mau ganti baris tanpa kirim.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">2</span>
+                        <div>
+                            <strong>Bot akan menampilkan sampai 5 opsi hashtag</strong> hasil pencocokan.
+                            Setiap opsi berisi nama Group, KIP, hashtag, dan skor kecocokan (Tinggi / Sedang / Rendah).
+                            <div class="guide-step-hint">Klik kotak hashtag berwarna ungu untuk <strong>copy</strong> ke clipboard.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">3</span>
+                        <div>
+                            <strong>Tentukan apakah opsi tersebut benar atau salah</strong>, pakai dua tombol di bawah tiap kartu:
+                            <div class="guide-buttons-demo">
+                                <span class="demo-btn demo-btn-confirm">Benar, pakai ini</span>
+                                <span class="guide-arrow">->&nbsp;</span>
+                                <span class="guide-step-hint inline">Klik kalau hashtag <strong>sudah benar</strong>. Bot akan ingat preferensi ini.</span>
+                            </div>
+                            <div class="guide-buttons-demo">
+                                <span class="demo-btn demo-btn-correct">Group salah, koreksi</span>
+                                <span class="guide-arrow">->&nbsp;</span>
+                                <span class="guide-step-hint inline">Klik kalau Group / hashtag <strong>tidak cocok</strong> dengan konteks. Modal koreksi akan terbuka.</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">4</span>
+                        <div>
+                            <strong>Saat melakukan koreksi:</strong>
+                            <ul class="guide-sub-list">
+                                <li>Cari hashtag yang benar di kolom pencarian (ketik nama Group, KIP, atau kata kunci).</li>
+                                <li>Klik salah satu opsi pada list - opsi terpilih akan ter-highlight.</li>
+                                <li>Tekan tombol <strong>Simpan Koreksi</strong>.</li>
+                            </ul>
+                            <div class="guide-step-hint">Kalau tidak ada satupun dari 5 opsi yang cocok, tetap pilih opsi terdekat lalu lakukan koreksi - jangan dibiarkan saja.</div>
+                        </div>
+                    </li>
+                </ol>
+
+                <div class="guide-callout warn">
+                    <strong>Penting:</strong> Mohon dikoreksi setiap kali ada hashtag / group eskalasi yang menurut Anda tidak sesuai. Inilah data utama yang saya butuhkan untuk memperbaiki database.
+                </div>
+
+                <h3 class="guide-section-title">Pembelajaran &amp; Export</h3>
+
+                <p class="guide-paragraph">
+                    Setiap kali Anda menekan <em>"Benar, pakai ini"</em> atau menyimpan koreksi, datanya tersimpan otomatis di sidebar bagian <strong>Pembelajaran -&gt; Koreksi tersimpan</strong>. Counter di sana akan bertambah.
+                </p>
+
+                <div class="guide-export-box">
+                    <strong>Sebelum menutup tab / selesai testing, mohon lakukan ini:</strong>
+                    <ol class="guide-sub-list">
+                        <li>Buka sidebar (klik ikon menu kalau di mobile).</li>
+                        <li>Di kartu <strong>Pembelajaran</strong>, klik tombol <span class="demo-btn demo-btn-export">Export</span>.</li>
+                        <li>File JSON akan terunduh otomatis (nama: <code>escbot-corrections-YYYY-MM-DD.json</code>).</li>
+                        <li><strong>Kirimkan file JSON tersebut ke saya</strong> agar saya bisa update databasenya.</li>
+                    </ol>
+                </div>
+
+                <div class="guide-callout danger">
+                    <strong>Jangan klik Reset</strong> di kartu Pembelajaran sebelum file koreksi diexport - tombol itu akan menghapus semua koreksi Anda secara permanen.
+                </div>
+
+                <div class="modal-footer">
+                    <label class="checkbox-row" style="flex:1;">
+                        <input type="checkbox" id="guideDontShow">
+                        <span>Jangan tampilkan lagi otomatis</span>
+                    </label>
+                    <button class="btn-primary" id="guideStart">Mengerti, mulai tes</button>
                 </div>
             </div>
         </div>
