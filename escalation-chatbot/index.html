@@ -6,8 +6,164 @@
     <title>Escalation Hashtag Chatbot</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Password Gate */
+        .auth-gate {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary, #0a0a0f);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-gate.hidden { display: none; }
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-card, #16162a);
+            border: 1px solid var(--border, rgba(255,255,255,0.06));
+            border-radius: var(--radius-lg, 16px);
+            padding: 32px;
+            box-shadow: var(--shadow, 0 4px 24px rgba(0,0,0,0.4));
+            text-align: center;
+        }
+        .auth-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        .auth-card h1 {
+            font-size: 20px;
+            margin-bottom: 6px;
+            color: var(--text-primary, #e8e8f0);
+        }
+        .auth-card p {
+            font-size: 13px;
+            color: var(--text-secondary, #9898b0);
+            margin-bottom: 20px;
+        }
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-tertiary, #1a1a2e);
+            border: 1px solid var(--border, rgba(255,255,255,0.06));
+            border-radius: var(--radius, 12px);
+            color: var(--text-primary, #e8e8f0);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .auth-form input:focus {
+            border-color: var(--accent, #6c5ce7);
+        }
+        .auth-form button {
+            padding: 12px 14px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius, 12px);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .auth-form button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+        .auth-error {
+            color: #ff6b6b;
+            font-size: 12px;
+            min-height: 16px;
+            margin-top: 4px;
+        }
+    </style>
 </head>
 <body>
+    <div class="auth-gate" id="authGate">
+        <div class="auth-card">
+            <div class="auth-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h1>Akses Terbatas</h1>
+            <p>Masukkan sandi untuk membuka EscBot</p>
+            <form class="auth-form" id="authForm" autocomplete="off">
+                <input type="password" id="authInput" placeholder="Sandi" autofocus required>
+                <div class="auth-error" id="authError"></div>
+                <button type="submit">Masuk</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var EXPECTED_HASH = '370e220c43da19d5aaabd24627fc0e1b5ff5ea83fd8d24e1dfce5c0b3c7253ec';
+            var STORAGE_KEY = 'escbot_auth_v1';
+            var gate = document.getElementById('authGate');
+            var form = document.getElementById('authForm');
+            var input = document.getElementById('authInput');
+            var errorEl = document.getElementById('authError');
+
+            async function sha256Hex(str) {
+                var buf = new TextEncoder().encode(str);
+                var hash = await crypto.subtle.digest('SHA-256', buf);
+                return Array.from(new Uint8Array(hash))
+                    .map(function(b) { return b.toString(16).padStart(2, '0'); })
+                    .join('');
+            }
+
+            function unlock() {
+                gate.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+
+            // Lock scroll while gate is visible
+            document.body.style.overflow = 'hidden';
+
+            // Skip if already authenticated this session
+            try {
+                if (sessionStorage.getItem(STORAGE_KEY) === EXPECTED_HASH) {
+                    unlock();
+                    return;
+                }
+            } catch (e) { /* sessionStorage unavailable */ }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                errorEl.textContent = '';
+                var value = input.value;
+                if (!value) return;
+                try {
+                    var hashed = await sha256Hex(value);
+                    if (hashed === EXPECTED_HASH) {
+                        try { sessionStorage.setItem(STORAGE_KEY, EXPECTED_HASH); } catch (e) {}
+                        unlock();
+                    } else {
+                        errorEl.textContent = 'Sandi salah. Coba lagi.';
+                        input.value = '';
+                        input.focus();
+                    }
+                } catch (err) {
+                    errorEl.textContent = 'Browser tidak mendukung Web Crypto.';
+                }
+            });
+        })();
+    </script>
+
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
