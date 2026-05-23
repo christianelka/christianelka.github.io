@@ -201,17 +201,15 @@
                     </div>
                 </div>
 
-                <div class="filter-section">
-                    <h3>Filter Assigned Group</h3>
-                    <select id="groupFilter">
-                        <option value="">Semua Group</option>
-                    </select>
-                </div>
-                <div class="filter-section">
-                    <h3>Filter Kategori</h3>
-                    <select id="categoryFilter">
-                        <option value="">Semua Kategori</option>
-                    </select>
+                <div class="history-section">
+                    <div class="history-header">
+                        <h3>Riwayat Chat</h3>
+                        <div class="history-actions">
+                            <button class="btn-mini" id="exportHistory" title="Download semua thread sebagai JSON">Export</button>
+                            <button class="btn-mini btn-danger" id="clearHistory" title="Hapus semua thread">Bersihkan</button>
+                        </div>
+                    </div>
+                    <div class="history-list" id="historyList"></div>
                 </div>
 
                 <div class="learning-card">
@@ -252,6 +250,18 @@
                 </div>
             </div>
 
+            <div class="unsaved-banner" id="unsavedBanner" hidden>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+                <span id="unsavedBannerText">Anda punya data belum di-export.</span>
+                <div class="unsaved-banner-actions">
+                    <button class="unsaved-action-btn" id="unsavedExportCorr" hidden>Export Koreksi</button>
+                    <button class="unsaved-action-btn" id="unsavedExportHist" hidden>Export Riwayat</button>
+                    <button class="unsaved-dismiss" id="unsavedDismiss" title="Sembunyikan sementara">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-screen" id="welcomeScreen">
                     <div class="welcome-icon">
@@ -271,6 +281,19 @@
             </div>
 
             <div class="chat-input-area">
+                <div class="discussion-banner" id="discussionBanner" hidden>
+                    <div class="discussion-banner-info">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <div>
+                            <strong>Mode Diskusi AI</strong>
+                            <span id="discussionContext">Ketik koreksi natural - mis. "bukan itu, harusnya group MEA"</span>
+                        </div>
+                    </div>
+                    <button class="btn-discuss-cancel" id="cancelDiscussion" title="Batal diskusi">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Batal
+                    </button>
+                </div>
                 <div class="input-wrapper">
                     <textarea id="userInput" placeholder="Deskripsikan kendala atau kebutuhan Anda..." rows="1"></textarea>
                     <button class="send-btn" id="sendBtn" title="Kirim">
@@ -296,7 +319,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p class="modal-hint">Konfigurasikan provider OpenAI-compatible. Cocok untuk 9router, OpenAI, OpenRouter, Gemini (OpenAI-compat), atau Ollama lokal. API key disimpan di browser Anda.</p>
+                <p class="modal-hint">Konfigurasikan provider OpenAI-compatible. Cocok untuk 9router, OpenAI, OpenRouter, Gemini (OpenAI-compat), atau Ollama lokal. Anda bisa menyimpan beberapa API key untuk rotasi otomatis (anti rate-limit). Semua key disimpan di browser Anda.</p>
 
                 <div class="form-row">
                     <label>Provider</label>
@@ -320,9 +343,16 @@
                     <input type="text" id="cfgModel" placeholder="kr/claude-opus-4.7">
                 </div>
 
-                <div class="form-row">
-                    <label>API Key</label>
-                    <input type="password" id="cfgApiKey" placeholder="sk-... (kosongkan untuk Ollama)" autocomplete="off">
+                <div class="form-row" id="apiKeysRow">
+                    <div class="api-keys-header">
+                        <label>API Keys</label>
+                        <span class="api-keys-hint">Rotasi otomatis saat rate-limit</span>
+                    </div>
+                    <div class="api-keys-list" id="apiKeysList"></div>
+                    <button type="button" class="btn-add-key" id="addApiKeyBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Tambah Key
+                    </button>
                 </div>
 
                 <div class="form-row form-row-grid">
@@ -356,10 +386,11 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn-secondary" id="testConnection">Test Koneksi</button>
+                    <button class="btn-secondary" id="testConnection">Test Semua Key</button>
                     <button class="btn-primary" id="saveSettings">Simpan</button>
                 </div>
 
+                <div class="test-result-list" id="testResultList" hidden></div>
                 <div class="test-result" id="testResult" hidden></div>
             </div>
         </div>
@@ -500,6 +531,7 @@
     <script src="search.js"></script>
     <script src="ai.js"></script>
     <script src="corrections.js"></script>
+    <script src="history.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
