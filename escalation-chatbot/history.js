@@ -1,3 +1,4 @@
+/*! Copyright (c) 2026 Christian Anelka. All rights reserved. Proprietary - see LICENSE. */
 (function (global) {
     'use strict';
 

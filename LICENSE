@@ -1,21 +1,53 @@
-MIT License
+PROPRIETARY LICENSE
 
-Copyright (c) 2026 Christian Anelka
+Copyright (c) 2026 Christian Anelka. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software, including but not limited to its source code, design, content,
+escalation hashtag database, AI prompts, and accompanying documentation
+(collectively, the "Software"), is proprietary and confidential.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+NO LICENSE GRANTED
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+No license, express or implied, by estoppel or otherwise, is granted under
+any patent, copyright, trademark, or other intellectual property right.
+Possession of, access to, or download of the Software does not grant any
+right to use, copy, modify, merge, publish, distribute, sublicense, sell,
+or otherwise exploit the Software.
+
+PROHIBITED ACTIONS
+
+Without prior written permission from the copyright holder, you may NOT:
+
+  1. Copy, reproduce, or duplicate the Software in any form
+  2. Modify, adapt, translate, or create derivative works of the Software
+  3. Distribute, sublicense, lease, rent, or transfer the Software
+  4. Reverse engineer, decompile, or disassemble the Software
+  5. Use the Software for any commercial purpose
+  6. Remove, alter, or obscure any proprietary notices on the Software
+  7. Use the Software's escalation hashtag database for any purpose
+     other than the explicit purpose granted by the copyright holder
+  8. Republish, mirror, or redistribute the Software on any platform
+
+PERMITTED USE
+
+The Software is provided to authorized testers solely for the purpose of
+testing and providing feedback on the escalation hashtag matching tool.
+This permission is non-transferable and may be revoked at any time without
+notice.
+
+NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND
+NON-INFRINGEMENT.
+
+IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES,
+OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE,
+ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+CONTACT
+
+For licensing inquiries, permissions, or questions regarding this Software,
+please contact the copyright holder.
