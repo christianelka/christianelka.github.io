@@ -1751,6 +1751,12 @@ body {
     border-color: rgba(253, 203, 110, 0.4);
 }
 
+.demo-btn-discuss {
+    background: rgba(108, 92, 231, 0.15);
+    color: var(--accent-light);
+    border-color: rgba(108, 92, 231, 0.4);
+}
+
 .demo-btn-export {
     background: var(--bg-tertiary);
     color: var(--accent-light);

@@ -440,7 +440,7 @@
                 </p>
 
                 <div class="guide-callout info">
-                    <strong>Catatan AI Mode:</strong> AI saat ini hanya berjalan di lokal saya. Untuk versi online <em>coming soon</em>. Anda bisa abaikan toggle AI Mode, pengaturan AI, dan tombol Test Koneksi - <strong>pencarian lokal sudah cukup untuk kebutuhan tes</strong>.
+                    <strong>AI Mode sudah aktif:</strong> Anda bisa pakai pencarian lokal (default) ATAU aktifkan <strong>AI Mode</strong> di sidebar untuk hasil yang lebih akurat. Pengaturan AI sudah dikonfigurasi - tinggal aktifkan toggle <em>AI Mode</em> di sidebar.
                 </div>
 
                 <h3 class="guide-section-title">Cara pakai</h3>
@@ -465,7 +465,7 @@
                     <li>
                         <span class="guide-step-num">3</span>
                         <div>
-                            <strong>Tentukan apakah opsi tersebut benar atau salah</strong>, pakai dua tombol di bawah tiap kartu:
+                            <strong>Tentukan apakah opsi tersebut benar atau salah</strong> via 3 tombol di bawah tiap kartu:
                             <div class="guide-buttons-demo">
                                 <span class="demo-btn demo-btn-confirm">Benar, pakai ini</span>
                                 <span class="guide-arrow">->&nbsp;</span>
@@ -474,20 +474,32 @@
                             <div class="guide-buttons-demo">
                                 <span class="demo-btn demo-btn-correct">Group salah, koreksi</span>
                                 <span class="guide-arrow">->&nbsp;</span>
-                                <span class="guide-step-hint inline">Klik kalau Group / hashtag <strong>tidak cocok</strong> dengan konteks. Modal koreksi akan terbuka.</span>
+                                <span class="guide-step-hint inline">Klik kalau Group / hashtag <strong>tidak cocok</strong>. Modal koreksi terbuka, pilih hashtag yang benar dari list.</span>
+                            </div>
+                            <div class="guide-buttons-demo">
+                                <span class="demo-btn demo-btn-discuss">Diskusi dgn AI</span>
+                                <span class="guide-arrow">->&nbsp;</span>
+                                <span class="guide-step-hint inline">(Hanya saat AI Mode aktif) Diskusi natural language - ketik koreksi seperti <em>"bukan itu, harusnya group MEA"</em>, AI akan revisi pilihan.</span>
                             </div>
                         </div>
                     </li>
                     <li>
                         <span class="guide-step-num">4</span>
                         <div>
-                            <strong>Saat melakukan koreksi:</strong>
+                            <strong>Saat melakukan koreksi (modal):</strong>
                             <ul class="guide-sub-list">
                                 <li>Cari hashtag yang benar di kolom pencarian (ketik nama Group, KIP, atau kata kunci).</li>
                                 <li>Klik salah satu opsi pada list - opsi terpilih akan ter-highlight.</li>
                                 <li>Tekan tombol <strong>Simpan Koreksi</strong>.</li>
                             </ul>
                             <div class="guide-step-hint">Kalau tidak ada satupun dari 5 opsi yang cocok, tetap pilih opsi terdekat lalu lakukan koreksi - jangan dibiarkan saja.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">5</span>
+                        <div>
+                            <strong>Riwayat Chat tersimpan otomatis</strong> di sidebar.
+                            <div class="guide-step-hint">Tiap query yang Anda kirim membuat thread baru. Klik thread di sidebar untuk lihat percakapan lama. Tombol <strong>Chat Baru</strong> untuk mulai thread fresh.</div>
                         </div>
                     </li>
                 </ol>
@@ -499,21 +511,26 @@
                 <h3 class="guide-section-title">Pembelajaran &amp; Export</h3>
 
                 <p class="guide-paragraph">
-                    Setiap kali Anda menekan <em>"Benar, pakai ini"</em> atau menyimpan koreksi, datanya tersimpan otomatis di sidebar bagian <strong>Pembelajaran -&gt; Koreksi tersimpan</strong>. Counter di sana akan bertambah.
+                    Setiap kali Anda menekan <em>"Benar, pakai ini"</em>, menyimpan koreksi, atau diskusi dengan AI, datanya tersimpan otomatis di sidebar bagian <strong>Pembelajaran -&gt; Koreksi tersimpan</strong>. Counter di sana akan bertambah.
+                </p>
+
+                <p class="guide-paragraph">
+                    Banner kuning di atas chat akan muncul kalau Anda punya data <strong>belum di-export</strong>. Klik tombol export di banner itu, atau lewat sidebar manual.
                 </p>
 
                 <div class="guide-export-box">
                     <strong>Sebelum menutup tab / selesai testing, mohon lakukan ini:</strong>
                     <ol class="guide-sub-list">
                         <li>Buka sidebar (klik ikon menu kalau di mobile).</li>
-                        <li>Di kartu <strong>Pembelajaran</strong>, klik tombol <span class="demo-btn demo-btn-export">Export</span>.</li>
-                        <li>File JSON akan terunduh otomatis (nama: <code>escbot-corrections-YYYY-MM-DD.json</code>).</li>
-                        <li><strong>Kirimkan file JSON tersebut ke saya</strong> agar saya bisa update databasenya.</li>
+                        <li>Di kartu <strong>Pembelajaran</strong>, klik tombol <span class="demo-btn demo-btn-export">Export</span> untuk download koreksi.</li>
+                        <li>Di kartu <strong>Riwayat Chat</strong>, klik tombol <span class="demo-btn demo-btn-export">Export</span> untuk download riwayat percakapan (opsional tapi membantu kalau ada bug).</li>
+                        <li>File JSON akan terunduh otomatis (nama: <code>escbot-corrections-YYYY-MM-DD.json</code> dan <code>escbot-history-YYYY-MM-DD.json</code>).</li>
+                        <li><strong>Kirimkan file koreksi ke saya</strong> agar saya bisa update databasenya.</li>
                     </ol>
                 </div>
 
                 <div class="guide-callout danger">
-                    <strong>Jangan klik Reset</strong> di kartu Pembelajaran sebelum file koreksi diexport - tombol itu akan menghapus semua koreksi Anda secara permanen.
+                    <strong>Jangan klik Reset / Bersihkan</strong> di kartu Pembelajaran atau Riwayat sebelum file di-export - tombol itu akan menghapus data secara permanen.
                 </div>
 
                 <div class="modal-footer">
