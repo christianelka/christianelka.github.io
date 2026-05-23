@@ -440,7 +440,85 @@
                 </p>
 
                 <div class="guide-callout info">
-                    <strong>AI Mode sudah aktif:</strong> Anda bisa pakai pencarian lokal (default) ATAU aktifkan <strong>AI Mode</strong> di sidebar untuk hasil yang lebih akurat. Pengaturan AI sudah dikonfigurasi - tinggal aktifkan toggle <em>AI Mode</em> di sidebar.
+                    <strong>AI Mode sudah aktif:</strong> Anda bisa pakai pencarian lokal (default) ATAU aktifkan <strong>AI Mode</strong> di sidebar untuk hasil yang lebih akurat. Setup AI butuh API key sendiri (gratis dari Google AI Studio) - panduan setup ada di bawah.
+                </div>
+
+                <h3 class="guide-section-title">Setup AI Mode (Opsional)</h3>
+
+                <p class="guide-paragraph">
+                    Lewati section ini kalau cuma mau pakai pencarian lokal. AI Mode butuh API key gratis dari Google AI Studio.
+                </p>
+
+                <ol class="guide-steps">
+                    <li>
+                        <span class="guide-step-num">1</span>
+                        <div>
+                            <strong>Dapatkan API key Google Gemini (gratis):</strong>
+                            <ul class="guide-sub-list">
+                                <li>Buka <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="color:var(--accent-light)">aistudio.google.com/apikey</a> di tab baru.</li>
+                                <li>Login pakai akun Google Anda.</li>
+                                <li>Klik <strong>Create API Key</strong>, pilih project apapun (atau buat baru).</li>
+                                <li>Copy API key yang muncul - simpan dulu di catatan, jangan share ke siapapun.</li>
+                            </ul>
+                            <div class="guide-step-hint">Free tier: 15 request/menit untuk Gemini 2.0 Flash. Cukup buat testing.</div>
+                            <div class="guide-step-hint"><strong>Tips anti rate-limit:</strong> bikin 2-3 API key (boleh dari 1 akun Google) untuk fitur rotasi otomatis.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">2</span>
+                        <div>
+                            <strong>Buka pengaturan AI</strong> - klik ikon gear (Pengaturan AI) di pojok kanan atas sidebar.
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">3</span>
+                        <div>
+                            <strong>Konfigurasi provider:</strong>
+                            <ul class="guide-sub-list">
+                                <li><strong>Provider</strong>: pilih <em>Google Gemini (OpenAI-compatible)</em></li>
+                                <li><strong>Base URL</strong>: otomatis terisi - biarkan</li>
+                                <li><strong>Model</strong>: <code>gemini-2.0-flash</code> (default, bisa diganti ke <code>gemini-2.5-flash</code> kalau mau)</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">4</span>
+                        <div>
+                            <strong>Tambahkan API key</strong> di section <em>API Keys</em>:
+                            <ul class="guide-sub-list">
+                                <li>Paste API key di field kosong yang sudah disediakan.</li>
+                                <li>Beri label opsional misal "Gemini-1" untuk identifikasi.</li>
+                                <li>Klik <strong>+ Tambah Key</strong> kalau punya key cadangan untuk rotasi otomatis.</li>
+                            </ul>
+                            <div class="guide-step-hint">Status dot di samping key: <strong style="color:var(--success)">hijau</strong> = ready, <strong style="color:var(--warning)">kuning</strong> = cooldown (rate-limit, akan recover otomatis dalam 60 detik).</div>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">5</span>
+                        <div>
+                            <strong>Test koneksi</strong> - klik tombol <strong>Test Semua Key</strong>. Akan muncul hasil per-key:
+                            <ul class="guide-sub-list">
+                                <li><span style="color:var(--success)">✓ OK</span> - key valid dan bisa dipakai</li>
+                                <li><span style="color:#ff7675">✗ Gagal</span> - cek pesan error (key salah, quota habis, dll)</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="guide-step-num">6</span>
+                        <div>
+                            <strong>Aktifkan dan simpan</strong>:
+                            <ul class="guide-sub-list">
+                                <li>Centang <strong>Aktifkan AI Mode</strong> di bawah.</li>
+                                <li>Klik <strong>Simpan</strong>.</li>
+                                <li>Toggle AI Mode di sidebar otomatis menyala (warna ungu).</li>
+                                <li>Status badge di header chat berubah dari <em>Local Search</em> ke <em>AI Mode</em>.</li>
+                            </ul>
+                        </div>
+                    </li>
+                </ol>
+
+                <div class="guide-callout warn">
+                    <strong>API key disimpan di browser Anda</strong> (localStorage), tidak dikirim ke server saya. Tapi tetap jaga kerahasiaan - jangan share device dengan orang lain tanpa logout dari aplikasi yang pakai key tersebut.
                 </div>
 
                 <h3 class="guide-section-title">Cara pakai</h3>
