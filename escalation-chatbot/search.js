@@ -321,16 +321,41 @@
             }
         });
 
-        results.sort((a, b) => b.scoreRaw - a.scoreRaw);
-
-        const topScore = results[0]?.scoreRaw || 1;
+        const deduplicatedMap = new Map();
         results.forEach(r => {
+            const key = r.kip + '|' + r.hashtag;
+            if (!deduplicatedMap.has(key)) {
+                deduplicatedMap.set(key, r);
+            } else {
+                const existing = deduplicatedMap.get(key);
+                if ((r.skala || 0) > (existing.skala || 0)) {
+                    deduplicatedMap.set(key, r);
+                }
+            }
+        });
+        
+        let finalResults = Array.from(deduplicatedMap.values());
+
+        finalResults.sort((a, b) => {
+            const diff = b.scoreRaw - a.scoreRaw;
+            if (Math.abs(diff) < 0.1) {
+                return (b.skala || 0) - (a.skala || 0);
+            }
+            return diff;
+        });
+
+        const topScore = finalResults[0]?.scoreRaw || 1;
+        finalResults.forEach(r => {
             const relativeToTop = Math.min(100, Math.round((r.scoreRaw / topScore) * 100));
             const absoluteFloor = Math.min(100, Math.round((r.scoreRaw / 60) * 100));
             r.score = Math.min(relativeToTop, absoluteFloor);
+            
+            if (r.skala === 1 && r.score < 100) {
+                r.score = Math.min(100, r.score + 5);
+            }
         });
 
-        return results;
+        return finalResults;
     }
 
     global.EscSearch = {
