@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Wedding of Raka & Siska — Exclusive VVIP</title>
+    <meta name="description" content="Pernikahan Raka Pratama & Siska Dewi - 12 Desember 2026">
+
+    <!-- High-Fashion Typography: Bodoni Moda (Editorial), Cinzel (Classic), Montserrat (Clean) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=Cinzel:wght@400;500;600&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#050505',
+                        truffle: '#121110',
+                        charcoal: '#1A1A1A',
+                        alabaster: '#FAF9F6',
+                        gold: {
+                            DEFAULT: '#C5A880',
+                            muted: '#9E8561',
+                            pale: '#E2D1B8'
+                        }
+                    },
+                    fontFamily: {
+                        editorial: ['"Bodoni Moda"', 'serif'],
+                        classic: ['"Cinzel"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 12s linear infinite',
+                        'breathe': 'breathe 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        breathe: {
+                            '0%, 100%': { opacity: '0.4' },
+                            '50%': { opacity: '0.8' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- AOS CSS & FontAwesome -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #FAF9F6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* Film Grain Noise Overlay for physical texture feel */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* App Container Desktop Constraint */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #050505;
+            position: relative;
+            min-height: 100vh;
+            border-left: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        /* Cinematic Mask Reveal */
+        .cover-hidden {
+            transform: translateY(-100%);
+            transition: transform 1.5s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        /* Editorial Image Hover (Grayscale to Color) */
+        .img-editorial {
+            filter: grayscale(100%) contrast(110%) brightness(85%);
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .img-container:hover .img-editorial {
+            filter: grayscale(20%) contrast(100%) brightness(100%);
+            transform: scale(1.03);
+        }
+
+        /* Hairline borders for architecture feel */
+        .hairline-b { border-bottom: 1px solid rgba(197, 168, 128, 0.2); }
+        .hairline-t { border-top: 1px solid rgba(197, 168, 128, 0.2); }
+        .hairline-border { border: 1px solid rgba(197, 168, 128, 0.2); }
+
+        /* Minimalist Input */
+        .input-luxury {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            border-radius: 0;
+            padding: 12px 0;
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: #FAF9F6;
+            transition: border-color 0.4s ease;
+        }
+        .input-luxury:focus {
+            outline: none;
+            border-bottom: 1px solid #C5A880;
+        }
+        .input-luxury::placeholder {
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+        }
+
+        /* Radio Buttons */
+        .radio-luxury input:checked + div {
+            background-color: #C5A880;
+            color: #050505;
+            border-color: #C5A880;
+        }
+
+        /* Progress Bar */
+        #scrollProgress {
+            position: fixed; top: 0; left: 0; width: 0%; height: 2px;
+            background: #C5A880; z-index: 9999; pointer-events: none;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; top: 30px; left: 50%; transform: translate(-50%, -20px);
+            background: #FAF9F6; color: #050505; padding: 12px 24px;
+            font-family: 'Montserrat', sans-serif; font-size: 0.6rem; text-transform: uppercase;
+            letter-spacing: 0.2em; opacity: 0; pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 99999;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    </style>
+</head>
+<body>
+
+    <div class="noise-overlay"></div>
+    <div id="scrollProgress"></div>
+    <div id="toast" class="toast">ACTION RECORDED</div>
+    <canvas id="particle-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 mix-blend-screen opacity-50"></canvas>
+
+    <div class="app-container" id="appContainer">
+
+        <!-- ==========================================
+             SECTION 0: THE COUTURE GATES (COVER)
+             ========================================== -->
+        <section id="coverScreen" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] h-screen z-50 bg-obsidian flex flex-col justify-between p-8 border-x border-white/5">
+            <!-- Architectural Lines -->
+            <div class="absolute inset-5 border border-white/10 pointer-events-none"></div>
+            
+            <div class="w-full pt-20 text-center" data-aos="fade-down" data-aos-duration="2000">
+                <p class="font-classic uppercase tracking-[0.4em] text-[8px] text-gold-muted mb-8">The Wedding Celebration</p>
+                <h1 class="font-editorial text-6xl text-alabaster leading-none tracking-tight mb-2">RAKA</h1>
+                <p class="font-editorial italic text-gold text-3xl mb-2">&</p>
+                <h1 class="font-editorial text-6xl text-alabaster leading-none tracking-tight">SISKA</h1>
+            </div>
+            
+            <div class="w-full pb-16 text-center z-10" data-aos="fade-up" data-aos-duration="2000" data-aos-delay="500">
+                <p class="font-sans uppercase tracking-[0.3em] text-[7px] text-white/40 mb-4">Exclusively Invited</p>
+                <!-- Guest Name Holder -->
+                <h2 id="guestNameDisplay" class="font-editorial italic text-3xl text-gold mb-12 block px-4 hairline-b pb-4 inline-block">Honorary Guest</h2>
+                
+                <button onclick="openInvitation()" class="block w-full border border-gold/40 bg-transparent text-gold uppercase tracking-[0.3em] text-[8px] py-5 hover:bg-gold hover:text-obsidian transition-colors duration-700">
+                    Open Invitation
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SECTION 1: THE MANIFESTO (HERO)
+             ========================================== -->
+        <section id="heroSection" class="relative min-h-[100svh] flex flex-col items-center justify-end z-10 pb-20">
+            <!-- Cinematic Background -->
+            <div class="absolute inset-0 z-[-1] bg-center bg-cover img-editorial opacity-50" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80');"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-obsidian/40 via-transparent to-obsidian"></div>
+
+            <div class="text-center w-full px-8" data-aos="fade-up" data-aos-duration="2000">
+                <div class="w-px h-16 bg-gradient-to-b from-gold to-transparent mx-auto mb-6"></div>
+                <h2 class="font-editorial text-5xl text-alabaster mb-4 tracking-wider">R <span class="italic text-gold">&</span> S</h2>
+                <p class="font-classic uppercase tracking-[0.4em] text-[7px] text-gold-pale mb-10">Are Getting Married</p>
+                
+                <div class="w-2/3 mx-auto hairline-t mb-8"></div>
+                
+                <p class="font-editorial italic text-2xl text-alabaster mb-12">12 . 12 . 2026</p>
+
+                <!-- High-End Typographic Countdown -->
+                <div class="flex justify-center gap-8 w-full max-w-xs mx-auto text-alabaster">
+                    <div class="text-center">
+                        <span id="cd-days" class="font-editorial text-3xl block leading-none">00</span>
+                        <span class="font-sans uppercase tracking-[0.3em] text-[6px] text-gold-muted mt-2 block">Days</span>
+                    </div>
+                    <div class="text-center">
+                        <span id="cd-hours" class="font-editorial text-3xl block leading-none">00</span>
+                        <span class="font-sans uppercase tracking-[0.3em] text-[6px] text-gold-muted mt-2 block">Hrs</span>
+                    </div>
+                    <div class="text-center">
+                        <span id="cd-minutes" class="font-editorial text-3xl block leading-none">00</span>
+                        <span class="font-sans uppercase tracking-[0.3em] text-[6px] text-gold-muted mt-2 block">Min</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SECTION 2: EDITORIAL PROFILE
+             ========================================== -->
+        <section class="py-32 px-8 relative z-10 bg-truffle border-b border-white/5">
+            <!-- Poetry Block -->
+            <div class="text-center mb-24" data-aos="fade-up" data-aos-duration="1500">
+                <p class="font-classic uppercase tracking-[0.5em] text-[7px] text-gold mb-8">The Divine Union</p>
+                <p class="font-editorial italic text-xl text-alabaster/80 leading-loose max-w-xs mx-auto">
+                    "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri..."
+                </p>
+                <p class="font-sans uppercase tracking-widest text-[6px] text-gold mt-6">Q.S. Ar-Rum: 21</p>
+            </div>
+
+            <!-- Asymmetrical Grid Profile -->
+            <div class="flex flex-col gap-24">
+                <!-- Groom (Left Aligned) -->
+                <div class="flex flex-col items-start pr-12" data-aos="fade-right" data-aos-duration="1500">
+                    <div class="w-full aspect-[3/4] overflow-hidden mb-6 hairline-border p-1 bg-obsidian img-container">
+                        <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" alt="Groom" class="w-full h-full object-cover img-editorial">
+                    </div>
+                    <h3 class="font-editorial text-3xl text-alabaster mb-2">Raka Pratama</h3>
+                    <p class="font-sans uppercase tracking-[0.3em] text-[7px] text-gold-muted mb-4">The Groom</p>
+                    <p class="font-sans text-[8px] text-alabaster/50 tracking-[0.1em] leading-loose uppercase">Putra dari Bapak Hendra<br>& Ibu Sari</p>
+                </div>
+
+                <!-- Bride (Right Aligned) -->
+                <div class="flex flex-col items-end pl-12" data-aos="fade-left" data-aos-duration="1500">
+                    <div class="w-full aspect-[3/4] overflow-hidden mb-6 hairline-border p-1 bg-obsidian img-container">
+                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80" alt="Bride" class="w-full h-full object-cover img-editorial">
+                    </div>
+                    <h3 class="font-editorial text-3xl text-alabaster mb-2 text-right">Siska Dewi</h3>
+                    <p class="font-sans uppercase tracking-[0.3em] text-[7px] text-gold-muted mb-4 text-right">The Bride</p>
+                    <p class="font-sans text-[8px] text-alabaster/50 tracking-[0.1em] leading-loose uppercase text-right">Putri dari Bapak Agus<br>& Ibu Dewi</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SECTION 3: EVENT CHRONOLOGY
+             ========================================== -->
+        <section class="py-32 px-8 bg-charcoal relative z-10 border-b border-white/5 text-center">
+            
+            <p class="font-classic uppercase tracking-[0.4em] text-[7px] text-gold mb-20" data-aos="fade-up">The Chronology</p>
+
+            <!-- Akad Info -->
+            <div class="mb-24" data-aos="fade-up" data-aos-duration="1500">
+                <span class="font-sans uppercase tracking-[0.3em] text-[6px] text-alabaster/40 block mb-3">Chapter I</span>
+                <h3 class="font-editorial italic text-3xl text-alabaster mb-6">Holy Matrimony</h3>
+                <div class="font-classic text-lg tracking-widest text-gold mb-2">12 . 12 . 2026</div>
+                <div class="font-sans uppercase tracking-[0.3em] text-[7px] text-alabaster/60 mb-8">08:00 AM — Completion</div>
+                
+                <p class="font-sans uppercase tracking-widest text-[8px] text-alabaster mb-1">Masjid Agung Surakarta</p>
+                <p class="font-sans text-[7px] tracking-wider text-alabaster/40">Jl. Kauman, Surakarta, Central Java</p>
+            </div>
+
+            <div class="w-12 h-px bg-gold/20 mx-auto mb-24"></div>
+
+            <!-- Reception Info -->
+            <div class="mb-16" data-aos="fade-up" data-aos-duration="1500">
+                <span class="font-sans uppercase tracking-[0.3em] text-[6px] text-alabaster/40 block mb-3">Chapter II</span>
+                <h3 class="font-editorial italic text-3xl text-alabaster mb-6">Grand Reception</h3>
+                
+                <!-- Exclusive VIP Node -->
+                <div id="vipBadge" class="hidden mb-8 border border-gold/40 bg-obsidian text-gold px-6 py-3 mx-auto inline-block shadow-2xl">
+                    <p class="font-sans uppercase tracking-[0.3em] text-[6px] mb-1 opacity-70">VIP Access Credential</p>
+                    <p class="font-classic text-xs tracking-widest">Table: <span id="tableNumber">VVIP-01</span></p>
+                </div>
+
+                <div class="font-classic text-lg tracking-widest text-gold mb-2">12 . 12 . 2026</div>
+                
+                <div class="inline-block border-y border-white/10 py-3 mb-8 mt-4 w-full max-w-[200px]">
+                    <p class="font-sans uppercase tracking-[0.3em] text-[6px] text-gold-muted mb-1">Session Allocated</p>
+                    <p id="shiftTime" class="font-sans text-[9px] tracking-widest text-alabaster">11:00 AM — 01:00 PM</p>
+                </div>
+                
+                <p class="font-sans uppercase tracking-widest text-[8px] text-alabaster mb-1">Hotel Grand Ballroom</p>
+                <p class="font-sans text-[7px] tracking-wider text-alabaster/40 mb-12">Jl. Slamet Riyadi, Surakarta</p>
+
+                <!-- Architectural Buttons -->
+                <div class="flex flex-col gap-3 max-w-[220px] mx-auto">
+                    <a href="https://maps.google.com/?q=Hotel+Grand+Ballroom+Jakarta" target="_blank" class="w-full bg-alabaster text-obsidian font-sans uppercase tracking-[0.2em] text-[7px] font-medium py-4 hover:bg-gold transition-colors text-center">
+                        View Location
+                    </a>
+                    <button onclick="addToCalendar()" class="w-full bg-transparent hairline-border text-alabaster font-sans uppercase tracking-[0.2em] text-[7px] py-4 hover:border-gold hover:text-gold transition-colors">
+                        Add to Calendar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SECTION 3.5: DRESSCODE (Strict Elegance)
+             ========================================== -->
+        <section class="py-20 bg-obsidian text-center px-8 relative z-10 border-b border-white/5" data-aos="fade-up">
+            <h3 class="font-classic uppercase tracking-[0.4em] text-[7px] text-gold mb-6">Attire Guideline</h3>
+            <p class="font-editorial italic text-2xl text-alabaster mb-8">Earth Tones & Formal</p>
+            <div class="flex justify-center gap-0 max-w-[160px] mx-auto hairline-border">
+                <div class="w-full h-2 bg-[#8FBC8F]"></div>
+                <div class="w-full h-2 bg-[#C5A880]"></div>
+                <div class="w-full h-2 bg-[#D4A574]"></div>
+                <div class="w-full h-2 bg-[#5A4A3A]"></div>
+                <div class="w-full h-2 bg-[#FAF9F6]"></div>
+            </div>
+            <p class="font-sans uppercase tracking-[0.2em] text-[6px] text-alabaster/40 mt-6">Strictly refined natural palettes</p>
+        </section>
+
+        <!-- ==========================================
+             SECTION 4: FINE ART GALLERY
+             ========================================== -->
+        <section class="py-32 px-6 bg-truffle relative z-10 border-b border-white/5">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <p class="font-classic uppercase tracking-[0.4em] text-[7px] text-gold mb-4">Visual Artifacts</p>
+            </div>
+
+            <!-- Sharp Edge Brutalist Grid -->
+            <div class="grid grid-cols-2 gap-1" id="galleryGrid">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
+
+        <!-- Minimalist Lightbox -->
+        <div id="lightbox" class="fixed inset-0 z-[110] bg-obsidian/95 hidden flex-col items-center justify-center opacity-0 transition-opacity duration-700 backdrop-blur-md">
+            <button onclick="closeLightbox()" class="absolute top-8 right-8 text-alabaster/50 hover:text-gold transition-colors font-sans uppercase tracking-[0.3em] text-[7px]"><i class="fa-solid fa-xmark mb-1 block text-lg"></i>Close</button>
+            <img id="lightboxImg" src="" class="max-w-[90%] max-h-[70vh] object-contain img-editorial border border-white/10 p-1 bg-obsidian transition-transform duration-700">
+            <div class="absolute bottom-16 flex gap-20">
+                <button onclick="navLightbox(-1)" class="text-alabaster/50 hover:text-gold text-xl transition-colors"><i class="fa-solid fa-angle-left"></i></button>
+                <button onclick="navLightbox(1)" class="text-alabaster/50 hover:text-gold text-xl transition-colors"><i class="fa-solid fa-angle-right"></i></button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             SECTION 5: THE LEDGER (GIFT)
+             ========================================== -->
+        <section id="giftSection" class="py-32 px-8 bg-obsidian text-alabaster relative z-10 border-b border-white/5">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <p class="font-classic uppercase tracking-[0.4em] text-[7px] text-gold mb-4">The Registry</p>
+                <h2 class="font-editorial italic text-3xl mb-8">Send A Gift</h2>
+            </div>
+
+            <!-- Black Card (BCA) -->
+            <div class="bg-charcoal border border-white/10 p-8 relative overflow-hidden mb-6 w-full max-w-sm mx-auto shadow-2xl" data-aos="fade-up">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
+                <p class="font-sans uppercase tracking-widest text-[6px] text-alabaster/50 mb-10 text-right">Bank Central Asia</p>
+                <p class="font-classic text-xl tracking-[0.2em] mb-2 text-gold text-center">1234 5678 9012</p>
+                <p class="font-sans uppercase tracking-[0.3em] text-[7px] text-alabaster/80 text-center mb-10">Raka Pratama</p>
+                <button onclick="copyToClipboard('123456789012', 'BCA')" class="w-full bg-transparent border border-gold/30 text-gold font-sans uppercase tracking-[0.2em] text-[6px] py-3 hover:bg-gold hover:text-obsidian transition-colors relative z-10">
+                    Copy Account
+                </button>
+            </div>
+
+            <!-- Secondary Card (Mandiri) -->
+            <div class="bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/5 p-8 relative overflow-hidden mb-6 w-full max-w-sm mx-auto shadow-2xl" data-aos="fade-up" data-aos-delay="100">
+                <p class="font-sans uppercase tracking-widest text-[6px] text-alabaster/50 mb-10 text-right">Bank Mandiri</p>
+                <p class="font-classic text-xl tracking-[0.2em] mb-2 text-alabaster text-center">0987 6543 2101</p>
+                <p class="font-sans uppercase tracking-[0.3em] text-[7px] text-alabaster/80 text-center mb-10">Siska Dewi</p>
+                <button onclick="copyToClipboard('098765432101', 'Mandiri')" class="w-full bg-transparent border border-white/30 text-alabaster font-sans uppercase tracking-[0.2em] text-[6px] py-3 hover:bg-alabaster hover:text-obsidian transition-colors relative z-10">
+                    Copy Account
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SECTION 6: RESPONSE & LOG (RSVP)
+             ========================================== -->
+        <section class="py-32 px-8 bg-truffle relative z-10">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <p class="font-classic uppercase tracking-[0.4em] text-[7px] text-gold mb-4">Protocol</p>
+                <h2 class="font-editorial italic text-3xl">RSVP</h2>
+            </div>
+
+            <!-- Form -->
+            <div id="rsvpFormArea" data-aos="fade-up" class="max-w-sm mx-auto">
+                <form id="rsvpForm" onsubmit="submitRSVP(event)">
+                    
+                    <div class="mb-12">
+                        <div class="flex gap-3 justify-center radio-luxury">
+                            <label class="cursor-pointer flex-1">
+                                <input type="radio" name="attendance" value="Hadir" class="sr-only" required onchange="toggleGuestCount(true)" checked>
+                                <div class="px-2 py-4 border border-gold/30 text-[7px] uppercase tracking-[0.2em] text-center text-alabaster transition-colors">
+                                    Accept
+                                </div>
+                            </label>
+                            <label class="cursor-pointer flex-1">
+                                <input type="radio" name="attendance" value="Tidak Hadir" class="sr-only" onchange="toggleGuestCount(false)">
+                                <div class="px-2 py-4 border border-white/10 text-[7px] uppercase tracking-[0.2em] text-center text-alabaster/50 transition-colors hover:border-white/30">
+                                    Decline
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-8" id="guestCountWrapper">
+                        <select id="guestCount" class="input-luxury appearance-none bg-obsidian">
+                            <option value="1" class="text-white">1 Delegate</option>
+                            <option value="2" class="text-white">2 Delegates</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-8">
+                        <input type="text" id="rsvpName" placeholder="Identified Name" class="input-luxury" required>
+                    </div>
+
+                    <div class="mb-12">
+                        <textarea id="rsvpMessage" rows="1" placeholder="Leave a note..." class="input-luxury resize-none"></textarea>
+                    </div>
+
+                    <!-- Minimalist Voice Note -->
+                    <div class="mb-16 flex items-center justify-between hairline-b pb-3">
+                        <span class="font-sans uppercase tracking-[0.2em] text-[7px] text-alabaster/50">Voice Log (Optional)</span>
+                        <div class="flex items-center gap-4">
+                            <span id="voiceTimer" class="font-classic text-[9px] text-gold hidden">00:00</span>
+                            <button type="button" id="voiceBtn" onclick="toggleVoiceNote()" class="w-6 h-6 border border-gold rounded-full flex items-center justify-center text-gold hover:bg-gold hover:text-obsidian transition-colors relative">
+                                <div id="voiceIcon" class="w-1.5 h-1.5 rounded-full bg-current"></div>
+                                <span id="recordPulse" class="absolute inset-0 rounded-full border border-red-500 animate-ping hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-alabaster text-obsidian font-sans uppercase tracking-[0.3em] text-[8px] font-medium py-5 hover:bg-gold transition-colors">
+                        Submit Response
+                    </button>
+                </form>
+            </div>
+
+            <!-- Smart Memory Success State -->
+            <div id="rsvpSuccessArea" class="hidden text-center py-16 px-6 border border-gold/20 bg-obsidian max-w-sm mx-auto" data-aos="fade-in">
+                <p class="font-classic text-gold mb-6 text-3xl">M</p>
+                <h3 class="font-editorial italic text-2xl text-alabaster mb-4">Merci</h3>
+                <p class="font-sans text-[8px] uppercase tracking-widest text-alabaster/60 mb-12 leading-loose">Your response has been<br>elegantly recorded.</p>
+                <button onclick="openQRModal()" class="border-b border-gold text-gold font-sans uppercase tracking-[0.3em] text-[7px] pb-2 hover:text-alabaster transition-colors">
+                    View Access Pass
+                </button>
+            </div>
+
+            <!-- Editorial Guestbook -->
+            <div class="mt-32 max-w-sm mx-auto hairline-t pt-16" data-aos="fade-up">
+                <p class="font-classic uppercase tracking-[0.4em] text-[7px] text-center text-gold mb-16">Notes & Wishes</p>
+                <div class="space-y-16 max-h-[400px] overflow-y-auto pr-4 scroll-smooth" id="guestbookFeed" style="scrollbar-width: thin; scrollbar-color: rgba(197, 168, 128, 0.3) transparent;">
+                    <!-- JS will populate -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Anchor -->
+        <footer class="bg-obsidian text-center py-20 text-alabaster relative z-10 hairline-t">
+            <h2 class="font-editorial text-2xl mb-6 text-gold tracking-widest">R <span class="italic mx-1">&</span> S</h2>
+            <p class="font-sans uppercase tracking-[0.4em] text-[5px] opacity-30">Exclusive Digital Production &copy; 2026</p>
+        </footer>
+
+        <!-- ==========================================
+             SECTION 7: THE METRIC BOARDING PASS (MODAL)
+             ========================================== -->
+        <div id="qrModal" class="fixed inset-0 z-[120] hidden items-center justify-center p-4">
+            <div class="absolute inset-0 bg-obsidian/95 backdrop-blur-sm" onclick="closeQRModal()"></div>
+            
+            <div id="ticketCard" class="relative bg-alabaster w-full max-w-sm shadow-2xl transform scale-95 opacity-0 transition-all duration-700">
+                <button onclick="closeQRModal()" class="absolute top-5 right-5 text-obsidian/40 hover:text-obsidian text-sm z-20"><i class="fa-solid fa-xmark"></i></button>
+                
+                <div class="p-8 text-center border-b border-obsidian/10">
+                    <p class="font-sans text-[6px] text-obsidian uppercase tracking-[0.5em] mb-4">Admit One</p>
+                    <h3 class="font-editorial text-3xl text-obsidian mb-1">R & S</h3>
+                    <p class="font-classic text-[8px] text-obsidian/50 tracking-widest">Grand Reception</p>
+                </div>
+
+                <div class="p-8 text-center bg-alabaster relative flex flex-col items-center">
+                    <div class="absolute top-0 left-[-10px] w-5 h-5 bg-obsidian rounded-full -mt-2.5"></div>
+                    <div class="absolute top-0 right-[-10px] w-5 h-5 bg-obsidian rounded-full -mt-2.5"></div>
+
+                    <div class="border border-obsidian/20 p-2 mb-8 bg-white">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=wedding-raka-siska-2026&color=000000&bgcolor=FAF9F6" alt="QR Code" id="qrCodeImg" class="w-32 h-32 mix-blend-multiply">
+                    </div>
+                    
+                    <p class="font-sans text-[6px] uppercase tracking-[0.3em] text-obsidian/50 mb-2">Guest Identifier</p>
+                    <p id="ticket-guest-name" class="font-editorial italic text-2xl text-obsidian mb-6">Tamu</p>
+                    
+                    <div class="w-full flex justify-between border-t border-obsidian/10 pt-4 px-4">
+                        <div class="text-left">
+                            <p class="font-sans text-[5px] uppercase tracking-widest text-obsidian/50">Date</p>
+                            <p class="font-classic text-[9px] text-obsidian font-bold">12.12.26</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-sans text-[5px] uppercase tracking-widest text-obsidian/50">Status</p>
+                            <p class="font-classic text-[9px] text-obsidian font-bold">CONFIRMED</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="downloadTicket()" id="downloadBtn" class="w-full bg-obsidian text-gold font-sans uppercase tracking-[0.3em] text-[7px] py-6 hover:bg-black transition-colors">
+                    Save to Device
+                </button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             AUDIO CONSOLE
+             ========================================== -->
+        <div class="fixed bottom-8 right-6 z-50">
+            <button id="audioBtn" onclick="toggleAudio()" class="w-10 h-10 border border-gold/40 rounded-full flex items-center justify-center text-gold hover:bg-gold hover:text-obsidian transition-all duration-500 bg-obsidian/50 backdrop-blur">
+                <div id="audioIconIndicator" class="w-1.5 h-1.5 rounded-full bg-current relative">
+                    <div class="absolute inset-[-4px] border border-current rounded-full animate-ping opacity-50"></div>
+                </div>
+                <div id="audioLine" class="absolute w-5 h-px bg-current transform rotate-45 hidden"></div>
+            </button>
+            <audio id="bgAudio" loop>
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // High-end slow ease animation
+        AOS.init({ duration: 1800, once: true, offset: 40, easing: 'ease-out-cubic' });
+
+        const WEDDING_DATE = new Date('2026-12-12T08:00:00+07:00').getTime();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            parseURLParams();
+            initGallery();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            initParticles();
+            
+            // Check State
+            if (localStorage.getItem('rsvp_submitted') === 'true') {
+                document.getElementById('rsvpFormArea').classList.add('hidden');
+                document.getElementById('rsvpSuccessArea').classList.remove('hidden');
+            }
+            populateGuestbook();
+            checkGiftAutoHide();
+        });
+
+        // Anti-XSS Sanitization (QA Standard)
+        function sanitize(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function parseURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            const guestName = sanitize(params.get('to') || 'Honorary Guest').replace(/\+/g, ' ');
+            const isVip = params.get('vip') === '1' || params.get('vip') === 'true';
+            const shift = params.get('shift') || '1';
+
+            document.getElementById('guestNameDisplay').innerHTML = guestName;
+            document.getElementById('ticket-guest-name').innerHTML = guestName;
+            
+            // Pre-fill RSVP Name
+            if(document.getElementById('rsvpName')) {
+                document.getElementById('rsvpName').value = guestName !== 'Honorary Guest' ? guestName : '';
+            }
+
+            if (isVip) {
+                document.getElementById('vipBadge').classList.remove('hidden');
+                document.getElementById('tableNumber').innerText = `VVIP-0${guestName.length % 9 + 1}`;
+            }
+
+            const shiftEl = document.getElementById('shiftTime');
+            if (shift === '1') shiftEl.innerText = "11:00 AM — 01:00 PM";
+            else if (shift === '2') shiftEl.innerText = "01:30 PM — 03:30 PM";
+        }
+
+        function openInvitation() {
+            const cover = document.getElementById('coverScreen');
+            cover.classList.add('cover-hidden');
+            
+            const audio = document.getElementById('bgAudio');
+            audio.play().then(() => {
+                isAudioPlaying = true;
+                updateAudioUI();
+            }).catch(e => console.log('Autoplay policy blocked', e));
+
+            setTimeout(() => { cover.style.display = 'none'; }, 1500);
+        }
+
+        let isAudioPlaying = false;
+        function toggleAudio() {
+            const audio = document.getElementById('bgAudio');
+            if (isAudioPlaying) audio.pause();
+            else audio.play();
+            isAudioPlaying = !isAudioPlaying;
+            updateAudioUI();
+        }
+
+        function updateAudioUI() {
+            const ping = document.querySelector('#audioIconIndicator > div');
+            const line = document.getElementById('audioLine');
+            if (isAudioPlaying) {
+                ping.classList.remove('hidden');
+                line.classList.add('hidden');
+            } else {
+                ping.classList.add('hidden');
+                line.classList.remove('hidden');
+            }
+        }
+
+        function updateCountdown() {
+            let diff = WEDDING_DATE - new Date().getTime();
+            if (diff < 0) diff = 0;
+            
+            document.getElementById('cd-days').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            document.getElementById('cd-hours').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            document.getElementById('cd-minutes').innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        }
+
+        const galleryImages = [
+            'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&w=800&q=80'
+        ];
+        let currentImgIndex = 0;
+
+        function initGallery() {
+            const grid = document.getElementById('galleryGrid');
+            galleryImages.forEach((src, idx) => {
+                const imgStr = `
+                    <div class="w-full aspect-square overflow-hidden cursor-pointer bg-obsidian img-container" onclick="openLightbox(${idx})" data-aos="fade-up" data-aos-delay="${idx*50}">
+                        <img src="${src}" loading="lazy" class="w-full h-full object-cover img-editorial">
+                    </div>`;
+                grid.innerHTML += imgStr;
+            });
+        }
+
+        function openLightbox(idx) {
+            currentImgIndex = idx;
+            document.getElementById('lightboxImg').src = galleryImages[idx];
+            const lb = document.getElementById('lightbox');
+            lb.classList.remove('hidden'); lb.classList.add('flex');
+            setTimeout(() => lb.classList.remove('opacity-0'), 10);
+        }
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            lb.classList.add('opacity-0');
+            setTimeout(() => { lb.classList.add('hidden'); lb.classList.remove('flex'); }, 700);
+        }
+        function navLightbox(dir) {
+            currentImgIndex += dir;
+            if(currentImgIndex < 0) currentImgIndex = galleryImages.length - 1;
+            if(currentImgIndex >= galleryImages.length) currentImgIndex = 0;
+            document.getElementById('lightboxImg').src = galleryImages[currentImgIndex];
+        }
+
+        // Resilient Clipboard API (iOS Fallback)
+        function copyToClipboard(text, entity) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => showToast(entity + " IDENTIFIER COPIED"));
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                document.body.appendChild(ta);
+                ta.focus(); ta.select();
+                try { document.execCommand('copy'); showToast(entity + " IDENTIFIER COPIED"); } 
+                catch (err) { showToast("COPY FAILED"); }
+                document.body.removeChild(ta);
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function toggleGuestCount(show) {
+            const sel = document.getElementById('guestCount');
+            if(show) { sel.parentElement.style.display = 'block'; sel.required = true; }
+            else { sel.parentElement.style.display = 'none'; sel.required = false; }
+        }
+
+        // Voice Simulation
+        let isRecording = false;
+        let voiceTimer;
+        let voiceSec = 0;
+        function toggleVoiceNote() {
+            const btn = document.getElementById('voiceBtn');
+            const timer = document.getElementById('voiceTimer');
+            const pulse = document.getElementById('recordPulse');
+            
+            if(!isRecording) {
+                isRecording = true;
+                pulse.classList.remove('hidden');
+                timer.classList.remove('hidden');
+                btn.classList.add('border-red-500');
+                voiceSec = 0;
+                voiceTimer = setInterval(() => {
+                    voiceSec++;
+                    const m = String(Math.floor(voiceSec/60)).padStart(2,'0');
+                    const s = String(voiceSec%60).padStart(2,'0');
+                    timer.innerText = m+':'+s;
+                    if(voiceSec >= 20) toggleVoiceNote();
+                }, 1000);
+            } else {
+                isRecording = false;
+                clearInterval(voiceTimer);
+                pulse.classList.add('hidden');
+                btn.classList.remove('border-red-500');
+                showToast("VOICE LOG SECURED");
+            }
+        }
+
+        function submitRSVP(e) {
+            e.preventDefault();
+            const att = document.querySelector('input[name="attendance"]:checked').value;
+            const name = document.getElementById('rsvpName').value.trim();
+            const msg = document.getElementById('rsvpMessage').value.trim();
+            
+            localStorage.setItem('rsvp_submitted', 'true');
+            localStorage.setItem('rsvp_name', name);
+            localStorage.setItem('rsvp_status', att);
+            
+            document.getElementById('rsvpFormArea').classList.add('hidden');
+            document.getElementById('rsvpSuccessArea').classList.remove('hidden');
+            
+            if(msg) {
+                const entry = { name: name, msg: msg, status: att, audio: isRecording };
+                addGuestbookEntry(entry, true);
+            }
+            
+            document.getElementById('ticket-guest-name').innerText = name;
+            document.getElementById('qrCodeImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=wedding-raka-siska-' + encodeURIComponent(name) + '&color=000000&bgcolor=FAF9F6';
+            
+            if(att === 'Hadir') setTimeout(openQRModal, 1000);
+            else showToast("RESPONSE LOGGED");
+        }
+
+        const sampleGB = [
+            { name: 'Budi Santoso', msg: 'A timeless union. Wishing you eternal happiness.', status: 'Hadir', audio: false },
+            { name: 'Keluarga Ahmad', msg: 'Beautiful celebration. Sending love from afar.', status: 'Tidak Hadir', audio: true }
+        ];
+
+        function populateGuestbook() {
+            const feed = document.getElementById('guestbookFeed');
+            feed.innerHTML = '';
+            sampleGB.forEach(e => addGuestbookEntry(e, false));
+            
+            if(localStorage.getItem('rsvp_submitted') === 'true') {
+                const storedMsg = document.getElementById('rsvpMessage')?.value; // fallback if reloaded
+                if(!storedMsg) return; // Only show if they just submitted in this session for simplicity, or we can use localStorage for msg too.
+            }
+        }
+
+        function addGuestbookEntry(e, prepend) {
+            const feed = document.getElementById('guestbookFeed');
+            const audioHTML = e.audio ? `<div class="flex items-center justify-center gap-3 mt-4"><i class="fa-solid fa-play text-[8px] text-gold cursor-pointer"></i><div class="w-16 h-px bg-white/20 relative"><div class="absolute left-0 top-0 h-full w-1/3 bg-gold"></div></div></div>` : '';
+            const html = `
+                <div class="text-center mb-10">
+                    <p class="font-editorial italic text-alabaster/90 text-xl mb-4">"${sanitize(e.msg)}"</p>
+                    ${audioHTML}
+                    <p class="font-sans uppercase tracking-[0.3em] text-[7px] text-gold-muted mt-4">— ${sanitize(e.name)}</p>
+                </div>`;
+            if(prepend) feed.insertAdjacentHTML('afterbegin', html);
+            else feed.insertAdjacentHTML('beforeend', html);
+        }
+
+        function openQRModal() {
+            const md = document.getElementById('qrModal');
+            const cd = document.getElementById('ticketCard');
+            md.classList.remove('hidden'); md.classList.add('flex');
+            setTimeout(() => { cd.classList.remove('scale-95','opacity-0'); }, 10);
+        }
+        function closeQRModal() {
+            const md = document.getElementById('qrModal');
+            const cd = document.getElementById('ticketCard');
+            cd.classList.add('scale-95','opacity-0');
+            setTimeout(() => { md.classList.add('hidden'); md.classList.remove('flex'); }, 700);
+        }
+
+        function downloadTicket() {
+            const btn = document.getElementById('downloadBtn');
+            const og = btn.innerHTML;
+            btn.innerHTML = 'PROCESSING...';
+            // Scale 3 for super high resolution printing/scanning
+            html2canvas(document.getElementById('ticketCard'), {
+                scale: 3, useCORS: true, backgroundColor: '#FAF9F6',
+                ignoreElements: (el) => el.id === 'downloadBtn'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Access-Pass.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 1.0);
+                link.click();
+                btn.innerHTML = 'SAVED';
+                setTimeout(() => btn.innerHTML = og, 3000);
+            }).catch(() => { showToast('ERROR'); btn.innerHTML = og; });
+        }
+
+        function addToCalendar() { showToast("CALENDAR SYNCED"); }
+        function checkGiftAutoHide() {
+            if(new Date().getTime() > WEDDING_DATE + 86400000) document.getElementById('giftSection').style.display = 'none';
+        }
+
+        // Scroll Progress
+        document.addEventListener('scroll', () => {
+            const prog = document.getElementById('scrollProgress');
+            const scroll = window.scrollY;
+            const height = document.documentElement.scrollHeight - window.innerHeight;
+            prog.style.width = (scroll/height)*100 + '%';
+            
+            // Hero Parallax
+            const hero = document.getElementById('heroSection');
+            if(hero && scroll < window.innerHeight) {
+                hero.style.transform = `translateY(${scroll * 0.3}px)`;
+            }
+        });
+
+        // Gold Dust Particles
+        function initParticles() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, particles = [];
+            function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+            window.addEventListener('resize', resize); resize();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w; this.y = Math.random() * h;
+                    this.s = Math.random() * 0.8;
+                    this.sy = Math.random() * 0.1 + 0.02;
+                    this.sx = (Math.random() - 0.5) * 0.05;
+                    this.o = Math.random() * 0.4;
+                }
+                update() {
+                    this.y -= this.sy; this.x += this.sx;
+                    if(this.y < 0) { this.y = h + 10; this.x = Math.random() * w; }
+                }
+                draw() {
+                    ctx.fillStyle = `rgba(197, 168, 128, ${this.o})`;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2); ctx.fill();
+                }
+            }
+            for(let i=0; i<40; i++) particles.push(new Particle());
+            function loop() {
+                ctx.clearRect(0,0,w,h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
+    </script>
+</body>
+</html>
