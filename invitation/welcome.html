@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome &middot; Template Selector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF9F6;
+    --surface: #FFFFFF;
+    --ink: #1A1A1A;
+    --ink-soft: #5A5A5A;
+    --ink-mute: #9A9A95;
+    --rule: #E5E2D9;
+    --gold: #C5A880;
+    --gold-soft: #DCC6A4;
+    --gold-faint: #F1E8D7;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+  html, body { overflow-x: hidden; }
+
+  body {
+    font-family: "Outfit", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-weight: 400;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--ink); color: var(--bg); }
+
+  /* ===== Layout ===== */
+  .app {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  @media (min-width: 768px) { .app { padding: 80px 48px 128px; } }
+
+  /* ===== Header ===== */
+  .hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 64px;
+  }
+  .hdr-mark {
+    font-family: "Outfit", sans-serif;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .hdr-mark span { color: var(--gold); }
+  .hdr-meta {
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  @media (max-width: 540px) { .hdr-meta { display: none; } }
+
+  /* ===== Hero ===== */
+  .hero {
+    margin-bottom: 80px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--gold);
+    padding: 6px 16px;
+    border: 1px solid var(--gold);
+    border-radius: 9999px;
+    margin-bottom: 32px;
+  }
+  .hero-title {
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 760px;
+    margin: 0 auto 16px;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-dek {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  /* ===== Name input section ===== */
+  .name-section {
+    max-width: 640px;
+    margin: 0 auto 80px;
+    padding: 40px 32px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  .form-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .form-label-meta {
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .form-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--rule);
+    color: var(--ink);
+    font-family: "Outfit", sans-serif;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    padding: 12px 0;
+    transition: border-color 0.3s var(--ease);
+  }
+  .form-input:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+  }
+  .form-input::placeholder { color: var(--ink-mute); font-weight: 300; font-style: italic; }
+  .form-helper {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--gold-faint);
+    border-left: 2px solid var(--gold);
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .form-helper strong { color: var(--ink); font-weight: 600; }
+  .form-helper code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--ink);
+    background: rgba(255,255,255,0.6);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+  .form-helper-preview {
+    display: block;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px dashed var(--rule);
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--ink);
+    word-break: break-all;
+  }
+
+  /* ===== Section heading ===== */
+  .sec-head {
+    display: flex; align-items: end; justify-content: space-between;
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .sec-title {
+    font-size: clamp(20px, 2.4vw, 24px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .sec-count {
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ===== Template grid ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 640px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .grid { grid-template-columns: 1fr 1fr 1fr; gap: 32px; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.4s var(--ease);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(26,26,26,0.08);
+    border-color: var(--gold-soft);
+  }
+  .card-preview {
+    aspect-ratio: 4/3;
+    background: var(--gold-faint);
+    position: relative;
+    overflow: hidden;
+  }
+  .card-preview img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--ease);
+  }
+  .card:hover .card-preview img { transform: scale(1.04); }
+  .card-num {
+    position: absolute; top: 14px; left: 14px;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--ink);
+    z-index: 1;
+  }
+  .card-body {
+    padding: 24px 24px 28px;
+    display: flex; flex-direction: column; gap: 20px;
+    flex: 1;
+  }
+  .card-meta {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-tag {
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold);
+    padding: 3px 10px;
+    border: 1px solid var(--gold);
+    border-radius: 9999px;
+  }
+  .card-target {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+  .card-name {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    flex: 1;
+  }
+  .card-url {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    background: var(--bg);
+    padding: 8px 12px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    word-break: break-all;
+    line-height: 1.5;
+  }
+  .card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--ink);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 16px;
+    font-family: "Outfit", sans-serif;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    border: none;
+    background: var(--ink); color: var(--bg);
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+    text-decoration: none;
+  }
+  .btn:hover { background: var(--gold); color: var(--ink); }
+  .btn-secondary {
+    background: var(--bg); color: var(--ink);
+    border-left: 1px solid var(--ink);
+  }
+  .btn-secondary:hover { background: var(--ink); color: var(--bg); }
+  .btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  /* ===== Footer ===== */
+  .ftr {
+    margin-top: 96px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  @media (max-width: 540px) { .ftr { flex-direction: column; gap: 12px; } }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    padding: 14px 24px;
+    background: var(--ink);
+    color: var(--bg);
+    font-family: "Outfit", sans-serif;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+    pointer-events: none;
+    z-index: 1000;
+    border: 1px solid var(--ink);
+    box-shadow: 0 16px 40px rgba(26,26,26,0.18);
+    max-width: 90vw;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin-right: 12px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-mark">Editor &middot; <span>Atria &amp; Co.</span></div>
+    <div class="hdr-meta">Welcome / Template Selector</div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Edition I &middot; 2026</div>
+    <h1 class="hero-title">Selamat datang, <em>Editor</em>.</h1>
+    <p class="hero-dek">Pilih salah satu template di bawah. Ketik nama tamu terlebih dahulu &mdash; semua tautan akan otomatis terisi.</p>
+  </section>
+
+  <!-- NAME INPUT -->
+  <section class="name-section">
+    <div class="form-label">
+      <span>Nama Tamu &middot; Guest Name</span>
+      <span class="form-label-meta">Auto-saved</span>
+    </div>
+    <input class="form-input" id="guestName" type="text" placeholder="e.g., Yanto Prasetyo" autocomplete="off" maxlength="80">
+
+    <div class="form-helper">
+      <strong>Helper:</strong> Link dibuat otomatis. Kosongkan input untuk fallback ke <code>Tamu Undangan</code>. Nama tersimpan di <code>localStorage</code>.
+      <span class="form-helper-preview" id="urlPreview">&nbsp;</span>
+    </div>
+  </section>
+
+  <!-- TEMPLATE GRID -->
+  <section>
+    <div class="sec-head">
+      <h2 class="sec-title">Available Templates</h2>
+      <div class="sec-count">07 of 07</div>
+    </div>
+
+    <div class="grid" id="templateGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="ftr">
+    <div>Atria &amp; Co. &middot; Template Selector</div>
+    <div>Self-contained &middot; Vanilla HTML + CSS + JS</div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ========================================================
+  // CONFIG
+  // ========================================================
+  const TEMPLATES = [
+    {
+      id: 1,
+      file: 'index.html',
+      name: 'Classic White',
+      tag: 'Default',
+      // Raka Pratama & Siska Dewi · 12 . 12 . 2026 · Hotel Grand Ballroom, Jakarta
+      thumb: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&h=450&q=80',
+      desc: 'The original. Asymmetric editorial couple layout on cream paper with navy and gold, organic SVG floral margin vines, live countdown, RSVP with voice note recorder, and QR e-ticket generator.'
+    },
+    {
+      id: 2,
+      file: 'undangan_tropical.html',
+      name: 'Tropical Modern',
+      tag: 'Tropical',
+      // Dian & Rafa · 18 . 10 . 2026 · Hotel Grand Hyatt Jakarta
+      thumb: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&h=450&q=80',
+      desc: 'Dian & Rafa, Hotel Grand Hyatt Jakarta. Refined tropical aesthetic with botanical styling, dark forest green accents, structured symmetry, and a guest wishes board with optional voice messages.'
+    },
+    {
+      id: 3,
+      file: 'undangan_chinese_christian.html',
+      name: 'Chinese Christian',
+      tag: 'Heritage',
+      // Andreas Santoso & Ling Ling · 12 Desember 2026 · GKI Kelapa Gading + Hotel Mulia Senayan
+      thumb: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&w=600&h=450&q=80',
+      desc: 'Andreas Santoso & Ling Ling. Rich burgundy and gold aesthetic, a 4-slide cover carousel, traditional Tea Pai ceremony with the Double Happiness 囍 motif, and bilingual RSVP with voice note recorder.'
+    },
+    {
+      id: 4,
+      file: 'undangan_editorial.html',
+      name: 'Editorial Art',
+      tag: 'Editorial',
+      // Laras & Reno · 21 . 03 . 2027 · Rumah Lereng, Bogor
+      thumb: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=600&h=450&q=80',
+      desc: 'Laras & Reno. A magazine spread, not a wedding site. Off-white paper, charcoal ink, muted tobacco accent, asymmetric grids, "Volume One" issue markers, and a newspaper-masthead-style countdown.'
+    },
+    {
+      id: 5,
+      file: 'undangan_ethereal.html',
+      name: 'Ethereal Glass',
+      tag: 'Soft',
+      // Aria & Mateo · 24 . 09 . 2027 · Villa Sasih + The Grand Atrium, Ubud, Bali
+      thumb: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=600&h=450&q=80',
+      desc: 'Aria & Mateo. Warm cream and gold, M3-style glassmorphic panels, ambient WebGL shader background, monogram cover gate, masonry lightbox gallery, and live digital QR ticket generation.'
+    },
+    {
+      id: 6,
+      file: 'undangan_intimate.html',
+      name: 'Intimate Silhouette',
+      tag: 'Quiet',
+      // Adit Wirajaya & Nana Marpaung · 20 . 03 . 2027 · Villa Sasih, Ubud, Bali
+      thumb: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=600&h=450&q=80',
+      desc: 'Adit Wirajaya & Nana Marpaung. A clean, single-column mobile layout with paper-grain SVG texture, deep sage accents, 20-second voice-note RSVP, and a downloadable QR ticket generator.'
+    },
+    {
+      id: 7,
+      file: 'undangan_digital_vvip.html',
+      name: 'VVIP Smart Digital',
+      tag: 'Premium',
+      // Raka Pratama & Siska Dewi · 12 Desember 2026 · Masjid Agung Surakarta + Hotel Grand Ballroom, Surakarta
+      thumb: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&h=450&q=80',
+      desc: 'High-fashion, cinematic dark luxury editorial. SVG film-grain noise, gold-dust particle canvas, grayscale-to-color hover grids, simulated voice log recordings, and a VVIP QR boarding-pass ticket.'
+    }
+  ];
+
+  const STORAGE_KEY = 'atria:guestName';
+  const DEFAULT_NAME = 'Tamu Undangan';
+
+  // ========================================================
+  // HELPERS
+  // ========================================================
+  function getGuestName() {
+    const v = document.getElementById('guestName').value.trim();
+    return v || DEFAULT_NAME;
+  }
+
+  // Build a relative URL used in <a href> so it works under both file:// and http(s)://
+  function buildRelativeUrl(filename) {
+    return './' + filename + '?to=' + encodeURIComponent(getGuestName()).replace(/%20/g, '+');
+  }
+
+  // Build an absolute URL for clipboard copy.
+  // file:// -> "file:///C:/laragon/www/invitation/undangan_X.html?to=Name"
+  // http(s):// -> "http://host:port/path/undangan_X.html?to=Name"
+  function buildAbsoluteUrl(filename) {
+    const loc = window.location;
+    let origin = loc.origin;
+    // origin is "file://" (no host) on file:// — synthesize a path
+    if (origin === 'file://' || !origin || origin.startsWith('file:')) {
+      // window.location.pathname -> "/C:/laragon/www/invitation/welcome.html"
+      // Strip filename, prepend file://
+      const path = loc.pathname.replace(/[^/]*$/, '');
+      return 'file:///' + (path.replace(/^\//, '') + filename + '?to=' + encodeURIComponent(getGuestName()).replace(/%20/g, '+'));
+    }
+    // For http/https — get the directory of the current page and append the file
+    const dir = loc.pathname.replace(/[^/]*$/, '');
+    return origin + dir + filename + '?to=' + encodeURIComponent(getGuestName()).replace(/%20/g, '+');
+  }
+
+  // ========================================================
+  // RENDER CARDS
+  // ========================================================
+  function renderCards() {
+    const grid = document.getElementById('templateGrid');
+    const rel = document.querySelector('.form-helper-preview');
+    const sampleRel = buildRelativeUrl(TEMPLATES[0].file);
+
+    grid.innerHTML = TEMPLATES.map(t => {
+      const rel = buildRelativeUrl(t.file);
+      const abs = buildAbsoluteUrl(t.file);
+      return `
+        <article class="card" data-id="${t.id}" data-file="${t.file}">
+          <div class="card-preview">
+            <img src="${t.thumb}" alt="${t.name}" loading="lazy" referrerpolicy="no-referrer">
+            <span class="card-num">No. ${String(t.id).padStart(2, '0')}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-tag">${t.tag}</span>
+              <span class="card-target">${t.file}</span>
+            </div>
+            <h3 class="card-name">${t.name}</h3>
+            <p class="card-desc">${t.desc}</p>
+            <div class="card-url" data-role="url-preview">${rel}</div>
+            <div class="card-actions">
+              <a class="btn" data-role="open" href="${rel}" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                Buka
+              </a>
+              <button class="btn btn-secondary" data-role="copy" type="button" aria-label="Salin link">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                Salin
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Re-query and attach handlers
+    grid.querySelectorAll('.card').forEach(card => {
+      const file = card.dataset.file;
+      const openBtn = card.querySelector('[data-role="open"]');
+      const copyBtn = card.querySelector('[data-role="copy"]');
+      const urlPreview = card.querySelector('[data-role="url-preview"]');
+
+      openBtn.addEventListener('click', (e) => {
+        // The href is already set, but we also dynamically update on each click
+        // to capture the latest input value
+        const rel = buildRelativeUrl(file);
+        openBtn.href = rel;
+        urlPreview.textContent = rel;
+      });
+
+      copyBtn.addEventListener('click', () => {
+        const abs = buildAbsoluteUrl(file);
+        const guest = getGuestName();
+        const msg = `Link undangan ${guest} berhasil disalin!`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(abs).then(() => showToast(msg), () => fallbackCopy(abs, msg));
+        } else {
+          fallbackCopy(abs, msg);
+        }
+      });
+    });
+  }
+
+  // ========================================================
+  // URL PREVIEW (helper section)
+  // ========================================================
+  function updateHelperPreview() {
+    const rel = buildRelativeUrl(TEMPLATES[0].file);
+    document.getElementById('urlPreview').textContent = rel;
+  }
+
+  // ========================================================
+  // TOAST
+  // ========================================================
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function fallbackCopy(text, msg) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast(msg);
+    } catch (e) {
+      showToast('Copy failed — please copy manually');
+    }
+  }
+
+  // ========================================================
+  // LIVE UPDATE on input
+  // ========================================================
+  function refreshAllLinks() {
+    // Update every card's link + url preview
+    document.querySelectorAll('.card').forEach(card => {
+      const file = card.dataset.file;
+      const rel = buildRelativeUrl(file);
+      const openBtn = card.querySelector('[data-role="open"]');
+      const urlPreview = card.querySelector('[data-role="url-preview"]');
+      openBtn.href = rel;
+      urlPreview.textContent = rel;
+    });
+    updateHelperPreview();
+  }
+
+  // ========================================================
+  // INIT
+  // ========================================================
+  function init() {
+    // Restore from localStorage
+    let stored = '';
+    try { stored = localStorage.getItem(STORAGE_KEY) || ''; } catch (e) {}
+    if (stored) document.getElementById('guestName').value = stored;
+
+    renderCards();
+
+    // Save + refresh on input
+    const input = document.getElementById('guestName');
+    input.addEventListener('input', () => {
+      try { localStorage.setItem(STORAGE_KEY, input.value); } catch (e) {}
+      refreshAllLinks();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

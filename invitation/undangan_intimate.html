@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Adit &amp; Nana</title>
+    <meta name="description" content="Adit &amp; Nana. An intimate celebration.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg:        #FAFAF7;
+            --ink:       #0A0A0A;
+            --ink-soft:  #6B6B6B;
+            --line:      rgba(10, 10, 10, 0.08);
+            --accent:    #4A5D3A; /* deep sage */
+            --accent-soft: #8FA77B;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-serif: 'Fraunces', Georgia, serif;
+            --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        html, body { overflow-x: hidden; }
+        body {
+            font-family: var(--font-sans);
+            color: var(--ink);
+            background: var(--bg);
+            font-weight: 300;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 15px;
+            line-height: 1.65;
+            letter-spacing: -0.01em;
+            font-feature-settings: "ss01", "ss02", "cv11";
+        }
+        body.is-locked { overflow: hidden; }
+        ::selection { background: var(--ink); color: var(--bg); }
+
+        .app-container {
+            position: relative;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg);
+        }
+        @media (min-width: 640px) {
+            .app-container { min-height: 100vh; }
+        }
+
+        /* Subtle paper grain */
+        .app-container::before {
+            content: '';
+            position: absolute; inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.45;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2  0 0 0 0 0.2  0 0 0 0 0.2  0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        }
+
+        section {
+            position: relative;
+            padding: clamp(72px, 11vh, 104px) clamp(22px, 5vw, 36px);
+            z-index: 2;
+        }
+
+        /* Hairline divider between sections */
+        .hairline {
+            width: 32px;
+            height: 1px;
+            background: var(--ink);
+            opacity: 0.18;
+            margin: 0 auto;
+        }
+        .hairline--full {
+            width: calc(100% - 4px);
+            opacity: 0.06;
+        }
+
+        /* COVER */
+        .cover {
+            position: fixed;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 64px 28px 56px;
+            background: var(--bg);
+            transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+        }
+        .cover.gone { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(-8px); }
+        .cover::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+              radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .cover__top {
+            font-family: var(--font-sans);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 72px;
+        }
+        .cover__rule {
+            width: 24px;
+            height: 1px;
+            background: var(--ink);
+            opacity: 0.4;
+            margin: 0 auto 24px;
+        }
+        .cover__pretext {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 17px;
+            color: var(--ink-soft);
+            margin-bottom: 16px;
+            letter-spacing: 0.005em;
+        }
+        .cover__names {
+            font-family: var(--font-sans);
+            font-weight: 300;
+            font-size: clamp(38px, 9.5vw, 56px);
+            line-height: 1.02;
+            color: var(--ink);
+            letter-spacing: -0.035em;
+            margin-bottom: 20px;
+        }
+        .cover__names-line { display: block; }
+        .cover__amp {
+            display: block;
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 0.46em;
+            color: var(--ink-soft);
+            line-height: 0.6;
+            margin: 4px 0;
+            letter-spacing: 0;
+        }
+        .cover__amp {
+            display: block;
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 0.42em;
+            color: var(--ink-soft);
+            line-height: 0.7;
+            margin: 6px 0 6px;
+            letter-spacing: 0;
+        }
+        .cover__date {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin-bottom: 72px;
+        }
+        .cover__guest {
+            max-width: 320px;
+            margin-bottom: 64px;
+        }
+        .cover__guest-label {
+            font-family: var(--font-sans);
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 14px;
+        }
+        .cover__guest-name {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 24px;
+            color: var(--ink);
+            line-height: 1.25;
+            margin-bottom: 10px;
+            letter-spacing: -0.01em;
+        }
+        .cover__note {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+            max-width: 280px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+        .cover__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 17px 38px;
+            background: var(--ink);
+            color: var(--bg);
+            border: none;
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.4s var(--ease);
+            white-space: nowrap;
+        }
+        .cover__cta:hover { opacity: 0.85; transform: translateY(-1px); }
+        .cover__cta-arrow {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 14px;
+            letter-spacing: 0;
+        }
+
+        /* HERO */
+        .hero { padding-top: 96px; padding-bottom: 80px; text-align: center; }
+        .hero__pretext {
+            font-family: var(--font-sans);
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 28px;
+        }
+        .hero__title {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(22px, 5.5vw, 28px);
+            line-height: 1.4;
+            color: var(--ink);
+            max-width: 280px;
+            margin: 0 auto 56px;
+            letter-spacing: -0.005em;
+        }
+        .hero__title em { font-style: italic; color: var(--ink); font-weight: 400; opacity: 0.85; }
+        .hero__sign {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 19px;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+        .hero__sign small {
+            display: block;
+            font-family: var(--font-sans);
+            font-style: normal;
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-top: 8px;
+        }
+        .countdown {
+            margin: 64px 0 0;
+            padding-top: 48px;
+            border-top: 1px solid var(--line);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+        .countdown__item { text-align: center; }
+        .countdown__num {
+            font-family: var(--font-sans);
+            font-weight: 300;
+            font-size: clamp(34px, 8vw, 44px);
+            line-height: 1;
+            color: var(--ink);
+            letter-spacing: -0.04em;
+            font-variant-numeric: tabular-nums;
+        }
+        .countdown__label {
+            font-family: var(--font-sans);
+            font-size: 8.5px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-top: 12px;
+        }
+
+        /* COUPLE — editorial split */
+        .couple { text-align: center; }
+        .couple__role {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 13px;
+            color: var(--ink-soft);
+            margin-bottom: 32px;
+            letter-spacing: 0.01em;
+        }
+        .couple__photo {
+            width: clamp(180px, 55vw, 240px);
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            margin: 0 auto 32px;
+            background: var(--line);
+            filter: drop-shadow(0 20px 40px rgba(15, 23, 20, 0.08));
+        }
+        .couple__photo img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.08);
+            transition: transform 0.8s var(--ease);
+        }
+        .couple__photo:hover img { transform: scale(1.04); }
+        .couple__name {
+            font-family: var(--font-display, 'Fraunces'), Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(26px, 6vw, 34px);
+            color: var(--ink);
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+        .couple__degree {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            margin-bottom: 18px;
+        }
+        .couple__rule {
+            width: 24px;
+            height: 1px;
+            background: var(--ink);
+            opacity: 0.25;
+            margin: 0 auto 18px;
+        }
+        .couple__parents {
+            font-family: var(--font-sans);
+            font-size: 12.5px;
+            font-weight: 300;
+            color: var(--ink-soft);
+            line-height: 1.65;
+            max-width: 220px;
+            margin: 0 auto;
+        }
+        .couple__parents strong {
+            display: block;
+            font-weight: 400;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+        .couple__divider {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 32px;
+            color: var(--ink-soft);
+            margin: 56px 0;
+            opacity: 0.55;
+            line-height: 1;
+        }
+
+        /* STORY */
+        .story { text-align: center; }
+        .story__heading {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(22px, 5.5vw, 28px);
+            line-height: 1.35;
+            color: var(--ink);
+            max-width: 320px;
+            margin: 0 auto 56px;
+            letter-spacing: -0.005em;
+        }
+        .story__heading strong {
+            font-weight: 500;
+            font-style: normal;
+            color: var(--ink);
+        }
+        .story__list { text-align: left; max-width: 360px; margin: 0 auto; }
+        .story__item {
+            padding: 32px 0;
+            border-bottom: 1px solid var(--line);
+        }
+        .story__item:first-child { padding-top: 0; }
+        .story__item:last-child { border-bottom: none; padding-bottom: 0; }
+        .story__year {
+            font-family: var(--font-sans);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+        .story__title {
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 14.5px;
+            color: var(--ink);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+        .story__text {
+            font-family: var(--font-sans);
+            font-size: 14px;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* EVENTS */
+        .events { text-align: center; }
+        .events__heading {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(22px, 5.5vw, 28px);
+            color: var(--ink);
+            margin-bottom: 56px;
+            letter-spacing: -0.005em;
+        }
+        .events__card {
+            padding: 32px 0;
+            border-top: 1px solid var(--line);
+        }
+        .events__card:last-child { border-bottom: 1px solid var(--line); }
+        .events__tag {
+            font-family: var(--font-sans);
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 14px;
+        }
+        .events__title {
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 21px;
+            color: var(--ink);
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+        .events__body {
+            font-family: var(--font-sans);
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        .events__body strong {
+            font-weight: 500;
+            color: var(--ink);
+        }
+        .events__map {
+            font-family: var(--font-sans);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink);
+            border-bottom: 1px solid var(--ink);
+            padding-bottom: 4px;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        .events__map:hover { opacity: 0.6; }
+
+        .dress { margin-top: 64px; text-align: center; }
+        .dress__label {
+            font-family: var(--font-sans);
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 16px;
+        }
+        .dress__hint {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            margin-bottom: 20px;
+        }
+        .dress__swatches { display: flex; justify-content: center; gap: 10px; }
+        .dress__chip {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            border: 1px solid var(--line);
+        }
+
+        /* GALLERY */
+        .gallery { text-align: center; }
+        .gallery__heading {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(22px, 5.5vw, 28px);
+            color: var(--ink);
+            margin-bottom: 48px;
+            letter-spacing: -0.005em;
+        }
+        .gallery__stack { display: flex; flex-direction: column; gap: 12px; }
+        .gallery__item {
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 3/4;
+            background: var(--line);
+        }
+        .gallery__item:nth-child(even) { aspect-ratio: 4/3; }
+        .gallery__item img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 1s var(--ease);
+        }
+        .gallery__item:hover img { transform: scale(1.04); }
+
+        .lightbox {
+            position: fixed; inset: 0;
+            z-index: 10000;
+            background: rgba(250, 250, 247, 0.98);
+            display: none;
+            align-items: center; justify-content: center;
+        }
+        .lightbox.open { display: flex; }
+        .lightbox__img { max-width: 92vw; max-height: 84vh; object-fit: contain; }
+        .lightbox__btn {
+            position: absolute;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--ink);
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .lightbox__close { top: 20px; right: 20px; }
+        .lightbox__prev  { left: 12px; top: 50%; transform: translateY(-50%); }
+        .lightbox__next  { right: 12px; top: 50%; transform: translateY(-50%); }
+
+        /* GIFT */
+        .gift { text-align: center; }
+        .gift__heading {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(22px, 5.5vw, 28px);
+            color: var(--ink);
+            margin-bottom: 16px;
+            letter-spacing: -0.005em;
+        }
+        .gift__sub {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            color: var(--ink-soft);
+            max-width: 300px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        .gift__list { display: flex; flex-direction: column; gap: 1px; background: var(--line); }
+        .gift__row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 24px 8px;
+            background: var(--bg);
+        }
+        .gift__name {
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 8px;
+        }
+        .gift__acc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13.5px;
+            color: var(--ink);
+            letter-spacing: 0.02em;
+            font-weight: 400;
+        }
+        .gift__copy {
+            font-family: var(--font-sans);
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink);
+            border: 1px solid var(--ink);
+            padding: 8px 14px;
+            background: transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        .gift__copy:hover { background: var(--ink); color: var(--bg); }
+
+        /* RSVP */
+        .rsvp { text-align: center; }
+        .rsvp__heading {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(24px, 6vw, 30px);
+            color: var(--ink);
+            margin-bottom: 16px;
+            letter-spacing: -0.005em;
+        }
+        .rsvp__sub {
+            font-family: var(--font-sans);
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            max-width: 300px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        .rsvp__form { text-align: left; }
+        .rsvp__option-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .rsvp__opt {
+            padding: 18px 12px;
+            border: 1px solid var(--line);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .rsvp__opt.is-active { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+        .rsvp__opt.is-active i { color: var(--bg); }
+        .rsvp__opt.is-active span { color: var(--bg); }
+        .rsvp__opt i { font-size: 18px; color: var(--ink); display: block; margin-bottom: 8px; }
+        .rsvp__opt span {
+            font-family: var(--font-sans);
+            font-size: 10.5px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .rsvp__row { margin-bottom: 26px; }
+        .rsvp__label {
+            display: block;
+            font-family: var(--font-sans);
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 10px;
+        }
+        .rsvp__input, .rsvp__select, .rsvp__textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--ink);
+            padding: 10px 0;
+            color: var(--ink);
+            font-family: var(--font-sans);
+            font-size: 15px;
+            font-weight: 300;
+            outline: none;
+            letter-spacing: -0.005em;
+        }
+        .rsvp__input::placeholder, .rsvp__textarea::placeholder { color: var(--ink-soft); }
+        .rsvp__textarea { resize: vertical; min-height: 64px; }
+        .rsvp__select option { background: var(--bg); color: var(--ink); }
+
+        .voice {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--ink);
+        }
+        .voice__btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--ink);
+            color: var(--ink);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .voice__btn.rec { background: var(--ink); color: var(--bg); }
+        .voice__status { font-family: var(--font-sans); font-size: 12px; color: var(--ink-soft); flex: 1; min-width: 0; }
+        .voice__timer { font-family: var(--font-sans); font-size: 11px; color: var(--ink); }
+
+        .rsvp__submit {
+            width: 100%;
+            margin-top: 28px;
+            padding: 17px;
+            background: var(--ink);
+            color: var(--bg);
+            border: none;
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .rsvp__submit:hover { opacity: 0.85; }
+
+        .wishes { margin-top: 64px; text-align: left; max-height: 360px; overflow-y: auto; padding-right: 4px; }
+        .wishes::-webkit-scrollbar { width: 2px; }
+        .wishes::-webkit-scrollbar-thumb { background: var(--ink-soft); }
+        .wish { padding: 20px 0; border-bottom: 1px solid var(--line); }
+        .wish:last-child { border-bottom: none; }
+        .wish__name {
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        .wish__msg {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            color: var(--ink-soft);
+            line-height: 1.65;
+            font-weight: 300;
+        }
+
+        /* CLOSING */
+        .closing { text-align: center; padding: clamp(96px, 16vh, 128px) 28px clamp(112px, 18vh, 144px); }
+        .closing__sig {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 36px;
+            color: var(--ink);
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+        .closing__date {
+            font-family: var(--font-sans);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 56px;
+        }
+        .closing__quote {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 16px;
+            color: var(--ink);
+            max-width: 300px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .closing__small {
+            font-family: var(--font-sans);
+            font-style: normal;
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-top: 24px;
+        }
+
+        /* FAB */
+        .audio-fab {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--ink);
+            color: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9998;
+            cursor: pointer;
+            border: none;
+        }
+        .audio-fab.playing { animation: spin 6s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @media (min-width: 640px) { .audio-fab { right: calc(50% - 240px + 24px); } }
+
+        .scroll-progress {
+            position: fixed; top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 480px; max-width: 100%;
+            height: 1px; z-index: 9999;
+            pointer-events: none;
+            background: var(--line);
+        }
+        .scroll-progress__bar {
+            height: 100%;
+            background: var(--ink);
+            width: 0%;
+            transition: width 100ms ease-out;
+        }
+
+        .toast {
+            position: fixed;
+            top: 24px; left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--ink);
+            color: var(--bg);
+            padding: 10px 20px;
+            font-family: var(--font-sans);
+            font-size: 12px;
+            border-radius: 999px;
+            z-index: 99999;
+            transition: transform 0.4s var(--ease);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* QR modal — minimal */
+        .qr-modal {
+            position: fixed; inset: 0;
+            z-index: 10001;
+            background: rgba(250, 250, 247, 0.96);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        .qr-modal.open { display: flex; }
+        .qr-card {
+            background: var(--bg);
+            width: 100%;
+            max-width: 320px;
+            padding: 44px 32px 32px;
+            text-align: center;
+            border: 1px solid var(--ink);
+        }
+        .qr-card__close {
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none; border: none;
+            font-size: 18px; color: var(--ink);
+            cursor: pointer;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .qr-card__label {
+            font-family: var(--font-sans);
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            margin-bottom: 10px;
+        }
+        .qr-card__title {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 32px;
+            color: var(--ink);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+        .qr-card__name {
+            font-family: var(--font-sans);
+            font-size: 14px;
+            color: var(--ink);
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+        .qr-card__qrbox {
+            background: var(--bg);
+            padding: 12px;
+            display: inline-block;
+            margin: 0 auto 16px;
+            border: 1px solid var(--line);
+        }
+        .qr-card__qrbox img { width: 200px; height: 200px; display: block; }
+        .qr-card__hint {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            margin-bottom: 20px;
+        }
+        .qr-card__download {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--ink);
+            color: var(--bg);
+            border: none;
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .qr-card__download:hover { opacity: 0.85; }
+        .qr-card__download:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+            outline: 2px solid var(--ink);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="is-locked">
+
+<div class="scroll-progress"><div class="scroll-progress__bar" id="progressBar"></div></div>
+
+<div id="toast" class="toast"></div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <button class="lightbox__btn lightbox__close" id="lbClose" aria-label="Close"><i class="fas fa-times"></i></button>
+    <button class="lightbox__btn lightbox__prev" id="lbPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+    <img class="lightbox__img" id="lightboxImg" alt="">
+    <button class="lightbox__btn lightbox__next" id="lbNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<div class="qr-modal" id="qrModal" role="dialog" aria-modal="true">
+    <div class="qr-card" style="position:relative;">
+        <button class="qr-card__close" onclick="closeQRModal()" aria-label="Close">&times;</button>
+        <div class="qr-card__label">Access Pass</div>
+        <div class="qr-card__title">E&#8209;Ticket</div>
+        <div class="qr-card__name" id="ticketGuestName">Guest Name</div>
+        <div class="qr-card__qrbox">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=wedding-adit-nana-2026" alt="QR Code" id="qrCodeImg">
+        </div>
+        <div class="qr-card__hint">Tunjukkan tiket ini saat kedatangan</div>
+        <button class="qr-card__download" id="btnDownloadTicket" onclick="downloadTicket()">simpan tiket</button>
+    </div>
+</div>
+
+<button class="audio-fab" id="audioFab" aria-label="Toggle music" onclick="toggleAudio()">
+    <i class="fas fa-play" id="audioIcon" style="font-size:11px;"></i>
+</button>
+<audio id="bgAudio" loop preload="none">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<div class="cover" id="cover">
+    <div class="cover__top">an intimate celebration</div>
+    <div class="cover__pretext">The wedding of</div>
+    <h1 class="cover__names">
+        <span class="cover__names-line">Adit Wirajaya</span>
+        <span class="cover__amp">&amp;</span>
+        <span class="cover__names-line">Nana Marpaung</span>
+    </h1>
+    <div class="cover__rule"></div>
+    <div class="cover__date">20 . 03 . 2027 &middot; Bali</div>
+
+    <div class="cover__guest">
+        <div class="cover__guest-label">Kepada Yth.</div>
+        <div class="cover__guest-name" id="guestNameDisplay">Tamu Istimewa</div>
+        <div class="cover__note">Kehadiran Anda adalah bagian paling berharga dari hari itu.</div>
+    </div>
+
+    <button class="cover__cta" id="openBtn" onclick="openInvitation()">
+        buka undangan <span class="cover__cta-arrow">→</span>
+    </button>
+</div>
+
+<div class="app-container" id="appContainer">
+
+    <section class="hero">
+        <div data-aos="fade-up" data-aos-duration="900">
+            <div class="hero__pretext">Sahabat terkasih,</div>
+            <p class="hero__title">Cukup <em>orang yang tepat</em>, tempat yang tenang, dan satu janji yang sederhana.</p>
+            <div class="hero__sign">
+                dengan hangat,
+                <small>Adit &amp; Nana</small>
+            </div>
+        </div>
+        <div class="countdown" data-aos="fade" data-aos-duration="900">
+            <div class="countdown__item"><div class="countdown__num" id="d">00</div><div class="countdown__label">Hari</div></div>
+            <div class="countdown__item"><div class="countdown__num" id="h">00</div><div class="countdown__label">Jam</div></div>
+            <div class="countdown__item"><div class="countdown__num" id="m">00</div><div class="countdown__label">Menit</div></div>
+            <div class="countdown__item"><div class="countdown__num" id="s">00</div><div class="countdown__label">Detik</div></div>
+        </div>
+    </section>
+
+    <section class="couple">
+        <div data-aos="fade-up" data-aos-duration="900">
+            <div class="couple__role">the groom</div>
+            <div class="couple__photo">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="Adit" loading="lazy">
+            </div>
+            <div class="couple__name">Adit Wirajaya</div>
+            <div class="couple__degree">S.T., M.Eng.</div>
+            <div class="couple__rule"></div>
+            <div class="couple__parents">
+                <strong>Putra pertama</strong>
+                Bpk. Indra Wirajaya &amp; Ibu Sari
+            </div>
+        </div>
+        <div class="couple__divider">&amp;</div>
+        <div data-aos="fade-up" data-aos-duration="900" data-aos-delay="120">
+            <div class="couple__role">the bride</div>
+            <div class="couple__photo">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="Nana" loading="lazy">
+            </div>
+            <div class="couple__name">Nana Marpaung</div>
+            <div class="couple__degree">S.Kom.</div>
+            <div class="couple__rule"></div>
+            <div class="couple__parents">
+                <strong>Putri kedua</strong>
+                Bpk. Marpaung &amp; Ibu Lumban Tobing
+            </div>
+        </div>
+    </section>
+
+    <section class="story">
+        <div class="story__heading" data-aos="fade-up" data-aos-duration="900">Dari kopi pertama <strong>ke selamanya</strong></div>
+        <div class="story__list">
+            <div class="story__item" data-aos="fade-up" data-aos-duration="900">
+                <div class="story__year">2019</div>
+                <div class="story__title">Pertemuan pertama</div>
+                <div class="story__text">Di sebuah kedai kopi kecil di Ubud, hujan yang tidak berhenti membuat kami berlama-lama. Dari pembicaraan ringan tentang buku, kami menyadari ada banyak hal yang sama.</div>
+            </div>
+            <div class="story__item" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
+                <div class="story__year">2021</div>
+                <div class="story__title">Berlari bersama</div>
+                <div class="story__text">Dua tahun diisi proyek bersama, begadang, dan tawa yang tak terhitung. Di sebuah sore biasa, kami akhirnya menyadari &mdash; ini bukan sekadar partner kerja.</div>
+            </div>
+            <div class="story__item" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
+                <div class="story__year">2024</div>
+                <div class="story__title">Sebuah pertanyaan</div>
+                <div class="story__text">Di tepi sawah yang hijau, di antara suara angin dan ringan, Adit berlutut &mdash; tidak dengan tata cara besar, hanya dengan janji yang tulus.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="events">
+        <div class="events__heading" data-aos="fade-up" data-aos-duration="900">Hari yang tenang</div>
+
+        <div class="events__card" data-aos="fade-up" data-aos-duration="900">
+            <div class="events__tag">Sesi pertama &middot; 10.00 WITA</div>
+            <div class="events__title">Upacara Pemberkatan</div>
+            <div class="events__body">Sebuah prosesi singkat di villa, disaksikan oleh keluarga dan sahabat dekat saja.<br><strong>Villa Sasih</strong> &middot; Ubud, Bali</div>
+            <a class="events__map" href="https://maps.google.com/?q=Villa+Sasih+Ubud" target="_blank" rel="noopener">Lihat Peta →</a>
+        </div>
+
+        <div class="events__card" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
+            <div class="events__tag">Sesi kedua &middot; 17.00 WITA</div>
+            <div class="events__title">Makan Malam Bersama</div>
+            <div class="events__body">Meja panjang di bawah cahaya lilin, menu dari juru masak favorit kami, dan percakapan yang tidak ingin diakhiri.<br><strong>Villa Sasih</strong> &middot; Ubud, Bali</div>
+            <a class="events__map" href="https://maps.google.com/?q=Villa+Sasih+Ubud" target="_blank" rel="noopener">Lihat Peta →</a>
+        </div>
+
+        <div class="dress" data-aos="fade-up" data-aos-duration="900">
+            <div class="dress__label">Dress Code</div>
+            <p class="dress__hint">Nuansa earth tone &middot; santai</p>
+            <div class="dress__swatches">
+                <div class="dress__chip" style="background:#0A0A0A;"></div>
+                <div class="dress__chip" style="background:#4A5D3A;"></div>
+                <div class="dress__chip" style="background:#8FA77B;"></div>
+                <div class="dress__chip" style="background:#C9B89A;"></div>
+                <div class="dress__chip" style="background:#FAFAF7;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery">
+        <div class="gallery__heading" data-aos="fade-up" data-aos-duration="900">Momen-momen kecil</div>
+        <div class="gallery__stack">
+            <div class="gallery__item" data-aos="fade-up" data-aos-duration="900" onclick="openLightbox(0)"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Momen 1" loading="lazy"></div>
+            <div class="gallery__item" data-aos="fade-up" data-aos-duration="900" data-aos-delay="50" onclick="openLightbox(1)"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Momen 2" loading="lazy"></div>
+            <div class="gallery__item" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100" onclick="openLightbox(2)"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=800&q=80" alt="Momen 3" loading="lazy"></div>
+            <div class="gallery__item" data-aos="fade-up" data-aos-duration="900" data-aos-delay="150" onclick="openLightbox(3)"><img src="https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=800&q=80" alt="Momen 4" loading="lazy"></div>
+            <div class="gallery__item" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200" onclick="openLightbox(4)"><img src="https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&w=800&q=80" alt="Momen 5" loading="lazy"></div>
+        </div>
+    </section>
+
+    <section class="gift">
+        <div class="gift__heading" data-aos="fade-up" data-aos-duration="900">Sebuah ungkapan</div>
+        <p class="gift__sub" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">Kehadiran Anda adalah hadiah terbaik. Namun jika Anda ingin memberi lebih, kami menyediakan amplop digital.</p>
+        <div class="gift__list">
+            <div class="gift__row" data-aos="fade-up" data-aos-duration="900">
+                <div>
+                    <div class="gift__name">BCA</div>
+                    <div class="gift__acc">8801 2345 6789</div>
+                </div>
+                <button class="gift__copy" onclick="copyText('880123456789', 'BCA')">Salin</button>
+            </div>
+            <div class="gift__row" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
+                <div>
+                    <div class="gift__name">Mandiri</div>
+                    <div class="gift__acc">1570 0099 8812</div>
+                </div>
+                <button class="gift__copy" onclick="copyText('157000998812', 'Mandiri')">Salin</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="rsvp">
+        <div class="rsvp__heading" data-aos="fade-up" data-aos-duration="900">Apakah Anda hadir?</div>
+        <p class="rsvp__sub" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">Karena acaranya intim, kami benar-benar perlu tahu siapa saja yang akan datang. Mohon konfirmasi sebelum 28 Februari 2027.</p>
+        <div class="rsvp__form" id="rsvpBox" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
+            <div class="rsvp__option-row">
+                <div class="rsvp__opt is-active" id="optYes" onclick="selectRSVP('yes')">
+                    <i class="fas fa-check"></i>
+                    <span>Ya</span>
+                </div>
+                <div class="rsvp__opt" id="optNo" onclick="selectRSVP('no')">
+                    <i class="fas fa-times"></i>
+                    <span>Tidak</span>
+                </div>
+            </div>
+            <div class="rsvp__row" id="guestCountRow">
+                <label class="rsvp__label">Jumlah Tamu</label>
+                <select id="rsvpCount" class="rsvp__select">
+                    <option value="1">1 Orang</option>
+                    <option value="2">2 Orang</option>
+                </select>
+            </div>
+            <div class="rsvp__row">
+                <label class="rsvp__label">Nama</label>
+                <input type="text" id="rsvpName" class="rsvp__input" placeholder="Tuliskan nama Anda" autocomplete="name">
+            </div>
+            <div class="rsvp__row">
+                <label class="rsvp__label">Ucapan</label>
+                <textarea id="rsvpMsg" class="rsvp__textarea" placeholder="Sebuah doa atau pesan singkat..."></textarea>
+            </div>
+            <div class="voice">
+                <button class="voice__btn" id="voiceBtn" onclick="toggleVoice()" aria-label="Voice note"><i class="fas fa-microphone" id="voiceIcon"></i></button>
+                <div class="voice__status" id="voiceStatus">Tekan untuk merekam (maks 20 detik)</div>
+                <div class="voice__timer" id="voiceTimer" style="display:none;">00:00</div>
+            </div>
+            <button class="rsvp__submit" id="rsvpSubmit" onclick="submitRSVP()">kirim konfirmasi</button>
+        </div>
+        <div class="wishes" id="wishesBox" data-aos="fade-up" data-aos-duration="900"></div>
+    </section>
+
+    <section class="closing">
+        <div class="closing__sig" data-aos="fade-up" data-aos-duration="900">Adit &amp; Nana</div>
+        <div class="closing__date" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">Maret &middot; 2027</div>
+        <div class="closing__quote" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">Kecil saja cukup — selama kita dikelilingi orang-orang yang benar-benar berarti.</div>
+        <div class="closing__small" data-aos="fade-up" data-aos-duration="900" data-aos-delay="300">Terima kasih, dari kami berdua</div>
+    </section>
+
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const guest = urlParams.get('to');
+    const TICKET_PREFIX = 'wedding-adit-nana-';
+    const WEDDING_DATE = new Date('2027-03-20T10:00:00+08:00').getTime();
+
+    if (guest) {
+        const el = document.getElementById('guestNameDisplay');
+        if (el) el.textContent = guest;
+    }
+
+    AOS.init({
+        duration: 900,
+        once: true,
+        offset: 50,
+        easing: 'ease-out-cubic',
+    });
+
+    function openInvitation() {
+        const cover = document.getElementById('cover');
+        cover.classList.add('gone');
+        setTimeout(() => {
+            cover.style.display = 'none';
+            document.body.classList.remove('is-locked');
+        }, 900);
+        const audio = document.getElementById('bgAudio');
+        audio.play().catch(() => {});
+    }
+
+    function tickCountdown() {
+        const now = Date.now();
+        let diff = Math.max(0, WEDDING_DATE - now);
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v).padStart(2,'0'); };
+        set('d', d); set('h', h); set('m', m); set('s', s);
+    }
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
+
+    window.addEventListener('scroll', () => {
+        const max = document.body.scrollHeight - window.innerHeight;
+        const w = max > 0 ? (window.scrollY / max * 100) : 0;
+        const bar = document.getElementById('progressBar');
+        if (bar) bar.style.width = w + '%';
+    });
+
+    const audio = document.getElementById('bgAudio');
+    const audioFab = document.getElementById('audioFab');
+    const audioIcon = document.getElementById('audioIcon');
+    function toggleAudio() {
+        if (audio.paused) {
+            audio.play().catch(() => {});
+            audioFab.classList.add('playing');
+            audioIcon.className = 'fas fa-pause';
+        } else {
+            audio.pause();
+            audioFab.classList.remove('playing');
+            audioIcon.className = 'fas fa-play';
+        }
+    }
+
+    const galleryImgs = [];
+    document.querySelectorAll('.gallery__item img').forEach((el) => galleryImgs.push(el.src));
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    let lbIdx = 0;
+    function openLightbox(i) {
+        lbIdx = i;
+        lightboxImg.src = galleryImgs[i];
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        lightbox.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function navLightbox(d) {
+        lbIdx = (lbIdx + d + galleryImgs.length) % galleryImgs.length;
+        lightboxImg.src = galleryImgs[lbIdx];
+    }
+    document.getElementById('lbClose').onclick = closeLightbox;
+    document.getElementById('lbPrev').onclick = () => navLightbox(-1);
+    document.getElementById('lbNext').onclick = () => navLightbox(1);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+    let rsvpChoice = 'yes';
+    function selectRSVP(v) {
+        rsvpChoice = v;
+        document.getElementById('optYes').classList.toggle('is-active', v === 'yes');
+        document.getElementById('optNo').classList.toggle('is-active', v === 'no');
+        document.getElementById('guestCountRow').style.display = v === 'yes' ? 'block' : 'none';
+    }
+
+    let isRecording = false, voiceSeconds = 0, voiceInt;
+    function toggleVoice() {
+        const btn = document.getElementById('voiceBtn');
+        const status = document.getElementById('voiceStatus');
+        const timer = document.getElementById('voiceTimer');
+        if (isRecording) {
+            isRecording = false;
+            clearInterval(voiceInt);
+            btn.classList.remove('rec');
+            document.getElementById('voiceIcon').className = 'fas fa-check';
+            status.textContent = 'Tersimpan';
+            timer.style.display = 'none';
+        } else {
+            isRecording = true;
+            voiceSeconds = 0;
+            btn.classList.add('rec');
+            document.getElementById('voiceIcon').className = 'fas fa-stop';
+            status.textContent = 'Merekam…';
+            timer.style.display = 'block';
+            timer.textContent = '00:00';
+            voiceInt = setInterval(() => {
+                voiceSeconds++;
+                const m = String(Math.floor(voiceSeconds / 60)).padStart(2,'0');
+                const s = String(voiceSeconds % 60).padStart(2,'0');
+                timer.textContent = m + ':' + s;
+                if(voiceSeconds >= 20) toggleVoice();
+            }, 1000);
+        }
+    }
+
+    function escapeHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    const WISHES_KEY = 'intimate_wishes';
+    const wishesBox = document.getElementById('wishesBox');
+    const sample = [
+        { name: 'Putri',  msg: 'Selamat Adit & Nana 🤍', status: 'Hadir' },
+        { name: 'Rio',    msg: 'Bahagia selalu!', status: 'Hadir' },
+        { name: 'Keluarga Marpaung', msg: 'Salam hangat dari Medan.', status: 'Tidak Hadir' },
+    ];
+    function renderWishes() {
+        const data = JSON.parse(localStorage.getItem(WISHES_KEY) || '[]');
+        const all = [...data, ...sample];
+        if (all.length === 0) {
+            wishesBox.innerHTML = '<div style="text-align:center; color:var(--ink-soft); font-style:italic; padding:20px 0;">Belum ada ucapan.</div>';
+            return;
+        }
+        wishesBox.innerHTML = all.map(w => `
+            <div class="wish">
+                <div class="wish__name">${escapeHtml(w.name)} <span style="color:var(--ink-soft); font-weight:300; font-size:11px;">— ${escapeHtml(w.status || '')}</span></div>
+                ${w.msg ? '<div class="wish__msg">' + escapeHtml(w.msg) + '</div>' : ''}
+            </div>
+        `).join('');
+    }
+    renderWishes();
+
+    function submitRSVP() {
+        const name = document.getElementById('rsvpName').value.trim() || guest || 'Tamu';
+        const count = rsvpChoice === 'yes' ? document.getElementById('rsvpCount').value : '0';
+        const msg = document.getElementById('rsvpMsg').value.trim();
+        if (!name) { showToast('Mohon isi nama Anda'); return; }
+        const data = JSON.parse(localStorage.getItem(WISHES_KEY) || '[]');
+        const hasVoice = document.getElementById('voiceStatus').textContent === 'Tersimpan';
+        data.push({ name, count, msg, status: rsvpChoice === 'yes' ? 'Hadir' : 'Tidak Hadir', hasVoice });
+        localStorage.setItem(WISHES_KEY, JSON.stringify(data));
+        renderWishes();
+        if (rsvpChoice === 'yes') {
+            setTimeout(() => openQRModal(name), 600);
+        } else {
+            showToast('Terima kasih');
+            document.getElementById('rsvpBox').innerHTML = '<div style="text-align:center; padding:40px 0;"><i class="fas fa-check" style="font-size:24px; color:var(--ink);"></i><p style="font-family:var(--font-serif); font-style:italic; font-size:18px; margin-top:14px;">Terima kasih</p></div>';
+        }
+    }
+
+    const qrModal = document.getElementById('qrModal');
+    const qrCodeImg = document.getElementById('qrCodeImg');
+    function openQRModal(name) {
+        const g = name || guest || 'Tamu';
+        document.getElementById('ticketGuestName').textContent = g;
+        const data = encodeURIComponent(TICKET_PREFIX + g);
+        qrCodeImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=' + data;
+        qrModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeQRModal() {
+        qrModal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    qrModal.addEventListener('click', e => { if (e.target === qrModal) closeQRModal(); });
+
+    function downloadTicket() {
+        const btn = document.getElementById('btnDownloadTicket');
+        const original = btn.innerHTML;
+        btn.innerHTML = 'mengunduh…';
+        btn.disabled = true;
+
+        const g = document.getElementById('ticketGuestName').textContent || 'E-Ticket';
+        const safeName = g.trim().split(' ').filter(Boolean).join('-');
+        const data = encodeURIComponent(TICKET_PREFIX + g);
+        const url = 'https://api.qrserver.com/v1/create-qr-code/?size=480x480&margin=20&data=' + data;
+
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 640; canvas.height = 640;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FAFAF7';
+                ctx.fillRect(0, 0, 640, 640);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#0A0A0A';
+                ctx.font = '500 14px Inter, sans-serif';
+                ctx.fillText('ACCESS PASS', 320, 60);
+                ctx.font = '300 italic 56px "Fraunces", Georgia, serif';
+                ctx.fillText('E‑Ticket', 320, 140);
+                ctx.font = '300 22px Inter, sans-serif';
+                ctx.fillText(g, 320, 210);
+                const QR = 240;
+                ctx.drawImage(img, (640-QR)/2, 250, QR, QR);
+                ctx.font = '300 18px Inter, sans-serif';
+                ctx.fillStyle = '#6B6B6B';
+                ctx.fillText('Tunjukkan tiket ini saat kedatangan', 320, 540);
+                const link = document.createElement('a');
+                link.download = 'E-Ticket-' + safeName + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                btn.innerHTML = 'tersimpan ✓';
+                btn.disabled = false;
+                setTimeout(() => { btn.innerHTML = original; }, 2000);
+            } catch (err) {
+                const link = document.createElement('a');
+                link.download = 'E-Ticket-' + safeName + '.png';
+                link.href = url;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                link.click();
+                btn.innerHTML = original;
+                btn.disabled = false;
+            }
+        };
+        img.onerror = () => {
+            const link = document.createElement('a');
+            link.download = 'E-Ticket-' + safeName + '.png';
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.click();
+            btn.innerHTML = original;
+            btn.disabled = false;
+        };
+        img.src = url;
+    }
+
+    function copyText(t, label) {
+        navigator.clipboard.writeText(t).then(() => showToast(label + ' disalin')).catch(()=>{});
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+    }
+</script>
+</body>
+</html>

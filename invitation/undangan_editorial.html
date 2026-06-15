@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laras &amp; Reno — The Wedding</title>
+<meta name="description" content="The wedding of Laras &amp; Reno.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ========================================================
+     EDITORIAL MONOCHROME — A magazine-style wedding invitation
+     Palette: Off-white paper #FAFAF7, Charcoal #1A1A1A, Muted tobacco #8B6F47
+     Typography: Fraunces (display serif, variable) + Inter (sans)
+     Catch hook: feels like opening Vogue, not a wedding site
+     No ornament, no glassmorphism, no arch, no emoji
+     No external font icons — all inline SVG
+     ======================================================== */
+
+  :root {
+    --paper: #FAFAF7;
+    --paper-2: #F2F0EA;
+    --ink: #1A1A1A;
+    --ink-soft: #4A4A4A;
+    --ink-mute: #8A8A85;
+    --rule: #D9D6CE;
+    --accent: #8B6F47;
+    --accent-soft: #B5996F;
+    --display: "Fraunces", "Times New Roman", serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+  html, body { overflow-x: hidden; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.55;
+  }
+
+  ::selection { background: var(--ink); color: var(--paper); }
+
+  /* ===== Layout ===== */
+  .app-container {
+    position: relative;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  @media (min-width: 768px) { .app-container { padding: 0 48px; } }
+
+  section { position: relative; padding: clamp(72px, 12vh, 128px) 0; }
+
+  /* ===== Cover gate (full-bleed dark) ===== */
+  .cover {
+    position: fixed; inset: 0;
+    z-index: 200;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 48px 32px;
+    background: var(--ink);
+    color: var(--paper);
+    transition: opacity 1s var(--ease), transform 1s var(--ease);
+  }
+  .cover::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(139,111,71,0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .cover > * { position: relative; z-index: 1; }
+  .cover.gone { opacity: 0; pointer-events: none; transform: translateY(-20px); }
+
+  .cover-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--accent-soft);
+    margin-bottom: 56px;
+  }
+  .cover-rule {
+    width: 40px; height: 1px;
+    background: var(--accent);
+    margin: 0 auto 32px;
+    opacity: 0.6;
+  }
+  .cover-title {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(56px, 14vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--paper);
+    margin-bottom: 24px;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+  .cover-title em { font-style: italic; font-weight: 300; color: var(--accent-soft); }
+  .cover-meta {
+    font-family: var(--sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--accent-soft);
+    margin-bottom: 56px;
+  }
+  .cover-guest {
+    margin-bottom: 48px;
+  }
+  .cover-guest-label {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--paper);
+    opacity: 0.5;
+    margin-bottom: 8px;
+  }
+  .cover-guest-name {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    color: var(--paper);
+    font-variation-settings: "opsz" 30, "SOFT" 100;
+  }
+  .cover-cta {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 16px 32px;
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid var(--accent);
+    border-radius: 0;
+    font-family: var(--sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.5s var(--ease);
+  }
+  .cover-cta:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .cover-cta svg { width: 14px; height: 14px; }
+
+  /* ===== Issue marker (top-left) — magazine signature ===== */
+  .issue-marker {
+    position: fixed; top: 24px; left: 24px;
+    z-index: 100;
+    font-family: var(--sans);
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--ink-mute);
+    mix-blend-mode: difference;
+    color: rgba(255,255,255,0.7);
+  }
+  .issue-marker span { color: var(--accent); }
+
+  /* ===== Masthead (top app bar) ===== */
+  .masthead {
+    position: sticky; top: 0; z-index: 50;
+    padding: 20px 0;
+    background: rgba(250,250,247,0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .masthead-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 20;
+  }
+  .masthead-title em { font-style: italic; color: var(--accent); }
+  .masthead-meta {
+    font-family: var(--sans);
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    padding: 0;
+    margin: 0 -24px;
+    position: relative;
+    min-height: 90vh;
+    display: flex; align-items: flex-end;
+    overflow: hidden;
+  }
+  @media (min-width: 768px) { .hero { margin: 0 -48px; } }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; }
+  .hero-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    filter: grayscale(15%) contrast(0.95);
+  }
+  .hero-bg-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(250,250,247,0) 0%, rgba(250,250,247,0.3) 40%, rgba(250,250,247,0.95) 88%, var(--paper) 100%);
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    padding: 96px 32px 64px;
+    max-width: 920px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  @media (min-width: 768px) { .hero-inner { padding: 96px 48px 64px; } }
+  .hero-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .hero-headline {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(40px, 7vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 720px;
+    margin-bottom: 32px;
+    font-variation-settings: "opsz" 100, "SOFT" 50;
+  }
+  .hero-headline em { font-style: italic; color: var(--accent); }
+  .hero-lede {
+    font-family: var(--display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(18px, 2.4vw, 22px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 560px;
+    font-variation-settings: "opsz" 30, "SOFT" 100;
+  }
+  .hero-byline {
+    margin-top: 64px;
+    display: flex; gap: 16px; align-items: center;
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .hero-byline::before {
+    content: ""; width: 32px; height: 1px;
+    background: var(--ink-mute);
+  }
+
+  /* ===== Section typography ===== */
+  .section-num {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-num::after {
+    content: ""; flex: 0 0 48px; height: 1px;
+    background: var(--accent);
+  }
+  .section-title {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 24px;
+    font-variation-settings: "opsz" 100, "SOFT" 30;
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .section-dek {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(16px, 1.6vw, 19px);
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 540px;
+    margin-bottom: 64px;
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+
+  /* ===== Couple (asymmetric editorial) ===== */
+  .couple-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 80px;
+    margin-top: 48px;
+  }
+  @media (min-width: 768px) {
+    .couple-grid {
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+  }
+  .couple-card {
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .couple-portrait {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--paper-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .couple-portrait svg, .couple-portrait img { width: 100%; height: 100%; display: block; object-fit: cover; filter: grayscale(20%); }
+  .couple-name {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(40px, 5vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 100, "SOFT" 30;
+  }
+  .couple-role {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .couple-parents {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+  .couple-amp {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 80px;
+    line-height: 1;
+    color: var(--accent);
+    text-align: center;
+    align-self: center;
+    font-variation-settings: "opsz" 144, "WONK" 1;
+  }
+
+  /* ===== Countdown (newspaper masthead style) ===== */
+  .countdown {
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 48px 0;
+    margin: 64px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 768px) {
+    .countdown { grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; gap: 0; }
+  }
+  .countdown-cell { text-align: center; }
+  .countdown-num {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(48px, 8vw, 80px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    font-variation-settings: "opsz" 144, "WONK" 0;
+  }
+  .countdown-label {
+    font-family: var(--sans);
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 12px;
+  }
+  .countdown-sep {
+    font-family: var(--display);
+    font-weight: 200;
+    font-size: 32px;
+    color: var(--ink-mute);
+    text-align: center;
+    align-self: center;
+  }
+  @media (max-width: 767px) { .countdown-sep { display: none; } }
+
+  /* ===== Pull-quote ===== */
+  .pullquote {
+    padding: clamp(96px, 16vh, 144px) 0;
+    text-align: center;
+  }
+  .pullquote-mark {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 120px;
+    line-height: 0.6;
+    color: var(--accent);
+    opacity: 0.4;
+    margin-bottom: 16px;
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+  .pullquote-text {
+    font-family: var(--display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(24px, 3.4vw, 36px);
+    line-height: 1.35;
+    color: var(--ink);
+    max-width: 720px;
+    margin: 0 auto 24px;
+    font-variation-settings: "opsz" 100, "SOFT" 80;
+  }
+  .pullquote-attr {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ===== Schedule (2-col with venue photo) ===== */
+  .schedule-list { display: flex; flex-direction: column; gap: 96px; }
+  .schedule-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 768px) {
+    .schedule-item { grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .schedule-item-reverse .schedule-photo { order: 2; }
+    .schedule-item-reverse .schedule-body { order: 1; }
+  }
+  .schedule-photo {
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: var(--paper-2);
+  }
+  .schedule-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%); transition: transform 0.6s var(--ease); }
+  .schedule-photo:hover img { transform: scale(1.03); }
+  .schedule-body { display: flex; flex-direction: column; gap: 8px; }
+  .schedule-time {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 60;
+  }
+  .schedule-time-sub {
+    display: block;
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 8px;
+  }
+  .schedule-name {
+    font-family: var(--display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+  .schedule-where {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--ink-soft);
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+  .schedule-addr {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 8px;
+  }
+  .schedule-action {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 16px;
+    align-self: start;
+  }
+  .schedule-action svg { width: 12px; height: 12px; }
+
+  /* ===== Gallery (single cohesive rectangle: 3x3 with hero span 2x2) ===== */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 48px;
+    /* Single block — no broken rows, no awkward gaps */
+  }
+  @media (min-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      gap: 8px;
+      aspect-ratio: 3 / 3;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .gallery-grid .g-hero {
+      grid-column: 1 / 3;
+      grid-row: 1 / 3;
+      aspect-ratio: auto;
+    }
+    /* All other cells default to 1:1 via aspect-ratio on .gallery-cell */
+  }
+  .gallery-cell {
+    aspect-ratio: 1/1;
+    background: var(--paper-2);
+    overflow: hidden;
+    position: relative;
+  }
+  .gallery-cell img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--ease);
+  }
+  .gallery-cell:hover img { transform: scale(1.06); }
+  .gallery-cell::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 65%, rgba(0,0,0,0.35) 100%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .gallery-cell:hover::after { opacity: 1; }
+  .gallery-caption-tag {
+    position: absolute;
+    bottom: 10px; left: 10px;
+    padding: 5px 10px;
+    background: rgba(250,250,247,0.95);
+    backdrop-filter: blur(8px);
+    font-family: var(--sans);
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--ink);
+    z-index: 1;
+  }
+  .gallery-caption {
+    font-family: var(--sans);
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 12px;
+  }
+
+  /* ===== Registry (asymmetric table) ===== */
+  .registry-list {
+    margin-top: 48px;
+    border-top: 1px solid var(--ink);
+  }
+  .registry-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+  }
+  @media (min-width: 768px) {
+    .registry-item { grid-template-columns: 1fr 1fr 1fr auto; align-items: center; gap: 32px; }
+  }
+  .registry-bank {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--ink);
+    font-variation-settings: "opsz" 30;
+  }
+  .registry-num {
+    font-family: var(--sans);
+    font-size: 14px; font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .registry-name {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-mute);
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+  .registry-action {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--sans);
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .registry-action svg { width: 12px; height: 12px; }
+
+  /* ===== RSVP (form, single column) ===== */
+  .rsvp-form {
+    margin-top: 48px;
+    max-width: 560px;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 18px;
+    padding: 12px 0;
+    transition: border-color 0.3s;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    outline: none;
+    border-bottom-color: var(--accent);
+  }
+  .form-input::placeholder, .form-textarea::placeholder {
+    color: var(--ink-mute);
+    font-style: italic;
+  }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-select { appearance: none; background: transparent; }
+  .form-select option { background: var(--paper); color: var(--ink); }
+  .form-radio-group {
+    display: flex; gap: 32px;
+    flex-wrap: wrap;
+  }
+  .form-radio {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    font-family: var(--display);
+    font-size: 17px;
+    color: var(--ink);
+  }
+  .form-radio input {
+    appearance: none;
+    width: 14px; height: 14px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+  }
+  .form-radio input:checked {
+    background: var(--ink);
+  }
+  .form-radio input:checked::after {
+    content: ""; position: absolute; inset: 3px;
+    background: var(--paper); border-radius: 50%;
+  }
+  .form-submit {
+    align-self: flex-start;
+    margin-top: 16px;
+    padding: 18px 40px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    font-family: var(--sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+  }
+  .form-submit:hover { background: var(--accent); }
+  .form-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+  .form-success {
+    display: none;
+    padding: 32px 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .form-success.shown { display: block; }
+  .form-success-title {
+    font-family: var(--display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+  .form-success-msg {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--ink-soft);
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+
+  /* ===== Closing ===== */
+  .closing {
+    text-align: center;
+    padding: clamp(96px, 16vh, 160px) 0;
+    border-top: 1px solid var(--ink);
+  }
+  .closing-title {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 720px;
+    margin: 0 auto 32px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .closing-title em { font-style: italic; color: var(--accent); }
+  .closing-rule {
+    width: 40px; height: 1px;
+    background: var(--accent);
+    margin: 32px auto;
+  }
+  .closing-sign {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--ink-soft);
+    font-variation-settings: "opsz" 30, "SOFT" 80;
+  }
+  .closing-colophon {
+    margin-top: 64px;
+    font-family: var(--sans);
+    font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ===== Reveal ===== */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    padding: 12px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 300;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ===== Floating audio control (subtle) ===== */
+  .audio-fab {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    z-index: 9998;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+  }
+  .audio-fab:hover { background: var(--ink); color: var(--paper); }
+  .audio-fab.playing { background: var(--ink); color: var(--paper); }
+  .audio-fab svg { width: 16px; height: 16px; }
+
+  /* ===== SVG sizing ===== */
+  svg.icon { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+
+  /* ===== Reduced motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="issue-marker"><span>L &amp; R</span> &nbsp;&middot;&nbsp; Edition I</div>
+
+<button class="audio-fab" id="audioFab" aria-label="Toggle music">
+  <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:16px;height:16px;">
+    <path id="audioIcon" d="M8 5v14l11-7z"/>
+  </svg>
+</button>
+<audio id="bgAudio" loop preload="none">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<div id="toast" class="toast"></div>
+
+<!-- ===== COVER GATE ===== -->
+<div class="cover" id="cover">
+  <div class="cover-eyebrow">Volume One &middot; Spring 2027</div>
+  <div class="cover-rule"></div>
+  <h1 class="cover-title">Laras <em>&amp;</em> Reno</h1>
+  <div class="cover-meta">21 . 03 . 2027 &nbsp;&middot;&nbsp; Jakarta</div>
+  <div class="cover-guest">
+    <div class="cover-guest-label">For the attendance of</div>
+    <div class="cover-guest-name" id="guestNameDisplay">A Distinguished Guest</div>
+  </div>
+  <button class="cover-cta" id="openBtn" onclick="openInvitation()">
+    Open Invitation
+    <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59a.996.996 0 0 0 0-1.41l-6.58-6.6a.996.996 0 1 0-1.41 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ===== APP ===== -->
+<div class="app-container" id="appContainer">
+
+  <header class="masthead">
+    <div class="masthead-title">Laras <em>&amp;</em> Reno</div>
+    <div class="masthead-meta">Vol. I &middot; 21.03.2027</div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="" loading="eager">
+      <div class="hero-bg-overlay"></div>
+    </div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Feature &middot; A Love Story</div>
+      <h1 class="hero-headline">Two lives, <em>quietly</em> choosing each other &mdash; and a day to celebrate it.</h1>
+      <p class="hero-lede">A small, intimate gathering. Less a wedding, more a long table, good wine, and the people who made us who we are.</p>
+      <div class="hero-byline">Words by Laras &amp; Reno &middot; Photographed by Us</div>
+    </div>
+  </section>
+
+  <!-- COUPLE -->
+  <section>
+    <div class="section-num">No. 01 &middot; The Couple</div>
+    <h2 class="section-title">The two who <em>found</em> each other.</h2>
+    <p class="section-dek">Two people, one coffee shop in Bandung, six years ago. The rest, as they say, was a slow and deliberate kind of yes.</p>
+
+    <div class="couple-grid">
+      <div class="couple-card">
+        <div class="couple-portrait">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&amp;fit=crop&amp;w=600&amp;q=80" alt="Laras" loading="lazy">
+        </div>
+        <div class="couple-role">The Bride</div>
+        <h3 class="couple-name">Laras</h3>
+        <p class="couple-parents">First daughter of Mr. Hendra Wijaya &amp; Mrs. Sari Indah. Writes letters. Reads slowly. Believes in long mornings.</p>
+      </div>
+
+      <div class="couple-amp">&amp;</div>
+
+      <div class="couple-card">
+        <div class="couple-portrait">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&amp;fit=crop&amp;w=600&amp;q=80" alt="Reno" loading="lazy">
+        </div>
+        <div class="couple-role">The Groom</div>
+        <h3 class="couple-name">Reno</h3>
+        <p class="couple-parents">Second son of Mr. Wirajaya &amp; Mrs. Maharani. Builds furniture by hand. Drinks coffee black. Believes in showing up.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section>
+    <div class="countdown" id="countdown">
+      <div class="countdown-cell">
+        <div class="countdown-num" id="d">000</div>
+        <div class="countdown-label">Days</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-cell">
+        <div class="countdown-num" id="h">00</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-cell">
+        <div class="countdown-num" id="m">00</div>
+        <div class="countdown-label">Minutes</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-cell">
+        <div class="countdown-num" id="s">00</div>
+        <div class="countdown-label">Seconds</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PULLQUOTE -->
+  <section class="pullquote">
+    <div class="pullquote-mark">&ldquo;</div>
+    <p class="pullquote-text">What we have once enjoyed we can never lose. All that we love deeply becomes a part of us.</p>
+    <div class="pullquote-attr">Helen Keller</div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section>
+    <div class="section-num">No. 02 &middot; The Day</div>
+    <h2 class="section-title">A small, <em>intentional</em> programme.</h2>
+    <p class="section-dek">Two sessions, one evening, a long table. Come for one, stay for the other, or both.</p>
+
+    <div class="schedule-list">
+      <article class="schedule-item">
+        <div class="schedule-photo">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="The Ceremony" loading="lazy">
+        </div>
+        <div class="schedule-body">
+          <div class="schedule-time">16.00<span class="schedule-time-sub">WIB &middot; Session I</span></div>
+          <h3 class="schedule-name">The Ceremony</h3>
+          <p class="schedule-where">A quiet exchange of vows under the frangipani, witnessed by family and a small handful of close friends.</p>
+          <p class="schedule-addr">Rumah Lereng &middot; Bogor, West Java</p>
+          <a class="schedule-action" href="https://maps.google.com/?q=Bogor" target="_blank" rel="noopener">
+            View Map
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59a.996.996 0 0 0 0-1.41l-6.58-6.6a.996.996 0 1 0-1.41 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="schedule-item schedule-item-reverse">
+        <div class="schedule-body">
+          <div class="schedule-time">19.00<span class="schedule-time-sub">WIB &middot; Session II</span></div>
+          <h3 class="schedule-name">The Dinner</h3>
+          <p class="schedule-where">A long table, a short toast, and a slow evening. Dress code: wear what you'd wear to a long lunch with people you love.</p>
+          <p class="schedule-addr">Rumah Lereng &middot; Bogor, West Java</p>
+          <a class="schedule-action" href="https://maps.google.com/?q=Bogor" target="_blank" rel="noopener">
+            View Map
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59a.996.996 0 0 0 0-1.41l-6.58-6.6a.996.996 0 1 0-1.41 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/></svg>
+          </a>
+        </div>
+        <div class="schedule-photo">
+          <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="The Dinner" loading="lazy">
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section>
+    <div class="section-num">No. 03 &middot; In Frames</div>
+    <h2 class="section-title">A few <em>moments</em>, in passing.</h2>
+    <p class="section-dek">Frames from the year that led to this one. Not a portfolio — a record of a life that was already in progress.</p>
+
+    <div class="gallery-grid">
+      <div class="gallery-cell g-hero">
+        <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&amp;fit=crop&amp;w=900&amp;h=900&amp;q=80" alt="The proposal" loading="lazy">
+        <div class="gallery-caption-tag">01 &middot; The proposal</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="Together" loading="lazy">
+        <div class="gallery-caption-tag">02</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="First trip" loading="lazy">
+        <div class="gallery-caption-tag">03</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="Rings" loading="lazy">
+        <div class="gallery-caption-tag">04</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="Family" loading="lazy">
+        <div class="gallery-caption-tag">05</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="At home" loading="lazy">
+        <div class="gallery-caption-tag">06</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="Long table" loading="lazy">
+        <div class="gallery-caption-tag">07</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="Bouquet" loading="lazy">
+        <div class="gallery-caption-tag">08</div>
+      </div>
+      <div class="gallery-cell">
+        <img src="https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&amp;fit=crop&amp;w=600&amp;h=600&amp;q=80" alt="The dress" loading="lazy">
+        <div class="gallery-caption-tag">09</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTRY -->
+  <section>
+    <div class="section-num">No. 04 &middot; A Practical Note</div>
+    <h2 class="section-title">On gifts, <em>quietly</em>.</h2>
+    <p class="section-dek">Your presence is the gift. If you wish to mark the day with something more, the details below — for those who find comfort in practicality.</p>
+
+    <div class="registry-list">
+      <div class="registry-item" onclick="copyBank('BCA', '8801 2345 6789')">
+        <div class="registry-bank">BCA</div>
+        <div class="registry-num">8801 2345 6789</div>
+        <div class="registry-name">Laras Widjaja</div>
+        <div class="registry-action">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:12px;height:12px;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          <span>Copy</span>
+        </div>
+      </div>
+      <div class="registry-item" onclick="copyBank('Mandiri', '1570 0099 8812')">
+        <div class="registry-bank">Mandiri</div>
+        <div class="registry-num">1570 0099 8812</div>
+        <div class="registry-name">Reno Wirajaya</div>
+        <div class="registry-action">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:12px;height:12px;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          <span>Copy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section>
+    <div class="section-num">No. 05 &middot; The Reply</div>
+    <h2 class="section-title">Will you be <em>there</em>?</h2>
+    <p class="section-dek">A small ask, but it shapes the table. Please reply by the end of February 2027.</p>
+
+    <form class="rsvp-form" id="rsvpForm" onsubmit="handleRSVP(event)">
+      <div class="form-group">
+        <label class="form-label" for="name">Your Name</label>
+        <input class="form-input" id="name" name="name" placeholder="As you'd like it printed" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Attendance</label>
+        <div class="form-radio-group">
+          <label class="form-radio">
+            <input type="radio" name="attendance" value="yes" checked>
+            Joyfully accept
+          </label>
+          <label class="form-radio">
+            <input type="radio" name="attendance" value="no">
+            Regretfully decline
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="pax">Number of Guests</label>
+        <select class="form-select" id="pax" name="pax">
+          <option value="1">One</option>
+          <option value="2" selected>Two</option>
+          <option value="3">Three</option>
+          <option value="4">Four</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="msg">A Note, If You'd Like</label>
+        <textarea class="form-textarea" id="msg" name="msg" placeholder="A sentence, a song recommendation, a memory..."></textarea>
+      </div>
+
+      <button class="form-submit" type="submit" id="submitBtn">Send Reply</button>
+    </form>
+
+    <div class="form-success" id="rsvpSuccess">
+      <div class="form-success-title">Received with thanks.</div>
+      <div class="form-success-msg">Your reply is in our hands. See you in Bogor.</div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing">
+    <h2 class="closing-title">Until the <em>twenty-first</em> of March, then.</h2>
+    <div class="closing-rule"></div>
+    <div class="closing-sign">Laras &amp; Reno</div>
+    <div class="closing-colophon">Edition I &middot; Printed in Bogor &middot; MMXXVII</div>
+  </section>
+
+</div>
+
+<script>
+  // ===== URL guest param =====
+  const urlParams = new URLSearchParams(window.location.search);
+  const guestName = urlParams.get('to');
+  if (guestName) {
+    document.getElementById('guestNameDisplay').textContent = guestName;
+    document.title = `${guestName} — Laras & Reno`;
+  }
+
+  // ===== Open cover =====
+  function openInvitation() {
+    document.getElementById('cover').classList.add('gone');
+    setTimeout(() => {
+      const audio = document.getElementById('bgAudio');
+      audio.volume = 0.5;
+      audio.play().catch(() => {});
+    }, 600);
+  }
+
+  // ===== Audio toggle =====
+  document.getElementById('audioFab').addEventListener('click', () => {
+    const audio = document.getElementById('bgAudio');
+    const icon = document.getElementById('audioIcon');
+    const fab = document.getElementById('audioFab');
+    if (audio.paused) {
+      audio.play();
+      fab.classList.add('playing');
+      icon.setAttribute('d', 'M6 5h4v14H6zm8 0h4v14h-4z');
+    } else {
+      audio.pause();
+      fab.classList.remove('playing');
+      icon.setAttribute('d', 'M8 5v14l11-7z');
+    }
+  });
+
+  // ===== Countdown =====
+  function updateCountdown() {
+    const target = new Date('2027-03-21T16:00:00+07:00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff < 0) {
+      ['d','h','m','s'].forEach(id => document.getElementById(id).textContent = id === 'd' ? '000' : '00');
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    document.getElementById('d').textContent = String(days).padStart(3, '0');
+    document.getElementById('h').textContent = String(hours).padStart(2, '0');
+    document.getElementById('m').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('s').textContent = String(seconds).padStart(2, '0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ===== IntersectionObserver reveal =====
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== Copy to clipboard =====
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function copyBank(name, num) {
+    const text = `${name} ${num}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => showToast(`${name} copied`));
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); showToast(`${name} copied`); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+
+  // ===== RSVP =====
+  function handleRSVP(e) {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const attendance = document.querySelector('input[name="attendance"]:checked');
+    if (!name) { showToast('Name required'); return; }
+    if (!attendance) { showToast('Pick attendance'); return; }
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    setTimeout(() => {
+      document.getElementById('rsvpForm').style.display = 'none';
+      document.getElementById('rsvpSuccess').classList.add('shown');
+    }, 1100);
+  }
+</script>
+
+</body>
+</html>

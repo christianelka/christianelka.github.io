@@ -284,12 +284,11 @@ section {
 .cover-action {
   position: absolute;
   bottom: 10vh;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   z-index: 3;
   opacity: 0;
   animation: coverFadeUp 1s var(--ease-out) 0.8s forwards;
-  width: auto;
   display: flex;
   justify-content: center;
 }
@@ -304,6 +303,7 @@ section {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.3em;
+  text-indent: 0.3em;
   cursor: pointer;
   font-weight: 700;
   font-family: var(--font-sans);
@@ -1287,7 +1287,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if(btnOpen) {
     btnOpen.addEventListener('click', () => {
-      if(cover) cover.classList.add('dismissed');
+      if(cover) {
+        cover.classList.add('dismissed');
+        setTimeout(() => { cover.style.display = 'none'; }, 900);
+      }
       document.body.style.overflow = '';
       if(bgMusic) {
         bgMusic.play().then(() => {
@@ -1457,10 +1460,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // QR Modal Logic
   const qrModal = document.getElementById('qrModal');
   const qrCodeImg = document.getElementById('qrCodeImg');
+  const TICKET_PREFIX = 'wedding-dian-rafa-';
   window.openQRModal = (name) => {
     const guestName = name || (guest || 'Tamu Undangan');
     document.getElementById('ticketGuestName').innerText = guestName;
-    qrCodeImg.src = generateQRImage('wedding-dian-rafa-' + guestName);
+    const data = encodeURIComponent(TICKET_PREFIX + guestName);
+    qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${data}`;
     qrModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   };
@@ -1470,28 +1475,84 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.downloadTicket = () => {
     const qrContent = document.querySelector('.qr-modal-content');
-    const btn = qrContent.querySelector('button');
+    const btn = qrContent.querySelector('.btn-submit');
+    if (!btn) return;
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunduh...';
     btn.disabled = true;
-    html2canvas(qrContent, {
-      scale: 2,
-      backgroundColor: '#FAF8F5',
-      useCORS: true,
-    }).then(canvas => {
+
+    const guestName = document.getElementById('ticketGuestName').innerText || 'E-Ticket';
+    const safeName = guestName.trim().split(' ').filter(Boolean).join('-');
+    const data = encodeURIComponent(TICKET_PREFIX + guestName);
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=480x480&margin=20&data=${data}`;
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const W = 640;
+        const H = 560;
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FAF8F5';
+        ctx.fillRect(0, 0, W, H);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        let y = 48;
+        ctx.font = '500 20px Montserrat, sans-serif';
+        ctx.fillStyle = '#7A8F85';
+        ctx.fillText('ACCESS PASS', W / 2, y);
+        y += 30;
+        ctx.font = '600 52px Cormorant Garamond, Georgia, serif';
+        ctx.fillStyle = '#1E3A2F';
+        ctx.fillText('E-Ticket', W / 2, y);
+        y += 70;
+        ctx.font = 'italic 500 36px Cormorant Garamond, Georgia, serif';
+        ctx.fillStyle = '#A68A62';
+        ctx.fillText(guestName, W / 2, y);
+        y += 60;
+        const QR = 240;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect((W - QR) / 2 - 16, y - 16, QR + 32, QR + 32);
+        ctx.drawImage(img, (W - QR) / 2, y, QR, QR);
+        y += QR + 40;
+        ctx.font = '400 22px Montserrat, sans-serif';
+        ctx.fillStyle = '#7A8F85';
+        ctx.fillText('Tunjukkan tiket ini saat kedatangan', W / 2, y);
+        const link = document.createElement('a');
+        link.download = `E-Ticket-${safeName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+        btn.disabled = false;
+        setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+      } catch (err) {
+        // CORS/blocked canvas → fallback download image directly
+        const link = document.createElement('a');
+        link.download = `E-Ticket-${safeName}.png`;
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.click();
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        alert('QR disalin, simpan manual jika browser memblokir unduhan otomatis.');
+      }
+    };
+    img.onerror = () => {
+      // Fallback: trigger download from the API URL directly
       const link = document.createElement('a');
-      const guestName = document.getElementById('ticketGuestName').innerText || 'E-Ticket';
-      link.download = `E-Ticket-${guestName.replace(/\s+/g, '-')}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.download = `E-Ticket-${safeName}.png`;
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener';
       link.click();
-      btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
-      btn.disabled = false;
-      setTimeout(() => { btn.innerHTML = originalText; }, 2000);
-    }).catch(() => {
       btn.innerHTML = originalText;
       btn.disabled = false;
-      alert('Gagal mengunduh. Silakan screenshot manual.');
-    });
+    };
+    img.src = url;
   };
 });
 </script>
