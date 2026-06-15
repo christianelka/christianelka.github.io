@@ -1,0 +1,8 @@
+# AI / agent workflow state (not source)
+.sisyphus/
+
+# Browser automation test artifacts
+.playwright-mcp/
+
+# Archived legacy files (kept for reference, not deployed)
+archive/

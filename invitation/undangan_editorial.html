@@ -803,6 +803,159 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  /* ===== Lightbox ===== */
+  .lb {
+    position: fixed; inset: 0;
+    z-index: 9999;
+    background: rgba(26, 26, 26, 0.97);
+    display: none;
+    align-items: center; justify-content: center;
+  }
+  .lb.is-open { display: flex; }
+  .lb img {
+    max-width: 92vw; max-height: 84vh;
+    object-fit: contain;
+    border: 1px solid var(--ink);
+  }
+  .lb-btn {
+    position: absolute;
+    color: var(--paper);
+    background: transparent;
+    border: 1px solid var(--paper);
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: var(--sans);
+  }
+  .lb-btn:hover { background: var(--paper); color: var(--ink); }
+  .lb-close { top: 20px; right: 20px; }
+  .lb-prev  { left: 16px; top: 50%; transform: translateY(-50%); }
+  .lb-next  { right: 16px; top: 50%; transform: translateY(-50%); }
+  .lb-caption {
+    position: absolute;
+    bottom: 20px; left: 50%; transform: translateX(-50%);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--paper);
+    opacity: 0.7;
+  }
+
+  /* ===== Voice Recorder ===== */
+  .form-voice {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .voice-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .voice-btn:hover { background: var(--ink); color: var(--paper); }
+  .voice-btn.rec {
+    background: var(--ink);
+    color: var(--paper);
+    animation: voicePulse 1.4s ease-in-out infinite;
+  }
+  @keyframes voicePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0.3); }
+    50%      { box-shadow: 0 0 0 8px rgba(0,0,0,0); }
+  }
+  .voice-timer {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== QR Modal ===== */
+  .qr-modal {
+    position: fixed; inset: 0;
+    z-index: 10000;
+    background: rgba(26, 26, 26, 0.97);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .qr-modal.is-open { display: flex; }
+  .qr-card {
+    background: var(--paper);
+    width: 100%;
+    max-width: 320px;
+    padding: 40px 28px 28px;
+    text-align: center;
+    border: 1px solid var(--ink);
+    position: relative;
+  }
+  .qr-close {
+    position: absolute;
+    top: 10px; right: 14px;
+    background: none; border: none;
+    font-size: 22px;
+    color: var(--ink);
+    cursor: pointer;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qr-label {
+    font-family: var(--sans);
+    font-size: 9px; letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .qr-title {
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .qr-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .qr-img {
+    background: #fff;
+    padding: 10px;
+    display: inline-block;
+    border: 1px solid var(--ink);
+    margin-bottom: 14px;
+  }
+  .qr-img img { width: 200px; height: 200px; display: block; }
+  .qr-hint {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  .qr-dl {
+    display: block; width: 100%;
+    padding: 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .qr-dl:hover { background: var(--paper); color: var(--ink); }
+  .qr-dl:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -1067,8 +1220,6 @@
         <select class="form-select" id="pax" name="pax">
           <option value="1">One</option>
           <option value="2" selected>Two</option>
-          <option value="3">Three</option>
-          <option value="4">Four</option>
         </select>
       </div>
 
@@ -1077,12 +1228,24 @@
         <textarea class="form-textarea" id="msg" name="msg" placeholder="A sentence, a song recommendation, a memory..."></textarea>
       </div>
 
+      <div class="form-group form-voice">
+        <button type="button" class="voice-btn" id="voiceBtn" aria-label="Voice note">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+          <span id="voiceLabel">Add voice note (max 2 min)</span>
+        </button>
+        <span class="voice-timer" id="voiceTimer" style="display:none;">00:00</span>
+      </div>
+
       <button class="form-submit" type="submit" id="submitBtn">Send Reply</button>
     </form>
 
     <div class="form-success" id="rsvpSuccess">
       <div class="form-success-title">Received with thanks.</div>
       <div class="form-success-msg">Your reply is in our hands. See you in Bogor.</div>
+      <button type="button" class="voice-btn" id="qrBtn" style="margin-top: 24px;" onclick="openQRModal()">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zm0 10h2v2h-2zm-6-6h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm2 2h2v2h-2zm2-2h2v2h-2zm0-4h2v2h-2zm2 2h2v2h-2z"/></svg>
+        Show e-ticket
+      </button>
     </div>
   </section>
 
@@ -1094,6 +1257,26 @@
     <div class="closing-colophon">Edition I &middot; Printed in Bogor &middot; MMXXVII</div>
   </section>
 
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&larr;</button>
+  <img id="lbImg" alt="">
+  <div class="lb-caption" id="lbCaption"></div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&rarr;</button>
+</div>
+
+<div class="qr-modal" id="qrModal" role="dialog" aria-modal="true">
+  <div class="qr-card">
+    <button class="qr-close" onclick="closeQRModal()" aria-label="Close">&times;</button>
+    <div class="qr-label">Access Pass</div>
+    <div class="qr-title">E&#8209;Ticket</div>
+    <div class="qr-name" id="qrGuestName">Tamu</div>
+    <div class="qr-img"><img id="qrImg" alt="QR Code"></div>
+    <div class="qr-hint">Show this at the door</div>
+    <button class="qr-dl" id="qrDownload" onclick="downloadTicket()">Save ticket</button>
+  </div>
 </div>
 
 <script>
@@ -1199,7 +1382,161 @@
       document.getElementById('rsvpSuccess').classList.add('shown');
     }, 1100);
   }
+
+  // ===== LIGHTBOX =====
+  const lbCells = Array.from(document.querySelectorAll('.gallery-cell'));
+  const lbImages = lbCells.map(c => c.querySelector('img'));
+  const lbCaptions = lbCells.map(c => {
+    const t = c.querySelector('.gallery-caption-tag');
+    return t ? t.textContent.trim() : '';
+  });
+  const lb = document.getElementById('lb');
+  const lbImg = document.getElementById('lbImg');
+  const lbCap = document.getElementById('lbCaption');
+  let lbIdx = 0;
+  function openLB(i) {
+    lbIdx = i;
+    lbImg.src = lbImages[i].src;
+    lbImg.alt = lbImages[i].alt || '';
+    lbCap.textContent = lbCaptions[i];
+    lb.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLB() { lb.classList.remove('is-open'); document.body.style.overflow = ''; }
+  function navLB(d) { lbIdx = (lbIdx + d + lbImages.length) % lbImages.length; openLB(lbIdx); }
+  lbCells.forEach((cell, i) => {
+    cell.style.cursor = 'pointer';
+    cell.addEventListener('click', () => openLB(i));
+  });
+  document.getElementById('lbClose').onclick = closeLB;
+  document.getElementById('lbPrev').onclick = () => navLB(-1);
+  document.getElementById('lbNext').onclick = () => navLB(1);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeLB();
+    if (e.key === 'ArrowLeft') navLB(-1);
+    if (e.key === 'ArrowRight') navLB(1);
+  });
+
+  // ===== VOICE RECORDER =====
+  let vRec = false, vSec = 0, vInt, vStream, vRecorder;
+  function toggleVoice() {
+    const btn = document.getElementById('voiceBtn');
+    const label = document.getElementById('voiceLabel');
+    const timer = document.getElementById('voiceTimer');
+    if (vRec) {
+      vRec = false;
+      clearInterval(vInt);
+      btn.classList.remove('rec');
+      label.textContent = 'Saved';
+      timer.style.display = 'none';
+      try { if (vRecorder && vRecorder.state !== 'inactive') vRecorder.stop(); } catch(e) {}
+      try { if (vStream) vStream.getTracks().forEach(t => t.stop()); } catch(e) {}
+      showToast('Voice note saved');
+    } else {
+      vRec = true;
+      vSec = 0;
+      btn.classList.add('rec');
+      label.textContent = 'Recording…';
+      timer.style.display = 'inline';
+      timer.textContent = '00:00';
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
+          vStream = s;
+          try { vRecorder = new MediaRecorder(s); vRecorder.start(); } catch(e) {}
+        }).catch(() => {});
+      }
+      vInt = setInterval(() => {
+        vSec++;
+        const m = String(Math.floor(vSec/60)).padStart(2,'0');
+        const s = String(vSec%60).padStart(2,'0');
+        timer.textContent = m + ':' + s;
+        if (vSec >= 120) toggleVoice();
+      }, 1000);
+    }
+  }
+  document.getElementById('voiceBtn').addEventListener('click', toggleVoice);
+
+  // ===== QR E-TICKET =====
+  const TICKET_PREFIX = 'wedding-laras-reno-';
+  const qrModal = document.getElementById('qrModal');
+  const qrImg = document.getElementById('qrImg');
+  function openQRModal() {
+    const g = (document.getElementById('name') && document.getElementById('name').value.trim()) || 'Tamu';
+    document.getElementById('qrGuestName').textContent = g;
+    const data = encodeURIComponent(TICKET_PREFIX + g);
+    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=' + data;
+    qrModal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  window.openQRModal = openQRModal;
+  function closeQRModal() { qrModal.classList.remove('is-open'); document.body.style.overflow = ''; }
+  qrModal.addEventListener('click', e => { if (e.target === qrModal) closeQRModal(); });
+
+  function downloadTicket() {
+    const btn = document.getElementById('qrDownload');
+    const original = btn.textContent;
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    const g = document.getElementById('qrGuestName').textContent || 'E-Ticket';
+    const safeName = g.trim().split(/\s+/).filter(Boolean).join('-');
+    const data = encodeURIComponent(TICKET_PREFIX + g);
+    const url = 'https://api.qrserver.com/v1/create-qr-code/?size=480x480&margin=20&data=' + data;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 640; canvas.height = 640;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FAF7F0';
+        ctx.fillRect(0, 0, 640, 640);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#0A0A0A';
+        ctx.font = '500 14px "Cormorant Garamond", Georgia, serif';
+        ctx.fillText('ACCESS PASS', 320, 60);
+        ctx.font = '300 italic 56px "Fraunces", Georgia, serif';
+        ctx.fillText('E‑Ticket', 320, 130);
+        ctx.font = '500 22px "Cormorant Garamond", Georgia, serif';
+        ctx.fillText(g, 320, 200);
+        const QR = 240;
+        ctx.drawImage(img, (640-QR)/2, 250, QR, QR);
+        ctx.font = '300 italic 18px "Cormorant Garamond", Georgia, serif';
+        ctx.fillStyle = '#4A4A4A';
+        ctx.fillText('Show this at the door', 320, 540);
+        const link = document.createElement('a');
+        link.download = 'E-Ticket-' + safeName + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.textContent = 'Saved ✓';
+        btn.disabled = false;
+        setTimeout(() => { btn.textContent = original; }, 2000);
+      } catch (err) {
+        const link = document.createElement('a');
+        link.download = 'E-Ticket-' + safeName + '.png';
+        link.href = url; link.target = '_blank'; link.rel = 'noopener';
+        link.click();
+        btn.textContent = original; btn.disabled = false;
+      }
+    };
+    img.onerror = () => {
+      const link = document.createElement('a');
+      link.download = 'E-Ticket-' + safeName + '.png';
+      link.href = url; link.target = '_blank'; link.rel = 'noopener';
+      link.click();
+      btn.textContent = original; btn.disabled = false;
+    };
+    img.src = url;
+  }
 </script>
 
+
+<script src="./panduan-data.js"></script>
+<script src="./guest-list.js"></script>
+<script src="./guest-guard.js"></script>
+<script src="./panduan-modal.js"></script>
+<script src="./my-ticket.js"></script>
 </body>
 </html>

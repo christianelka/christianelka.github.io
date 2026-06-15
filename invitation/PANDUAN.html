@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan — VITTORIO WEDDING ORGANIZER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --ink-soft: #5A5A5A;
+    --gold: #C5A880;
+    --bg: #FAF9F6;
+    --rule: #E5E2D9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Inter", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 0; }
+  .page { max-width: 800px; margin: 0 auto; padding: 60px 32px 80px; background: #fff; box-shadow: 0 0 60px rgba(0,0,0,0.08); }
+  @media print { .page { box-shadow: none; padding: 24px; max-width: 100%; } .no-print { display: none; } }
+  @media (max-width: 640px) { .page { padding: 40px 20px; } }
+  h1 { font-family: "Cormorant Garamond", Georgia, serif; font-size: 42px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 8px; }
+  h2 { font-size: 22px; font-weight: 600; margin: 40px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+  h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; color: var(--ink); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 12px 0 12px 20px; }
+  li { margin-bottom: 6px; }
+  code, pre { font-family: "SF Mono", Menlo, monospace; font-size: 12px; background: #F5F0E5; padding: 1px 6px; border-radius: 3px; }
+  pre { padding: 12px; overflow-x: auto; line-height: 1.5; }
+  pre code { padding: 0; background: none; }
+  .meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
+  .meta a { color: var(--gold); text-decoration: none; }
+  .meta a:hover { text-decoration: underline; }
+  .lead { font-size: 18px; color: var(--ink-soft); font-style: italic; margin-bottom: 32px; padding: 16px 20px; background: #FAF6EC; border-left: 3px solid var(--gold); }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--rule); }
+  th { background: #F5F0E5; font-weight: 600; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { padding: 6px 0 6px 28px; position: relative; }
+  .checklist li::before { content: '☐'; position: absolute; left: 0; top: 6px; color: var(--gold); font-size: 18px; line-height: 1; }
+  .badge { display: inline-block; padding: 2px 10px; background: var(--gold); color: #fff; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; border-radius: 9999px; }
+  .alert { padding: 14px 18px; background: #FFF3E0; border-left: 3px solid #FF9800; margin: 16px 0; font-size: 14px; }
+  .alert strong { color: #E65100; }
+  .alert-ok { padding: 14px 18px; background: #E8F5E9; border-left: 3px solid #4CAF50; margin: 16px 0; font-size: 14px; }
+  .alert-warn { padding: 14px 18px; background: #FFEBEE; border-left: 3px solid #F44336; margin: 16px 0; font-size: 14px; }
+  .toc { background: #F5F0E5; padding: 20px 24px; border-radius: 4px; margin-bottom: 40px; }
+  .toc h3 { margin: 0 0 12px; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); }
+  .toc ol { margin: 0; padding-left: 20px; font-size: 13px; }
+  .toc a { color: var(--ink); text-decoration: none; }
+  .toc a:hover { color: var(--gold); text-decoration: underline; }
+  .toolbar { position: sticky; top: 0; background: var(--ink); color: var(--bg); padding: 12px 20px; display: flex; gap: 12px; align-items: center; justify-content: space-between; z-index: 100; }
+  .toolbar button { padding: 8px 16px; background: var(--gold); color: var(--ink); border: none; cursor: pointer; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; }
+  .toolbar button:hover { background: #fff; }
+  .toolbar .brand { font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 32px 0; }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <div class="brand">VITTORIO WEDDING ORGANIZER &middot; PANDUAN</div>
+  <div>
+    <button onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <h1>Panduan Penggunaan</h1>
+  <div class="meta">
+    <span>Edition I &middot; 2026</span>
+    <span>9 Template</span>
+    <a href="https://wa.me/6281351880960">WA Admin 0813-5188-0960</a>
+  </div>
+
+  <p class="lead">Panduan singkat untuk calon client dan operator yang akan menggunakan salah satu template undangan digital kami.</p>
+
+  <div class="toc">
+    <h3>Daftar Isi</h3>
+    <ol>
+      <li><a href="#order">Cara Order (untuk Client)</a></li>
+      <li><a href="#security">Fitur Keamanan (Anti-Bypass)</a></li>
+      <li><a href="#features">Fitur yang Tersedia di Semua Template</a></li>
+      <li><a href="#templates">9 Template — Panduan Memilih</a></li>
+      <li><a href="#operator">Untuk Operator / Admin</a></li>
+      <li><a href="#security-audit">Audit Keamanan</a></li>
+      <li><a href="#limitations">Known Limitations</a></li>
+    </ol>
+  </div>
+
+  <h2 id="order">🚀 Cara Order (untuk Client)</h2>
+
+  <h3>Step 1: Pilih Template</h3>
+  <p>Buka halaman utama → scroll ke grid → klik "Buka" untuk preview, atau klik <strong>Order</strong> untuk langsung chat WhatsApp admin dengan pesan otomatis berisi template + URL.</p>
+
+  <h3>Step 2: Siapkan Materi</h3>
+  <p>Sebelum kontak admin, pastikan Anda sudah punya:</p>
+  <ul class="checklist">
+    <li>Nama lengkap pengantin pria & wanita</li>
+    <li>Tanggal + jam akad nikah</li>
+    <li>Tanggal + jam resepsi</li>
+    <li>Alamat venue (untuk tautan Google Maps)</li>
+    <li>Rekening bank / e-wallet untuk amplop digital (1-2 nomor)</li>
+    <li>6-8 foto prewedding (minimal 4, akan ditata sesuai template)</li>
+    <li>Pilihan 2-3 musik latar (atau pilih default kami)</li>
+    <li>Ucapan terima kasih / quote pilihan</li>
+    <li>Daftar tamu + jumlah per tamu (untuk generate link unik)</li>
+  </ul>
+
+  <h3>Step 3: Generate Link per Tamu</h3>
+  <p>Setiap tamu mendapat link unik berisi namanya. Admin yang generate. Format:</p>
+  <pre><code>https://vittorioweddingsolo.com/invitation/undangan_X.html?to=Nama+Tamu&amp;token=ABC123</code></pre>
+
+  <h3>Step 4: Test</h3>
+  <p>Sebelum blast ke tamu:</p>
+
+  <h4>🧪 Cara Tester/Prod Akses Website (Tanpa Token)</h4>
+  <p>Website ini <strong>default-nya terbuka untuk semua</strong> (mode preview/demo) — perfect untuk presentasi dan testing. Token validation hanya aktif jika admin mengaktifkan mode production. Untuk testing/preview, gunakan salah satu cara:</p>
+
+  <h5>Cara cepat (Recommended):</h5>
+  <p>Tambahkan <code>?preview=1</code> ke URL:</p>
+  <pre><code>http://localhost/invitation/undangan_marigold.html?preview=1
+http://localhost/invitation/undangan_marigold.html?preview=Andi+Saputra
+http://localhost/invitation/undangan_marigold.html?dev=1</code></pre>
+  <ul>
+    <li><code>?preview=1</code> → masuk sebagai "Tamu Tester"</li>
+    <li><code>?preview=Andi+Saputra</code> → masuk sebagai "Andi Saputra" (custom display name)</li>
+    <li><code>?dev=1</code> atau <code>?admin=1</code> → masuk sebagai "Developer"</li>
+    <li>Banner kuning muncul: "MODE PREVIEW — Data RSVP tidak dihitung sebagai tamu resmi"</li>
+  </ul>
+
+  <h5>Cara panjang (test whitelist asli):</h5>
+  <p>Pakai token yang ada di <code>guest-list.js</code>:</p>
+  <pre><code>http://localhost/invitation/undangan_marigold.html?to=Andi+Saputra&amp;token=sh1a2n3d4i5s6a7p</code></pre>
+  <p>(Ini simulasi tamu resmi "Andi Saputra" — RSVP disimpan dengan nama ini)</p>
+
+  <h5>Production:</h5>
+  <p>Untuk blast ke tamu sungguhan, <strong>edit <code>guest-list.js</code> → set <code>production: true</code></strong> di konfigurasi atas file:</p>
+  <pre><code>window.GUEST_CONFIG = {
+  production: true  // &lt;-- ubah dari false ke true
+};</code></pre>
+  <p>Setelah set <code>true</code>, barulah <strong>blast link + token</strong> ke tamu. Tanpa token valid, tamu akan melihat gate "Akses Ditolak".</p>
+
+  <h4>✅ Test Checklist</h4>
+  <ol>
+    <li>Buka link di <strong>incognito/private window</strong> (supaya localStorage bersih)</li>
+    <li>Cek cover → hero → countdown → gallery → RSVP</li>
+    <li>Test submit RSVP → download QR e-ticket</li>
+    <li>Test voice note (Chrome/Firefox/Safari)</li>
+    <li>Buka di mobile (Pixel 5 viewport)</li>
+  </ol>
+
+  <h2 id="security">🛡️ Fitur Keamanan (Anti-Bypass)</h2>
+
+  <div class="alert-ok">
+    <strong>URL dengan Token:</strong> Setiap link undangan mengandung <code>token</code> yang terdaftar di <code>guest-list.js</code>. Tanpa token yang valid, halaman menampilkan pesan "Tidak Terdaftar" dan memblokir semua form.
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Aksi tanpa token</th><th>Hasil</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Buka link tanpa <code>?token=</code></td><td>❌ Akses ditolak</td></tr>
+      <tr><td>Isi nama sendiri di URL</td><td>❌ Tidak ada efek (token wajib)</td></tr>
+      <tr><td>Random token guessing</td><td>❌ Token 16-char hex (collision-resistant)</td></tr>
+      <tr><td>Edit localStorage <code>rsvp_submitted</code></td><td>❌ Tidak berguna (venue scan QR, bukan cek localStorage)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>QR E-Ticket Anti-Palsu</h3>
+  <p>QR yang di-generate mengandung <strong>token</strong> tamu, bukan cuma nama. Venue bisa scan dan cross-check ke <code>guest-list.js</code> yang sama dengan yang admin pakai untuk distribute link. Tamu yang print QR sendiri dengan token random akan gagal verifikasi.</p>
+
+  <h3>Data Tamu di Server</h3>
+  <p>Daftar tamu lengkap ada di <code>guest-list.js</code> di server. Tamu hanya menerima URL dengan token mereka.</p>
+
+  <h3>RSVP Lokal (Prototype)</h3>
+  <ul>
+    <li>RSVP + voice note flag disimpan di <strong>localStorage</strong> device tamu</li>
+    <li>Saat ini <strong>prototype</strong> masih static (HTML/CSS/JS only) — tanpa backend, tanpa database</li>
+    <li>Setelah submit, RSVP section berubah jadi <strong>"Tiket Anda"</strong> (tidak bisa submit ulang)</li>
+    <li>Nanti (versi CMS): RSVP akan disinkronkan ke server sehingga admin bisa pantau real-time dari dashboard admin</li>
+  </ul>
+
+  <h2 id="features">📋 Fitur Universal (Semua 9 Template)</h2>
+
+  <table>
+    <thead><tr><th>#</th><th>Fitur</th><th>Cara Pakai</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Countdown otomatis</td><td>Otomatis hitung mundur</td></tr>
+      <tr><td>2</td><td>Hero + names + date</td><td>Setelah cover dibuka</td></tr>
+      <tr><td>3</td><td>Couple section</td><td>Biodata pengantin pria & wanita</td></tr>
+      <tr><td>4</td><td>Story / Timeline</td><td>Hanya di Intimate + Memphis Pop + Editorial</td></tr>
+      <tr><td>5</td><td>Events</td><td>Detail akad + resepsi</td></tr>
+      <tr><td>6</td><td>Gallery + Lightbox</td><td>Klik foto → panah kiri/kanan → Esc tutup</td></tr>
+      <tr><td>7</td><td>RSVP Form</td><td>Isi nama + hadir + jumlah (maks 2) + pesan</td></tr>
+      <tr><td>8</td><td>Voice Note (max 2 menit)</td><td>Klik mic → mulai. Auto-stop 2 menit.</td></tr>
+      <tr><td>9</td><td>QR E-Ticket</td><td>Otomatis muncul. Klik "Simpan Tiket" → download PNG.</td></tr>
+      <tr><td>10</td><td>Amplop / Gift</td><td>Klik kartu bank → nomor disalin</td></tr>
+      <tr><td>11</td><td>Musik Latar</td><td>Tombol play/pause pojok kanan bawah</td></tr>
+      <tr><td>12</td><td>Personal URL per Tamu</td><td><code>?token=XXX</code> + <code>?to=Nama</code></td></tr>
+      <tr><td>13</td><td>My-Ticket State</td><td>Setelah submit, RSVP berganti jadi tiket</td></tr>
+      <tr><td>14</td><td>Reduced Motion</td><td>Animasi disable untuk <code>prefers-reduced-motion</code></td></tr>
+      <tr><td>15</td><td>Keyboard A11y</td><td>Tab, Esc, ← → di lightbox</td></tr>
+      <tr><td>16</td><td>Mobile-First</td><td>Tested 320-480px</td></tr>
+      <tr><td>17</td><td>Prototype Static</td><td>Saat ini 9 template adalah prototype HTML/CSS/JS — deploy ke mana saja tanpa setup server</td></tr>
+      <tr><td>18</td><td>Privacy First</td><td>localStorage only, no tracking, no analytics, no cookies</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="templates">🎨 9 Template — Panduan Memilih</h2>
+
+  <h3>1. Classic White <span class="badge">Default</span></h3>
+  <p><strong>File:</strong> <code>classic-white.html</code><br>
+  <strong>Cocok untuk:</strong> Pasangan muda urban, kesan elegan & modern<br>
+  <strong>Palette:</strong> Cream + Navy + Gold<br>
+  <strong>Font:</strong> Cinzel + Cormorant Garamond + Great Vibes<br>
+  <strong>Highlights:</strong> Asymmetric editorial layout, voice note, QR, lightbox</p>
+
+  <h3>2. Tropical Modern <span class="badge">Tropical</span></h3>
+  <p><strong>File:</strong> <code>undangan_tropical.html</code><br>
+  <strong>Cocok untuk:</strong> Wedding garden / villa Bali / outdoor<br>
+  <strong>Palette:</strong> Warm cream + forest green + sage<br>
+  <strong>Font:</strong> Playfair + Cormorant + Inter<br>
+  <strong>Highlights:</strong> Botanical SVG, snapshot download (html2canvas)</p>
+
+  <h3>3. Chinese Christian <span class="badge">Heritage</span></h3>
+  <p><strong>File:</strong> <code>undangan_chinese_christian.html</code><br>
+  <strong>Cocok untuk:</strong> Pernikahan blended Tionghoa-Kristen<br>
+  <strong>Palette:</strong> Burgundy + Gold + Cream<br>
+  <strong>Font:</strong> Cinzel + Cormorant + Raleway<br>
+  <strong>Highlights:</strong> 4-slide cover carousel, 囍, Tea Pai ceremony, 3 events</p>
+
+  <h3>4. Editorial Art <span class="badge">Editorial</span></h3>
+  <p><strong>File:</strong> <code>undangan_editorial.html</code><br>
+  <strong>Cocok untuk:</strong> Pasangan yang suka magazine / jurnalisme / desain<br>
+  <strong>Palette:</strong> Off-white + charcoal + tobacco<br>
+  <strong>Font:</strong> Fraunces + Inter + JetBrains Mono<br>
+  <strong>Highlights:</strong> "Volume One" issue markers, masthead-style countdown</p>
+
+  <h3>5. Ethereal Glass <span class="badge">Soft</span></h3>
+  <p><strong>File:</strong> <code>undangan_ethereal.html</code><br>
+  <strong>Cocok untuk:</strong> Villa Bali, garden estate, sunset ceremony<br>
+  <strong>Palette:</strong> Warm cream + gold + blush<br>
+  <strong>Font:</strong> Fraunces (italic) + Inter<br>
+  <strong>Highlights:</strong> M3 glassmorphism, WebGL shader, monogram cover</p>
+
+  <h3>6. Intimate Silhouette <span class="badge">Quiet</span></h3>
+  <p><strong>File:</strong> <code>undangan_intimate.html</code><br>
+  <strong>Cocok untuk:</strong> Wedding kecil (< 50 tamu), villa intimate dinner<br>
+  <strong>Palette:</strong> Paper-grain cream + deep sage<br>
+  <strong>Font:</strong> Fraunces (italic) + Inter + JetBrains Mono<br>
+  <strong>Highlights:</strong> Single-column mobile, paper grain, dress code</p>
+
+  <h3>7. VVIP Smart Digital <span class="badge">Premium</span></h3>
+  <p><strong>File:</strong> <code>undangan_digital_vvip.html</code><br>
+  <strong>Cocok untuk:</strong> Klien premium / VVIP / artis / eksekutif<br>
+  <strong>Palette:</strong> Obsidian + gold + alabaster<br>
+  <strong>Font:</strong> Cormorant Garamond + Cinzel + Inter<br>
+  <strong>Highlights:</strong> SVG film grain, gold-dust particles, boarding-pass ticket</p>
+
+  <h3>8. Marigold Mandala <span class="badge">Heritage</span></h3>
+  <p><strong>File:</strong> <code>undangan_marigold.html</code><br>
+  <strong>Cocok untuk:</strong> Pernikahan adat Jawa / Jawa-Modern<br>
+  <strong>Palette:</strong> Marigold + maroon + parchment<br>
+  <strong>Font:</strong> Tangerine + Marcellus + Raleway<br>
+  <strong>Highlights:</strong> CSS kawung borders, wayang-gunungan, salam ꦲꦺꦴꦩ꧀ꦱꦶꦪꦶꦠꦶꦁꦄꦭ꧀ꦭꦲꦶꦃ</p>
+
+  <h3>9. Memphis Pop <span class="badge">Gen-Z</span></h3>
+  <p><strong>File:</strong> <code>undangan_memphis_pop.html</code><br>
+  <strong>Cocok untuk:</strong> Pasangan muda fun, anti-mainstream<br>
+  <strong>Palette:</strong> Hot pink + acid yellow + lime + electric blue<br>
+  <strong>Font:</strong> Archivo Black + Bungee + Caveat<br>
+  <strong>Highlights:</strong> Brutalist shadows, marquee ribbons, scattered confetti</p>
+
+  <h2 id="operator">🛠️ Untuk Operator / Admin</h2>
+
+  <h3>File Penting</h3>
+  <table>
+    <thead><tr><th>File</th><th>Fungsi</th></tr></thead>
+    <tbody>
+      <tr><td><code>index.html</code></td><td>Halaman utama — pilih template + generate link tamu</td></tr>
+      <tr><td><code>undangan_*.html</code></td><td>9 template undangan</td></tr>
+      <tr><td><code>guest-list.js</code></td><td><strong>Daftar tamu + token</strong> — EDIT INI</td></tr>
+      <tr><td><code>guest-guard.js</code></td><td>Validasi token — JANGAN EDIT</td></tr>
+      <tr><td><code>panduan-data.js</code></td><td>Konten modal panduan</td></tr>
+      <tr><td><code>panduan-modal.js</code></td><td>Komponen modal panduan</td></tr>
+      <tr><td><code>generate-tokens.html</code></td><td>Tools admin untuk generate token</td></tr>
+      <tr><td><code>PANDUAN.md</code> / <code>PANDUAN.html</code></td><td>File ini — bisa dikirim via WA</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cara Tambah Tamu Baru</h3>
+
+  <h4>Cara cepat (recommended):</h4>
+  <ol>
+    <li>Buka <code>generate-tokens.html</code> di browser</li>
+    <li>Isi nama + pax + group</li>
+    <li>Klik "Generate" → dapat token 16-char + URL siap kirim</li>
+    <li>Copy entry ke <code>guest-list.js</code>:
+      <pre><code>"abc123def4567890": { name: "Andi Saputra", pax: 2, group: "Sahabat" },</code></pre>
+    </li>
+    <li>Save <code>guest-list.js</code> → upload ke server</li>
+  </ol>
+
+  <h4>Cara manual:</h4>
+  <pre><code>// Pakai crypto.randomUUID() atau https://www.uuidgenerator.net/
+"16-char-random": { name: "Nama Tamu", pax: 1, group: "Kategori" },</code></pre>
+
+  <h3>Format URL Tamu</h3>
+  <pre><code>https://[domain]/invitation/[template].html?to=[Nama+Tamu]&amp;token=[Token]</code></pre>
+  <p>Contoh:</p>
+  <pre><code>https://vittorioweddingsolo.com/invitation/undangan_marigold.html?to=Andi+Saputra&amp;token=g1h2i3j4k5l6m7n8</code></pre>
+
+  <h3>Test Sebelum Live</h3>
+  <ol>
+    <li>Buka link di <strong>incognito/private window</strong></li>
+    <li>Cek cover → hero → countdown → gallery lightbox</li>
+    <li>Test submit RSVP → QR muncul → download</li>
+    <li>Test voice note (Chrome/Firefox/Safari)</li>
+    <li>Test di <strong>mobile</strong> (Chrome DevTools device emulator)</li>
+  </ol>
+
+  <h2 id="security-audit">🛡️ Audit Keamanan</h2>
+
+  <h3>Sudah Ada (Prototype Level)</h3>
+  <div class="alert-ok">
+    <ul style="margin: 0;">
+      <li>✅ Guest-guard block akses tanpa token (client-side whitelist di <code>guest-list.js</code>)</li>
+      <li>✅ Token 16-char hex (collision-resistant, unguessable)</li>
+      <li>✅ Voice note real <code>getUserMedia</code> + <code>MediaRecorder</code> (bukan fake)</li>
+      <li>✅ Rec/stream cleanup (no memory leak)</li>
+      <li>✅ QR berisi token (anti-forgery)</li>
+      <li>✅ <code>localStorage</code> untuk RSVP state (prototype, no backend)</li>
+      <li>✅ RSVP form punya <code>escapeHtml</code> helper (anti-XSS via message)</li>
+      <li>✅ <code>&lt;a target="_blank" rel="noopener noreferrer"&gt;</code> (anti-tab-hijack)</li>
+      <li>✅ <code>prefers-reduced-motion</code> support</li>
+      <li>✅ <code>aria-label</code> di semua icon-only button</li>
+    </ul>
+  </div>
+
+  <h3>Akan Datang di Versi CMS (Server-Side)</h3>
+  <div class="alert-warn">
+    <ul style="margin: 0;">
+      <li>🔄 <strong>Token validation server-side</strong> — saat ini hanya client-side check. CMS: API endpoint validasi token + return guest data.</li>
+      <li>🔄 <strong>Rate limiting</strong> — cegah spam submit 100x. CMS: throttle per IP / per device.</li>
+      <li>🔄 <strong>CSRF token</strong> — tidak relevan di static, akan ditambah di CMS.</li>
+      <li>🔄 <strong>Real-time RSVP dashboard admin</strong> — pantau RSVP masuk dari dashboard.</li>
+    </ul>
+  </div>
+
+  <h2 id="limitations">🐛 Known Limitations (Prototype)</h2>
+
+  <div class="alert">
+    Saat ini 9 template adalah <strong>prototype statis</strong> (HTML/CSS/JS only). Cocok untuk wedding kecil-menengah (&lt; 100 tamu) dengan admin yang comfortable edit file static + blast link via WA. Versi CMS akan menambahkan backend untuk production wedding serius.
+  </div>
+
+  <ol>
+    <li><strong>Token client-side</strong> — prototype static, technically savvy user bisa inspect <code>guest-list.js</code> dan lihat semua token. <em>CMS fix</em>: server-side validation via API endpoint, token tidak di-expose.</li>
+    <li><strong>Voice note tidak disimpan permanen</strong> — saat ini hanya flag <code>hasVoice</code> di localStorage. Audio blob tidak di-upload. <em>CMS fix</em>: upload ke object storage (S3/Cloudflare R2), link dari DB.</li>
+    <li><strong>No email/WhatsApp notification</strong> — admin tidak otomatis dapat notif saat ada RSVP. <em>CMS fix</em>: webhook trigger → kirim WA via WhatsApp Business API.</li>
+    <li><strong>My-Ticket state per-device</strong> — kalau tamu buka di device A, submit, lalu buka di device B, device B tidak tahu. <em>CMS fix</em>: state disinkronkan via server (device-agnostic).</li>
+  </ol>
+
+  <h2 id="roadmap">🚀 Roadmap ke Versi CMS</h2>
+
+  <p>Versi prototype ini adalah pondasi sebelum migrasi ke full CMS. Arsitektur target:</p>
+
+  <ul>
+    <li><strong>Backend</strong>: Node.js / Next.js API — token validation, RSVP persistence</li>
+    <li><strong>Database</strong>: PostgreSQL (Supabase / Neon) — guest list, RSVP, voice note metadata</li>
+    <li><strong>Storage</strong>: S3 / Cloudflare R2 — voice note, foto prewedding</li>
+    <li><strong>Admin Dashboard</strong>: CRUD tamu, edit template, monitoring RSVP real-time, export data, blast link via WA</li>
+    <li><strong>Operator Page (Venue Check-in)</strong>: halaman scanner QR — petugas di venue scan QR tamu, sistem validasi token + tandai hadir, real-time counter, audit log (siapa scan tamu Y jam Z), anti-duplicate (warning kalau sudah pernah scan)</li>
+    <li><strong>Public Site</strong>: server-rendered undangan dari template config, dynamic values per tamu</li>
+  </ul>
+
+  <h3>Benefit Migrasi ke CMS</h3>
+  <ul>
+    <li>✅ Admin tidak perlu edit <code>guest-list.js</code> manual</li>
+    <li>✅ RSVP terkumpul di server, tidak hilang saat device di-clear</li>
+    <li>✅ Token aman (tidak bocor ke client)</li>
+    <li>✅ Voice note tersimpan permanen, bisa di-replay kapan saja</li>
+    <li>✅ Multi-device RSVP state konsisten</li>
+    <li>✅ Venue check-in dengan QR scanner — operator tinggal scan, sistem validasi otomatis</li>
+    <li>✅ Real-time hadir counter untuk MC / keluarga pengantin</li>
+    <li>✅ Audit trail: siapa check-in tamu mana, jam berapa</li>
+  </ul>
+
+  <hr>
+
+  <p style="text-align: center; color: var(--ink-soft); font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; margin-top: 60px;">
+    Edition I &middot; 2026 &middot; VITTORIO WEDDING ORGANIZER
+  </p>
+  <p style="text-align: center; color: var(--ink-soft); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; margin-top: 8px;">
+    9 template &middot; Prototype HTML/CSS/JS &middot; CMS coming soon
+  </p>
+  <p style="text-align: center; margin-top: 8px;">
+    <a href="https://wa.me/6281351880960" style="color: var(--gold);">WhatsApp Admin 0813-5188-0960</a>
+  </p>
+
+</div>
+
+</body>
+</html>

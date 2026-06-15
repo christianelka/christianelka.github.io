@@ -1,0 +1,135 @@
+// generate-tokens.html — Admin tool. Open this in a browser to generate tokens
+// for new guests, then copy each entry into guest-list.js.
+//
+// HOW TO USE
+//   1. Open this file in a browser (or visit ?generate=1 in any template)
+//   2. Type a guest name, choose pax, hit "Generate"
+//   3. Copy the printed object into guest-list.js
+//   4. Send the guest this link:
+//        https://yourdomain.com/invitation/undangan_X.html?to=NAME&token=TOKEN
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Generator — VITTORIO WEDDING ORGANIZER</title>
+<style>
+  :root { --ink:#1A1A1A; --gold:#C5A880; --bg:#FAF9F6; --rule:#E5E2D9; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--ink); padding: 32px 20px; min-height: 100vh; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+  .sub { color: #5A5A5A; font-size: 14px; margin-bottom: 32px; }
+  .form { background: #fff; border: 1px solid var(--rule); border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+  .row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  label { display: block; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; margin-bottom: 6px; color: #5A5A5A; }
+  input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 4px; font-size: 14px; font-family: inherit; }
+  input:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .col { flex: 1; min-width: 160px; }
+  .btn { padding: 12px 24px; background: var(--ink); color: var(--bg); border: none; cursor: pointer; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; }
+  .btn:hover { background: var(--gold); color: var(--ink); }
+  .out { background: #1A1A1A; color: #E5B25D; padding: 16px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 12px; margin-top: 12px; word-break: break-all; min-height: 24px; }
+  .copy-btn { padding: 6px 12px; background: var(--gold); color: var(--ink); border: none; cursor: pointer; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; margin-left: 8px; }
+  .list { background: #fff; border: 1px solid var(--rule); border-radius: 8px; padding: 24px; }
+  .list h2 { font-size: 16px; margin-bottom: 12px; }
+  .list .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 13px; }
+  .list .item:last-child { border-bottom: none; }
+  .pill { font-family: "SF Mono", Menlo, monospace; background: #F4ECD8; padding: 2px 8px; border-radius: 3px; font-size: 11px; }
+  .label-group { font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Token Generator</h1>
+  <p class="sub">Buat token unik untuk setiap tamu yang diundang. Paste hasil generate ke <code>guest-list.js</code>.</p>
+
+  <div class="form">
+    <div class="row">
+      <div class="col" style="flex: 2;">
+        <label>Nama Tamu</label>
+        <input type="text" id="gName" placeholder="e.g., Andi Saputra" autocomplete="off">
+      </div>
+      <div class="col">
+        <label>Jumlah (pax)</label>
+        <input type="number" id="gPax" min="1" max="2" value="1">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Group</label>
+        <select id="gGroup">
+          <option value="Keluarga">Keluarga</option>
+          <option value="Sahabat">Sahabat</option>
+          <option value="Kantor">Kantor</option>
+          <option value="Tetangga">Tetangga</option>
+          <option value="VIP">VIP</option>
+        </select>
+      </div>
+      <div class="col">
+        <label>Template</label>
+        <select id="gTemplate">
+          <option value="undangan_marigold.html">Marigold Mandala</option>
+          <option value="undangan_tropical.html">Tropical Modern</option>
+          <option value="undangan_chinese_christian.html">Chinese Christian</option>
+          <option value="undangan_editorial.html">Editorial Art</option>
+          <option value="undangan_ethereal.html">Ethereal Glass</option>
+          <option value="undangan_intimate.html">Intimate Silhouette</option>
+          <option value="undangan_digital_vvip.html">VVIP Smart Digital</option>
+          <option value="undangan_memphis_pop.html">Memphis Pop</option>
+          <option value="classic-white.html">Classic White</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" onclick="generate()">Generate Token + Link</button>
+    </div>
+
+    <div class="out" id="out">Hasil akan muncul di sini...</div>
+  </div>
+
+  <div class="list">
+    <h2>Cara Pakai</h2>
+    <ol style="padding-left: 20px; line-height: 1.8; font-size: 13px;">
+      <li>Isi nama + pax + group + pilih template</li>
+      <li>Klik "Generate" — dapat token 16-char + URL siap kirim</li>
+      <li>Copy entry <code>"token": { name, pax, group }</code> ke <code>guest-list.js</code></li>
+      <li>Kirim URL ke tamu via WhatsApp (via tombol "Order" di halaman utama juga bisa, tinggal paste token manual)</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+function generate() {
+  const name = document.getElementById('gName').value.trim();
+  const pax = parseInt(document.getElementById('gPax').value) || 1;
+  const group = document.getElementById('gGroup').value;
+  const template = document.getElementById('gTemplate').value;
+  if (!name) { alert('Nama wajib diisi'); return; }
+  // Crypto-random 16-char token
+  const arr = new Uint8Array(8);
+  crypto.getRandomValues(arr);
+  const token = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+  const url = `./${template}?to=${encodeURIComponent(name)}&token=${token}`;
+  const entry = `"${token}": { name: "${name.replace(/"/g, '\\"')}", pax: ${pax}, group: "${group}" },`;
+  const waText = `Halo ${name},\n\nAnda diundang ke pernikahan kami.\nBuka undangan:\n${url}\n\nTerima kasih!`;
+  const out = document.getElementById('out');
+  out.innerHTML = `
+    <div style="margin-bottom: 8px;"><strong style="color:#FFD93D;">Token:</strong> ${token}</div>
+    <div style="margin-bottom: 8px;"><strong style="color:#FFD93D;">Link:</strong> ${escapeHtml(url)}</div>
+    <div style="margin-bottom: 8px;"><strong style="color:#FFD93D;">Entry untuk guest-list.js:</strong></div>
+    <pre style="white-space: pre-wrap; color: #B8923A; font-size: 11px;">${escapeHtml(entry)}</pre>
+    <div style="margin-top: 12px;">
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('${url}').then(()=>this.textContent='Copied!')">Copy Link</button>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(\`${waText}\`).then(()=>this.textContent='Copied!')">Copy WA Text</button>
+    </div>
+  `;
+}
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>

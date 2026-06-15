@@ -567,13 +567,14 @@
         }
 
         function parseURLParams() {
-            const params = new URLSearchParams(window.location.search);
-            const guestName = sanitize(params.get('to') || 'Honorary Guest').replace(/\+/g, ' ');
-            const isVip = params.get('vip') === '1' || params.get('vip') === 'true';
-            const shift = params.get('shift') || '1';
+            const guest = window.__INVITED_GUEST__;
+            if (!guest) return;
+            const guestName = guest.name;
+            const isVip = guest.group && (guest.group.toLowerCase().includes('vip') || guest.group.toLowerCase().includes('keluarga'));
+            const shift = (new URLSearchParams(window.location.search).get('shift')) || '1';
 
-            document.getElementById('guestNameDisplay').innerHTML = guestName;
-            document.getElementById('ticket-guest-name').innerHTML = guestName;
+            document.getElementById('guestNameDisplay').textContent = guestName;
+            document.getElementById('ticket-guest-name').textContent = guestName;
             
             // Pre-fill RSVP Name
             if(document.getElementById('rsvpName')) {
@@ -702,33 +703,43 @@
             else { sel.parentElement.style.display = 'none'; sel.required = false; }
         }
 
-        // Voice Simulation
+        // Voice Recorder (real getUserMedia)
         let isRecording = false;
         let voiceTimer;
         let voiceSec = 0;
+        let voiceStream = null;
+        let voiceRecorder = null;
         function toggleVoiceNote() {
             const btn = document.getElementById('voiceBtn');
             const timer = document.getElementById('voiceTimer');
             const pulse = document.getElementById('recordPulse');
-            
             if(!isRecording) {
                 isRecording = true;
                 pulse.classList.remove('hidden');
                 timer.classList.remove('hidden');
                 btn.classList.add('border-red-500');
                 voiceSec = 0;
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+                    navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
+                        voiceStream = s;
+                        try { voiceRecorder = new MediaRecorder(s); } catch(e) { voiceRecorder = null; }
+                        if (voiceRecorder) { try { voiceRecorder.start(); } catch(e) {} }
+                    }).catch(() => { /* mic denied — UI flow still works */ });
+                }
                 voiceTimer = setInterval(() => {
                     voiceSec++;
                     const m = String(Math.floor(voiceSec/60)).padStart(2,'0');
                     const s = String(voiceSec%60).padStart(2,'0');
                     timer.innerText = m+':'+s;
-                    if(voiceSec >= 20) toggleVoiceNote();
+                    if(voiceSec >= 120) toggleVoiceNote();
                 }, 1000);
             } else {
                 isRecording = false;
                 clearInterval(voiceTimer);
                 pulse.classList.add('hidden');
                 btn.classList.remove('border-red-500');
+                try { if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop(); } catch(e) {}
+                try { if (voiceStream) voiceStream.getTracks().forEach(t => t.stop()); } catch(e) {}
                 showToast("VOICE LOG SECURED");
             }
         }
@@ -793,6 +804,7 @@
             md.classList.remove('hidden'); md.classList.add('flex');
             setTimeout(() => { cd.classList.remove('scale-95','opacity-0'); }, 10);
         }
+        window.openQRModal = openQRModal;
         function closeQRModal() {
             const md = document.getElementById('qrModal');
             const cd = document.getElementById('ticketCard');
@@ -871,5 +883,11 @@
             loop();
         }
     </script>
+
+<script src="./panduan-data.js"></script>
+<script src="./guest-list.js"></script>
+<script src="./guest-guard.js"></script>
+<script src="./panduan-modal.js"></script>
+<script src="./my-ticket.js"></script>
 </body>
 </html>

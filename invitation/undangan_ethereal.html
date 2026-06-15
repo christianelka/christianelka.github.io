@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aria &amp; Mateo — An Ethereal Romance</title>
+<title>Aria &amp; Mateo � An Ethereal Romance</title>
 <meta name="description" content="The wedding of Aria &amp; Mateo. An intimate celebration.">
 
 <style>
@@ -70,7 +70,7 @@
     overflow: hidden;
   }
 
-  /* ===== Container — letter on dark desk ===== */
+  /* ===== Container � letter on dark desk ===== */
   .app-container {
     position: relative;
     max-width: 480px;
@@ -311,7 +311,7 @@
     margin-top: 10px;
   }
 
-  /* ===== Couple — Arch Portraits ===== */
+  /* ===== Couple � Arch Portraits ===== */
   .couple { text-align: center; }
   .couple-grid {
     display: flex;
@@ -487,7 +487,7 @@
   .dress-swatches { display: flex; justify-content: center; gap: 10px; }
   .dress-chip { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(115, 92, 0, 0.2); }
 
-  /* ===== Gallery — Masonry ===== */
+  /* ===== Gallery � Masonry ===== */
   .gallery { text-align: center; }
   .gallery-masonry { columns: 1; column-gap: 12px; margin-top: 40px; max-width: 480px; margin-left: auto; margin-right: auto; }
   @media (min-width: 480px) { .gallery-masonry { columns: 2; } }
@@ -753,7 +753,7 @@
 
 <div class="scroll-progress"><div class="scroll-progress-bar" id="progressBar"></div></div>
 
-<!-- WebGL Shader Background (champagne → dusty rose gradient) -->
+<!-- WebGL Shader Background (champagne ? dusty rose gradient) -->
 <canvas id="shader-bg" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0.6;pointer-events:none;display:block;"></canvas>
 
 <!-- Floating Golden Particles -->
@@ -983,7 +983,7 @@
       </div>
       <div class="voice-row">
         <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" aria-label="Voice note"><svg id="voiceIcon" class="icon" style="width:18px;height:18px;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 1 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg></button>
-        <div class="voice-status" id="voiceStatus">Tekan untuk merekam (maks 20 detik)</div>
+        <div class="voice-status" id="voiceStatus">Tekan untuk merekam (maks 2 menit)</div>
         <div class="voice-timer" id="voiceTimer" style="display:none;">00:00</div>
       </div>
       <button class="rsvp-submit" id="rsvpSubmit" onclick="submitRSVP()">kirim konfirmasi</button>
@@ -1072,7 +1072,7 @@ function selectRSVP(v) {
   document.getElementById('guestCountRow').style.display = v === 'yes' ? 'block' : 'none';
 }
 
-let isRecording = false, voiceSeconds = 0, voiceInt;
+let isRecording = false, voiceSeconds = 0, voiceInt, voiceStream, voiceRecorder;
 function toggleVoice() {
   const btn = document.getElementById('voiceBtn');
   const status = document.getElementById('voiceStatus');
@@ -1083,19 +1083,27 @@ function toggleVoice() {
     document.getElementById('voiceIcon').textContent = 'check';
     status.textContent = 'Tersimpan';
     timer.style.display = 'none';
+    try { if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop(); } catch(e) {}
+    try { if (voiceStream) voiceStream.getTracks().forEach(t => t.stop()); } catch(e) {}
   } else {
     isRecording = true; voiceSeconds = 0;
     btn.classList.add('rec');
     document.getElementById('voiceIcon').textContent = 'stop';
-    status.textContent = 'Merekam…';
+    status.textContent = 'Merekam�';
     timer.style.display = 'block';
     timer.textContent = '00:00';
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
+        voiceStream = s;
+        try { voiceRecorder = new MediaRecorder(s); voiceRecorder.start(); } catch(e) {}
+      }).catch(() => {});
+    }
     voiceInt = setInterval(() => {
       voiceSeconds++;
       const m = String(Math.floor(voiceSeconds / 60)).padStart(2,'0');
       const s = String(voiceSeconds % 60).padStart(2,'0');
       timer.textContent = m + ':' + s;
-      if (voiceSeconds >= 20) toggleVoice();
+      if (voiceSeconds >= 120) toggleVoice();
     }, 1000);
   }
 }
@@ -1105,7 +1113,7 @@ function escapeHtml(s) { const d = document.createElement('div'); d.textContent 
 const WISHES_KEY = 'ethereal_wishes';
 const wishesBox = document.getElementById('wishesBox');
 const sample = [
-  { name: 'Putri Maharani', msg: 'Selamat Aria & Mateo. Sakinah, mawaddah, warahmah 🤍', status: 'Hadir' },
+  { name: 'Putri Maharani', msg: 'Selamat Aria & Mateo. Sakinah, mawaddah, warahmah ??', status: 'Hadir' },
   { name: 'Rio Hartono', msg: 'Bahagia selalu! Cinta yang abadi.', status: 'Hadir' },
   { name: 'Keluarga Marpaung', msg: 'Salam hangat dari Medan. Turut berbahagia.', status: 'Tidak Hadir' },
 ];
@@ -1115,7 +1123,7 @@ function renderWishes() {
   if (all.length === 0) { wishesBox.innerHTML = '<div style="text-align:center; color:#7f7663; font-style:italic; padding:20px 0;">Belum ada ucapan.</div>'; return; }
   wishesBox.innerHTML = all.map(w => `
     <div class="wish">
-      <div class="wish-name">${escapeHtml(w.name)} <span style="color:#7f7663; font-weight:400; font-size:11px; font-family:Outfit,sans-serif; letter-spacing:0.16em; text-transform:uppercase;">— ${escapeHtml(w.status || '')}</span></div>
+      <div class="wish-name">${escapeHtml(w.name)} <span style="color:#7f7663; font-weight:400; font-size:11px; font-family:Outfit,sans-serif; letter-spacing:0.16em; text-transform:uppercase;">� ${escapeHtml(w.status || '')}</span></div>
       ${w.msg ? '<div class="wish-msg">' + escapeHtml(w.msg) + '</div>' : ''}
     </div>`).join('');
 }
@@ -1141,21 +1149,22 @@ function submitRSVP() {
 
 const qrModal = document.getElementById('qrModal');
 const qrCodeImg = document.getElementById('qrCodeImg');
-function openQRModal(name) {
-  const g = name || guest || 'Tamu';
-  document.getElementById('ticketGuestName').textContent = g;
-  const data = encodeURIComponent(TICKET_PREFIX + g);
-  qrCodeImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=' + data;
-  qrModal.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
+  function openQRModal(name) {
+    const g = name || (guestFromUrl ? guestFromUrl.replace(/\+/g, ' ').trim() : 'Tamu');
+    document.getElementById('qrGuestName').textContent = g;
+    const data = encodeURIComponent(TICKET_PREFIX + g);
+    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=' + data;
+    qrModal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  window.openQRModal = openQRModal;
 function closeQRModal() { qrModal.classList.remove('open'); document.body.style.overflow = ''; }
 qrModal.addEventListener('click', e => { if (e.target === qrModal) closeQRModal(); });
 
 function downloadTicket() {
   const btn = document.getElementById('btnDownloadTicket');
   const original = btn.innerHTML;
-  btn.innerHTML = 'mengunduh…'; btn.disabled = true;
+  btn.innerHTML = 'mengunduh�'; btn.disabled = true;
   const g = document.getElementById('ticketGuestName').textContent || 'E-Ticket';
   const safeName = g.trim().split(' ').filter(Boolean).join('-');
   const data = encodeURIComponent(TICKET_PREFIX + g);
@@ -1172,7 +1181,7 @@ function downloadTicket() {
       ctx.fillStyle = '#735c00'; ctx.font = '500 14px Outfit, sans-serif';
       ctx.fillText('ACCESS PASS', 320, 60);
       ctx.fillStyle = '#1f1b13'; ctx.font = '300 italic 56px "EB Garamond", Georgia, serif';
-      ctx.fillText('E‑Ticket', 320, 140);
+      ctx.fillText('E-Ticket', 320, 140);
       ctx.fillStyle = '#1f1b13'; ctx.font = '300 22px Outfit, sans-serif';
       ctx.fillText(g, 320, 210);
       const QR = 240;
@@ -1183,7 +1192,7 @@ function downloadTicket() {
       link.download = 'E-Ticket-' + safeName + '.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
-      btn.innerHTML = 'tersimpan ✓'; btn.disabled = false;
+      btn.innerHTML = 'tersimpan ?'; btn.disabled = false;
       setTimeout(() => { btn.innerHTML = original; }, 2000);
     } catch (err) {
       const link = document.createElement('a');
@@ -1212,7 +1221,7 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-// ===== WebGL Shader: champagne → dusty rose noise =====
+// ===== WebGL Shader: champagne ? dusty rose noise =====
 (function() {
   const canvas = document.getElementById('shader-bg');
   function syncSize() {
@@ -1341,5 +1350,11 @@ function showToast(msg) {
   init();
 })();
 </script>
+
+<script src="./panduan-data.js"></script>
+<script src="./guest-list.js"></script>
+<script src="./guest-guard.js"></script>
+<script src="./panduan-modal.js"></script>
+<script src="./my-ticket.js"></script>
 </body>
 </html>

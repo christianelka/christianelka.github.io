@@ -1165,7 +1165,7 @@
             </div>
             <div class="voice">
                 <button class="voice__btn" id="voiceBtn" onclick="toggleVoice()" aria-label="Voice note"><i class="fas fa-microphone" id="voiceIcon"></i></button>
-                <div class="voice__status" id="voiceStatus">Tekan untuk merekam (maks 20 detik)</div>
+                <div class="voice__status" id="voiceStatus">Tekan untuk merekam (maks 2 menit)</div>
                 <div class="voice__timer" id="voiceTimer" style="display:none;">00:00</div>
             </div>
             <button class="rsvp__submit" id="rsvpSubmit" onclick="submitRSVP()">kirim konfirmasi</button>
@@ -1279,7 +1279,7 @@
         document.getElementById('guestCountRow').style.display = v === 'yes' ? 'block' : 'none';
     }
 
-    let isRecording = false, voiceSeconds = 0, voiceInt;
+    let isRecording = false, voiceSeconds = 0, voiceInt, voiceStream, voiceRecorder;
     function toggleVoice() {
         const btn = document.getElementById('voiceBtn');
         const status = document.getElementById('voiceStatus');
@@ -1291,6 +1291,8 @@
             document.getElementById('voiceIcon').className = 'fas fa-check';
             status.textContent = 'Tersimpan';
             timer.style.display = 'none';
+            try { if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop(); } catch(e) {}
+            try { if (voiceStream) voiceStream.getTracks().forEach(t => t.stop()); } catch(e) {}
         } else {
             isRecording = true;
             voiceSeconds = 0;
@@ -1299,12 +1301,18 @@
             status.textContent = 'Merekam…';
             timer.style.display = 'block';
             timer.textContent = '00:00';
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
+                    voiceStream = s;
+                    try { voiceRecorder = new MediaRecorder(s); voiceRecorder.start(); } catch(e) {}
+                }).catch(() => {});
+            }
             voiceInt = setInterval(() => {
                 voiceSeconds++;
                 const m = String(Math.floor(voiceSeconds / 60)).padStart(2,'0');
                 const s = String(voiceSeconds % 60).padStart(2,'0');
                 timer.textContent = m + ':' + s;
-                if(voiceSeconds >= 20) toggleVoice();
+                if(voiceSeconds >= 120) toggleVoice();
             }, 1000);
         }
     }
@@ -1359,13 +1367,14 @@
     const qrModal = document.getElementById('qrModal');
     const qrCodeImg = document.getElementById('qrCodeImg');
     function openQRModal(name) {
-        const g = name || guest || 'Tamu';
+        const g = name || (guest || 'Tamu');
         document.getElementById('ticketGuestName').textContent = g;
         const data = encodeURIComponent(TICKET_PREFIX + g);
         qrCodeImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=' + data;
         qrModal.classList.add('open');
         document.body.style.overflow = 'hidden';
     }
+    window.openQRModal = openQRModal;
     function closeQRModal() {
         qrModal.classList.remove('open');
         document.body.style.overflow = '';
@@ -1450,5 +1459,11 @@
         toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
     }
 </script>
+
+<script src="./panduan-data.js"></script>
+<script src="./guest-list.js"></script>
+<script src="./guest-guard.js"></script>
+<script src="./panduan-modal.js"></script>
+<script src="./my-ticket.js"></script>
 </body>
 </html>

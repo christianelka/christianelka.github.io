@@ -1382,6 +1382,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let isRecording = false;
   let voiceSeconds = 0;
   let voiceInterval;
+  let voiceStream = null;
+  let voiceRecorder = null;
 
   btnVoiceRecord.addEventListener('click', () => {
     if(isRecording) {
@@ -1391,6 +1393,8 @@ document.addEventListener('DOMContentLoaded', () => {
       btnVoiceRecord.querySelector('i').className = 'fas fa-check';
       voiceText.innerText = 'Tersimpan';
       voiceTimer.style.display = 'none';
+      try { if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop(); } catch(e) {}
+      try { if (voiceStream) voiceStream.getTracks().forEach(t => t.stop()); } catch(e) {}
     } else {
       isRecording = true;
       voiceSeconds = 0;
@@ -1399,13 +1403,20 @@ document.addEventListener('DOMContentLoaded', () => {
       voiceText.innerText = 'Merekam...';
       voiceTimer.style.display = 'inline';
       voiceTimer.innerText = '00:00';
-      
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(s => {
+          voiceStream = s;
+          try { voiceRecorder = new MediaRecorder(s); voiceRecorder.start(); } catch(e) {}
+        }).catch(() => {});
+      }
+
       voiceInterval = setInterval(() => {
         voiceSeconds++;
         const m = String(Math.floor(voiceSeconds / 60)).padStart(2, '0');
         const s = String(voiceSeconds % 60).padStart(2, '0');
         voiceTimer.innerText = `${m}:${s}`;
-        if(voiceSeconds >= 20) {
+        if(voiceSeconds >= 120) {
           btnVoiceRecord.click();
         }
       }, 1000);
@@ -1556,5 +1567,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 });
 </script>
+
+<script src="./panduan-data.js"></script>
+<script src="./guest-list.js"></script>
+<script src="./guest-guard.js"></script>
+<script src="./panduan-modal.js"></script>
+<script src="./my-ticket.js"></script>
 </body>
 </html>
