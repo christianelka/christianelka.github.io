@@ -37,7 +37,7 @@ function generateQRImage(data) {
 <!-- GOOGLE FONTS -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 
 <!-- ====== FONTAWESOME ====== -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -397,6 +397,31 @@ section {
   line-height: 1.5;
   font-weight: 300;
   color: var(--color-bg);
+}
+.hero-quote--ar {
+  font-family: 'Amiri', 'Scheherazade New', 'Marcellus', serif;
+  font-style: normal;
+  font-size: clamp(20px, 5vw, 26px);
+  line-height: 1.8;
+  direction: rtl;
+  unicode-bidi: plaintext;
+  text-align: center;
+  color: var(--color-bg);
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+.hero-quote--trans {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(13px, 3.4vw, 15px);
+  line-height: 1.6;
+  color: var(--color-bg);
+  opacity: 0.85;
+  max-width: 360px;
+  margin: 0 auto;
+  border-left: 2px solid var(--color-gold-light);
+  padding-left: 14px;
+  text-align: left;
 }
 .hero-source {
   margin-top: 20px;
@@ -1030,8 +1055,9 @@ section {
         <circle cx="50" cy="50" r="15"/>
         <path d="M35,35 L65,65 M35,65 L65,35" opacity="0.4"/>
       </svg>
-      <div class="hero-quote">"And of all signs, His creation of the heavens and the earth and the diversity of your languages and colors. Indeed in that are signs for those of knowledge."</div>
-      <div class="hero-source">Ar-Rum: 22</div>
+      <div class="hero-quote--ar">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً</div>
+      <div class="hero-quote--trans">"And among His signs is that He created for you mates from among yourselves, that you may dwell in tranquility with them, and He has put love and mercy between your hearts."</div>
+      <div class="hero-source">Q.S. Ar-Rum: 21 (English Translation)</div>
     </div>
   </section>
 

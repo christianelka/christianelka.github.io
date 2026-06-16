@@ -70,10 +70,11 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     text-align: center;
-    padding: 48px 32px;
+    padding: 80px 24px 56px;
     background: var(--ink);
     color: var(--paper);
     transition: opacity 1s var(--ease), transform 1s var(--ease);
+    overflow: hidden;
   }
   .cover::before {
     content: ""; position: absolute; inset: 0;
@@ -99,12 +100,14 @@
   .cover-title {
     font-family: var(--display);
     font-weight: 300;
-    font-size: clamp(56px, 14vw, 96px);
+    font-size: clamp(36px, 13vw, 96px);
     line-height: 0.95;
     letter-spacing: -0.02em;
     color: var(--paper);
     margin-bottom: 24px;
     font-variation-settings: "opsz" 144, "SOFT" 50;
+    max-width: 100%;
+    word-break: break-word;
   }
   .cover-title em { font-style: italic; font-weight: 300; color: var(--accent-soft); }
   .cover-meta {
@@ -154,16 +157,23 @@
 
   /* ===== Issue marker (top-left) — magazine signature ===== */
   .issue-marker {
-    position: fixed; top: 24px; left: 24px;
-    z-index: 100;
+    position: fixed; top: 16px; left: 16px;
+    z-index: 250;
     font-family: var(--sans);
-    font-size: 9.5px; font-weight: 500;
-    letter-spacing: 0.4em; text-transform: uppercase;
+    font-size: 8.5px; font-weight: 500;
+    letter-spacing: 0.3em; text-transform: uppercase;
     color: var(--ink-mute);
     mix-blend-mode: difference;
     color: rgba(255,255,255,0.7);
+    max-width: calc(100vw - 32px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .issue-marker span { color: var(--accent); }
+  @media (min-width: 768px) {
+    .issue-marker { top: 24px; left: 24px; font-size: 9.5px; letter-spacing: 0.4em; max-width: none; }
+  }
 
   /* ===== Masthead (top app bar) ===== */
   .masthead {
@@ -959,6 +969,35 @@
   }
   .qr-dl:hover { background: var(--paper); color: var(--ink); }
   .qr-dl:disabled { opacity: 0.5; cursor: not-allowed; }
+
+
+  /* ============================================================
+     MOBILE FIXES (< 768px)
+     ============================================================ */
+  @media (max-width: 767px) {
+    .app-container { padding: 0 16px; }
+
+    .cover { padding: 88px 20px 40px; }
+
+    .cover-title { font-size: clamp(32px, 12vw, 56px); margin-bottom: 16px; }
+    .cover-meta { font-size: 10px; letter-spacing: 0.24em; margin-bottom: 32px; }
+    .cover-guest { margin-bottom: 28px; }
+    .cover-guest-label { font-size: 9px; letter-spacing: 0.24em; }
+    .cover-guest-name { font-size: 18px; }
+    .cover-cta { padding: 12px 22px; font-size: 10px; letter-spacing: 0.24em; }
+
+    .divider { width: 60px; }
+    .scroll-hint { bottom: 16px; }
+
+    .issue-marker { font-size: 8px; letter-spacing: 0.24em; }
+  }
+
+  @media (max-width: 380px) {
+    .cover { padding: 80px 16px 32px; }
+    .cover-title { font-size: 30px; }
+    .cover-meta { font-size: 9px; }
+    .cover-cta { padding: 10px 18px; font-size: 9px; }
+  }
 </style>
 </head>
 <body>
