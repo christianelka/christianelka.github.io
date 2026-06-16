@@ -4,6 +4,14 @@
  *   - Console: invitation.unlock() lalu refresh
  *   - Hapus snippet injeksi di <head> file invitation
  *
+ * CARA GANTI PASSWORD:
+ *   1. Hitung hash baru dengan helper di bawah (paste di Node):
+ *        function h(s){var H=0x811c9dc5;for(var i=0;i<s.length;i++){H^=s.charCodeAt(i);H=(H*0x01000193)>>>0;}var o='',S=H;for(var j=0;j<8;j++){S=(S*0x01000193+0x811c9dc5)>>>0;o+=S.toString(16).padStart(8,'0');}return o;}
+ *        h('passwordBaru')
+ *   2. Ganti PWD_HASH di bawah dengan outputnya
+ *   3. Ganti 'anjaymabar' di baris isUnlocked() dengan password baru
+ *   JANGAN pakai Math.imul — gunakan * saja agar konsisten dengan runtime browser.
+ *
  * DISCLAIMER: client-side gate. File HTML tetap dikirim utuh ke browser
  * (network tab / view-source masih bisa lihat). Untuk 100% aman → private repo.
  */
@@ -11,7 +19,7 @@
   'use strict';
 
   // FNV-1a 32-bit, deterministic. Plaintext password: "anjaymabar"
-  var PWD_HASH = '044d86185f26b58dd80c6abc58a8a3b9cb965a00fecc4bc561b7e4e43999f0b1';
+  var PWD_HASH = 'c64fcd5000bcd2b8625c556dc577185cb797f6981d55cf10bf3193f571288878';
   var STORAGE_KEY = 'invitation_unlock_v1';
   var SESSION_KEY = 'invitation_unlock_session_v1';
 
