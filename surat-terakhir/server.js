@@ -317,12 +317,13 @@ const gameService = {
   openMystery(gameId, playerName) {
     const g = this.getGame(gameId);
     if (!g || !g.currentRoundData) return null;
-    const colors = g.currentRoundData.mysteryData[playerName];
+    const player = [...g.players.values()].find(p => p.name === playerName);
+    if (!player) throw new Error('Pemain tidak ditemukan');
+    const colors = g.currentRoundData.mysteryData[player.id];
     if (!colors) throw new Error('Pemain tidak ditemukan');
     if (g.currentRoundData.openedMystery[playerName]) return { playerName, color: g.currentRoundData.openedMystery[playerName], alreadyOpened: true };
     const color = colors[Math.floor(Math.random() * colors.length)];
     g.currentRoundData.openedMystery[playerName] = color;
-    const player = [...g.players.values()].find(p => p.name === playerName);
     return { playerName, color, role: player ? player.role : null, mysteryColors: colors };
   },
   endGame(gameId) {

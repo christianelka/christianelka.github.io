@@ -44,6 +44,7 @@
     for (let i = 0; i < n; i++) {
       const idx = (nextKeyIndex + i) % n;
       const s = keyState[idx];
+      if (!s) continue;
       if (s.disabledUntil > now) continue;
       if (now - s.lastUsed < CONFIG.perKeyCooldownMs) continue;
       if (s.consecutiveFail >= CONFIG.maxRetriesPerKey) {
