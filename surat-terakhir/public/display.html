@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Display · Surat Terakhir</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: { 50: '#F5F0FF', 100: '#EDE0FF', 500: '#8A2BE2', 600: '#7823CC' } } } } }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    body { -webkit-font-smoothing: antialiased; }
+    .timer-num { font-variant-numeric: tabular-nums; }
+
+    /* "Rewards" section header card (matches reference) */
+    .sec-header {
+      background: linear-gradient(135deg, #8A2BE2, #621CAA);
+      border-radius: 22px 22px 0 0;
+      padding: 14px 22px;
+      color: white;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sec-header .sec-x {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 22px;
+      height: 22px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+    .sec-body { background: white; border-radius: 0 0 22px 22px; padding: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06); }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
+
+  <!-- Purple header -->
+  <header class="bg-brand-500">
+    <div class="max-w-6xl mx-auto px-6 sm:px-8 py-5 flex items-center justify-between text-white">
+      <div>
+        <p class="text-[10px] font-bold tracking-[0.2em] uppercase opacity-80 mb-1">Live Display</p>
+        <h1 class="font-extrabold text-2xl sm:text-4xl tracking-tight">Surat Terakhir</h1>
+      </div>
+      <div class="text-right">
+        <p id="phase-label" class="text-[10px] font-bold tracking-[0.2em] uppercase opacity-80">Lobby</p>
+        <p id="round-label" class="text-sm sm:text-base font-semibold mt-1">Menunggu</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 sm:px-8 py-8">
+    <div class="grid lg:grid-cols-3 gap-6">
+
+      <!-- Scoreboard -->
+      <div class="lg:col-span-2">
+        <div class="sec-header">
+          <div>
+            <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Skor</p>
+            <p class="font-extrabold text-sm mt-0.5">Live Scoreboard</p>
+          </div>
+          <div class="sec-x">×</div>
+        </div>
+        <div class="sec-body">
+          <div class="space-y-6">
+            <div>
+              <div class="flex items-end justify-between mb-3">
+                <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400">Pembawa</p>
+                <div class="font-extrabold text-6xl sm:text-8xl text-brand-500 leading-none timer-num" id="d-pembawa">0</div>
+              </div>
+              <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-brand-500 to-brand-300 rounded-full transition-all duration-700" id="d-bar-pembawa" style="width: 0%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-end justify-between mb-3">
+                <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400">Agen</p>
+                <div class="font-extrabold text-6xl sm:text-8xl text-red-500 leading-none timer-num" id="d-agen">0</div>
+              </div>
+              <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-red-500 to-orange-400 rounded-full transition-all duration-700" id="d-bar-agen" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="pt-6 border-t border-gray-100 flex items-end justify-between">
+              <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400">Sisa Waktu</p>
+              <div class="font-mono font-extrabold text-4xl sm:text-6xl text-gray-900 leading-none timer-num" id="d-timer">0:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reveal feed -->
+      <div>
+        <div class="sec-header">
+          <div>
+            <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Live</p>
+            <p class="font-extrabold text-sm mt-0.5">Reveal Terbaru</p>
+          </div>
+          <div class="sec-x">×</div>
+        </div>
+        <div class="sec-body">
+          <div id="d-reveals" class="space-y-3 max-h-[60vh] overflow-y-auto">
+            <p class="text-sm text-gray-400 text-center py-10">Belum ada reveal.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    (function() {
+      const socket = io();
+      let pScore = 0, aScore = 0;
+      let phaseEndsAt = null;
+
+      function updateTimer() {
+        if (!phaseEndsAt) return;
+        const r = Math.max(0, phaseEndsAt - Date.now());
+        const m = Math.floor(r/60000), s = Math.floor((r%60000)/1000);
+        const el = document.getElementById('d-timer');
+        el.textContent = `${m}:${String(s).padStart(2,'0')}`;
+        if (r <= 10000) el.classList.add('text-red-500'); else if (r <= 30000) el.classList.add('text-amber-500'); else el.classList.remove('text-red-500', 'text-amber-500');
+      }
+      setInterval(updateTimer, 500);
+
+      socket.on('round:started', d => {
+        document.getElementById('phase-label').textContent = d.phase.toUpperCase();
+        document.getElementById('round-label').textContent = `Ronde ${d.roundNumber}`;
+        phaseEndsAt = d.phaseEndsAt;
+      });
+      socket.on('phase:changed', d => {
+        document.getElementById('phase-label').textContent = d.phase.toUpperCase();
+        phaseEndsAt = d.phaseEndsAt;
+      });
+      socket.on('round:ended', d => {
+        pScore += d.scorePembawa; aScore += d.scoreAgen;
+        document.getElementById('d-pembawa').textContent = pScore;
+        document.getElementById('d-agen').textContent = aScore;
+        const max = Math.max(pScore, aScore, 20);
+        document.getElementById('d-bar-pembawa').style.width = (pScore / max * 100) + '%';
+        document.getElementById('d-bar-agen').style.width = (aScore / max * 100) + '%';
+        const container = document.getElementById('d-reveals');
+        const empty = container.querySelector('p');
+        if (empty) empty.remove();
+        const item = document.createElement('div');
+        item.className = 'bg-gray-50 rounded-2xl p-3 border border-gray-200 slide-in';
+        const roleColor = d.leaderRole === 'agen' ? 'role-tag-agen' : d.leaderRole === 'abu-abu' ? 'role-tag-abu' : 'role-tag-pembawa';
+        item.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:600;font-size:14px;">${d.leader || '—'}</span><span class="${roleColor}" style="font-size:9px;font-weight:700;letter-spacing:0.1em;padding:2px 6px;border-radius:4px;text-transform:uppercase;">${(d.leaderRole || 'seri')}</span></div><div style="font-size:10px;color:#6b7280;letter-spacing:0.1em;text-transform:uppercase;">P+${d.scorePembawa}  A${d.scoreAgen >= 0 ? '+' : ''}${d.scoreAgen}</div>`;
+        container.prepend(item);
+      });
+      socket.on('mystery:opened', d => {
+        const container = document.getElementById('d-reveals');
+        const item = document.createElement('div');
+        const borderColor = d.color === 'merah' ? '#fca5a5' : d.color === 'kuning' ? '#fdba74' : '#86efac';
+        const emojis = {merah:'🔴', kuning:'🟡', hijau:'🟢'};
+        item.className = 'bg-gray-50 rounded-2xl p-3 border border-gray-200 border-l-4 slide-in';
+        item.style.borderLeftColor = borderColor;
+        item.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:600;font-size:14px;">${d.playerName} ${emojis[d.color]}</span><span style="font-size:9px;color:#6b7280;letter-spacing:0.1em;text-transform:uppercase;">${d.effect.label}</span></div><div style="font-size:13px;color:#374151;">${d.effect.title}</div>`;
+        container.prepend(item);
+      });
+      socket.on('game:ended', d => {
+        document.getElementById('round-label').innerHTML = `🏆 ${d.winner.toUpperCase()}`;
+      });
+    })();
+  </script>
+  <style>@keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } } .slide-in { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); } .role-tag-pembawa { background: #F5F0FF; color: #8A2BE2; } .role-tag-agen { background: #fef2f2; color: #ef4444; } .role-tag-abu { background: #fffbeb; color: #d97706; }</style>
+</body>
+</html>

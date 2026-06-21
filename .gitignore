@@ -32,14 +32,15 @@ Desktop.ini
 *.bak
 *.backup
 
-# --- Node.js / npm (if any in future) ---
+# --- Node.js / npm ---
+# Root-level lockfiles ignored (this repo doesn't use Node at root)
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+/package-lock.json
+/yarn.lock
+/pnpm-lock.yaml
 
 # --- Env files ---
 .env
@@ -51,3 +52,6 @@ pnpm-lock.yaml
 
 # --- Logs ---
 *.log
+
+# --- surat-terakhir/ runtime data (nested project) ---
+# (project's own .gitignore in surat-terakhir/ handles its own data/ runtime files)

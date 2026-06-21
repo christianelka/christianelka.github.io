@@ -1,1127 +1,1438 @@
 <!DOCTYPE html>
-<html lang="id">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Mission 💘</title>
-    <meta name="description"
-        content="Valentine Mission — Game interaktif untuk acara pemuda gereja. Temukan pasanganmu, selesaikan misi, dan menangkan bersama!">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { outfit: ['Outfit', 'sans-serif'] },
-                    colors: {
-                        rose: {
-                            50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af',
-                            400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c',
-                            800: '#9f1239', 900: '#881337', 950: '#4c0519'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Creative Tim (Dark Glass)</title>
 
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #4c0519 0%, #881337 25%, #9f1239 50%, #be123c 75%, #4c0519 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+  <!-- Google Fonts: Inter + Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet"
+  />
 
-        /* Floating hearts background */
-        .hearts-bg {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
 
-        .heart-float {
-            position: absolute;
-            font-size: 1.2rem;
-            opacity: 0.08;
-            animation: floatUp linear infinite;
-        }
+  <style>
+    /* =========================================================
+       DESIGN TOKENS
+       ========================================================= */
+    :root {
+      /* Color */
+      --color-bg-primary: #0A0A0C;
+      --color-bg-secondary: #1A1A1E;
+      --color-glass-bg: rgba(255, 255, 255, 0.05);
+      --color-glass-border: rgba(255, 255, 255, 0.1);
+      --color-text-primary: #F0F0F0;
+      --color-text-secondary: #A0A0A0;
+      --color-text-muted: #606060;
+      --color-neon-primary: #00FFFF;
+      --color-neon-secondary: #FF00FF;
+      --color-success: #00FF00;
+      --color-danger: #FF0000;
+      --color-warning: #FFFF00;
+      --color-info: #00BFFF;
+      --color-button-primary: #2A2A30;
+      --color-button-hover: #3A3A40;
+      --color-active-item: rgba(0, 255, 255, 0.1);
+      --color-icon: #C0C0C0;
 
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) rotate(0deg) scale(0.5);
-                opacity: 0;
-            }
+      /* Typography */
+      --font-family-heading: 'Inter', sans-serif;
+      --font-family-body: 'Roboto', sans-serif;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.5rem;
+      --font-size-2xl: 2rem;
+      --font-size-3xl: 2.5rem;
+      --font-weight-light: 300;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
 
-            10% {
-                opacity: 0.08;
-            }
+      /* Spacing */
+      --space-xxs: 0.25rem;
+      --space-xs: 0.5rem;
+      --space-sm: 0.75rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
 
-            90% {
-                opacity: 0.08;
-            }
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
 
-            100% {
-                transform: translateY(-10vh) rotate(360deg) scale(1.2);
-                opacity: 0;
-            }
-        }
+      /* Shadow */
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --shadow-neon-sm: 0 0 5px var(--color-neon-primary);
+      --shadow-neon-md: 0 0 10px var(--color-neon-primary), 0 0 20px var(--color-neon-primary);
 
-        /* Phase transitions */
-        .phase {
-            display: none;
-        }
+      /* Motion */
+      --transition-duration-fast: 0.15s;
+      --transition-duration-normal: 0.3s;
+      --transition-duration-slow: 0.5s;
+      --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-ease-out: cubic-bezier(0, 0, 0.2, 1);
 
-        .phase.active {
-            display: flex;
-            animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+      /* Layout sizes */
+      --sidebar-w: 240px;
+      --header-h: 72px;
+    }
 
-        @keyframes fadeSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.96);
-            }
+    /* =========================================================
+       GLOBAL
+       ========================================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
 
-        /* Shake animation for errors */
-        .shake {
-            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
-        }
+    body {
+      font-family: var(--font-family-body);
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      background-color: var(--color-bg-primary);
+      background-image:
+        radial-gradient(circle at 20% 0%, rgba(0, 255, 255, 0.08), transparent 40%),
+        radial-gradient(circle at 80% 100%, rgba(255, 0, 255, 0.06), transparent 45%);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+    }
 
-        @keyframes shake {
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-family-heading);
+      color: var(--color-text-primary);
+      margin: 0;
+    }
 
-            10%,
-            90% {
-                transform: translateX(-2px);
-            }
+    a {
+      color: var(--color-neon-primary);
+      text-decoration: none;
+    }
+    a:hover { color: var(--color-neon-primary); }
 
-            20%,
-            80% {
-                transform: translateX(4px);
-            }
+    button {
+      font-family: inherit;
+    }
 
-            30%,
-            50%,
-            70% {
-                transform: translateX(-6px);
-            }
+    /* Focus visible for keyboard nav */
+    :focus-visible {
+      outline: 2px solid var(--color-neon-primary);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
 
-            40%,
-            60% {
-                transform: translateX(6px);
-            }
-        }
+    /* Scrollbar (subtle) */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 255, 0.3); }
 
-        /* Pulse glow */
-        .pulse-glow {
-            animation: pulseGlow 2s ease-in-out infinite;
-        }
+    /* =========================================================
+       LAYOUT GRID
+       ========================================================= */
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: var(--header-h) 1fr;
+      grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+      min-height: 100vh;
+    }
 
-        @keyframes pulseGlow {
+    /* =========================================================
+       SIDEBAR
+       ========================================================= */
+    .sidebar {
+      grid-area: sidebar;
+      background: var(--color-bg-secondary);
+      border-right: 1px solid var(--color-glass-border);
+      padding: var(--space-lg) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 30;
+      transition: transform var(--transition-duration-normal) var(--transition-ease-in-out);
+    }
 
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(251, 113, 133, 0.3);
-            }
+    .sidebar__brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 0 var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+    .sidebar__brand .logo-mark {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--color-neon-primary), var(--color-neon-secondary));
+      display: grid; place-items: center;
+      color: #000; font-weight: 700; font-family: var(--font-family-heading);
+    }
+    .sidebar__brand .brand-name {
+      font-family: var(--font-family-heading);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-lg);
+      color: var(--color-text-primary);
+    }
 
-            50% {
-                box-shadow: 0 0 40px rgba(251, 113, 133, 0.6), 0 0 60px rgba(244, 63, 94, 0.3);
-            }
-        }
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xxs);
+    }
 
-        /* Success pop */
-        .success-pop {
-            animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+    .nav-item a,
+    .nav-item button {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      background: transparent;
+      border: none;
+      text-align: left;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition:
+        background var(--transition-duration-fast) var(--transition-ease-in-out),
+        color var(--transition-duration-fast) var(--transition-ease-in-out),
+        box-shadow var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
 
-        @keyframes successPop {
-            0% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
+    .nav-item a:hover,
+    .nav-item button:hover {
+      background: var(--color-glass-bg);
+      color: var(--color-text-primary);
+    }
 
-            50% {
-                transform: scale(1.1);
-            }
+    .nav-item.is-active a,
+    .nav-item.is-active button {
+      background: var(--color-button-primary);
+      color: var(--color-text-primary);
+      box-shadow: var(--shadow-neon-sm);
+    }
 
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
+    .nav-item .nav-icon {
+      width: 18px; height: 18px;
+      display: inline-flex;
+      color: var(--color-icon);
+    }
 
-        /* Confetti */
-        .confetti-piece {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            top: -10px;
-            z-index: 9999;
-            pointer-events: none;
-            animation: confettiFall linear forwards;
-        }
+    .nav-section-title {
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-text-muted);
+      padding: var(--space-md) var(--space-md) var(--space-xs);
+    }
 
-        @keyframes confettiFall {
-            0% {
-                transform: translateY(0) rotateZ(0deg) rotateX(0deg);
-                opacity: 1;
-            }
+    .sidebar__footer {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
 
-            100% {
-                transform: translateY(100vh) rotateZ(720deg) rotateX(360deg);
-                opacity: 0;
-            }
-        }
+    .btn-upgrade {
+      background: var(--color-button-primary);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition:
+        background var(--transition-duration-fast) var(--transition-ease-in-out),
+        box-shadow var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
+    .btn-upgrade:hover {
+      background: var(--color-button-hover);
+      box-shadow: var(--shadow-neon-sm);
+    }
 
-        /* Card glass effect */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
+    .btn-doc {
+      background: transparent;
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      transition:
+        background var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
+    .btn-doc:hover { background: var(--color-glass-bg); }
 
-        .glass-card-light {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
+    /* =========================================================
+       HEADER
+       ========================================================= */
+    .header {
+      grid-area: header;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding: 0 var(--space-xl);
+      background: var(--color-glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--color-glass-border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
 
-        /* Button ripple */
-        .btn-valentine {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+    .breadcrumb {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+    .breadcrumb .sep { color: var(--color-text-muted); margin: 0 var(--space-xs); }
+    .breadcrumb .current { color: var(--color-text-primary); }
 
-        .btn-valentine:active {
-            transform: scale(0.96);
-        }
+    .header__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
 
-        .btn-valentine .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-        }
+    .search {
+      position: relative;
+      width: 280px;
+    }
+    .search input {
+      width: 100%;
+      background: var(--color-glass-bg);
+      border: 1px solid var(--color-glass-border);
+      color: var(--color-text-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--font-size-sm);
+      font-family: var(--font-family-body);
+      transition: border-color var(--transition-duration-fast) var(--transition-ease-in-out),
+                  box-shadow var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
+    .search input::placeholder { color: var(--color-text-muted); }
+    .search input:focus {
+      outline: none;
+      border-color: var(--color-neon-primary);
+      box-shadow: var(--shadow-neon-sm);
+    }
 
-        @keyframes ripple {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
+    .btn-builder {
+      background: transparent;
+      color: var(--color-neon-primary);
+      border: 1px solid var(--color-neon-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: background var(--transition-duration-fast) var(--transition-ease-in-out),
+                  box-shadow var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
+    .btn-builder:hover {
+      background: var(--color-active-item);
+      box-shadow: var(--shadow-neon-sm);
+    }
 
-        /* Progress bar animation */
-        .progress-fill {
-            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+    .btn-icon {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      background: var(--color-glass-bg);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-icon);
+      cursor: pointer;
+      transition: color var(--transition-duration-fast) var(--transition-ease-in-out),
+                  box-shadow var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
+    .btn-icon:hover { color: var(--color-neon-primary); box-shadow: var(--shadow-neon-sm); }
 
-        /* Typing cursor */
-        .blink-cursor::after {
-            content: '|';
-            animation: blink 1s step-end infinite;
-        }
+    .star-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--color-glass-bg);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-xs) var(--space-sm);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-sm);
+    }
+    .star-pill .count {
+      color: var(--color-text-secondary);
+      border-left: 1px solid var(--color-glass-border);
+      padding-left: var(--space-sm);
+    }
 
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
+    .avatar {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #3a3a40, #1a1a1e);
+      border: 1px solid var(--color-glass-border);
+      display: grid; place-items: center;
+      color: var(--color-text-primary);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+    }
+    .avatar:hover { box-shadow: var(--shadow-neon-sm); }
 
-        /* Toast */
-        .toast {
-            animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+    .hamburger {
+      display: none;
+      width: 40px; height: 40px;
+      background: transparent;
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-md);
+      color: var(--color-icon);
+      cursor: pointer;
+    }
 
-        .toast.hide {
-            animation: toastOut 0.3s ease forwards;
-        }
+    /* =========================================================
+       MAIN
+       ========================================================= */
+    .main {
+      grid-area: main;
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
 
-        @keyframes toastIn {
-            from {
-                transform: translateY(20px) scale(0.95);
-                opacity: 0;
-            }
+    .page-title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
+      font-family: var(--font-family-heading);
+      margin-bottom: var(--space-xs);
+    }
+    .page-subtitle {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
 
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
+    /* =========================================================
+       GLASS CARD
+       ========================================================= */
+    .glass {
+      background: var(--color-glass-bg);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-glass);
+    }
 
-        @keyframes toastOut {
-            to {
-                transform: translateY(-20px) scale(0.95);
-                opacity: 0;
-            }
-        }
+    /* =========================================================
+       STAT CARDS
+       ========================================================= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-lg);
+    }
+    .stat-card {
+      padding: var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform var(--transition-duration-normal) var(--transition-ease-out),
+                  box-shadow var(--transition-duration-normal) var(--transition-ease-out);
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-neon-sm);
+    }
+    .stat-card__label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-xs);
+    }
+    .stat-card__value {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-xs);
+    }
+    .stat-card__delta { font-size: var(--font-size-xs); }
+    .stat-card__delta.up { color: var(--color-success); }
+    .stat-card__delta.down { color: var(--color-danger); }
+    .stat-card__icon {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--color-button-primary);
+      border: 1px solid var(--color-glass-border);
+      display: grid; place-items: center;
+      color: var(--color-text-primary);
+    }
 
-        /* Ticket number input styling */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+    /* =========================================================
+       CHART GRID
+       ========================================================= */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-lg);
+    }
+    .chart-card {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .chart-card__title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      font-family: var(--font-family-heading);
+    }
+    .chart-card__sub {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
 
-        input[type="number"] {
-            -moz-appearance: textfield;
-            appearance: textfield;
-        }
+    /* Bar chart */
+    .bar-chart {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: var(--space-sm);
+      align-items: end;
+      height: 220px;
+    }
+    .bar-yaxis {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      height: 100%;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    .bar-area {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      height: 100%;
+    }
+    .bar-area__bars {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      align-items: end;
+      gap: var(--space-sm);
+      flex: 1;
+      border-bottom: 1px solid var(--color-glass-border);
+      padding-bottom: var(--space-xs);
+    }
+    .bar {
+      background: linear-gradient(180deg, var(--color-success), rgba(0, 255, 0, 0.4));
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      min-height: 4px;
+      transition: filter var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
+    .bar:hover { filter: brightness(1.2); box-shadow: 0 0 8px rgba(0, 255, 0, 0.5); }
+    .bar-labels {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: var(--space-sm);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+    }
 
-        /* WYR card flip */
-        .wyr-option {
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+    /* Line chart (SVG-like via divs) */
+    .line-chart {
+      position: relative;
+      height: 220px;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: var(--space-sm);
+    }
+    .line-yaxis {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      height: 100%;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    .line-area {
+      position: relative;
+      height: 100%;
+      border-bottom: 1px solid var(--color-glass-border);
+    }
+    .line-area .grid-line {
+      position: absolute;
+      left: 0; right: 0;
+      border-top: 1px dashed var(--color-glass-border);
+    }
+    .line-area svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .line-area .x-labels {
+      position: absolute;
+      left: 0; right: 0; bottom: -22px;
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
 
-        .wyr-option:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(244, 63, 94, 0.3);
-        }
+    .chart-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
 
-        /* Stamp animation */
-        .stamp-in {
-            animation: stampIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+    /* =========================================================
+       TABLES / LISTS
+       ========================================================= */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-lg);
+    }
+    .panel { padding: var(--space-lg); }
+    .panel__header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: var(--space-md);
+    }
+    .panel__title {
+      font-family: var(--font-family-heading);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+    }
+    .panel__sub {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
 
-        @keyframes stampIn {
-            0% {
-                transform: scale(3) rotate(-15deg);
-                opacity: 0;
-            }
+    .table {
+      color: var(--color-text-primary);
+      margin: 0;
+      vertical-align: middle;
+    }
+    .table thead th {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: var(--font-weight-medium);
+      border-bottom: 1px solid var(--color-glass-border);
+      padding: var(--space-sm) var(--space-sm);
+    }
+    .table tbody td {
+      border-bottom: 1px solid var(--color-glass-border);
+      padding: var(--space-md) var(--space-sm);
+      font-size: var(--font-size-sm);
+    }
+    .table tbody tr:last-child td { border-bottom: none; }
 
-            60% {
-                transform: scale(0.9) rotate(2deg);
-                opacity: 1;
-            }
+    .company-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .company-mark {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-md);
+      background: var(--color-button-primary);
+      border: 1px solid var(--color-glass-border);
+      display: grid; place-items: center;
+      font-family: var(--font-family-heading);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-sm);
+    }
 
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
+    .avatar-stack {
+      display: inline-flex;
+    }
+    .avatar-stack .avatar-mini {
+      width: 26px; height: 26px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--color-bg-primary);
+      background: linear-gradient(135deg, #444, #222);
+      display: inline-block;
+      margin-left: -8px;
+    }
+    .avatar-stack .avatar-mini:first-child { margin-left: 0; }
+    .avatar-mini.a1 { background: linear-gradient(135deg, #ff8a00, #e52e71); }
+    .avatar-mini.a2 { background: linear-gradient(135deg, #00bfff, #0040ff); }
+    .avatar-mini.a3 { background: linear-gradient(135deg, #00ffaa, #006a4e); }
+    .avatar-mini.a4 { background: linear-gradient(135deg, #c084fc, #6b21a8); }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
+    .progress {
+      background: var(--color-glass-bg);
+      height: 6px;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .progress-bar {
+      background: var(--color-neon-primary);
+      box-shadow: var(--shadow-neon-sm);
+    }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
+    /* Orders list */
+    .orders-list { display: flex; flex-direction: column; gap: var(--space-md); }
+    .order-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) 0;
+      border-bottom: 1px solid var(--color-glass-border);
+    }
+    .order-item:last-child { border-bottom: none; }
+    .order-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-full);
+      background: var(--color-glass-bg);
+      border: 1px solid var(--color-glass-border);
+      display: grid; place-items: center;
+      color: var(--color-neon-primary);
+      flex-shrink: 0;
+    }
+    .order-item__title {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+      font-weight: var(--font-weight-medium);
+    }
+    .order-item__time {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
 
-        ::-webkit-scrollbar-thumb {
-            background: rgba(251, 113, 133, 0.3);
-            border-radius: 4px;
-        }
+    /* Floating settings button */
+    .floating-btn {
+      position: fixed;
+      right: var(--space-xl);
+      bottom: var(--space-xl);
+      width: 48px; height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--color-button-primary);
+      border: 1px solid var(--color-glass-border);
+      color: var(--color-text-primary);
+      display: grid; place-items: center;
+      cursor: pointer;
+      z-index: 50;
+      box-shadow: var(--shadow-glass);
+      transition: box-shadow var(--transition-duration-fast) var(--transition-ease-in-out);
+    }
+    .floating-btn:hover { box-shadow: var(--shadow-neon-md); }
 
-        /* Admin panel slide */
-        .admin-panel {
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-    </style>
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+    @media (max-width: 1100px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .charts-grid { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .search { width: 200px; }
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "main";
+      }
+      .sidebar {
+        position: fixed;
+        left: 0; top: 0;
+        width: var(--sidebar-w);
+        transform: translateX(-100%);
+        z-index: 40;
+      }
+      .sidebar.is-open { transform: translateX(0); }
+      .hamburger { display: inline-grid; place-items: center; }
+      .header { padding: 0 var(--space-md); }
+      .search { display: none; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Backdrop for mobile sidebar */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 35;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-duration-normal) var(--transition-ease-in-out);
+    }
+    .backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Bootstrap visually-hidden fallback */
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+  </style>
 </head>
+<body>
+  <div class="app">
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="sidebar__brand">
+        <div class="logo-mark" aria-hidden="true">C</div>
+        <div class="brand-name">Creative Tim</div>
+      </div>
 
-<body class="font-outfit text-white min-h-screen flex items-center justify-center p-4">
+      <ul class="nav-list" role="list">
+        <li class="nav-item is-active">
+          <a href="#dashboard" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            </span>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#tables">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>
+            </span>
+            Tables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#billing">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+            </span>
+            Billing
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#vr">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2.5-3 5-3 7 0s4.5 3 7 0 4.5-3 6 0"/><path d="M2 17c2.5-3 5-3 7 0s4.5 3 7 0 4.5-3 6 0"/></svg>
+            </span>
+            Virtual Reality
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#rtl">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h16"/></svg>
+            </span>
+            RTL
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#notifications">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+            </span>
+            Notifications
+          </a>
+        </li>
+      </ul>
 
-    <div id="testerRedirect" style="position:fixed;inset:0;background:rgba(8,4,16,0.92);backdrop-filter:blur(10px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:'Outfit',sans-serif;">
-        <div style="width:100%;max-width:460px;background:#16162a;border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:32px 28px;box-shadow:0 24px 60px rgba(0,0,0,0.6);text-align:center;color:#e8e8f0;">
-            <div style="width:60px;height:60px;margin:0 auto 18px;border-radius:16px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);display:flex;align-items:center;justify-content:center;color:#fff;">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            </div>
-            <h1 style="font-size:22px;font-weight:700;margin:0 0 8px;">Halo Tester!</h1>
-            <p style="font-size:14px;line-height:1.6;color:#b8b8cc;margin:0 0 22px;">
-                Sepertinya Anda sedikit salah alamat. Halaman uji coba <strong style="color:#fff;">EscBot</strong> ada di URL berbeda. Klik tombol di bawah untuk lanjut ke sana.
-            </p>
-            <a id="testerRedirectGo" href="escalation-chatbot/" style="display:block;padding:13px 16px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border-radius:12px;font-size:14px;font-weight:600;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;">
-                Buka EscBot
-            </a>
-            <p style="margin:18px 0 0;font-size:11px;color:#7a7a90;line-height:1.5;">
-                Bukan tester? <a href="#stay" id="testerRedirectStay" style="color:#a29bfe;text-decoration:none;">Tetap di halaman ini</a>
-            </p>
+      <div class="nav-section-title">Account Pages</div>
+      <ul class="nav-list" role="list">
+        <li class="nav-item">
+          <a href="#profile">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
+            </span>
+            Profile
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#signin">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12H3m0 0l4-4m-4 4l4 4"/><path d="M21 4v16"/></svg>
+            </span>
+            Sign In
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#signup">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/></svg>
+            </span>
+            Sign Up
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar__footer">
+        <button type="button" class="btn-doc">Documentation</button>
+        <button type="button" class="btn-upgrade">Upgrade to pro</button>
+      </div>
+    </aside>
+
+    <!-- Backdrop for mobile sidebar -->
+    <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+      <div style="display:flex;align-items:center;gap:var(--space-md);">
+        <button class="hamburger" id="hamburger" aria-label="Open sidebar" aria-expanded="false" aria-controls="sidebar">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <span>Pages</span>
+          <span class="sep">/</span>
+          <span class="current">Dashboard</span>
+        </nav>
+      </div>
+
+      <div class="header__actions">
+        <div class="search" role="search">
+          <label for="searchInput" class="visually-hidden">Search</label>
+          <input id="searchInput" type="search" placeholder="Type here..." />
         </div>
-    </div>
-    <script>
-        (function () {
-            var overlay = document.getElementById('testerRedirect');
-            var stayBtn = document.getElementById('testerRedirectStay');
-            var goBtn = document.getElementById('testerRedirectGo');
-            if (!overlay) return;
+        <button class="btn-builder" type="button">Online Builder</button>
 
-            document.body.style.overflow = 'hidden';
-
-            function dismiss() {
-                overlay.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-
-            if (window.location.hash === '#stay') {
-                dismiss();
-                return;
-            }
-
-            stayBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                history.replaceState(null, '', '#stay');
-                dismiss();
-            });
-
-            goBtn.addEventListener('mouseenter', function () {
-                goBtn.style.transform = 'translateY(-1px)';
-                goBtn.style.boxShadow = '0 8px 24px rgba(108,92,231,0.45)';
-            });
-            goBtn.addEventListener('mouseleave', function () {
-                goBtn.style.transform = '';
-                goBtn.style.boxShadow = '';
-            });
-        })();
-    </script>
-
-    <!-- Floating Hearts Background -->
-    <div class="hearts-bg" id="heartsBg"></div>
-
-    <!-- Toast Container -->
-    <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2"></div>
-
-    <!-- ============================================ -->
-    <!-- PHASE -1: ACCESS GATE -->
-    <!-- ============================================ -->
-    <section id="phase-gate"
-        class="phase active flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
-        <div class="text-center mb-8">
-            <div class="text-6xl mb-4 success-pop">🔐</div>
-            <h1
-                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-rose-200 via-pink-200 to-rose-300 bg-clip-text text-transparent">
-                Valentine Mission
-            </h1>
-            <p class="text-rose-300/70 text-sm font-light">Youth Church Event • 2026</p>
-        </div>
-
-        <div class="glass-card rounded-3xl p-8 w-full">
-            <div class="text-center mb-6">
-                <div
-                    class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/20 rounded-full px-4 py-1.5 text-xs text-amber-300">
-                    <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
-                    Kode Akses Diperlukan
-                </div>
-            </div>
-
-            <label class="block text-sm font-medium text-rose-200 mb-2">Masukkan Kode Akses</label>
-            <div class="relative mb-6">
-                <input type="text" id="gateInput" placeholder="Kode dari moderator" autocomplete="off"
-                    spellcheck="false" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30 uppercase tracking-widest
-                    focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition-all">
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🔑</div>
-            </div>
-
-            <button onclick="handleGate()" id="gateBtn" class="btn-valentine w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600
-                text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-amber-500/30 pulse-glow">
-                Masuk 🚪
-            </button>
-
-            <p class="text-center text-rose-300/40 text-xs mt-4">Dapatkan kode akses dari moderator saat acara</p>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- PHASE 0: LOGIN -->
-    <!-- ============================================ -->
-    <section id="phase-login" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
-        <div class="text-center mb-8">
-            <div class="text-6xl mb-4 success-pop">💘</div>
-            <h1
-                class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-rose-200 via-pink-200 to-rose-300 bg-clip-text text-transparent">
-                Valentine Mission
-            </h1>
-            <p class="text-rose-300/70 text-sm font-light">Youth Church Event • 2026</p>
-        </div>
-
-        <div class="glass-card rounded-3xl p-8 w-full">
-            <div class="text-center mb-6">
-                <div
-                    class="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-400/20 rounded-full px-4 py-1.5 text-xs text-rose-300">
-                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                    Event Aktif
-                </div>
-            </div>
-
-            <label class="block text-sm font-medium text-rose-200 mb-2">Nomor Tiket Kamu</label>
-            <div class="relative mb-6">
-                <input type="number" id="ticketInput" min="1" placeholder="Nomor tiket" class="w-full bg-white/10 border border-white/15 rounded-2xl px-5 py-4 text-xl text-center font-bold text-white placeholder-white/30
-                    focus:outline-none focus:ring-2 focus:ring-rose-400/50 focus:border-rose-400/50 transition-all">
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-2xl">🎫</div>
-            </div>
-
-            <button onclick="handleLogin()" id="loginBtn" class="btn-valentine w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
-                text-white font-bold text-lg py-4 rounded-2xl shadow-lg shadow-rose-500/30 pulse-glow">
-                Mulai Misi! 🚀
-            </button>
-
-            <p class="text-center text-rose-300/40 text-xs mt-4">Masukkan nomor sesuai tiket yang kamu dapat</p>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- PHASE 1: FIND PARTNER -->
-    <!-- ============================================ -->
-    <section id="phase-partner"
-        class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
-        <div class="text-center mb-6">
-            <div class="text-5xl mb-3">🔍</div>
-            <h2 class="text-2xl font-bold text-rose-100">Misi 1: Temukan Pasanganmu</h2>
-            <p class="text-rose-300/60 text-sm mt-1">Cari Partner-mu di ruangan ini!</p>
+        <div class="star-pill" role="group" aria-label="Star repository">
+          <span aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2"/></svg>
+          </span>
+          <span>Star</span>
+          <span class="count">11,927</span>
         </div>
 
-        <!-- Bible Verse Card -->
-        <div id="verseCard" class="glass-card rounded-2xl p-6 w-full mb-4">
-            <div class="text-center">
-                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-2">📖 Ayat untuk Pasanganmu</p>
-                <p id="verseRef" class="text-amber-300 font-bold text-sm mb-3"></p>
-                <p id="verseText" class="text-rose-100/90 text-sm leading-relaxed italic mb-4 px-2"></p>
-                <div class="bg-rose-500/20 border border-rose-400/20 rounded-xl p-3">
-                    <p class="text-rose-200 text-xs">💡 Baca dan hapalkan <strong class="text-amber-300">1 kata</strong>
-                        dari ayat ini.<br>Ucapkan kata itu berulang kali sambil mencari pasanganmu!</p>
-                </div>
+        <button class="btn-icon" type="button" aria-label="Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1A2 2 0 1 1 4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1A2 2 0 1 1 7 4.3l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1A2 2 0 1 1 19.7 7l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+        <button class="btn-icon" type="button" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        </button>
+        <button class="avatar" type="button" aria-label="Account">N</button>
+      </div>
+    </header>
+
+    <!-- ================= MAIN ================= -->
+    <main class="main">
+      <section>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">Check the sales, value and bounce rate by country.</p>
+      </section>
+
+      <!-- STAT CARDS -->
+      <section class="stats-grid" aria-label="Key metrics">
+        <article class="glass stat-card">
+          <div>
+            <div class="stat-card__label">Today's Money</div>
+            <div class="stat-card__value">$53k</div>
+            <div class="stat-card__delta up">+55% <span style="color:var(--color-text-secondary)">than last week</span></div>
+          </div>
+          <div class="stat-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="17" cy="12" r="1.5"/><path d="M2 10h20"/></svg>
+          </div>
+        </article>
+
+        <article class="glass stat-card">
+          <div>
+            <div class="stat-card__label">Today's Users</div>
+            <div class="stat-card__value">2300</div>
+            <div class="stat-card__delta up">+3% <span style="color:var(--color-text-secondary)">than last month</span></div>
+          </div>
+          <div class="stat-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
+          </div>
+        </article>
+
+        <article class="glass stat-card">
+          <div>
+            <div class="stat-card__label">Ads Views</div>
+            <div class="stat-card__value">3,462</div>
+            <div class="stat-card__delta down">-2% <span style="color:var(--color-text-secondary)">than yesterday</span></div>
+          </div>
+          <div class="stat-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20V8m6 12V4m6 16v-8m6 8V10"/></svg>
+          </div>
+        </article>
+
+        <article class="glass stat-card">
+          <div>
+            <div class="stat-card__label">Sales</div>
+            <div class="stat-card__value">$103,430</div>
+            <div class="stat-card__delta up">+5% <span style="color:var(--color-text-secondary)">than yesterday</span></div>
+          </div>
+          <div class="stat-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13l3 4h2v6h-3"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+          </div>
+        </article>
+      </section>
+
+      <!-- CHARTS -->
+      <section class="charts-grid" aria-label="Performance charts">
+        <!-- BAR CHART: Website Views -->
+        <article class="glass chart-card">
+          <div>
+            <h2 class="chart-card__title">Website Views</h2>
+            <p class="chart-card__sub">Last Campaign Performance</p>
+          </div>
+          <div class="bar-chart" role="img" aria-label="Bar chart of website views across the week">
+            <div class="bar-yaxis" aria-hidden="true">
+              <span>0</span><span>50</span><span>100</span>
             </div>
-        </div>
-
-        <div class="glass-card rounded-3xl p-8 w-full mb-4">
-            <!-- Role display -->
-            <div class="text-center mb-6">
-                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Kamu adalah</p>
-                <div id="myRoleName"
-                    class="text-4xl font-black bg-gradient-to-r from-amber-200 to-yellow-300 bg-clip-text text-transparent">
-                </div>
-                <div id="myRoleBadge" class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium"></div>
+            <div class="bar-area">
+              <div class="bar-area__bars">
+                <div class="bar" style="height: 48%" data-label="Mon"></div>
+                <div class="bar" style="height: 42%" data-label="Tue"></div>
+                <div class="bar" style="height: 22%" data-label="Wed"></div>
+                <div class="bar" style="height: 28%" data-label="Thu"></div>
+                <div class="bar" style="height: 46%" data-label="Fri"></div>
+                <div class="bar" style="height: 60%" data-label="Sat"></div>
+                <div class="bar" style="height: 76%" data-label="Sun"></div>
+              </div>
+              <div class="bar-labels" aria-hidden="true">
+                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+              </div>
             </div>
+          </div>
+          <div class="chart-footer" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span>campaign sent 2 days ago</span>
+          </div>
+        </article>
 
-            <div class="w-full h-px bg-gradient-to-r from-transparent via-rose-400/30 to-transparent my-4"></div>
-
-            <!-- Target display (hidden until verified) -->
-            <div id="targetSection" class="text-center mb-6" style="display: none;">
-                <p class="text-rose-300/60 text-xs uppercase tracking-widest mb-1">Temukan</p>
-                <div id="targetName" class="text-3xl font-bold text-rose-200"></div>
+        <!-- LINE CHART: Daily Sales -->
+        <article class="glass chart-card">
+          <div>
+            <h2 class="chart-card__title">Daily Sales</h2>
+            <p class="chart-card__sub">(+15%) increase in today sales.</p>
+          </div>
+          <div class="line-chart" role="img" aria-label="Line chart of daily sales for the year">
+            <div class="line-yaxis" aria-hidden="true">
+              <span>0</span><span>200</span><span>400</span><span>600</span>
             </div>
-
-            <!-- Role B: Show code -->
-            <div id="holderSection" class="hidden">
-                <div
-                    class="bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-400/20 rounded-2xl p-5 text-center">
-                    <p class="text-amber-200/80 text-xs uppercase tracking-widest mb-2">Kode Rahasiamu</p>
-                    <div id="secretCodeDisplay" class="text-4xl font-black tracking-[0.3em] text-amber-300"></div>
-                    <p class="text-amber-200/50 text-xs mt-3">Tunjukkan kode ini saat partnermu menemukanmu</p>
-                </div>
-                <button onclick="handleHolderConfirm()" class="btn-valentine w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600
-                    text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/20">
-                    Partner Sudah Menemukan Saya! ✅
-                </button>
+            <div class="line-area">
+              <div class="grid-line" style="top: 0%"></div>
+              <div class="grid-line" style="top: 33%"></div>
+              <div class="grid-line" style="top: 66%"></div>
+              <svg viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="neonStroke" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0%" stop-color="#00FFFF"/>
+                    <stop offset="100%" stop-color="#FF00FF"/>
+                  </linearGradient>
+                </defs>
+                <polyline
+                  fill="none"
+                  stroke="url(#neonStroke)"
+                  stroke-width="2.5"
+                  points="20,120 70,80 120,30 170,90 220,60 270,110 320,140 370,100 420,30 470,40 520,80 570,110"
+                  style="filter: drop-shadow(0 0 4px rgba(0,255,255,0.6));"
+                />
+                <g fill="#00FFFF">
+                  <circle cx="20" cy="120" r="3.5"/>
+                  <circle cx="70" cy="80" r="3.5"/>
+                  <circle cx="120" cy="30" r="3.5"/>
+                  <circle cx="170" cy="90" r="3.5"/>
+                  <circle cx="220" cy="60" r="3.5"/>
+                  <circle cx="270" cy="110" r="3.5"/>
+                  <circle cx="320" cy="140" r="3.5"/>
+                  <circle cx="370" cy="100" r="3.5"/>
+                  <circle cx="420" cy="30" r="3.5"/>
+                  <circle cx="470" cy="40" r="3.5"/>
+                  <circle cx="520" cy="80" r="3.5"/>
+                  <circle cx="570" cy="110" r="3.5"/>
+                </g>
+              </svg>
+              <div class="x-labels" aria-hidden="true">
+                <span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span>
+              </div>
             </div>
+          </div>
+          <div class="chart-footer" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span>updated 4 min ago</span>
+          </div>
+        </article>
 
-            <!-- Role A: Input code -->
-            <div id="seekerSection" class="hidden">
-                <div
-                    class="bg-gradient-to-br from-rose-500/20 to-pink-500/10 border border-rose-400/20 rounded-2xl p-5">
-                    <p class="text-rose-200/80 text-xs uppercase tracking-widest mb-3 text-center">Masukkan Kode Partner
-                    </p>
-                    <input type="text" id="codeInput" placeholder="KODE RAHASIA" class="w-full bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center text-2xl font-bold tracking-[0.2em] text-white placeholder-white/20 uppercase
-                        focus:outline-none focus:ring-2 focus:ring-rose-400/50 transition-all mb-3">
-                    <button onclick="handleCodeSubmit()" id="codeSubmitBtn" class="btn-valentine w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600
-                        text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-500/20">
-                        Verifikasi Kode ✓
-                    </button>
-                </div>
+        <!-- LINE CHART: Completed Tasks -->
+        <article class="glass chart-card">
+          <div>
+            <h2 class="chart-card__title">Completed Tasks</h2>
+            <p class="chart-card__sub">Last Campaign Performance</p>
+          </div>
+          <div class="line-chart" role="img" aria-label="Line chart of completed tasks by month">
+            <div class="line-yaxis" aria-hidden="true">
+              <span>0</span><span>200</span><span>400</span><span>600</span>
             </div>
-        </div>
-
-        <!-- Waiting hint for holder -->
-        <div id="holderWaiting" class="hidden text-center">
-            <div class="glass-card rounded-2xl px-6 py-4 inline-flex items-center gap-3">
-                <div class="flex gap-1">
-                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0s"></span>
-                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0.1s"></span>
-                    <span class="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style="animation-delay:0.2s"></span>
-                </div>
-                <span class="text-rose-300/70 text-sm">Menunggu partnermu menemukanmu...</span>
+            <div class="line-area">
+              <div class="grid-line" style="top: 0%"></div>
+              <div class="grid-line" style="top: 33%"></div>
+              <div class="grid-line" style="top: 66%"></div>
+              <svg viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
+                <polyline
+                  fill="none"
+                  stroke="#00FF7F"
+                  stroke-width="2.5"
+                  points="20,170 70,150 120,90 170,120 220,60 270,110 320,90 370,140 420,50 470,30 520,140 570,30"
+                  style="filter: drop-shadow(0 0 4px rgba(0,255,127,0.5));"
+                />
+                <g fill="#00FF7F">
+                  <circle cx="20" cy="170" r="3.5"/>
+                  <circle cx="70" cy="150" r="3.5"/>
+                  <circle cx="120" cy="90" r="3.5"/>
+                  <circle cx="170" cy="120" r="3.5"/>
+                  <circle cx="220" cy="60" r="3.5"/>
+                  <circle cx="270" cy="110" r="3.5"/>
+                  <circle cx="320" cy="90" r="3.5"/>
+                  <circle cx="370" cy="140" r="3.5"/>
+                  <circle cx="420" cy="50" r="3.5"/>
+                  <circle cx="470" cy="30" r="3.5"/>
+                  <circle cx="520" cy="140" r="3.5"/>
+                  <circle cx="570" cy="30" r="3.5"/>
+                </g>
+              </svg>
+              <div class="x-labels" aria-hidden="true">
+                <span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+              </div>
             </div>
-        </div>
-    </section>
+          </div>
+          <div class="chart-footer" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span>just updated</span>
+          </div>
+        </article>
+      </section>
 
-    <!-- ============================================ -->
-    <!-- PHASE 2: SCAVENGER HUNT -->
-    <!-- ============================================ -->
-    <section id="phase-hunt" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
-        <div class="text-center mb-4">
-            <div class="text-5xl mb-3">🗺️</div>
-            <h2 class="text-2xl font-bold text-rose-100">Misi 2: Scavenger Hunt</h2>
-            <p class="text-rose-300/60 text-sm mt-1">Pecahkan petunjuk bersama pasanganmu!</p>
-        </div>
-
-        <!-- Progress bar -->
-        <div class="w-full glass-card rounded-2xl p-4 mb-4">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-xs text-rose-300/60">Progress</span>
-                <span id="huntProgressText" class="text-xs font-bold text-rose-300">0 / 5</span>
+      <!-- BOTTOM GRID: PROJECTS + ORDERS -->
+      <section class="bottom-grid">
+        <article class="glass panel" aria-label="Projects">
+          <div class="panel__header">
+            <div>
+              <h2 class="panel__title">Projects</h2>
+              <div class="panel__sub">30 done this month</div>
             </div>
-            <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-                <div id="huntProgressBar"
-                    class="progress-fill h-full bg-gradient-to-r from-rose-500 to-pink-400 rounded-full"
-                    style="width: 0%"></div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Companies</th>
+                  <th scope="col">Members</th>
+                  <th scope="col">Budget</th>
+                  <th scope="col">Completion</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="company-cell">
+                      <div class="company-mark">Xd</div>
+                      <div>Material XD Version</div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="avatar-stack" aria-label="Team members">
+                      <span class="avatar-mini a1"></span>
+                      <span class="avatar-mini a2"></span>
+                      <span class="avatar-mini a3"></span>
+                      <span class="avatar-mini a4"></span>
+                    </span>
+                  </td>
+                  <td>$14,000</td>
+                  <td style="min-width:160px;">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="progress flex-grow-1"><div class="progress-bar" style="width: 60%"></div></div>
+                      <span style="color:var(--color-text-secondary);font-size:var(--font-size-xs);">60%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="company-cell">
+                      <div class="company-mark" style="background:linear-gradient(135deg,#00bfff,#0040ff);">At</div>
+                      <div>Add Progress Track</div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="avatar-stack" aria-label="Team members">
+                      <span class="avatar-mini a2"></span>
+                      <span class="avatar-mini a3"></span>
+                    </span>
+                  </td>
+                  <td>$3,000</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="progress flex-grow-1"><div class="progress-bar" style="width: 10%"></div></div>
+                      <span style="color:var(--color-text-secondary);font-size:var(--font-size-xs);">10%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="company-cell">
+                      <div class="company-mark" style="background:linear-gradient(135deg,#ff8a00,#e52e71);">Fi</div>
+                      <div>Fix Platform Errors</div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="avatar-stack" aria-label="Team members">
+                      <span class="avatar-mini a4"></span>
+                    </span>
+                  </td>
+                  <td>Not set</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="progress flex-grow-1"><div class="progress-bar" style="width: 100%"></div></div>
+                      <span style="color:var(--color-text-secondary);font-size:var(--font-size-xs);">100%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="company-cell">
+                      <div class="company-mark" style="background:linear-gradient(135deg,#00ffaa,#006a4e);">Lp</div>
+                      <div>Launch New Mobile App</div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="avatar-stack" aria-label="Team members">
+                      <span class="avatar-mini a1"></span>
+                      <span class="avatar-mini a2"></span>
+                      <span class="avatar-mini a3"></span>
+                    </span>
+                  </td>
+                  <td>$20,500</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="progress flex-grow-1"><div class="progress-bar" style="width: 100%"></div></div>
+                      <span style="color:var(--color-text-secondary);font-size:var(--font-size-xs);">100%</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="company-cell">
+                      <div class="company-mark" style="background:linear-gradient(135deg,#c084fc,#6b21a8);">Co</div>
+                      <div>Co branding guideline</div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="avatar-stack" aria-label="Team members">
+                      <span class="avatar-mini a1"></span>
+                      <span class="avatar-mini a2"></span>
+                      <span class="avatar-mini a3"></span>
+                      <span class="avatar-mini a4"></span>
+                    </span>
+                  </td>
+                  <td>$2,000</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="progress flex-grow-1"><div class="progress-bar" style="width: 25%"></div></div>
+                      <span style="color:var(--color-text-secondary);font-size:var(--font-size-xs);">25%</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="glass panel" aria-label="Orders overview">
+          <div class="panel__header">
+            <div>
+              <h2 class="panel__title">Orders overview</h2>
+              <div class="panel__sub">24% this month</div>
             </div>
-            <!-- Station dots -->
-            <div class="flex justify-between mt-3 px-1">
-                <div id="dot-0"
-                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
-                    1</div>
-                <div id="dot-1"
-                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
-                    2</div>
-                <div id="dot-2"
-                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
-                    3</div>
-                <div id="dot-3"
-                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
-                    4</div>
-                <div id="dot-4"
-                    class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold transition-all">
-                    5</div>
-            </div>
-        </div>
+          </div>
+          <ul class="orders-list" role="list">
+            <li class="order-item">
+              <div class="order-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+              </div>
+              <div>
+                <div class="order-item__title">$2400, Design changes</div>
+                <div class="order-item__time">22 DEC 7:20 PM</div>
+              </div>
+            </li>
+            <li class="order-item">
+              <div class="order-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h13l3 4h2v6h-3"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+              </div>
+              <div>
+                <div class="order-item__title">New order #1832412</div>
+                <div class="order-item__time">21 DEC 11:00 PM</div>
+              </div>
+            </li>
+            <li class="order-item">
+              <div class="order-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div>
+                <div class="order-item__title">Server payments for April</div>
+                <div class="order-item__time">21 DEC 9:34 PM</div>
+              </div>
+            </li>
+            <li class="order-item">
+              <div class="order-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="order-item__title">New card added for order #4395133</div>
+                <div class="order-item__time">20 DEC 2:20 PM</div>
+              </div>
+            </li>
+            <li class="order-item">
+              <div class="order-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v6H4zM4 14h16v6H4z"/></svg>
+              </div>
+              <div>
+                <div class="order-item__title">Unlock packages for development</div>
+                <div class="order-item__time">19 DEC 4:54 PM</div>
+              </div>
+            </li>
+            <li class="order-item">
+              <div class="order-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="order-item__title">Deliveries processed</div>
+                <div class="order-item__time">18 DEC 1:20 PM</div>
+              </div>
+            </li>
+          </ul>
+        </article>
+      </section>
+    </main>
+  </div>
 
-        <!-- Current Clue Card -->
-        <div class="glass-card rounded-3xl p-8 w-full mb-4" id="clueCard">
-            <div class="flex items-center gap-2 mb-4">
-                <span id="stageIcon" class="text-2xl">📍</span>
-                <div>
-                    <p class="text-xs text-rose-300/60 uppercase tracking-widest">Pos</p>
-                    <p id="stageNumber" class="text-lg font-bold text-rose-200">1</p>
-                </div>
-            </div>
+  <button class="floating-btn" type="button" aria-label="Quick settings">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1A2 2 0 1 1 4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1A2 2 0 1 1 7 4.3l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1A2 2 0 1 1 19.7 7l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+  </button>
 
-            <div id="clueText"
-                class="text-base text-rose-100/90 leading-relaxed mb-6 p-4 bg-white/5 rounded-2xl border border-white/10">
-                <!-- Clue text here -->
-            </div>
+  <!-- Bootstrap 5 JS bundle (incl. Popper) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
 
-            <div class="relative">
-                <input type="text" id="locationInput" placeholder="JAWABAN KODE LOKASI" class="w-full bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center text-xl font-bold tracking-[0.15em] text-white placeholder-white/20 uppercase
-                    focus:outline-none focus:ring-2 focus:ring-rose-400/50 transition-all mb-3">
-                <button onclick="handleHuntSubmit()" id="huntSubmitBtn" class="btn-valentine w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600
-                    text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/20">
-                    Cek Jawaban 🔓
-                </button>
-            </div>
-        </div>
-    </section>
+  <script>
+    // =================== INTERACTIVITY ===================
+    (function () {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('backdrop');
+      const hamburger = document.getElementById('hamburger');
 
-    <!-- ============================================ -->
-    <!-- PHASE 3: VICTORY -->
-    <!-- ============================================ -->
-    <section id="phase-done" class="phase flex-col items-center justify-center w-full max-w-md mx-auto relative z-10">
-        <div class="text-center mb-6">
-            <div class="text-7xl mb-4 stamp-in">🏆</div>
-            <h2
-                class="text-3xl font-black bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-2">
-                Mission Complete!
-            </h2>
-            <p class="text-rose-300/70 text-sm">Kalian berhasil menyelesaikan semua misi!</p>
-        </div>
+      function setSidebarOpen(open) {
+        sidebar.classList.toggle('is-open', open);
+        backdrop.classList.toggle('is-open', open);
+        hamburger.setAttribute('aria-expanded', String(open));
+        hamburger.setAttribute('aria-label', open ? 'Close sidebar' : 'Open sidebar');
+      }
 
-        <div class="glass-card rounded-3xl p-8 w-full mb-4">
-            <div class="text-center">
-                <div
-                    class="bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-400/20 rounded-2xl p-6 mb-4">
-                    <p class="text-amber-200/60 text-xs uppercase tracking-widest mb-2">Pasangan</p>
-                    <div id="victoryPairName" class="text-2xl font-bold text-amber-200 mb-1"></div>
-                    <div class="w-12 h-px bg-amber-400/30 mx-auto my-3"></div>
-                    <p class="text-amber-200/60 text-xs uppercase tracking-widest mb-1">Selesai pada</p>
-                    <div id="victoryTimestamp" class="text-lg font-medium text-amber-300"></div>
-                </div>
+      hamburger.addEventListener('click', function () {
+        const isOpen = sidebar.classList.contains('is-open');
+        setSidebarOpen(!isOpen);
+      });
 
-                <div class="flex items-center justify-center gap-2 text-rose-300/50 text-sm">
-                    <span>✅</span>
-                    <span>Semua misi telah diselesaikan</span>
-                </div>
-            </div>
-        </div>
+      backdrop.addEventListener('click', function () {
+        setSidebarOpen(false);
+      });
 
-    </section>
-
-    <!-- ============================================ -->
-    <!-- RESET BUTTON (always visible for testing) -->
-    <!-- ============================================ -->
-    <button onclick="resetGame()" title="Reset Game" class="fixed bottom-4 right-4 z-30 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10
-        flex items-center justify-center text-white/30 hover:text-white/60 transition-all text-sm">
-        🔄
-    </button>
-
-    <script src="valentine_data.js"></script>
-    <script>
-
-        // ==========================================
-        // STATE
-        // ==========================================
-        let state = {
-            ticketId: null,
-            role: null,      // 'A' (Seeker) or 'B' (Holder)
-            pairId: null,
-            currentPhase: 'Login',  // Login, Partner, Hunt, Done
-            huntProgress: 0,
-            completedAt: null
-        };
-
-        let adminTapCount = 0;
-        let adminTapTimer = null;
-
-        // ==========================================
-        // INIT
-        // ==========================================
-        function init() {
-            createFloatingHearts();
-            loadState();
-
-            // Check if access code was already entered this session
-            const hasAccess = sessionStorage.getItem('vm_access') === 'granted';
-            if (!hasAccess) {
-                state.currentPhase = 'Gate';
-            } else if (state.currentPhase === 'Gate') {
-                state.currentPhase = 'Login';
-            }
-
-            showPhase(state.currentPhase);
-            setupEnterKeys();
-
-            // Set ticket input limits
-            const ticketInput = document.getElementById('ticketInput');
-            ticketInput.max = 40;
-            ticketInput.placeholder = 'Masukkan 1 - 40';
+      // Close sidebar on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+          setSidebarOpen(false);
+          hamburger.focus();
         }
+      });
 
-        function setupEnterKeys() {
-            document.getElementById('gateInput').addEventListener('keyup', e => {
-                if (e.key === 'Enter') handleGate();
-            });
-            document.getElementById('ticketInput').addEventListener('keyup', e => {
-                if (e.key === 'Enter') handleLogin();
-            });
-            document.getElementById('codeInput').addEventListener('keyup', e => {
-                if (e.key === 'Enter') handleCodeSubmit();
-            });
-            document.getElementById('locationInput').addEventListener('keyup', e => {
-                if (e.key === 'Enter') handleHuntSubmit();
-            });
-        }
-
-        // ==========================================
-        // ACCESS GATE
-        // ==========================================
-        function handleGate() {
-            const input = document.getElementById('gateInput');
-            const code = input.value.trim().toUpperCase();
-
-            if (code !== 'DEMN') {
-                input.classList.add('shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Kode akses salah! Tanya moderator ya 😉', 'error');
-                input.value = '';
-                return;
-            }
-
-            sessionStorage.setItem('vm_access', 'granted');
-            showToast('Akses diberikan! Selamat datang 🎉', 'success');
-            showPhase('Login');
-        }
-
-        // ==========================================
-        // STATE MANAGEMENT
-        // ==========================================
-        function saveState() {
-            localStorage.setItem('vm_state', JSON.stringify(state));
-        }
-
-        function loadState() {
-            const saved = localStorage.getItem('vm_state');
-            if (saved) {
-                try {
-                    state = JSON.parse(saved);
-                } catch (e) {
-                    localStorage.removeItem('vm_state');
-                }
-            }
-        }
-
-        function resetGame() {
-            if (confirm('Reset game? Semua progress akan hilang.')) {
-                localStorage.removeItem('vm_state');
-                sessionStorage.removeItem('vm_access');
-                state = { ticketId: null, role: null, pairId: null, currentPhase: 'Gate', huntProgress: 0, completedAt: null };
-                showPhase('Gate');
-                showToast('Game direset! 🔄', 'info');
-            }
-        }
-
-        // ==========================================
-        // PHASE MANAGEMENT
-        // ==========================================
-        function showPhase(phaseName) {
-            const phases = document.querySelectorAll('.phase');
-            phases.forEach(p => p.classList.remove('active'));
-
-            const phaseMap = {
-                'Gate': 'phase-gate',
-                'Login': 'phase-login',
-                'Partner': 'phase-partner',
-                'Hunt': 'phase-hunt',
-                'Done': 'phase-done'
-            };
-
-            const targetId = phaseMap[phaseName];
-            if (targetId) {
-                setTimeout(() => {
-                    const el = document.getElementById(targetId);
-                    el.classList.add('active');
-
-                    // Setup phase-specific UI
-                    if (phaseName === 'Partner') setupPartnerPhase();
-                    if (phaseName === 'Hunt') setupHuntPhase();
-                    if (phaseName === 'Done') setupDonePhase();
-                }, 100);
-            }
-        }
-
-        // ==========================================
-        // PHASE 0: LOGIN
-        // ==========================================
-        function handleLogin() {
-            const input = document.getElementById('ticketInput');
-            const ticketNum = parseInt(input.value);
-
-            if (!ticketNum || ticketNum < 1 || ticketNum > 40) {
-                input.classList.add('shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Masukkan nomor tiket antara 1-40! 🎫', 'error');
-                return;
-            }
-
-            state.ticketId = ticketNum;
-            const mapping = ticketMap[ticketNum];
-            state.pairId = mapping.pairId;
-            state.role = mapping.role;
-            state.currentPhase = 'Partner';
-            saveState();
-
-            showToast(`Tiket #${ticketNum} — Kamu adalah ${state.role === 'A' ? 'Pencari (Seeker)' : 'Pemegang (Holder)'}`, 'success');
-            showPhase('Partner');
-        }
-
-        // ==========================================
-        // PHASE 1: FIND PARTNER
-        // ==========================================
-        function setupPartnerPhase() {
-            const couple = couplesData[state.pairId - 1];
-            if (!couple) return;
-
-            const myName = state.role === 'A' ? couple.roleA : couple.roleB;
-
-            document.getElementById('myRoleName').textContent = myName;
-            document.getElementById('targetSection').style.display = 'none';
-
-            // Show Bible verse
-            if (couple.verse) {
-                document.getElementById('verseRef').textContent = couple.verseRef;
-                document.getElementById('verseText').textContent = '"' + couple.verse + '"';
-                document.getElementById('verseCard').style.display = 'block';
-            }
-
-            const badge = document.getElementById('myRoleBadge');
-
-            if (state.role === 'A') {
-                badge.textContent = '🔍 Pencari (Seeker)';
-                badge.className = 'inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-400/20';
-                document.getElementById('seekerSection').classList.remove('hidden');
-                document.getElementById('holderSection').classList.add('hidden');
-                document.getElementById('holderWaiting').classList.add('hidden');
-            } else {
-                badge.textContent = '📦 Pemegang (Holder)';
-                badge.className = 'inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-400/20';
-                document.getElementById('holderSection').classList.remove('hidden');
-                document.getElementById('seekerSection').classList.add('hidden');
-                document.getElementById('holderWaiting').classList.remove('hidden');
-                document.getElementById('secretCodeDisplay').textContent = couple.code;
-            }
-        }
-
-        function handleCodeSubmit() {
-            const input = document.getElementById('codeInput');
-            const userCode = input.value.trim().toUpperCase();
-            const couple = couplesData[state.pairId - 1];
-
-            if (!userCode) {
-                input.classList.add('shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Masukkan kode dari pasanganmu! 🔑', 'error');
-                return;
-            }
-
-            if (userCode !== couple.code) {
-                input.classList.add('shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Kode salah! Coba lagi 😅', 'error');
-                input.value = '';
-                return;
-            }
-
-            // Success!
-            state.currentPhase = 'Hunt';
-            state.huntProgress = 0;
-            saveState();
-
-            // Reveal partner name
-            document.getElementById('targetSection').style.display = 'block';
-            document.getElementById('targetName').textContent = (state.role === 'A') ? couple.roleB : couple.roleA;
-
-            launchConfetti();
-            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success', 5000);
-
-            setTimeout(() => showPhase('Hunt'), 5000);
-        }
-
-        function handleHolderConfirm() {
-            const couple = couplesData[state.pairId - 1];
-            state.currentPhase = 'Hunt';
-            state.huntProgress = 0;
-            saveState();
-
-            // Reveal partner name
-            document.getElementById('targetSection').style.display = 'block';
-            document.getElementById('targetName').textContent = (state.role === 'A') ? couple.roleB : couple.roleA;
-
-            launchConfetti();
-            showToast(`Partner ditemukan! ${couple.roleA} ❤️ ${couple.roleB}`, 'success', 5000);
-            setTimeout(() => showPhase('Hunt'), 5000);
-        }
-
-        // ==========================================
-        // PHASE 2: SCAVENGER HUNT
-        // ==========================================
-        function setupHuntPhase() {
-            updateHuntUI();
-        }
-
-        function updateHuntUI() {
-            const route = getHuntRoute(state.pairId);
-            const progress = state.huntProgress;
-            const total = route.length;
-
-            // Update progress
-            document.getElementById('huntProgressText').textContent = `${progress} / ${total}`;
-            document.getElementById('huntProgressBar').style.width = `${(progress / total) * 100}%`;
-
-            // Update dots
-            for (let i = 0; i < total; i++) {
-                const dot = document.getElementById(`dot-${i}`);
-                if (i < progress) {
-                    dot.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center text-xs font-bold text-white transition-all shadow-lg shadow-emerald-500/30';
-                    dot.textContent = '✓';
-                } else if (i === progress) {
-                    dot.className = 'w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-400 flex items-center justify-center text-xs font-bold text-white transition-all shadow-lg shadow-rose-500/30 animate-pulse';
-                    dot.textContent = i + 1;
-                } else {
-                    dot.className = 'w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white/40 transition-all';
-                    dot.textContent = i + 1;
-                }
-            }
-
-            // Show current clue
-            if (progress < total) {
-                const station = route[progress];
-                document.getElementById('stageNumber').textContent = station.stage;
-                document.getElementById('clueText').innerHTML = station.clue;
-                document.getElementById('locationInput').value = '';
-                document.getElementById('clueCard').style.display = 'block';
-
-                const icons = ['📍', '🎯', '🧩', '🔎', '🏁'];
-                document.getElementById('stageIcon').textContent = icons[progress] || '📍';
-            }
-        }
-
-        function handleHuntSubmit() {
-            const input = document.getElementById('locationInput');
-            const answer = input.value.trim().toUpperCase();
-            const route = getHuntRoute(state.pairId);
-            const station = route[state.huntProgress];
-
-            if (!answer) {
-                input.classList.add('shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Masukkan kode lokasi! 📍', 'error');
-                return;
-            }
-
-            if (answer !== station.locationCode) {
-                input.classList.add('shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                showToast('Kode salah! Mungkin bukan QR milikmu. Cari lagi 🔍', 'error');
-                input.value = '';
-                return;
-            }
-
-            // Correct!
-            state.huntProgress++;
-            saveState();
-
-            if (state.huntProgress >= route.length) {
-                state.currentPhase = 'Done';
-                state.completedAt = new Date().toISOString();
-                saveState();
-
-                launchConfetti();
-                launchConfetti();
-                showToast('🎉 Semua pos selesai! Mission Complete!', 'success');
-
-                setTimeout(() => showPhase('Done'), 1000);
-            } else {
-                showToast(`✅ Pos ${state.huntProgress} selesai! Lanjut ke pos berikutnya.`, 'success');
-                updateHuntUI();
-            }
-        }
-
-        // ==========================================
-        // PHASE 3: VICTORY & ADMIN
-        // ==========================================
-        function setupDonePhase() {
-            const couple = couplesData[state.pairId - 1];
-            if (couple) {
-                document.getElementById('victoryPairName').textContent = `${couple.roleA} & ${couple.roleB}`;
-            }
-
-            if (state.completedAt) {
-                const d = new Date(state.completedAt);
-                const timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                const dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                document.getElementById('victoryTimestamp').textContent = `${timeStr} — ${dateStr}`;
-            } else {
-                document.getElementById('victoryTimestamp').textContent = '-';
-            }
-
-            // Launch confetti on first view
-            setTimeout(() => launchConfetti(), 500);
-        }
-
-
-        // ==========================================
-        // EFFECTS
-        // ==========================================
-        function createFloatingHearts() {
-            const container = document.getElementById('heartsBg');
-            const hearts = ['💕', '💗', '💖', '💘', '❤️', '💝', '🤍', '🩷'];
-
-            for (let i = 0; i < 20; i++) {
-                const heart = document.createElement('span');
-                heart.className = 'heart-float';
-                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDuration = (8 + Math.random() * 12) + 's';
-                heart.style.animationDelay = Math.random() * 15 + 's';
-                heart.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
-                container.appendChild(heart);
-            }
-        }
-
-        function launchConfetti() {
-            const colors = ['#f43f5e', '#fb7185', '#fda4af', '#fecdd3', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#f472b6'];
-            const shapes = ['circle', 'square'];
-
-            for (let i = 0; i < 60; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'confetti-piece';
-                piece.style.left = Math.random() * 100 + 'vw';
-                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-                piece.style.animationDelay = Math.random() * 0.5 + 's';
-
-                if (shapes[Math.floor(Math.random() * shapes.length)] === 'circle') {
-                    piece.style.borderRadius = '50%';
-                } else {
-                    piece.style.borderRadius = '2px';
-                    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
-                }
-
-                document.body.appendChild(piece);
-
-                setTimeout(() => piece.remove(), 4000);
-            }
-        }
-
-        function showToast(message, type = 'info', duration = 3000) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-
-            const bgColors = {
-                'success': 'bg-emerald-500/90 border-emerald-400/30',
-                'error': 'bg-rose-500/90 border-rose-400/30',
-                'info': 'bg-blue-500/90 border-blue-400/30'
-            };
-
-            const icons = { 'success': '✅', 'error': '❌', 'info': 'ℹ️' };
-
-            toast.className = `toast ${bgColors[type]} border backdrop-blur-lg rounded-2xl px-5 py-3 text-white text-sm font-medium shadow-2xl flex items-center gap-2 min-w-[280px] max-w-[90vw]`;
-            toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('hide');
-                setTimeout(() => toast.remove(), 300);
-            }, duration);
-        }
-
-        // Button ripple effect
-        document.addEventListener('click', e => {
-            const btn = e.target.closest('.btn-valentine');
-            if (!btn) return;
-
-            const ripple = document.createElement('span');
-            ripple.className = 'ripple';
-            const rect = btn.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-            btn.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
+      // =================== ACTIVE NAV STATE ===================
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(function (item) {
+        const trigger = item.querySelector('a, button');
+        if (!trigger) return;
+        trigger.addEventListener('click', function () {
+          navItems.forEach(function (n) { n.classList.remove('is-active'); });
+          item.classList.add('is-active');
+          // Close mobile sidebar after click
+          if (window.innerWidth <= 768) setSidebarOpen(false);
         });
+      });
 
-        // ==========================================
-        // BOOT
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+      // =================== SEARCH (DEMO) ===================
+      const search = document.getElementById('searchInput');
+      if (search) {
+        search.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            search.blur();
+          }
+        });
+      }
 
-    <!-- Footer -->
-    <footer class="fixed bottom-0 left-0 right-0 z-20 text-center py-2 text-rose-300/30 text-[10px] tracking-wide">
-        ©
-        <script>document.write(new Date().getFullYear())</script>. Crafted with ♥ by <a
-            href="https://wa.me/6281351880960" target="_blank"
-            class="text-rose-300/50 hover:text-rose-300/80 transition-colors underline">Timothee Creative</a>
-    </footer>
-
+      // =================== BAR CHART A11Y ===================
+      const bars = document.querySelectorAll('.bar');
+      bars.forEach(function (bar) {
+        bar.setAttribute('tabindex', '0');
+        bar.setAttribute('role', 'img');
+        const label = bar.getAttribute('data-label') || '';
+        const h = parseFloat(bar.style.height) || 0;
+        bar.setAttribute('aria-label', label + ': ' + Math.round(h) + ' percent');
+      });
+    })();
+  </script>
 </body>
-
 </html>

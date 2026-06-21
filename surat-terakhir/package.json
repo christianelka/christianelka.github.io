@@ -1,0 +1,32 @@
+{
+  "name": "surat-terakhir",
+  "version": "1.0.0",
+  "description": "Surat Terakhir — Pembawa Surat. Game Bible-themed social deduction untuk Youth Church. Multi-device real-time party game. Mobile-first. AI-augmented.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "verify": "node scripts/verify.js"
+  },
+  "keywords": ["game", "youth", "church", "bible", "social-deduction", "real-time", "socket.io", "gemini-ai"],
+  "author": "Sisyphus Builder",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cookie-signature": "^1.2.1",
+    "dotenv": "^16.4.5",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "nanoid": "^5.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
