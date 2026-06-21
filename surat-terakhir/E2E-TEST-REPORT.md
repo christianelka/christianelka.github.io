@@ -4,7 +4,7 @@
 
 **Tanggal test:** 2026-06-21
 **Tester:** Autonomous agent (Sisyphus)
-**Environment:** Local (`http://localhost:3000`) + Node.js script (1 mod + 3 player sockets)
+**Environment:** Local (`http://localhost:3000` + `http://localhost:3000/surat-terakhir/`) via Node.js script (`scripts/e2e-test-full.mjs`)
 **Version:** 1.0.0 (Modern Purple Mobile, image_4e3d3c.jpg reference)
 
 ---
@@ -13,11 +13,25 @@
 
 | Kategori | Hasil |
 |---|---|
-| Total test cases | 20 |
-| Passed | 19 ✅ |
+| Total test cases | 60 |
+| Passed | **60 ✅** |
 | Failed | 0 |
-| Regressed (kemudian fixed) | 1 (cookie auth) |
-| Status | **READY FOR RAILWAY DEPLOY** |
+| Regressed (kemudian fixed) | 1 (`openMystery` key mismatch) |
+| Status | **PRODUCTION-READY** |
+
+### Full 5-Round E2E Coverage:
+- ✅ Mod auth + create game
+- ✅ 3 player auth + join
+- ✅ All 5 rounds: start → fragmen distribution → advance phases (baca→diskusi→voting) → votes → mystery open → end round
+- ✅ Final scores tracked correctly (P=10, A=25)
+- ✅ `game:ended` event emitted with winner=agen
+
+### Route Coverage (HTTP):
+- `GET /surat-terakhir/` → 200 (welcome)
+- `GET /surat-terakhir/moderator` → 200
+- `GET /surat-terakhir/player` → 200
+- `GET /surat-terakhir/display` → 200
+- `GET /api/health` → 200 JSON
 
 ---
 
