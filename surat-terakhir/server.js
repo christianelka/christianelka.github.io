@@ -377,11 +377,17 @@ app.use(helmet({
 }));
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser(COOKIE_SECRET));
-app.use(express.static(PUBLIC_DIR, { maxAge: '1h' }));
 
-app.get(['/moderator', '/moderator.html'], (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'moderator.html')));
-app.get(['/player', '/player.html'], (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'player.html')));
-app.get(['/display', '/display.html'], (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'display.html')));
+// Serve static + routes under /surat-terakhir/ prefix (when hosted at repo root on Railway)
+// and at root / (when Railway root directory = surat-terakhir/)
+const PREFIX = '/surat-terakhir';
+app.use(PREFIX, express.static(PUBLIC_DIR, { maxAge: '1h' }));
+app.use('/', express.static(PUBLIC_DIR, { maxAge: '1h' }));
+
+app.get([`${PREFIX}/`, `${PREFIX}`, `${PREFIX}/index.html`, '/', '/index.html'], (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
+app.get([`${PREFIX}/moderator`, `${PREFIX}/moderator.html`, '/moderator', '/moderator.html'], (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'moderator.html')));
+app.get([`${PREFIX}/player`, `${PREFIX}/player.html`, '/player', '/player.html'], (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'player.html')));
+app.get([`${PREFIX}/display`, `${PREFIX}/display.html`, '/display', '/display.html'], (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'display.html')));
 
 const authLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, max: 50,
