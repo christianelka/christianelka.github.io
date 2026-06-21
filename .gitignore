@@ -7,11 +7,13 @@
 playwright-report/
 test-results/
 
-# --- nuke/ (Nursery rapor system) — exclude only test/secret files ---
+# --- nuke/ (Nursery rapor system) — exclude only test/secret/sample files ---
 # Project files (.html, .css, .js, .docx, .xlsx) ARE committed
 nuke/API.txt
 nuke/.htaccess
 nuke/tests/
+nuke/data/sample_*.js
+nuke/data/xlsx.*.min.js
 
 # --- OS files ---
 Thumbs.db
