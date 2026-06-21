@@ -1,27 +1,43 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Christian Elka — Project Hub</title>
-  <meta name="description" content="Hub navigasi semua project Christian Elka. Youth church games, invitation designs, AI chatbot, PAUD rapor generator.">
+  <meta name="description"
+    content="Hub navigasi semua project Christian Elka. Youth church games, invitation designs, AI chatbot, PAUD rapor generator.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    html { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       color: #111827;
       background: #F9FAFB;
       background-image:
-        radial-gradient(ellipse 800px 600px at 20% 0%, rgba(138,43,226,0.08), transparent 60%),
-        radial-gradient(ellipse 600px 500px at 80% 100%, rgba(138,43,226,0.05), transparent 60%);
+        radial-gradient(ellipse 800px 600px at 20% 0%, rgba(138, 43, 226, 0.08), transparent 60%),
+        radial-gradient(ellipse 600px 500px at 80% 100%, rgba(138, 43, 226, 0.05), transparent 60%);
       background-attachment: fixed;
     }
-    a { text-decoration: none; color: inherit; }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
     /* HEADER (curved purple) */
     .hero {
@@ -32,23 +48,36 @@
       position: relative;
       overflow: hidden;
     }
+
     .hero::before {
       content: "";
       position: absolute;
-      top: -120px; right: -120px;
-      width: 400px; height: 400px;
+      top: -120px;
+      right: -120px;
+      width: 400px;
+      height: 400px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
     }
+
     .hero::after {
       content: "";
       position: absolute;
-      bottom: -80px; left: -80px;
-      width: 300px; height: 300px;
+      bottom: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.04);
+      background: rgba(255, 255, 255, 0.04);
     }
-    .hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
     .hero-eyebrow {
       display: inline-block;
       font-size: 0.7rem;
@@ -57,10 +86,11 @@
       text-transform: uppercase;
       padding: 0.4rem 0.9rem;
       border-radius: 9999px;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(8px);
       margin-bottom: 1rem;
     }
+
     .hero h1 {
       font-size: clamp(2.25rem, 5vw, 3.5rem);
       font-weight: 800;
@@ -68,6 +98,7 @@
       margin: 0 0 0.75rem;
       letter-spacing: -0.02em;
     }
+
     .hero p {
       font-size: 1.05rem;
       opacity: 0.9;
@@ -75,18 +106,23 @@
       margin: 0 auto;
       line-height: 1.55;
     }
+
     .hero-url {
       margin-top: 1.25rem;
       font-size: 0.85rem;
       opacity: 0.85;
     }
+
     .hero-url a {
       color: white;
       text-decoration: underline;
-      text-decoration-color: rgba(255,255,255,0.5);
+      text-decoration-color: rgba(255, 255, 255, 0.5);
       text-underline-offset: 3px;
     }
-    .hero-url a:hover { text-decoration-color: white; }
+
+    .hero-url a:hover {
+      text-decoration-color: white;
+    }
 
     /* PROJECT CARDS */
     .container {
@@ -96,29 +132,34 @@
       position: relative;
       z-index: 2;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.25rem;
     }
+
     .card {
       background: white;
       border-radius: 22px;
       padding: 1.75rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
       border: 1px solid #F3F4F6;
       display: flex;
       flex-direction: column;
       gap: 0.85rem;
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(138,43,226,0.10), 0 4px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 12px 32px rgba(138, 43, 226, 0.10), 0 4px 8px rgba(0, 0, 0, 0.06);
       border-color: #EDE0FF;
     }
+
     .card-icon {
-      width: 44px; height: 44px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       background: linear-gradient(135deg, #F5F0FF, #EDE0FF);
       color: #8A2BE2;
@@ -126,6 +167,7 @@
       place-items: center;
       flex-shrink: 0;
     }
+
     .card-eyebrow {
       font-size: 0.65rem;
       font-weight: 700;
@@ -134,23 +176,27 @@
       color: #8A2BE2;
       margin-bottom: -0.4rem;
     }
+
     .card h2 {
       font-size: 1.25rem;
       font-weight: 700;
       margin: 0;
       letter-spacing: -0.01em;
     }
+
     .card p {
       font-size: 0.9rem;
       color: #4B5563;
       line-height: 1.55;
       margin: 0;
     }
+
     .card-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
     }
+
     .tag {
       font-size: 0.7rem;
       font-weight: 600;
@@ -159,11 +205,32 @@
       background: #F3F4F6;
       color: #4B5563;
     }
-    .tag.purple { background: #F5F0FF; color: #8A2BE2; }
-    .tag.green { background: #DCFCE7; color: #166534; }
-    .tag.amber { background: #FEF3C7; color: #92400E; }
-    .tag.blue { background: #DBEAFE; color: #1E40AF; }
-    .tag.rose { background: #FCE7F3; color: #9F1239; }
+
+    .tag.purple {
+      background: #F5F0FF;
+      color: #8A2BE2;
+    }
+
+    .tag.green {
+      background: #DCFCE7;
+      color: #166534;
+    }
+
+    .tag.amber {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .tag.blue {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+
+    .tag.rose {
+      background: #FCE7F3;
+      color: #9F1239;
+    }
+
     .card-cta {
       margin-top: auto;
       display: inline-flex;
@@ -174,10 +241,24 @@
       color: #8A2BE2;
       padding-top: 0.5rem;
     }
-    .card-cta svg { transition: transform 0.2s; }
-    .card:hover .card-cta svg { transform: translateX(3px); }
-    .card.disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
-    .card.disabled .card-cta { color: #9CA3AF; }
+
+    .card-cta svg {
+      transition: transform 0.2s;
+    }
+
+    .card:hover .card-cta svg {
+      transform: translateX(3px);
+    }
+
+    .card.disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .card.disabled .card-cta {
+      color: #9CA3AF;
+    }
 
     /* FOOTER */
     .footer {
@@ -186,17 +267,34 @@
       color: #6B7280;
       font-size: 0.8rem;
     }
-    .footer a { color: #8A2BE2; font-weight: 600; }
+
+    .footer a {
+      color: #8A2BE2;
+      font-weight: 600;
+    }
 
     @media (max-width: 640px) {
-      .hero { padding: 3rem 1.25rem 5.5rem; }
-      .container { margin-top: -2.5rem; }
+      .hero {
+        padding: 3rem 1.25rem 5.5rem;
+      }
+
+      .container {
+        margin-top: -2.5rem;
+      }
     }
+
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition: none !important; animation: none !important; }
+
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+        animation: none !important;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <header class="hero">
@@ -205,7 +303,8 @@
       <h1>Project Hub</h1>
       <p>Game gereja, undangan digital, chatbot AI, generator rapor PAUD, dan CLI game. Pilih yang mau dibuka.</p>
       <p class="hero-url">
-        🚀 Live: <a href="https://youthgame-palinggayeng-punkora.up.railway.app" target="_blank" rel="noopener">youthgame-palinggayeng-punkora.up.railway.app</a>
+        🚀 Live: <a href="https://youthgame-palinggayeng-punkora.up.railway.app" target="_blank"
+          rel="noopener">youthgame-palinggayeng-punkora.up.railway.app</a>
       </p>
     </div>
   </header>
@@ -213,13 +312,19 @@
   <main class="container">
     <div class="grid">
 
-      <a class="card" href="./surat-terakhir/" target="_blank" rel="noopener">
+      <a class="card" href="./surat-terakhir/public/" target="_blank" rel="noopener">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7l9-4 9 4-9 4-9-4z" />
+            <path d="M3 7v10l9 4 9-4V7" />
+            <path d="M12 11v10" />
+          </svg>
         </div>
         <span class="card-eyebrow">Youth Game</span>
         <h2>Surat Terakhir</h2>
-        <p>Game social deduction bertema Alkitab. 3-12 pemain, 5 ronde, voting, AI-augmented. Mobile-first, real-time multiplayer.</p>
+        <p>Game social deduction bertema Alkitab. 3-12 pemain, 5 ronde, voting, AI-augmented. Mobile-first, real-time
+          multiplayer.</p>
         <div class="card-tags">
           <span class="tag purple">Node.js</span>
           <span class="tag">Socket.io</span>
@@ -228,17 +333,25 @@
         </div>
         <span class="card-cta">
           Buka Game
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 5l7 7-7 7" />
+          </svg>
         </span>
       </a>
 
       <a class="card" href="./invitation/" target="_blank" rel="noopener">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
         </div>
         <span class="card-eyebrow">Wedding Design</span>
         <h2>Invitation</h2>
-        <p>11 template undangan digital pernikahan. Editorial, Tropical, Marigold, Batak Adat, Jawa Adat, Chinese Christian, dan lainnya.</p>
+        <p>11 template undangan digital pernikahan. Editorial, Tropical, Marigold, Batak Adat, Jawa Adat, Chinese
+          Christian, dan lainnya.</p>
         <div class="card-tags">
           <span class="tag">HTML</span>
           <span class="tag purple">CSS</span>
@@ -247,17 +360,24 @@
         </div>
         <span class="card-cta">
           Lihat Undangan
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 5l7 7-7 7" />
+          </svg>
         </span>
       </a>
 
       <a class="card" href="./escalation-chatbot/" target="_blank" rel="noopener">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
         </div>
         <span class="card-eyebrow">AI Assistant</span>
         <h2>Escalation Chatbot</h2>
-        <p>Chatbot hashtag dengan smart escalation. Auto-correction, history, AI-powered search. Cocok untuk CS / support.</p>
+        <p>Chatbot hashtag dengan smart escalation. Auto-correction, history, AI-powered search. Cocok untuk CS /
+          support.</p>
         <div class="card-tags">
           <span class="tag purple">Vanilla JS</span>
           <span class="tag amber">AI</span>
@@ -265,17 +385,26 @@
         </div>
         <span class="card-cta">
           Buka Chatbot
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 5l7 7-7 7" />
+          </svg>
         </span>
       </a>
 
       <a class="card" href="./nuke/" target="_blank" rel="noopener">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <path d="M14 2v6h6" />
+            <path d="M9 13h6M9 17h6" />
+          </svg>
         </div>
         <span class="card-eyebrow">PAUD Tool</span>
         <h2>Generator Rapor</h2>
-        <p>Generator narasi rapor PAUD otomatis. Konversi nilai BSB/BSH/MB/BB jadi paragraf naratif hangat. Opsi regenerate via AI Gemini.</p>
+        <p>Generator narasi rapor PAUD otomatis. Konversi nilai BSB/BSH/MB/BB jadi paragraf naratif hangat. Opsi
+          regenerate via AI Gemini.</p>
         <div class="card-tags">
           <span class="tag">HTML</span>
           <span class="tag purple">CSS</span>
@@ -284,17 +413,29 @@
         </div>
         <span class="card-cta">
           Buka Generator
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 5l7 7-7 7" />
+          </svg>
         </span>
       </a>
 
       <a class="card" href="./blur/web/" target="_blank" rel="noopener">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+            <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+          </svg>
         </div>
         <span class="card-eyebrow">Web · Computer Vision</span>
         <h2>Blur Guard</h2>
-        <p>Real-time camera privacy guard. Show 2 peace signs &mdash; the feed blurs automatically. MediaPipe HandLandmarker (WASM) di browser, 5 style opsional (Y2K / Soft / Doomer / Webcore).</p>
+        <p>Real-time camera privacy guard. Show 2 peace signs &mdash; the feed blurs automatically. MediaPipe
+          HandLandmarker (WASM) di browser, 5 style opsional (Y2K / Soft / Doomer / Webcore).</p>
         <div class="card-tags">
           <span class="tag">JavaScript</span>
           <span class="tag purple">MediaPipe</span>
@@ -303,17 +444,25 @@
         </div>
         <span class="card-cta">
           Buka Web App
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 5l7 7-7 7" />
+          </svg>
         </span>
       </a>
 
       <a class="card disabled" href="#" aria-disabled="true">
         <div class="card-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5" />
+            <line x1="12" y1="19" x2="20" y2="19" />
+          </svg>
         </div>
         <span class="card-eyebrow">CLI Game</span>
         <h2>youth (PHP CLI)</h2>
-        <p>Game berbasis CLI/GUI PHP. Tebak tokoh Alkitab, tebak sesuatu, daftar kosa kata. Lihat source di folder youth/ di repo.</p>
+        <p>Game berbasis CLI/GUI PHP. Tebak tokoh Alkitab, tebak sesuatu, daftar kosa kata. Lihat source di folder
+          youth/ di repo.</p>
         <div class="card-tags">
           <span class="tag">PHP</span>
           <span class="tag purple">CLI</span>
@@ -328,8 +477,10 @@
   </main>
 
   <footer class="footer">
-    <p>Dibuat dengan <span style="color:#EF4444">❤</span> untuk Pemuda Gereja &amp; PAUD Indonesia · <a href="https://github.com/christianelka" target="_blank" rel="noopener">@christianelka</a></p>
+    <p>Dibuat dengan <span style="color:#EF4444">❤</span> untuk Pemuda Gereja &amp; PAUD Indonesia · <a
+        href="https://github.com/christianelka" target="_blank" rel="noopener">@christianelka</a></p>
   </footer>
 
 </body>
+
 </html>
