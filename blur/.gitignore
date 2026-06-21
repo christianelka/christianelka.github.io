@@ -1,0 +1,32 @@
+# --- Blur Guard (Python desktop + web port) ---
+# Source IS committed: blur_guard/, tests/, web/, requirements.txt, README.md
+# Generated/venv artifacts are excluded.
+
+# --- Python venv ---
+.venv/
+
+# --- Python bytecode / package metadata ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# --- MediaPipe model artifact (large binary, downloaded by setup) ---
+.venv/models/
+*.task
+
+# --- OS / editor noise (root .gitignore covers most; this is local reinforcement) ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
