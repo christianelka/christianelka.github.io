@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAUD Narasi Rapor Otomatis</title>
+  <meta name="description" content="Generator narasi rapor PAUD otomatis — konversi nilai BSB/BSH/MB/BB menjadi paragraf naratif yang hangat dan profesional.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1 class="app-title">PAUD Narasi Rapor Otomatis</h1>
+      <span class="app-tagline">BSB · BSH · MB · BB → narasi hangat, profesional, zero hallucination</span>
+    </header>
+
+    <div class="error-region" data-region="error" role="alert" hidden>
+      <strong>Tidak dapat memproses</strong>
+      <p data-error-message></p>
+    </div>
+
+    <main class="workspace">
+      <section class="panel" aria-labelledby="input-title">
+        <header class="panel-header">
+          <h2 class="panel-title" id="input-title">Input Data Siswa</h2>
+        </header>
+        <div class="panel-body">
+          <div class="tab-row" role="tablist" aria-label="Pilih sumber data">
+            <button type="button" class="tab tab--active" role="tab" aria-selected="true" data-tab="json">Tempel JSON</button>
+            <button type="button" class="tab" role="tab" aria-selected="false" data-tab="xlsx">Unggah xlsx Rekap</button>
+          </div>
+
+          <div class="tab-panel" data-tab-panel="json">
+            <label class="field" style="margin-top: 16px;">
+              <span class="field-label">Tempel JSON (array of students)</span>
+              <textarea
+                data-input="json"
+                placeholder='[ { "name": "...", "achievements": { "nilaiAgama": [...], "jatiDiri": [...], "literasiSteam": [...] } } ]'
+                spellcheck="false"
+                autocomplete="off"></textarea>
+            </label>
+          </div>
+
+          <div class="tab-panel" data-tab-panel="xlsx" hidden>
+            <label class="field" style="margin-top: 16px;">
+              <span class="field-label">File REKAP RAPOR (.xlsx)</span>
+              <input type="file" data-input="xlsx-file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            </label>
+            <p class="hint">Sheet <strong>REKAP</strong> akan otomatis di-parse. Baris kategori BSB/BSH/MB/BB di sebelah nama siswa menjadi sumber nilai per indikator.</p>
+            <div class="xlsx-preview" data-xlsx-preview hidden>
+              <h4 data-xlsx-summary></h4>
+              <p data-xlsx-stat style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); margin: 0 0 10px;"></p>
+              <div class="btn-row" style="margin-top: 0;">
+                <button type="button" class="btn btn--secondary" data-action="xlsx-load">Muat ke Editor JSON</button>
+                <button type="button" class="btn btn--ghost" data-action="xlsx-clear">Batalkan</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn--secondary" data-action="load-sample">Muat Sample (5 Siswa)</button>
+            <button type="button" class="btn btn--primary" data-action="generate">Generate Laporan</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel output-panel" aria-labelledby="output-title">
+        <header class="panel-header">
+          <h2 class="panel-title" id="output-title">Hasil Narasi</h2>
+        </header>
+        <div class="output-scroll" data-region="output-list">
+          <p class="output-empty">Belum ada narasi. Tempel data atau unggah xlsx, lalu klik "Generate Laporan".</p>
+        </div>
+        <div class="panel-body" style="border-top: 1px solid var(--border); background: var(--surface-2); padding-top: 14px;">
+          <div class="btn-row" style="margin-top: 0;">
+            <button type="button" class="btn btn--primary" data-action="copy-all" disabled>Copy Semua Narasi</button>
+            <button type="button" class="btn btn--secondary" data-action="copy-current" disabled>Copy Siswa Ini</button>
+            <a class="btn btn--ghost" href="tests/test-runner.html">Test Runner →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      PAUD Narasi Rapor Otomatis · vanilla JS, no framework · <a href="tests/test-runner.html">tests</a>
+    </footer>
+  </div>
+
+  <div class="toast" data-region="toast" role="status" aria-live="polite"></div>
+
+  <script src="data/styleguide.js"></script>
+  <script src="data/sample_students.js"></script>
+  <script src="data/xlsx.full.min.js"></script>
+  <script src="data/xlsx-parser.js"></script>
+  <script src="data/api-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

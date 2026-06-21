@@ -1,10 +1,17 @@
 # --- Sisyphus / Agent artifacts ---
 .sisyphus/
+.config/
 
 # --- Playwright test artifacts ---
 .playwright-mcp/
 playwright-report/
 test-results/
+
+# --- nuke/ (Nursery rapor system) — exclude only test/secret files ---
+# Project files (.html, .css, .js, .docx, .xlsx) ARE committed
+nuke/API.txt
+nuke/.htaccess
+nuke/tests/
 
 # --- OS files ---
 Thumbs.db
