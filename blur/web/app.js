@@ -37,24 +37,33 @@ const FINGER_PIPS = [THUMB_IP, INDEX_PIP, MIDDLE_PIP, RING_PIP, PINKY_PIP];
 const FINGER_MCPS = [THUMB_MCP, INDEX_MCP, MIDDLE_MCP, RING_MCP, PINKY_MCP];
 
 const dist3 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y, (a.z || 0) - (b.z || 0));
+const dist2 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
 function isFingerExtended(landmarks, fingerIdx) {
   if (!landmarks || landmarks.length < 21) return false;
   const wrist = landmarks[WRIST];
   const middleMcp = landmarks[MIDDLE_MCP];
   if (!wrist || !middleMcp) return false;
-  const handSize = dist3(wrist, middleMcp);
+  // 2D distance (x,y only) — MediaPipe z is normalized image depth, not
+  // physical depth. Including z causes false positives on curled fingers.
+  const handSize = dist2(wrist, middleMcp);
   if (handSize < 1e-6) return false;
   if (fingerIdx === 0) {
+    // Thumb: in a peace sign the thumb is folded across the palm — its
+    // tip ends up below the index PIP in image-y (i.e. higher y value).
+    // We require a generous margin so a slightly-out thumb doesn't fool us.
     const thumbTip = landmarks[THUMB_TIP];
-    const indexMcp = landmarks[INDEX_MCP];
-    if (!thumbTip || !indexMcp) return false;
-    return dist3(thumbTip, indexMcp) > CONFIG.FINGER_EXTENDED_RATIO * handSize;
+    const indexPip = landmarks[INDEX_PIP];
+    if (!thumbTip || !indexPip) return false;
+    return thumbTip.y < indexPip.y - 0.03;
   }
   const tip = landmarks[FINGER_TIPS[fingerIdx]];
   const pip = landmarks[FINGER_PIPS[fingerIdx]];
   if (!tip || !pip) return false;
-  return dist3(wrist, tip) > CONFIG.FINGER_EXTENDED_RATIO * dist3(wrist, pip);
+  // Strict extension test: tip must be at least 1.1× the wrist-to-pip
+  // distance to count as "extended". This rejects partially-curled
+  // fingers whose tips are merely near the PIP distance.
+  return dist2(wrist, tip) > 1.1 * dist2(wrist, pip);
 }
 
 function classifyPeace(landmarks) {
@@ -525,6 +534,30 @@ function drawStyleOverlay(style, state, blurAmount) {
 let lastVideoTime = -1;
 const DEBUG = new URLSearchParams(location.search).get("debug") === "1";
 let frameCount = 0;
+let lastHands = [];
+let lastPeace = 0;
+function drawDebugOverlay() {
+  // Renders a small box in the bottom-left of the canvas with diagnostic
+  // info. Helps the user see what MediaPipe is actually reporting.
+  const w = canvas.width, h = canvas.height;
+  ctx.save();
+  ctx.scale(-1, 1); // un-mirror so text reads correctly
+  const boxW = 200, boxH = 110;
+  const x = 12, y = h - boxH - 12;
+  ctx.fillStyle = "rgba(0,0,0,0.65)";
+  ctx.fillRect(-(x + boxW), y, boxW, boxH);
+  ctx.fillStyle = "#fff";
+  ctx.font = "600 16px ui-monospace, monospace";
+  ctx.textBaseline = "top";
+  ctx.fillText(`hands: ${lastHands.length}`, -(x + boxW - 10), y + 10);
+  ctx.fillText(`peace: ${lastPeace}`, -(x + boxW - 10), y + 32);
+  ctx.fillText(`state: ${trigger.state}`, -(x + boxW - 10), y + 54);
+  ctx.fillText(`blur:  ${trigger.blurAmount.toFixed(2)}`, -(x + boxW - 10), y + 76);
+  ctx.font = "500 12px ui-monospace, monospace";
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillText("raise 2 hands, peace ✌️", -(x + boxW - 10), y + 96);
+  ctx.restore();
+}
 function frameLoop() {
   if (!running) return;
   if (video.readyState >= 2 && video.currentTime !== lastVideoTime) {
@@ -537,6 +570,8 @@ function frameLoop() {
     } catch (e) { detectError = e.message; }
     const peaceCount = countPeaceHands(hands);
     trigger.update(peaceCount);
+    lastHands = hands;
+    lastPeace = peaceCount;
 
     if (DEBUG && (frameCount++ % 30 === 0)) {
       console.log("[blur-guard]", { state: trigger.state, blur: trigger.blurAmount.toFixed(2), hands: hands.length, peace: peaceCount, err: detectError });
@@ -551,6 +586,7 @@ function frameLoop() {
 
     if (hands.length > 0) drawHandLandmarks(hands);
     drawStyleOverlay(currentStyle, trigger.state, trigger.blurAmount);
+    if (DEBUG) drawDebugOverlay();
   }
   if ("requestVideoFrameCallback" in video) {
     video.requestVideoFrameCallback(frameLoop);
