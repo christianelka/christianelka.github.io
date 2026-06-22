@@ -1,14 +1,10 @@
 // Blur Guard — web port
 // Peace-sign privacy blur. Front/back-agnostic gesture detection via
 // MediaPipe HandLandmarker (WASM, runs entirely in the browser).
-
-import {
-  HandLandmarker,
-  FilesetResolver,
-} from "https://cdn.jsdelivr.net/npm/@mediapipe/[email protected]/tasks/vision.js";
+// Pure logic — no DOM, no MediaPipe imports. Unit-testable in isolation.
 
 // --- Config (mirrors blur_guard/config.py) ---
-const CONFIG = {
+export const CONFIG = {
   NUM_HANDS: 2,
   MIN_HAND_DETECTION_CONFIDENCE: 0.5,
   MIN_HAND_PRESENCE_CONFIDENCE: 0.5,
@@ -66,7 +62,7 @@ function isFingerExtended(landmarks, fingerIdx) {
   return dist3(wrist, tip) > CONFIG.FINGER_EXTENDED_RATIO * dist3(wrist, pip);
 }
 
-function classifyPeace(landmarks) {
+export function classifyPeace(landmarks) {
   if (!landmarks || landmarks.length < 21 || !landmarks[WRIST]) return false;
   for (const f of CONFIG.PEACE_REQUIRED_EXTENDED) {
     if (!isFingerExtended(landmarks, f)) return false;
@@ -77,19 +73,19 @@ function classifyPeace(landmarks) {
   return true;
 }
 
-function countPeaceHands(hands) {
+export function countPeaceHands(hands) {
   return hands.filter(classifyPeace).length;
 }
 
 // --- PrivacyTrigger state machine (mirrors trigger.py) ---
-const State = Object.freeze({
+export const State = Object.freeze({
   OFF: "off",
   BLURRING: "blurring",
   ON: "on",
   RECOVERING: "recovering",
 });
 
-class PrivacyTrigger {
+export class PrivacyTrigger {
   constructor() {
     this.state = State.OFF;
     this.blurAmount = 0;

@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
 <meta name="theme-color" content="#0a0a0a" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>Blur Guard</title>
 
-<!-- MediaPipe HandLandmarker loaded via app.js as ES module (jsDelivr +esm) -->
+<!-- MediaPipe HandLandmarker loaded locally from ./vendor/ via app.js (no CDN) -->
 
 <style>
   :root {
@@ -143,30 +144,6 @@
     pointer-events: none;
   }
 
-  /* Status pill */
-  .status {
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.55);
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    opacity: 0;
-    transition: opacity 200ms;
-    z-index: 5;
-  }
-  .status.show { opacity: 1; }
-  .status.on { background: rgba(220, 38, 60, 0.85); }
-  .status.transition { background: rgba(40, 40, 40, 0.8); }
-
   /* Permission overlay */
   .permission {
     position: absolute;
@@ -253,7 +230,6 @@
     <video id="video" playsinline muted autoplay></video>
     <canvas id="canvas"></canvas>
     <div class="blur-layer" id="blurLayer"></div>
-    <div class="status" id="status"></div>
     <div class="permission" id="permission">
       <h2>Camera access</h2>
       <p>Blur Guard needs your camera to detect peace signs. Frames stay on-device.</p>

@@ -1,8 +1,8 @@
 // Blur Guard — main loop.
 // Owns: camera lifecycle, MediaPipe HandLandmarker, per-frame pipeline,
-// state machine, DOM indicator, style selection, blur opacity.
+// state machine, style selection, blur opacity.
 
-import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/+esm";
+import { HandLandmarker, FilesetResolver } from "./vendor/vision_bundle.mjs";
 import { classifyPeace, countPeaceHands, PrivacyTrigger, State, CONFIG } from "./detector.js";
 import { STYLES } from "./styles.js";
 
@@ -12,7 +12,6 @@ const video = $("video");
 const canvas = $("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 const blurLayer = $("blurLayer");
-const statusEl = $("status");
 const permissionEl = $("permission");
 const startBtn = $("startBtn");
 const styleSelect = $("styleSelect");
@@ -22,26 +21,6 @@ let trigger = new PrivacyTrigger();
 let currentStyle = "none";
 let stream = null;
 let running = false;
-
-// --- Status pill ---
-function setStatus(state) {
-  statusEl.classList.remove("on", "transition");
-  if (state === State.OFF) {
-    statusEl.classList.remove("show");
-    return;
-  }
-  statusEl.classList.add("show");
-  if (state === State.ON) {
-    statusEl.classList.add("on");
-    statusEl.textContent = "PRIVACY ON";
-  } else if (state === State.BLURRING) {
-    statusEl.classList.add("transition");
-    statusEl.textContent = "ACTIVATING...";
-  } else {
-    statusEl.classList.add("transition");
-    statusEl.textContent = "RELEASING...";
-  }
-}
 
 // --- Camera setup ---
 async function startCamera() {
@@ -186,9 +165,6 @@ function frameLoop() {
         // requested user-facing camera so this should not happen, but ignore.
       }
     }
-
-    // 5) Update status pill
-    setStatus(trigger.state);
   }
   // requestVideoFrameCallback is the iOS-Safari-safe frame callback.
   if ("requestVideoFrameCallback" in video) {
