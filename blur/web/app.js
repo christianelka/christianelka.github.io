@@ -15,7 +15,10 @@ const CONFIG = {
   MIN_TRACKING_CONFIDENCE: 0.5,
   PEACE_REQUIRED_EXTENDED: [1, 2],
   PEACE_REQUIRED_FOLDED: [0, 3, 4],
-  FINGER_EXTENDED_RATIO: 1.0,
+  // Threshold loosened from 1.0 to 0.9 so partial-bend fingers still count.
+  // Real peace signs (especially at phone-camera distance) rarely have
+  // tip-to-wrist distance 100% of pip-to-wrist; they cluster around 0.9-1.1.
+  FINGER_EXTENDED_RATIO: 0.9,
   HOLD_FRAMES: 4,
   RELEASE_FRAMES: 10,
   FADE_IN_FRAMES: 6,
@@ -520,16 +523,24 @@ function drawStyleOverlay(style, state, blurAmount) {
 }
 
 let lastVideoTime = -1;
+const DEBUG = new URLSearchParams(location.search).get("debug") === "1";
+let frameCount = 0;
 function frameLoop() {
   if (!running) return;
   if (video.readyState >= 2 && video.currentTime !== lastVideoTime) {
     lastVideoTime = video.currentTime;
     let hands = [];
+    let detectError = null;
     try {
       const result = landmarker.detectForVideo(video, performance.now());
       hands = result.landmarks || [];
-    } catch (e) { /* non-fatal */ }
-    trigger.update(countPeaceHands(hands));
+    } catch (e) { detectError = e.message; }
+    const peaceCount = countPeaceHands(hands);
+    trigger.update(peaceCount);
+
+    if (DEBUG && (frameCount++ % 30 === 0)) {
+      console.log("[blur-guard]", { state: trigger.state, blur: trigger.blurAmount.toFixed(2), hands: hands.length, peace: peaceCount, err: detectError });
+    }
 
     const blurPx = CONFIG.BLUR_MAX_PX * trigger.blurAmount;
     ctx.save();
