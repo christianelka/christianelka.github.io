@@ -109,11 +109,18 @@
     position: relative;
     width: 100%;
     max-width: 720px;
+    max-height: calc(100dvh - 180px);
     aspect-ratio: 16 / 9;
     background: #111;
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+    transition: aspect-ratio 240ms cubic-bezier(0.16, 1, 0.3, 1),
+                max-width 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .stage.portrait {
+    aspect-ratio: 9 / 16;
+    max-width: 360px;
   }
   .stage video {
     position: absolute;
@@ -201,6 +208,10 @@
     </div>
   </div>
   <div class="style-picker">
+    <select id="orientSelect" aria-label="Orientation">
+      <option value="landscape">Landscape</option>
+      <option value="portrait">Portrait</option>
+    </select>
     <select id="styleSelect" aria-label="Visual style">
       <option value="none">None</option>
       <option value="y2k">Y2K</option>

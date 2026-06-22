@@ -430,6 +430,8 @@ const ctx = canvas.getContext("2d", { willReadFrequently: true });
 const permissionEl = $("permission");
 const startBtn = $("startBtn");
 const styleSelect = $("styleSelect");
+const orientSelect = $("orientSelect");
+const stageEl = $("stage");
 
 let landmarker = null;
 const trigger = new PrivacyTrigger();
@@ -572,5 +574,8 @@ async function start() {
 }
 
 styleSelect.addEventListener("change", (e) => { currentStyle = e.target.value; });
+orientSelect.addEventListener("change", (e) => {
+  stageEl.classList.toggle("portrait", e.target.value === "portrait");
+});
 startBtn.addEventListener("click", start);
 window.__blurGuardApp = { trigger: () => trigger, state: () => trigger.state };
