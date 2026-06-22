@@ -487,6 +487,13 @@
     setTimeout(() => t.classList.remove('toast--show'), 2400);
   }
 
+  function refreshNoKeyBanner() {
+    const banner = document.querySelector('[data-region="no-key-banner"]');
+    if (!banner) return;
+    const hasKey = window.PAUD_AI && window.PAUD_AI.API_KEYS.length > 0;
+    banner.hidden = hasKey;
+  }
+
   /* ================================================================
    * PROGRESS WIDGET — Google Drive-style floating cards
    * Lifecycle: pending → running → success | fail → stay 4s → dismiss
@@ -636,15 +643,18 @@
     const st = window.PAUD_AI.getStatus().keyState;
     const now = Date.now();
     keys.forEach((key, i) => {
-      const s = st[i] || { lastUsed: 0, disabledUntil: 0, consecutiveFail: 0 };
+      const s = st[i] || { lastUsed: 0, disabledUntil: 0, consecutiveFail: 0, invalid: false, invalidReason: '' };
       let cls = 'key-status--ready', label = 'READY';
-      if (s.disabledUntil > now) { cls = 'key-status--disabled'; label = 'DISABLED'; }
+      if (s.invalid) { cls = 'key-status--invalid'; label = 'INVALID'; }
+      else if (s.disabledUntil > now) { cls = 'key-status--disabled'; label = 'DISABLED'; }
       else if (now - s.lastUsed < settings.perKeyCooldownSec * 1000) { cls = 'key-status--cooldown'; label = 'COOLDOWN'; }
       const item = document.createElement('div');
       item.className = 'key-item';
+      const reason = s.invalidReason ? ' title="' + escapeHtml(s.invalidReason) + '"' : '';
       item.innerHTML =
-        '<span class="key-tail">Key #' + (i + 1) + ': …' + key.slice(-6) + '</span>' +
-        '<span class="key-status ' + cls + '">' + label + '</span>';
+        '<span class="key-tail" data-action="clear-invalid" data-key-index="' + i + '" style="cursor:pointer;" title="Klik untuk reset status INVALID">' +
+        'Key #' + (i + 1) + ': …' + key.slice(-6) + '</span>' +
+        '<span class="key-status ' + cls + '"' + reason + '>' + label + '</span>';
       list.appendChild(item);
     });
   }
@@ -664,6 +674,7 @@
         }
       }
     } catch (e) {}
+    refreshNoKeyBanner();
   }
   function saveKeysToStorage() {
     try { localStorage.setItem('paud-api-keys', JSON.stringify(window.PAUD_AI.API_KEYS.slice())); } catch (e) {}
@@ -680,11 +691,12 @@
     if (!/^AIza[0-9A-Za-z_\-]{20,}$/.test(k)) { setKeyActionStatus('Format tidak valid. Key Gemini biasanya mulai dengan "AIza".'); return; }
     window.PAUD_AI.API_KEYS.push(k);
     const st = window.PAUD_AI.getStatus().keyState;
-    st.push({ lastUsed: 0, consecutiveFail: 0, disabledUntil: 0 });
+    st.push({ lastUsed: 0, consecutiveFail: 0, disabledUntil: 0, invalid: false, invalidReason: '' });
     saveKeysToStorage();
     input.value = '';
     setKeyActionStatus('Key #' + window.PAUD_AI.API_KEYS.length + ' ditambahkan. Total: ' + window.PAUD_AI.API_KEYS.length + ' key.');
     renderKeyList();
+    refreshNoKeyBanner();
   }
   function replaceAllKeys() {
     const input = document.querySelector('[data-input="new-key"]');
@@ -697,12 +709,13 @@
     window.PAUD_AI.API_KEYS.push(k);
     const st = window.PAUD_AI.getStatus().keyState;
     st.length = 0;
-    st.push({ lastUsed: 0, consecutiveFail: 0, disabledUntil: 0 });
+    st.push({ lastUsed: 0, consecutiveFail: 0, disabledUntil: 0, invalid: false, invalidReason: '' });
     window.PAUD_AI.CONFIG.maxConcurrentKeys = 1;
     saveKeysToStorage();
     input.value = '';
     setKeyActionStatus('Semua key diganti. Total: 1 key.');
     renderKeyList();
+    refreshNoKeyBanner();
   }
   function readSettingsForm() {
     settings.model = document.querySelector('[data-setting="model"]').value || 'gemini-2.5-flash';
@@ -727,6 +740,68 @@
     showToast('Cooldowns direset.');
   }
 
+  async function validateKeys() {
+    if (!window.PAUD_AI || !window.PAUD_AI.validateAllKeys) return;
+    const statusEl = document.querySelector('[data-region="validate-status"]');
+    if (statusEl) statusEl.textContent = 'Memvalidasi ' + window.PAUD_AI.API_KEYS.length + ' key…';
+    try {
+      const results = await window.PAUD_AI.validateAllKeys();
+      const ok = results.filter((r) => r.ok).length;
+      const bad = results.filter((r) => !r.ok);
+      if (statusEl) {
+        statusEl.textContent = 'Hasil: ' + ok + '/' + results.length + ' key valid. ' +
+          (bad.length > 0 ? 'Gagal: ' + bad.map((b) => '#' + (b.index + 1) + ' ' + b.error).join('; ') : '');
+      }
+      renderKeyList();
+    } catch (e) {
+      if (statusEl) statusEl.textContent = 'Error: ' + e.message;
+    }
+  }
+
+  async function testConnection() {
+    if (!window.PAUD_AI || !window.PAUD_AI.testConnection) return;
+    const btn = document.querySelector('[data-action="test-connection"]');
+    const out = document.querySelector('[data-region="test-result"]');
+    if (!out) return;
+    if (btn) btn.disabled = true;
+    const oldLabel = btn ? btn.textContent : '';
+    if (btn) btn.textContent = 'Testing…';
+    out.hidden = false;
+    out.className = 'test-result test-result--running';
+    out.innerHTML = '<div class="test-result__head">Menghubungi Gemini API…</div>';
+
+    try {
+      const results = await window.PAUD_AI.testConnection();
+      const okCount = results.filter((r) => r.ok).length;
+      const lines = results.map((r) => {
+        const tag = 'Key #' + (r.keyIndex + 1);
+        if (r.ok) {
+          const sample = r.sampleText ? ' <span class="test-sample">"' + escapeHtml(r.sampleText) + '"</span>' : '';
+          return '<div class="test-row test-row--ok">' +
+            '<span class="test-tag">' + tag + '</span>' +
+            '<span class="test-status">✓ HTTP ' + r.status + ' · ' + r.latencyMs + 'ms</span>' +
+            sample +
+            '</div>';
+        }
+        return '<div class="test-row test-row--fail">' +
+          '<span class="test-tag">' + tag + '</span>' +
+          '<span class="test-status">✕ ' + escapeHtml(r.error) + ' · ' + r.latencyMs + 'ms</span>' +
+          '</div>';
+      }).join('');
+      const summary = okCount + '/' + results.length + ' key berhasil · model: ' + results[0].model;
+      out.className = 'test-result ' + (okCount > 0 ? 'test-result--ok' : 'test-result--fail');
+      out.innerHTML =
+        '<div class="test-result__head">' + summary + '</div>' +
+        lines;
+      renderKeyList();
+    } catch (e) {
+      out.className = 'test-result test-result--fail';
+      out.innerHTML = '<div class="test-result__head">Error: ' + escapeHtml(e.message) + '</div>';
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = oldLabel; }
+    }
+  }
+
   /* ================================================================
    * EVENT WIRING
    * ============================================================ */
@@ -737,7 +812,22 @@
     if (!textarea) return;
 
     initTheme();
-    if (window.PAUD_AI) loadKeysFromStorage();
+    if (window.PAUD_AI) {
+      loadKeysFromStorage();
+      refreshNoKeyBanner();
+      if (window.PAUD_AI.API_KEYS.length > 0) {
+        window.PAUD_AI.validateAllKeys()
+          .then((results) => {
+            const bad = results.filter((r) => !r.ok);
+            if (bad.length > 0 && bad.length === results.length) {
+              showError('Semua ' + results.length + ' API key tidak valid (HTTP ' + (bad[0].status || '?') + '). Regenerate AI tidak akan berfungsi. Buka Settings → Validasi Key untuk detail.');
+            } else if (bad.length > 0) {
+              showError(bad.length + ' dari ' + results.length + ' API key tidak valid. Regenerate AI hanya pakai key yang valid.');
+            }
+          })
+          .catch(() => {});
+      }
+    }
 
     const xlsxFileInput = $('[data-input="xlsx-file"]');
     const btnSample = $('[data-action="load-sample"]');
@@ -842,6 +932,9 @@
     document.querySelectorAll('[data-action="open-settings"]').forEach((b) => {
       b.addEventListener('click', openSettings);
     });
+    document.querySelectorAll('[data-action="open-settings-from-banner"]').forEach((b) => {
+      b.addEventListener('click', openSettings);
+    });
     document.querySelectorAll('[data-action="close-settings"]').forEach((b) => {
       b.addEventListener('click', closeSettings);
     });
@@ -853,6 +946,21 @@
     });
     const resetBtn = document.querySelector('[data-action="reset-cooldowns"]');
     if (resetBtn) resetBtn.addEventListener('click', resetCooldowns);
+    const validateBtn = document.querySelector('[data-action="validate-keys"]');
+    if (validateBtn) validateBtn.addEventListener('click', validateKeys);
+    const testConnBtn = document.querySelector('[data-action="test-connection"]');
+    if (testConnBtn) testConnBtn.addEventListener('click', testConnection);
+    const keyList = document.querySelector('[data-region="key-list"]');
+    if (keyList) keyList.addEventListener('click', (e) => {
+      const tail = e.target.closest('[data-action="clear-invalid"]');
+      if (!tail) return;
+      const idx = parseInt(tail.dataset.keyIndex, 10);
+      if (!isNaN(idx) && window.PAUD_AI && window.PAUD_AI.clearInvalid) {
+        window.PAUD_AI.clearInvalid(idx);
+        renderKeyList();
+        showToast('Key #' + (idx + 1) + ' direset ke READY.');
+      }
+    });
     const addKeyBtn = document.querySelector('[data-action="add-key"]');
     if (addKeyBtn) addKeyBtn.addEventListener('click', addKey);
     const replaceKeysBtn = document.querySelector('[data-action="replace-all-keys"]');

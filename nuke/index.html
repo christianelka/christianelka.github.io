@@ -50,6 +50,17 @@
       <p data-error-message></p>
     </div>
 
+    <div class="no-key-banner" data-region="no-key-banner" role="status" hidden>
+      <div class="no-key-banner__icon" aria-hidden="true">!</div>
+      <div class="no-key-banner__body">
+        <strong>Belum ada API key</strong>
+        <p>Regenerate AI tidak akan berfungsi sampai kamu menambahkan minimal satu key. Narasi LOKAL tetap bisa di-generate.</p>
+      </div>
+      <button type="button" class="btn btn--secondary btn--sm" data-action="open-settings-from-banner">
+        Tambah API Key
+      </button>
+    </div>
+
     <main class="workspace">
       <section class="panel input-panel" aria-labelledby="input-title">
         <header class="panel-header">
@@ -203,8 +214,13 @@
           <div class="field-row" style="margin-top: 12px;">
             <button type="button" class="btn btn--secondary btn--sm" data-action="reset-cooldowns">Reset
               Cooldowns</button>
+            <button type="button" class="btn btn--ghost btn--sm" data-action="validate-keys">Validasi
+              Key</button>
+            <button type="button" class="btn btn--ghost btn--sm" data-action="test-connection">Tes Koneksi</button>
             <button type="button" class="btn btn--ghost btn--sm" data-action="save-settings">Save</button>
           </div>
+          <p class="muted" data-region="validate-status" style="margin-top: 8px;"></p>
+          <div data-region="test-result" class="test-result" hidden></div>
         </section>
 
         <section class="settings-section">

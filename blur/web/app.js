@@ -11,7 +11,6 @@ const $ = (id) => document.getElementById(id);
 const video = $("video");
 const canvas = $("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
-const blurLayer = $("blurLayer");
 const permissionEl = $("permission");
 const startBtn = $("startBtn");
 const styleSelect = $("styleSelect");
@@ -133,8 +132,13 @@ function frameLoop() {
     const peaceCount = countPeaceHands(hands);
     trigger.update(peaceCount);
 
-    // 1) Draw camera frame
+    // 1) Draw camera frame with blur amount applied in-place.
+    // Blur radius scales 0..MAX_PX with trigger.blurAmount, so opacity and
+    // softness fade together — no separate overlay layer means no zoom/edge
+    // artifacts from a stale background-image.
+    const blurPx = CONFIG.BLUR_MAX_PX * trigger.blurAmount;
     ctx.save();
+    ctx.filter = blurPx > 0.5 ? `blur(${blurPx.toFixed(1)}px)` : "none";
     ctx.scale(-1, 1); // mirror to match video CSS transform
     ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
     ctx.restore();
@@ -144,27 +148,6 @@ function frameLoop() {
 
     // 3) Draw style chrome / engaged overlay
     drawStyleOverlay(currentStyle, trigger.state, trigger.blurAmount);
-
-    // 4) Apply blur to the live video element via opacity (CSS filter on .blur-layer)
-    blurLayer.style.opacity = String(trigger.blurAmount);
-    // Sync the static mirror layer with the current video frame.
-    // We use a separate ImageData copy for performance.
-    if (trigger.blurAmount > 0.02) {
-      try {
-        const tmp = document.createElement("canvas");
-        tmp.width = canvas.width;
-        tmp.height = canvas.height;
-        const tctx = tmp.getContext("2d");
-        tctx.save();
-        tctx.scale(-1, 1);
-        tctx.drawImage(video, -tmp.width, 0, tmp.width, tmp.height);
-        tctx.restore();
-        blurLayer.style.backgroundImage = `url(${tmp.toDataURL("image/jpeg", 0.6)})`;
-      } catch (e) {
-        // toDataURL can fail on tainted canvas if camera is cross-origin; we
-        // requested user-facing camera so this should not happen, but ignore.
-      }
-    }
   }
   // requestVideoFrameCallback is the iOS-Safari-safe frame callback.
   if ("requestVideoFrameCallback" in video) {

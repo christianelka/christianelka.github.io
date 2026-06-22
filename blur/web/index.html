@@ -122,7 +122,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1); /* mirror — natural selfie view */
     background: #000;
   }
   .stage canvas {
@@ -130,20 +129,8 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    transform: scaleX(-1); /* match mirror */
     pointer-events: none;
   }
-  /* Privacy blur layer — drawn on top, faded in by JS via opacity */
-  .blur-layer {
-    position: absolute;
-    inset: 0;
-    transform: scaleX(-1);
-    filter: blur(28px);
-    opacity: 0;
-    transition: opacity 60ms linear;
-    pointer-events: none;
-  }
-
   /* Permission overlay */
   .permission {
     position: absolute;
@@ -229,7 +216,6 @@
   <div class="stage" id="stage">
     <video id="video" playsinline muted autoplay></video>
     <canvas id="canvas"></canvas>
-    <div class="blur-layer" id="blurLayer"></div>
     <div class="permission" id="permission">
       <h2>Camera access</h2>
       <p>Blur Guard needs your camera to detect peace signs. Frames stay on-device.</p>

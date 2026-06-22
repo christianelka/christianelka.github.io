@@ -12,13 +12,11 @@
 (function () {
   'use strict';
 
-  const API_KEYS = [
-    'AIzaSyA24pubv_TNApiaT_xjR9DacQurQ6j6d_k',
-    'AIzaSyDXavq2Rb65hBYTMFnSnushD8xS9Gy-kaE',
-    'AIzaSyCFr4s8iWv5SikOB8mVi9I3H5OJopTZt5I',
-    'AIzaSyC7W96LJjm4EBRTkVYZZyDkQNm1cqJHzeo',
-    'AIzaSyC3RMpJ65vcknXWtzs5tWFjTclrdJSWEpQ'
-  ];
+  /* API keys live in localStorage (paud-api-keys). This default array
+     is intentionally empty so the file is safe to commit to a public
+     repo. Use Settings → "Tambah API Key" to inject working keys at
+     runtime; the browser persists them locally only. */
+  const API_KEYS = [];
 
   const CONFIG = {
     model: 'gemini-2.5-flash',
@@ -29,11 +27,13 @@
     maxConcurrentKeys: API_KEYS.length
   };
 
-  /* Per-key state: cooldown timer, fail counter, disabled flag */
+  /* Per-key state: cooldown timer, fail counter, disabled flag, invalid (401/403) flag */
   const keyState = API_KEYS.map(() => ({
     lastUsed: 0,
     consecutiveFail: 0,
-    disabledUntil: 0
+    disabledUntil: 0,
+    invalid: false,
+    invalidReason: ''
   }));
 
   let nextKeyIndex = 0;
@@ -45,6 +45,7 @@
       const idx = (nextKeyIndex + i) % n;
       const s = keyState[idx];
       if (!s) continue;
+      if (s.invalid) continue;
       if (s.disabledUntil > now) continue;
       if (now - s.lastUsed < CONFIG.perKeyCooldownMs) continue;
       if (s.consecutiveFail >= CONFIG.maxRetriesPerKey) {
@@ -138,7 +139,10 @@
       });
       clearTimeout(timer);
       if (!res.ok) {
-        return { ok: false, status: res.status, error: 'HTTP ' + res.status };
+        let body = '';
+        try { body = await res.text(); } catch (_) {}
+        const snippet = String(body).replace(/\s+/g, ' ').slice(0, 200);
+        return { ok: false, status: res.status, error: 'HTTP ' + res.status + (snippet ? ' — ' + snippet : '') };
       }
       const data = await res.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -171,6 +175,10 @@
       }
       lastError = result.error;
       reportFailure(picked.index);
+      if (result.status === 401 || result.status === 403) {
+        keyState[picked.index].invalid = true;
+        keyState[picked.index].invalidReason = result.error;
+      }
       if (result.status === 429 || result.status >= 500) {
         await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
       }
@@ -195,14 +203,122 @@
         keyTail: API_KEYS[i].slice(-6),
         lastUsed: s.lastUsed,
         consecutiveFail: s.consecutiveFail,
-        disabledUntil: s.disabledUntil
+        disabledUntil: s.disabledUntil,
+        invalid: !!s.invalid,
+        invalidReason: s.invalidReason || ''
       }))
     };
+  }
+
+  /* Validate a single key via a cheap :listModels ping.
+     Marks the key as invalid on 401/403/404. */
+  async function validateKey(idx) {
+    const key = API_KEYS[idx];
+    if (!key) return { ok: false, error: 'No key at index' };
+    const url = `${CONFIG.endpoint}?key=${key}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const res = await fetch(url, { method: 'GET', signal: controller.signal });
+      clearTimeout(timer);
+      if (res.ok) {
+        keyState[idx].invalid = false;
+        keyState[idx].invalidReason = '';
+        return { ok: true, status: res.status };
+      }
+      let body = '';
+      try { body = await res.text(); } catch (_) {}
+      const snippet = String(body).replace(/\s+/g, ' ').slice(0, 200);
+      if (res.status === 401 || res.status === 403 || res.status === 400) {
+        keyState[idx].invalid = true;
+        keyState[idx].invalidReason = snippet || ('HTTP ' + res.status);
+      }
+      return { ok: false, status: res.status, error: 'HTTP ' + res.status + (snippet ? ' — ' + snippet : '') };
+    } catch (e) {
+      clearTimeout(timer);
+      return { ok: false, status: 0, error: e.name === 'AbortError' ? 'Timeout' : e.message };
+    }
+  }
+
+  /* Validate all keys sequentially to avoid bursting 5 requests. */
+  async function validateAllKeys() {
+    const results = [];
+    for (let i = 0; i < API_KEYS.length; i++) {
+      const r = await validateKey(i);
+      results.push({ index: i, ...r });
+    }
+    return results;
+  }
+
+  function clearInvalid(idx) {
+    if (keyState[idx]) {
+      keyState[idx].invalid = false;
+      keyState[idx].invalidReason = '';
+      keyState[idx].consecutiveFail = 0;
+      keyState[idx].disabledUntil = 0;
+    }
+  }
+
+  /* Test connection: actual :generateContent with a tiny prompt.
+     Walks every key sequentially, returns per-key diagnostics:
+     { ok, status, latencyMs, model, error, sampleText, keyIndex } */
+  async function testConnection() {
+    const results = [];
+    for (let i = 0; i < API_KEYS.length; i++) {
+      const key = API_KEYS[i];
+      const t0 = Date.now();
+      const url = `${CONFIG.endpoint}/${CONFIG.model}:generateContent?key=${key}`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 12000);
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: ' balas hanya: ok' }] }],
+            generationConfig: { temperature: 0, maxOutputTokens: 8 }
+          })
+        });
+        clearTimeout(timer);
+        const latencyMs = Date.now() - t0;
+        let body = '';
+        try { body = await res.text(); } catch (_) {}
+        if (res.ok) {
+          let sample = '';
+          try {
+            const data = JSON.parse(body);
+            sample = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          } catch (_) {}
+          results.push({
+            keyIndex: i, ok: true, status: res.status, latencyMs,
+            model: CONFIG.model, sampleText: sample.trim()
+          });
+        } else {
+          const snippet = String(body).replace(/\s+/g, ' ').slice(0, 200);
+          if (res.status === 401 || res.status === 403) {
+            keyState[i].invalid = true;
+            keyState[i].invalidReason = snippet || ('HTTP ' + res.status);
+          }
+          results.push({
+            keyIndex: i, ok: false, status: res.status, latencyMs,
+            model: CONFIG.model, error: 'HTTP ' + res.status + (snippet ? ' — ' + snippet : '')
+          });
+        }
+      } catch (e) {
+        clearTimeout(timer);
+        results.push({
+          keyIndex: i, ok: false, status: 0, latencyMs: Date.now() - t0,
+          model: CONFIG.model, error: e.name === 'AbortError' ? 'Timeout (12s)' : e.message
+        });
+      }
+    }
+    return results;
   }
 
   window.PAUD_AI = {
     CONFIG, API_KEYS,
     regenerateArea, getStatus,
-    buildPrompt
+    buildPrompt, validateKey, validateAllKeys, clearInvalid, testConnection
   };
 })();
