@@ -688,10 +688,12 @@
     if (!input) return;
     const k = (input.value || '').trim();
     if (!k) { setKeyActionStatus('API key kosong.'); return; }
-    if (!/^AIza[0-9A-Za-z_\-]{20,}$/.test(k)) { setKeyActionStatus('Format tidak valid. Key Gemini biasanya mulai dengan "AIza".'); return; }
+    if (!/^(AIza[0-9A-Za-z_\-]{20,}|AQ\.[A-Za-z0-9_\-]{20,})$/.test(k)) {
+      setKeyActionStatus('Format tidak valid. Key Gemini biasanya mulai dengan "AIza" atau "AQ.". Periksa kembali key di aistudio.google.com/apikey.');
+      return;
+    }
     window.PAUD_AI.API_KEYS.push(k);
-    const st = window.PAUD_AI.getStatus().keyState;
-    st.push({ lastUsed: 0, consecutiveFail: 0, disabledUntil: 0, invalid: false, invalidReason: '' });
+    if (window.PAUD_AI.ensureKeyStateLength) window.PAUD_AI.ensureKeyStateLength();
     saveKeysToStorage();
     input.value = '';
     setKeyActionStatus('Key #' + window.PAUD_AI.API_KEYS.length + ' ditambahkan. Total: ' + window.PAUD_AI.API_KEYS.length + ' key.');
@@ -703,13 +705,14 @@
     if (!input) return;
     const k = (input.value || '').trim();
     if (!k) { setKeyActionStatus('Masukkan key baru dulu sebelum replace.'); return; }
-    if (!/^AIza[0-9A-Za-z_\-]{20,}$/.test(k)) { setKeyActionStatus('Format tidak valid.'); return; }
+    if (!/^(AIza[0-9A-Za-z_\-]{20,}|AQ\.[A-Za-z0-9_\-]{20,})$/.test(k)) {
+      setKeyActionStatus('Format tidak valid. Key Gemini biasanya mulai dengan "AIza" atau "AQ.".');
+      return;
+    }
     if (!confirm('Ganti semua ' + window.PAUD_AI.API_KEYS.length + ' key dengan key baru ini? Cooldown akan di-reset.')) return;
     window.PAUD_AI.API_KEYS.length = 0;
     window.PAUD_AI.API_KEYS.push(k);
-    const st = window.PAUD_AI.getStatus().keyState;
-    st.length = 0;
-    st.push({ lastUsed: 0, consecutiveFail: 0, disabledUntil: 0, invalid: false, invalidReason: '' });
+    if (window.PAUD_AI.ensureKeyStateLength) window.PAUD_AI.ensureKeyStateLength();
     window.PAUD_AI.CONFIG.maxConcurrentKeys = 1;
     saveKeysToStorage();
     input.value = '';

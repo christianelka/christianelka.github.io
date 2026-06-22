@@ -36,6 +36,15 @@
     invalidReason: ''
   }));
 
+  function ensureKeyStateLength() {
+    while (keyState.length < API_KEYS.length) {
+      keyState.push({ lastUsed: 0, consecutiveFail: 0, disabledUntil: 0, invalid: false, invalidReason: '' });
+    }
+    while (keyState.length > API_KEYS.length) {
+      keyState.pop();
+    }
+  }
+
   let nextKeyIndex = 0;
 
   function pickKey() {
@@ -159,6 +168,7 @@
     if (!indicators || indicators.length === 0) {
       return { ok: false, text: '', source: 'local', error: 'No indicators' };
     }
+    ensureKeyStateLength();
     const prompt = buildPrompt(name, areaLabel, indicators);
     const maxAttempts = API_KEYS.length * CONFIG.maxRetriesPerKey;
     let lastError = null;
@@ -213,6 +223,7 @@
   /* Validate a single key via a cheap :listModels ping.
      Marks the key as invalid on 401/403/404. */
   async function validateKey(idx) {
+    ensureKeyStateLength();
     const key = API_KEYS[idx];
     if (!key) return { ok: false, error: 'No key at index' };
     const url = `${CONFIG.endpoint}?key=${key}`;
@@ -242,6 +253,7 @@
 
   /* Validate all keys sequentially to avoid bursting 5 requests. */
   async function validateAllKeys() {
+    ensureKeyStateLength();
     const results = [];
     for (let i = 0; i < API_KEYS.length; i++) {
       const r = await validateKey(i);
@@ -263,6 +275,7 @@
      Walks every key sequentially, returns per-key diagnostics:
      { ok, status, latencyMs, model, error, sampleText, keyIndex } */
   async function testConnection() {
+    ensureKeyStateLength();
     const results = [];
     for (let i = 0; i < API_KEYS.length; i++) {
       const key = API_KEYS[i];
@@ -319,6 +332,7 @@
   window.PAUD_AI = {
     CONFIG, API_KEYS,
     regenerateArea, getStatus,
-    buildPrompt, validateKey, validateAllKeys, clearInvalid, testConnection
+    buildPrompt, validateKey, validateAllKeys, clearInvalid, testConnection,
+    ensureKeyStateLength
   };
 })();
