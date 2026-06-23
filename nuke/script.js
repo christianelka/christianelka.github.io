@@ -412,13 +412,30 @@
         const compare = document.createElement('div');
         compare.className = 'area-compare';
         compare.dataset.role = 'compare';
-        const compareLabel = document.createElement('strong');
-        compareLabel.textContent = 'Versi LOKAL (original)';
-        compare.appendChild(compareLabel);
-        const compareText = document.createElement('div');
-        compareText.dataset.role = 'compare-text';
-        compareText.textContent = getLocal(entry, a);
-        compare.appendChild(compareText);
+        const localSection = document.createElement('div');
+        localSection.className = 'area-compare__section';
+        const localLabel = document.createElement('strong');
+        localLabel.textContent = 'Versi LOKAL (original)';
+        localSection.appendChild(localLabel);
+        const localText = document.createElement('div');
+        localText.className = 'area-compare__text';
+        localText.dataset.role = 'compare-local';
+        localText.textContent = getLocal(entry, a);
+        localSection.appendChild(localText);
+        compare.appendChild(localSection);
+        const aiSection = document.createElement('div');
+        aiSection.className = 'area-compare__section area-compare__section--ai';
+        aiSection.dataset.role = 'compare-ai-section';
+        aiSection.hidden = !getAI(entry, a);
+        const aiLabel = document.createElement('strong');
+        aiLabel.textContent = 'Versi AI';
+        aiSection.appendChild(aiLabel);
+        const aiText = document.createElement('div');
+        aiText.className = 'area-compare__text';
+        aiText.dataset.role = 'compare-ai';
+        aiText.textContent = getAI(entry, a) || '(Belum ada versi AI. Klik "AI" untuk generate.)';
+        aiSection.appendChild(aiText);
+        compare.appendChild(aiSection);
         block.appendChild(compare);
 
         article.appendChild(block);
@@ -437,16 +454,8 @@
         const entry = lastGenerated[idx];
         const hasAI = !!getAI(entry, area);
         block.classList.toggle('area-block--compared', compareMode && hasAI);
-        const ai = getAI(entry, area);
-        const compareEl = block.querySelector('[data-role="compare"]');
-        const compareText = block.querySelector('[data-role="compare-text"]');
-        if (compareMode && ai) {
-          compareText.textContent = ai;
-        } else if (compareMode && !ai) {
-          compareText.textContent = '(Belum ada versi AI. Klik "AI" untuk generate.)';
-        } else {
-          compareText.textContent = getLocal(entry, area);
-        }
+        const aiSection = block.querySelector('[data-role="compare-ai-section"]');
+        if (aiSection) aiSection.hidden = !hasAI;
       });
     });
   }
@@ -652,11 +661,24 @@
       item.className = 'key-item';
       const reason = s.invalidReason ? ' title="' + escapeHtml(s.invalidReason) + '"' : '';
       item.innerHTML =
-        '<span class="key-tail" data-action="clear-invalid" data-key-index="' + i + '" style="cursor:pointer;" title="Klik untuk reset status INVALID">' +
-        'Key #' + (i + 1) + ': …' + key.slice(-6) + '</span>' +
-        '<span class="key-status ' + cls + '"' + reason + '>' + label + '</span>';
+        '<span class="key-tail" data-action="clear-invalid" data-key-index="' + i + '" title="Klik untuk reset status INVALID">Key #' + (i + 1) + ': …' + key.slice(-6) + '</span>' +
+        '<span class="key-status ' + cls + '"' + reason + '>' + label + '</span>' +
+        '<button type="button" class="key-delete" data-action="delete-key" data-key-index="' + i + '" title="Hapus key ini" aria-label="Hapus key #' + (i + 1) + '">×</button>';
       list.appendChild(item);
     });
+  }
+
+  function deleteKey(idx) {
+    if (!window.PAUD_AI || !window.PAUD_AI.removeKey) return;
+    const keys = window.PAUD_AI.API_KEYS;
+    if (idx < 0 || idx >= keys.length) return;
+    const tail = keys[idx].slice(-6);
+    if (!confirm('Hapus Key #' + (idx + 1) + ' (…' + tail + ') dari list? Key tidak akan dipakai lagi. Tutup Settings lalu buka lagi untuk benar-benar hilang dari localStorage.')) return;
+    window.PAUD_AI.removeKey(idx);
+    saveKeysToStorage();
+    renderKeyList();
+    refreshNoKeyBanner();
+    showToast('Key #' + (idx + 1) + ' dihapus. Total: ' + window.PAUD_AI.API_KEYS.length + ' key.');
   }
 
   function loadKeysFromStorage() {
@@ -955,6 +977,12 @@
     if (testConnBtn) testConnBtn.addEventListener('click', testConnection);
     const keyList = document.querySelector('[data-region="key-list"]');
     if (keyList) keyList.addEventListener('click', (e) => {
+      const del = e.target.closest('[data-action="delete-key"]');
+      if (del) {
+        const idx = parseInt(del.dataset.keyIndex, 10);
+        if (!isNaN(idx)) deleteKey(idx);
+        return;
+      }
       const tail = e.target.closest('[data-action="clear-invalid"]');
       if (!tail) return;
       const idx = parseInt(tail.dataset.keyIndex, 10);
@@ -1040,6 +1068,10 @@
           activeVersion[area] = 'ai';
           textEl.textContent = res.text;
           sourceEl.textContent = 'AI';
+          const aiSection = block.querySelector('[data-role="compare-ai-section"]');
+          const aiTextEl = block.querySelector('[data-role="compare-ai"]');
+          if (aiSection) aiSection.hidden = false;
+          if (aiTextEl) aiTextEl.textContent = res.text;
           card.setSuccess(areaIndex(area));
           card.setBar(100);
           card.finish(true, 'Berhasil diregenerasi via AI.');
@@ -1097,6 +1129,10 @@
             textEl.textContent = res.text;
             sourceEl.textContent = 'AI';
             activeVersion[area] = 'ai';
+            const aiSection = block.querySelector('[data-role="compare-ai-section"]');
+            const aiTextEl = block.querySelector('[data-role="compare-ai"]');
+            if (aiSection) aiSection.hidden = false;
+            if (aiTextEl) aiTextEl.textContent = res.text;
             card.setSuccess(i);
             successCount++;
           } else {

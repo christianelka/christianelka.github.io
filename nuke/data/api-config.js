@@ -271,6 +271,15 @@
     }
   }
 
+  function removeKey(idx) {
+    if (idx < 0 || idx >= API_KEYS.length) return false;
+    API_KEYS.splice(idx, 1);
+    if (keyState[idx]) keyState.splice(idx, 1);
+    if (nextKeyIndex > API_KEYS.length) nextKeyIndex = 0;
+    ensureKeyStateLength();
+    return true;
+  }
+
   /* Test connection: actual :generateContent with a tiny prompt.
      Walks every key sequentially, returns per-key diagnostics:
      { ok, status, latencyMs, model, error, sampleText, keyIndex } */
@@ -333,6 +342,6 @@
     CONFIG, API_KEYS,
     regenerateArea, getStatus,
     buildPrompt, validateKey, validateAllKeys, clearInvalid, testConnection,
-    ensureKeyStateLength
+    ensureKeyStateLength, removeKey
   };
 })();
