@@ -411,14 +411,18 @@
             const discussBtn = aiReady
                 ? `<button class="result-action-btn btn-discuss" data-action="discuss" data-idx="${r._idx}" title="Diskusikan koreksi dengan AI">Diskusi dgn AI</button>`
                 : '';
+            const safeEntry = data[r._idx] || r;
+            const displayGroup = safeEntry.group || r.group;
+            const displayKip = safeEntry.kip || r.kip;
+            const displayHashtag = safeEntry.hashtag || r.hashtag;
 
             return `
             <div class="result-card" data-idx="${r._idx}">
                 <div class="result-header">Hasil #${i + 1}${revisedBadge} <span class="result-score ${scoreClass}">${scoreLabel} (${r.score}%)</span></div>
-                <div class="result-group">${escapeHtml(r.group)}</div>
-                <div class="result-kip">${escapeHtml(r.kip)}</div>
-                <div class="result-hashtag" data-hashtag="${escapeHtml(r.hashtag)}" title="Klik untuk copy">
-                    ${escapeHtml(r.hashtag)}
+                <div class="result-group">${escapeHtml(displayGroup)}</div>
+                <div class="result-kip">${escapeHtml(displayKip)}</div>
+                <div class="result-hashtag" data-hashtag="${escapeHtml(displayHashtag)}" title="Klik untuk copy">
+                    ${escapeHtml(displayHashtag)}
                     <span class="copy-hint">Copy</span>
                 </div>
                 ${matched}${why}
@@ -809,13 +813,15 @@
             return;
         }
 
-        els.correctionList.innerHTML = candidates.map(c => `
+        els.correctionList.innerHTML = candidates.map(c => {
+            const safeC = data[c._idx] || c;
+            return `
             <div class="correction-option" data-idx="${c._idx}">
-                <div class="opt-group">${escapeHtml(c.group)}</div>
-                <div class="opt-kip">${escapeHtml(c.kip)}</div>
-                <div class="opt-hashtag">${escapeHtml(c.hashtag)}</div>
-            </div>
-        `).join('');
+                <div class="opt-group">${escapeHtml(safeC.group || c.group)}</div>
+                <div class="opt-kip">${escapeHtml(safeC.kip || c.kip)}</div>
+                <div class="opt-hashtag">${escapeHtml(safeC.hashtag || c.hashtag)}</div>
+            </div>`;
+        }).join('');
 
         els.correctionList.querySelectorAll('.correction-option').forEach(el => {
             el.addEventListener('click', () => {
