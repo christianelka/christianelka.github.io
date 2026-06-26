@@ -278,6 +278,7 @@
             this.currentState = s; this.myName = s.player.name;
             this.myScore = s.player.role === 'agen' ? (s.scores?.agen || 0) : (s.scores?.pembawa || 0);
             if (s.round) { this.fragmen = s.round.fragmen?.teks || ''; this.currentPhase = s.round.phase; this.phaseEndsAt = s.round.phaseEndsAt; if (s.round.openedMystery) this.openedColor = s.round.openedMystery; }
+            this.view = 'game'; this.error = ''; this.joining = false;
             this.revealOpen = false;
           });
           this.socket.on('fragmen:assigned', d => { if (d.fragmen) this.fragmen = d.fragmen.teks; });
@@ -300,8 +301,8 @@
         async join() {
           if (this.roomCode.length !== 6) return;
           this.joining = true; this.error = '';
-          try { const r = await this.socket.emit('player:joinGame', { gameId: this.roomCode }); if (r.success) this.view = 'game'; else this.error = r.error?.message || 'Gagal gabung'; }
-          catch (e) { this.error = e.message; } finally { this.joining = false; }
+          this.socket.emit('player:joinGame', { gameId: this.roomCode });
+          setTimeout(() => { this.joining = false; if (this.view !== 'game') this.error = 'Gagal gabung'; }, 3000);
         },
 
         openVote() { if (!this.canVote) return; this.voteTargets = (this.currentState?.players || []).filter(p => p.id !== this.socket.id); this.voteOpen = true; },

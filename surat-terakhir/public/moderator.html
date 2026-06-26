@@ -632,7 +632,7 @@
           this.socket.on('connect', () => { this.connected = true; });
           this.socket.on('disconnect', () => { this.connected = false; });
           this.socket.on('players:update', d => { this.players = d.players; });
-          this.socket.on('game:created', d => { this.roomCode = d.gameId; this.totalRounds = d.totalRounds; this.tab = 'lobby'; });
+          this.socket.on('game:created', d => { this.roomCode = d.gameId; this.totalRounds = d.totalRounds; this.tab = 'lobby'; this.creating = false; });
           this.socket.on('round:started', d => { this.currentRound = d.roundNumber; this.currentPhase = d.phase; this.phaseEndsAt = d.phaseEndsAt; this.tab = 'game'; this.roundData = null; });
           this.socket.on('phase:changed', d => { this.currentPhase = d.phase; this.phaseEndsAt = d.phaseEndsAt; });
           this.socket.on('moderator:roundData', d => { this.roundData = d.players; });
@@ -649,7 +649,7 @@
         async loadAIStatus() {
           try { const r = await fetch('/api/ai/status', { credentials: 'include' }); const t = await r.text(); const d = JSON.parse(t); if (d.success) this.aiStatus = d.data; } catch {}
         },
-        async createGame() { this.creating = true; try { const r = await this.socket.emit('moderator:createGame', { tier: this.tier, totalRounds: this.rounds }); if (r.success) { this.roomCode = r.data.gameId; this.totalRounds = r.data.totalRounds; } } catch {} finally { this.creating = false; } },
+        createGame() { this.creating = true; this.socket.emit('moderator:createGame', { tier: this.tier, totalRounds: this.rounds }); setTimeout(() => { this.creating = false; }, 4000); },
         async startRound() { const n = this.currentRound + 1; if (n > this.totalRounds) return; await this.socket.emit('moderator:startRound', { roundNumber: n }); },
         async advancePhase() { if (!this.canAdvance) return; await this.socket.emit('moderator:advancePhase', {}); },
         async endRound() { if (!this.canEnd || !confirm('Akhiri ronde?')) return; await this.socket.emit('moderator:endRound', {}); },
