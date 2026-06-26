@@ -428,6 +428,214 @@
     @media (max-width: 380px) {
       .word-card { font-size: 10px !important; padding: 4px 2px !important; min-height: 38px; }
     }
+
+    /* ====== COMPETITIVE UI ====== */
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .rank-1 { background: linear-gradient(135deg,#FFD700,#FFA500); color:#3D2B00; box-shadow:0 0 12px rgba(255,215,0,0.4); }
+    .rank-2 { background: linear-gradient(135deg,#C0C0C0,#A0A0A0); color:#1A1A1A; box-shadow:0 0 8px rgba(192,192,192,0.3); }
+    .rank-3 { background: linear-gradient(135deg,#CD7F32,#A0522D); color:#fff; box-shadow:0 0 8px rgba(205,127,50,0.3); }
+
+    .cmp-tab {
+      padding: 8px 16px;
+      border-radius: 8px 8px 0 0;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+      border-bottom: none;
+      color: #64748B;
+    }
+    .cmp-tab:hover { color: #E2E8F0; background: rgba(255,255,255,0.03); }
+    .cmp-tab.active {
+      color: #C084FC;
+      background: #1A1D27;
+      border-color: #2A2D3A;
+    }
+
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .cmp-table th {
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid #2A2D3A;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cmp-table th:hover { color: #94A3B8; }
+    .cmp-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(42,45,58,0.5);
+    }
+    .cmp-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .cmp-elo-up { color: #4ADE80; }
+    .cmp-elo-down { color: #FB7185; }
+    .cmp-elo-same { color: #94A3B8; }
+
+    .achieve-card {
+      background: #232734;
+      border: 1px solid #2A2D3A;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all 0.15s;
+    }
+    .achieve-card.locked { opacity: 0.45; filter: grayscale(0.7); }
+    .achieve-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .achieve-icon.unlocked { background: linear-gradient(135deg,#7C3AED,#A78BFA); }
+    .achieve-icon.locked { background: #1A1D27; border: 1px solid #2A2D3A; }
+
+    .elo-change-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .elo-change-badge.up { background: rgba(74,222,128,0.15); color: #4ADE80; }
+    .elo-change-badge.down { background: rgba(251,113,133,0.15); color: #FB7185; }
+    .elo-change-badge.same { background: rgba(148,163,184,0.15); color: #94A3B8; }
+
+    .elo-rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .elo-rank-badge.unranked { background: #232734; color: #64748B; border: 1px solid #2A2D3A; }
+    .elo-rank-badge.bronze { background: linear-gradient(135deg,#CD7F32,#A0522D); color: #fff; }
+    .elo-rank-badge.silver { background: linear-gradient(135deg,#C0C0C0,#A0A0A0); color: #1A1A1A; }
+    .elo-rank-badge.gold { background: linear-gradient(135deg,#FFD700,#FFA500); color:#3D2B00; }
+    .elo-rank-badge.platinum { background: linear-gradient(135deg,#00D4AA,#009B7D); color:#fff; }
+    .elo-rank-badge.diamond { background: linear-gradient(135deg,#818CF8,#6366F1); color:#fff; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-content {
+      background: #1A1D27;
+      border: 1px solid #2A2D3A;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #2A2D3A;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: #1A1D27;
+      z-index: 1;
+      border-radius: 20px 20px 0 0;
+    }
+    .modal-body { padding: 16px 20px; }
+
+    @keyframes eloPopUp { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    .elo-animate { animation: eloPopUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .elo-animate-delay-1 { animation-delay: 0.1s; }
+    .elo-animate-delay-2 { animation-delay: 0.2s; }
+    .elo-animate-delay-3 { animation-delay: 0.3s; }
+    .elo-animate-delay-4 { animation-delay: 0.4s; }
+
+    /* ====== RESPONSIVE OVERRIDES ====== */
+    @media (max-width: 640px) {
+      /* Modal full-screen on mobile */
+      .modal-overlay { padding: 0 !important; align-items: flex-end; }
+      .modal-content { max-height: 92vh !important; border-radius: 20px 20px 0 0 !important; max-width: 100% !important; }
+      .modal-header { border-radius: 20px 20px 0 0 !important; padding: 14px 16px !important; }
+      .modal-body { padding: 12px 14px !important; }
+
+      /* Leaderboard table scrollable */
+      .cmp-table-wrap { overflow-x: auto; margin: 0 -4px; }
+      .cmp-table-wrap::-webkit-scrollbar { height: 3px; }
+      .cmp-table-wrap::-webkit-scrollbar-thumb { background: #2A2D3A; border-radius: 2px; }
+      .cmp-table { font-size: 11px; }
+      .cmp-table th, .cmp-table td { padding: 6px 6px !important; white-space: nowrap; }
+
+      /* Career stats: 2-col instead of 4 on mobile */
+      .stats-grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+      .stats-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+      .stats-grid-3 > :last-child { grid-column: 1 / -1; }
+
+      /* Game action buttons: stack full-width */
+      .game-actions { flex-direction: column !important; }
+      .game-actions .btn-action { width: 100% !important; justify-content: center !important; }
+
+      /* End game ELO changes: tighten */
+      .elo-change-row { padding: 8px 10px !important; flex-wrap: wrap; gap: 4px; }
+      .elo-change-row .elo-left { min-width: 0; flex: 1; }
+      .elo-change-row .elo-right { gap: 4px; font-size: 11px; }
+
+      /* End game buttons: stack */
+      .end-buttons { flex-direction: column !important; gap: 8px !important; }
+      .end-buttons .btn-primary,
+      .end-buttons .btn-secondary { width: 100% !important; justify-content: center !important; text-align: center; }
+
+      /* Word grid: tighter gap */
+      .word-grid { gap: 0.25rem !important; }
+
+      /* Punishment wheel: existing rules, reduce further */
+      .wheel-wrapper { width: 200px; height: 200px; }
+      .wheel-center { width: 40px; height: 40px; font-size: 16px; }
+      .wheel-label { font-size: 10px; width: 22px; }
+
+      /* Section spacing */
+      main .panel-body { padding: 12px !important; }
+      .panel-header { padding: 10px 12px !important; }
+    }
+
+    @media (max-width: 380px) {
+      .modal-body { padding: 10px !important; }
+      .cmp-table { font-size: 10px; }
+      .cmp-table th, .cmp-table td { padding: 4px 4px !important; }
+      .stats-grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 0.375rem !important; }
+      .stats-grid-3 { grid-template-columns: repeat(2, 1fr) !important; gap: 0.375rem !important; }
+    }
   </style>
 </head>
 <body class="min-h-screen bg-[#0F1117] antialiased">
@@ -496,7 +704,15 @@
       <div x-show="phase === 'setup'" x-cloak>
         <div class="panel max-w-sm mx-auto">
           <div class="panel-header text-center">
-            <div class="text-xs font-bold text-purple-400 tracking-widest">SETUP GAME</div>
+            <div class="flex items-center justify-center gap-2">
+              <div class="text-xs font-bold text-purple-400 tracking-widest">SETUP GAME</div>
+              <button @click="openCompetitive('leaderboard')" 
+                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 text-[10px] font-bold tracking-wider hover:bg-yellow-500/25 transition-all"
+                      title="Buka mode Kompetitif">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                KOMPETITIF
+              </button>
+            </div>
             <div class="text-white font-extrabold text-lg mt-0.5">Bible Codenames</div>
           </div>
           <div class="panel-body space-y-5">
@@ -778,7 +994,7 @@
             </div>
           </div>
           <div class="panel-body">
-            <div class="grid grid-cols-5 gap-1.5">
+            <div class="word-grid grid grid-cols-5 gap-1.5">
               <template x-for="(item, index) in grid" :key="item.word">
                 <div @click="toggleSelect(index)" class="word-card" :class="getWordCardClass(item, index)">
                   <div class="leading-tight">
@@ -808,7 +1024,7 @@
         <!-- Action Buttons -->
         <div class="panel">
           <div class="panel-body">
-            <div class="flex flex-wrap gap-2 justify-center">
+            <div class="game-actions flex flex-wrap gap-2 justify-center">
               <button @click="undoSelection()" :disabled="selectedIndices.length === 0" 
                       class="btn-action bg-[#232734] text-gray-400 border border-[#2A2D3A] flex items-center gap-1.5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 10h13a4 4 0 010 8H7"/><path d="M7 6l-4 4 4 4"/></svg>
@@ -885,13 +1101,43 @@
               </template>
             </div>
 
+            <!-- ELO Changes -->
+            <div x-show="lastEloChanges" class="max-w-xs mx-auto mb-6">
+              <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3 text-center">Perubahan ELO</div>
+              <div class="flex flex-col gap-2">
+                <template x-for="(change, playerName) in lastEloChanges" :key="playerName">
+                  <div class="elo-change-row flex items-center justify-between px-4 py-2.5 rounded-lg"
+                       :class="change.change >= 0 ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-red-500/10 border border-red-500/20'">
+                    <div class="elo-left flex items-center gap-2">
+                      <span class="text-white font-bold text-sm" x-text="playerName"></span>
+                    <span class="elo-rank-badge"
+                          :class="getEloRankClass(change.after)"
+                          x-text="getEloRankLabel(change.after)"></span>
+                    </div>
+                    <div class="elo-right flex items-center gap-2">
+                      <span class="text-gray-400 text-xs font-mono" x-text="change.before"></span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                           :class="change.change >= 0 ? 'text-emerald-400' : 'text-red-400'"
+                           x-show="change.change !== 0">
+                        <path :d="change.change >= 0 ? 'M12 5v14M5 12l7-7 7 7' : 'M12 19V5M5 12l7 7 7-7'"/>
+                      </svg>
+                      <span class="font-bold text-sm font-mono" 
+                            :class="change.change >= 0 ? 'text-emerald-400' : 'text-red-400'"
+                            x-text="(change.change >= 0 ? '+' : '') + change.change"></span>
+                      <span class="text-gray-400 text-xs font-mono" x-text="change.after"></span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+
             <div class="flex flex-col gap-3 items-center">
               <button @click="goToPunishment()" 
                       class="spin-btn inline-flex items-center gap-2">
                 <span>🎯</span>
                 <span>LIHAT HUKUMAN</span>
               </button>
-              <div class="flex gap-3">
+              <div class="end-buttons flex gap-3">
                 <button @click="nextRound()" class="btn-primary px-6 py-2.5 text-sm flex items-center gap-2">
                   <span>LANGSUNG RONDE BERIKUTNYA</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -963,6 +1209,243 @@
         </div>
       </div>
 
+      <!-- ====== COMPETITIVE MODAL OVERLAY ====== -->
+      <div x-show="showCompetitive" x-cloak class="modal-overlay" @click.self="showCompetitive = false">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-xs font-black text-white">🏆</div>
+              <div>
+                <div class="text-white font-bold text-sm">Kompetitif</div>
+                <div class="text-[10px] text-gray-500">Season <span x-text="competitive.season"></span></div>
+              </div>
+            </div>
+            <button @click="showCompetitive = false" class="w-8 h-8 rounded-lg bg-[#232734] hover:bg-[#2A2D3A] flex items-center justify-center text-gray-400 transition-all">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex border-b border-[#2A2D3A] px-4">
+            <button @click="competitiveTab = 'leaderboard'" :class="competitiveTab === 'leaderboard' ? 'active' : ''" class="cmp-tab">🏆 Papan Peringkat</button>
+            <button @click="competitiveTab = 'career'" :class="competitiveTab === 'career' ? 'active' : ''" class="cmp-tab">📊 Statistik</button>
+            <button @click="competitiveTab = 'achievements'" :class="competitiveTab === 'achievements' ? 'active' : ''" class="cmp-tab">🎯 Pencapaian</button>
+          </div>
+
+          <div class="modal-body min-h-[300px]">
+            <!-- ====== TAB: LEADERBOARD ====== -->
+            <div x-show="competitiveTab === 'leaderboard'">
+              <div class="flex items-center justify-between mb-4">
+                <div class="text-xs text-gray-500">Peringkat berdasarkan <span class="text-white font-bold">ELO</span></div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] text-gray-500">Urut:</span>
+                  <select x-model="leaderboardSort" @change="refreshLeaderboard()" class="text-xs rounded-lg px-2 py-1 bg-[#232734] border border-[#2A2D3A] text-gray-300">
+                    <option value="elo">ELO</option>
+                    <option value="seasonalElo">Season ELO</option>
+                    <option value="wins">Menang</option>
+                    <option value="winRate">Win Rate</option>
+                    <option value="bestStreak">Streak</option>
+                  </select>
+                </div>
+              </div>
+
+              <div x-show="leaderboard.length === 0" class="text-center py-12">
+                <div class="text-4xl mb-3">🏆</div>
+                <div class="text-gray-500 text-sm font-semibold">Belum ada data kompetitif</div>
+                <div class="text-gray-600 text-xs mt-1">Mainkan game untuk memulai peringkat!</div>
+              </div>
+
+              <div x-show="leaderboard.length > 0" class="cmp-table-wrap"><table class="cmp-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Pemain</th>
+                    <th @click="leaderboardSort='elo';refreshLeaderboard()" class="text-right">ELO</th>
+                    <th @click="leaderboardSort='seasonalElo';refreshLeaderboard()" class="text-right">Season</th>
+                    <th @click="leaderboardSort='wins';refreshLeaderboard()" class="text-right">M/K</th>
+                    <th @click="leaderboardSort='winRate';refreshLeaderboard()" class="text-right">WR</th>
+                    <th @click="leaderboardSort='bestStreak';refreshLeaderboard()" class="text-right">Streak</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(p, i) in leaderboard" :key="p.name">
+                    <tr>
+                      <td>
+                        <div x-show="i < 3" class="rank-badge" :class="'rank-' + (i + 1)" x-text="i + 1"></div>
+                        <span x-show="i >= 3" class="text-gray-600 font-mono text-xs font-bold" x-text="i + 1"></span>
+                      </td>
+                      <td>
+                        <div class="flex items-center gap-2">
+                          <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500/30 to-purple-700/30 flex items-center justify-center text-[10px] font-bold text-purple-300"
+                               x-text="p.name.charAt(0).toUpperCase()"></div>
+                          <span class="text-sm font-semibold text-gray-200" x-text="p.name"></span>
+                          <span class="elo-rank-badge" :class="getEloRankClass(p.elo)" x-text="getEloRankLabel(p.elo)"></span>
+                        </div>
+                      </td>
+                      <td class="text-right font-bold font-mono" :class="p.elo >= 1000 ? 'text-amber-400' : 'text-gray-400'" x-text="p.elo"></td>
+                      <td class="text-right font-mono text-xs text-gray-400" x-text="p.seasonalElo"></td>
+                      <td class="text-right text-xs text-gray-400" x-text="p.wins + '/' + p.losses"></td>
+                      <td class="text-right text-xs font-bold" :class="p.winRate >= 60 ? 'text-green-400' : p.winRate >= 45 ? 'text-yellow-400' : 'text-gray-400'" x-text="p.winRate + '%'"></td>
+                      <td class="text-right">
+                        <span x-show="p.currentStreak > 0" class="text-green-400 font-bold text-xs">🔥 <span x-text="p.currentStreak"></span></span>
+                        <span x-show="p.currentStreak < 0" class="text-red-400 font-bold text-xs">💀 <span x-text="p.currentStreak * -1"></span></span>
+                        <span x-show="p.currentStreak === 0 && p.games === 0" class="text-gray-600 text-xs">—</span>
+                        <span x-show="p.currentStreak === 0 && p.games > 0" class="text-gray-500 text-xs">—</span>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table></div>
+            </div>
+
+            <!-- ====== TAB: CAREER STATS ====== -->
+            <div x-show="competitiveTab === 'career'">
+              <div x-show="!selectedPlayerCareer" class="text-center py-4">
+                <div class="text-xs text-gray-500 mb-3">Pilih pemain untuk melihat statistik karier</div>
+                <div class="space-y-1.5 max-h-64 overflow-y-auto">
+                  <template x-for="p in leaderboard" :key="p.name">
+                    <button @click="selectedPlayerCareer = p.name" class="w-full flex items-center gap-3 bg-[#232734] hover:bg-[#2A2D3A] rounded-xl px-4 py-2.5 border border-[#2A2D3A] transition-all text-left"
+                            :class="selectedPlayerCareer === p.name ? 'border-purple-500/30' : ''">
+                      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500/30 to-purple-700/30 flex items-center justify-center text-sm font-bold text-purple-300"
+                           x-text="p.name.charAt(0).toUpperCase()"></div>
+                      <div class="flex-1">
+                        <div class="text-sm font-semibold text-gray-200" x-text="p.name"></div>
+                        <div class="text-[10px] text-gray-500">
+                          ELO <span class="text-amber-400 font-bold" x-text="p.elo"></span>
+                          · Season <span class="text-gray-400" x-text="p.seasonalElo"></span>
+                        </div>
+                      </div>
+                      <span class="elo-rank-badge" :class="getEloRankClass(p.elo)" x-text="getEloRankLabel(p.elo)"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+
+              <div x-show="selectedPlayerCareer && selectedPlayer" class="space-y-4">
+                <!-- Player header -->
+                <div class="flex items-center gap-4 pb-3 border-b border-[#2A2D3A]">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/30 to-purple-700/30 flex items-center justify-center text-xl font-bold text-purple-300"
+                       x-text="selectedPlayer.name.charAt(0).toUpperCase()"></div>
+                  <div>
+                    <div class="text-white font-extrabold text-lg" x-text="selectedPlayer.name"></div>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="elo-rank-badge" :class="getEloRankClass(selectedPlayer.elo)" x-text="getEloRankLabel(selectedPlayer.elo)"></span>
+                      <span class="text-[10px] text-gray-500">Bergabung <span x-text="formatDate(selectedPlayer.firstPlayed)"></span></span>
+                    </div>
+                  </div>
+                  <button @click="selectedPlayerCareer = null" class="ml-auto text-xs text-purple-400 hover:text-purple-300">Ganti</button>
+                </div>
+
+                <!-- Stats grid -->
+                <div class="stats-grid-4 grid grid-cols-4 gap-2">
+                  <div class="stat-card text-center">
+                    <div class="label">ELO</div>
+                    <div class="value text-amber-400 text-xl" x-text="selectedPlayer.elo"></div>
+                  </div>
+                  <div class="stat-card text-center">
+                    <div class="label">Games</div>
+                    <div class="value text-gray-200 text-xl" x-text="selectedPlayer.games"></div>
+                  </div>
+                  <div class="stat-card text-center">
+                    <div class="label">Menang</div>
+                    <div class="value text-green-400 text-xl" x-text="selectedPlayer.wins"></div>
+                  </div>
+                  <div class="stat-card text-center">
+                    <div class="label">Kalah</div>
+                    <div class="value text-red-400 text-xl" x-text="selectedPlayer.losses"></div>
+                  </div>
+                </div>
+
+                <div class="stats-grid-3 grid grid-cols-3 gap-2">
+                  <div class="stat-card text-center">
+                    <div class="label">Win Rate</div>
+                    <div class="value text-lg" :class="selectedPlayer.winRate >= 60 ? 'text-green-400' : selectedPlayer.winRate >= 45 ? 'text-yellow-400' : 'text-red-400'"
+                         x-text="selectedPlayer.winRate + '%'"></div>
+                  </div>
+                  <div class="stat-card text-center">
+                    <div class="label">Streak Skrg</div>
+                    <div class="value text-lg">
+                      <span x-show="selectedPlayer.currentStreak > 0" class="text-green-400">🔥 <span x-text="selectedPlayer.currentStreak"></span></span>
+                      <span x-show="selectedPlayer.currentStreak < 0" class="text-red-400">💀 <span x-text="selectedPlayer.currentStreak * -1"></span></span>
+                      <span x-show="selectedPlayer.currentStreak === 0" class="text-gray-500">—</span>
+                    </div>
+                  </div>
+                  <div class="stat-card text-center">
+                    <div class="label">Best Streak</div>
+                    <div class="value text-amber-400 text-lg" x-text="selectedPlayer.bestStreak"></div>
+                  </div>
+                </div>
+
+                <!-- Career ELO history mini -->
+                <div>
+                  <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Riwayat ELO</div>
+                  <div class="max-h-40 overflow-y-auto space-y-1">
+                    <template x-for="(match, i) in getPlayerMatches(selectedPlayer.name).slice(0, 20)" :key="i">
+                      <div class="history-row text-xs">
+                        <span class="text-gray-600 font-mono w-16 flex-shrink-0" x-text="formatShortDate(match.date)"></span>
+                        <span class="w-2 h-2 rounded-full flex-shrink-0"
+                              :class="match.eloChanges[selectedPlayer.name] >= 0 ? 'bg-green-500' : 'bg-red-500'"></span>
+                        <span class="text-gray-400">
+                          <span :class="match.eloChanges[selectedPlayer.name] >= 0 ? 'text-green-400' : 'text-red-400'" class="font-bold"
+                                x-text="(match.eloChanges[selectedPlayer.name] >= 0 ? '+' : '') + match.eloChanges[selectedPlayer.name]"></span>
+                        </span>
+                        <span class="text-gray-600 ml-auto text-[10px]" x-text="match.season ? 'S' + match.season : ''"></span>
+                      </div>
+                    </template>
+                    <div x-show="getPlayerMatches(selectedPlayer.name).length === 0" class="text-center text-gray-600 text-xs py-4">
+                      Belum ada riwayat pertandingan
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Achievements on this player -->
+                <div>
+                  <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Pencapaian</div>
+                  <div class="flex flex-wrap gap-2">
+                    <template x-for="a in getPlayerAchievements(selectedPlayer.name)" :key="a.id">
+                      <div class="bg-purple-500/10 border border-purple-500/20 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
+                        <span x-text="a.icon"></span>
+                        <span class="text-[10px] font-semibold text-purple-300" x-text="a.name"></span>
+                      </div>
+                    </template>
+                    <div x-show="getPlayerAchievements(selectedPlayer.name).length === 0" class="text-gray-600 text-xs py-2">
+                      Belum ada pencapaian
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ====== TAB: ACHIEVEMENTS ====== -->
+            <div x-show="competitiveTab === 'achievements'">
+              <div class="text-xs text-gray-500 mb-4">
+                <span class="text-white font-bold" x-text="playerAchievements.filter(a => a.unlocked).length"></span>
+                /
+                <span x-text="playerAchievements.length"></span>
+                pencapaian terkumpul
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <template x-for="a in playerAchievements" :key="a.id">
+                  <div class="achieve-card" :class="a.unlocked ? '' : 'locked'">
+                    <div class="achieve-icon" :class="a.unlocked ? 'unlocked' : 'locked'">
+                      <span x-text="a.icon" class="text-lg"></span>
+                    </div>
+                    <div class="min-w-0">
+                      <div class="text-xs font-bold" :class="a.unlocked ? 'text-gray-200' : 'text-gray-500'" x-text="a.name"></div>
+                      <div class="text-[10px]" :class="a.unlocked ? 'text-gray-400' : 'text-gray-600'" x-text="a.description"></div>
+                      <div x-show="a.unlocked" class="text-[9px] text-green-400 font-semibold mt-1 flex items-center gap-1">
+                        <span>✓</span>
+                        <span>Didapatkan</span>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -1170,6 +1653,31 @@
         maxConsecutiveMisses: 3,
         currentRound: 1,
         toast: { show: false, type: '', icon: '', title: '', message: '' },
+
+        // ========== COMPETITIVE STATE ==========
+        showCompetitive: false,
+        competitiveTab: 'leaderboard',
+        leaderboard: [],
+        leaderboardSort: 'elo',
+        selectedPlayerCareer: null,
+        lastEloChanges: null,
+        get selectedPlayer() {
+          if (!this.selectedPlayerCareer) return null;
+          return competitive.getPlayerCareerStats(this.selectedPlayerCareer);
+        },
+        get playerAchievements() {
+          // Show all achievements, unlocked if ANY player has it
+          const allUnlocked = new Set();
+          if (competitive.data) {
+            Object.values(competitive.data.players).forEach(p => {
+              if (p.achievements) p.achievements.forEach(a => allUnlocked.add(a));
+            });
+          }
+          return ACHIEVEMENTS.map(a => ({
+            ...a,
+            unlocked: allUnlocked.has(a.id)
+          }));
+        },
 
         // ========== PUNISHMENT ROULETTE ==========
         roundHistory: [],
@@ -1478,6 +1986,20 @@
           });
           this.phase = 'end';
           this.stopTimer();
+
+          // Record competitive match
+          const allPlayers = [
+            ...this.teamA.players.map(n => ({ name: n, team: 'A', captain: this.teamA.captain === n })),
+            ...this.teamB.players.map(n => ({ name: n, team: 'B', captain: this.teamB.captain === n }))
+          ];
+          const eloChanges = competitive.recordMatch(allPlayers, winner);
+          this.lastEloChanges = eloChanges;
+
+          // Check achievements for all players
+          allPlayers.forEach(p => {
+            competitive.checkAchievements(p.name);
+          });
+
           if (reason.includes('ASSASSIN')) {
             sfx.play('assassin');
           } else {
@@ -1555,6 +2077,7 @@
           this.isSpinning = false;
           this.showPunishmentResult = false;
           this.toast = { show: false, type: '', icon: '', title: '', message: '' };
+          this.lastEloChanges = null;
           this.stopTimer();
         },
 
@@ -1711,6 +2234,67 @@
           this.nextRound();
         },
 
+        // ========== COMPETITIVE METHODS ==========
+        openCompetitive(tab) {
+          this.competitiveTab = tab || 'leaderboard';
+          this.refreshLeaderboard();
+          this.showCompetitive = true;
+          sfx.play('switch');
+        },
+
+        closeCompetitive() {
+          this.showCompetitive = false;
+          sfx.play('switch');
+        },
+
+        refreshLeaderboard() {
+          this.leaderboard = competitive.getLeaderboard(this.leaderboardSort);
+        },
+
+        sortLeaderboard(field) {
+          this.leaderboardSort = field;
+          this.refreshLeaderboard();
+        },
+
+        getEloRankClass(elo) {
+          return competitive.getRankClass(elo);
+        },
+
+        getEloRankLabel(elo) {
+          return competitive.getRankLabel(elo);
+        },
+
+        isAchievementUnlocked(playerName, achievementId) {
+          const player = competitive.getPlayer(playerName);
+          return player && player.achievements && player.achievements.includes(achievementId);
+        },
+
+        getPlayerMatches(playerName) {
+          return competitive.getPlayerMatches(playerName);
+        },
+
+        getPlayerAchievements(playerName) {
+          return competitive.getPlayerAchievements(playerName);
+        },
+
+        getPlayerCareerStats(playerName) {
+          return competitive.getPlayerCareerStats(playerName);
+        },
+
+        selectPlayerCareer(playerName) {
+          this.selectedPlayerCareer = playerName;
+        },
+
+        formatDate(dateStr) {
+          const d = new Date(dateStr);
+          return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        },
+
+        formatShortDate(dateStr) {
+          const d = new Date(dateStr);
+          return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+        },
+
         showToast(type, icon, title, message, duration = 2000) {
           this.toast = { show: true, type, icon, title, message };
           setTimeout(() => {
@@ -1719,6 +2303,348 @@
         },
       };
     }
+  </script>
+
+  <script>
+    // =============== COMPETITIVE ENGINE ===============
+
+    const COMPETITIVE_KEY = 'bible_codenames_competitive_v1';
+    const STARTING_ELO = 1000;
+    const K_FACTOR = 32;
+    const GAMES_PER_SEASON = 20;
+
+    const ACHIEVEMENTS = [
+      { id: 'first_blood',        name: 'First Blood',          description: 'Memainkan game pertama',           icon: '🏁',    condition: p => p.games >= 1 },
+      { id: 'win_first',          name: 'Pertama Menang',       description: 'Menang pertama kali',               icon: '🎯',    condition: p => p.wins >= 1 },
+      { id: 'streak_3',           name: 'On Fire',              description: '3 kemenangan beruntun',             icon: '🔥',    condition: p => p.bestStreak >= 3 },
+      { id: 'streak_5',           name: 'Unstoppable',          description: '5 kemenangan beruntun',             icon: '⚡',    condition: p => p.bestStreak >= 5 },
+      { id: 'streak_10',          name: 'Invincible',           description: '10 kemenangan beruntun',            icon: '👑',    condition: p => p.bestStreak >= 10 },
+      { id: 'games_10',           name: 'Veteran Pemula',       description: '10 game dimainkan',                 icon: '🎮',    condition: p => p.games >= 10 },
+      { id: 'games_25',           name: 'Adept',                description: '25 game dimainkan',                  icon: '⚔️',    condition: p => p.games >= 25 },
+      { id: 'games_50',           name: 'Legion',               description: '50 game dimainkan',                  icon: '⭐',    condition: p => p.games >= 50 },
+      { id: 'win_10',             name: 'Pemenang Sejati',      description: '10 kemenangan',                     icon: '🏆',    condition: p => p.wins >= 10 },
+      { id: 'win_25',             name: 'Master Strategist',     description: '25 kemenangan',                    icon: '💎',    condition: p => p.wins >= 25 },
+      { id: 'elo_1100',           name: 'Bintang Baru',         description: 'ELO mencapai 1100',                 icon: '🌟',    condition: p => p.elo >= 1100 },
+      { id: 'elo_1200',           name: 'Silver Tier',          description: 'ELO mencapai 1200',                 icon: '🥈',    condition: p => p.elo >= 1200 },
+      { id: 'elo_1400',           name: 'Gold Tier',            description: 'ELO mencapai 1400',                 icon: '🥇',    condition: p => p.elo >= 1400 },
+      { id: 'elo_1600',           name: 'Platinum Elite',       description: 'ELO mencapai 1600',                 icon: '💠',    condition: p => p.elo >= 1600 },
+      { id: 'elo_1800',           name: 'Diamond God',          description: 'ELO mencapai 1800',                 icon: '🔷',    condition: p => p.elo >= 1800 },
+      { id: 'captain_win',        name: 'Kapten Tangguh',       description: 'Menang sebagai kapten',             icon: '🧭',    condition: p => (p.captainWins || 0) >= 1 },
+      { id: 'captain_5',          name: 'Laksamana',            description: '5 kali menang sebagai kapten',      icon: '⚓',    condition: p => (p.captainWins || 0) >= 5 },
+      { id: 'assassin_survivor',  name: 'Selamat dari Maut',    description: 'Menang setelah kena assassin 1x',   icon: '🙏',    condition: p => (p.assassinSurvivals || 0) >= 1 },
+      { id: 'comeback_king',      name: 'Comeback King',        description: 'Menang setelah tertinggal 2 ronde', icon: '🦅',    condition: p => (p.comebacks || 0) >= 1 },
+      { id: 'perfect_game',       name: 'Sempurna',             description: 'Menang tanpa kehilangan kata',     icon: '✨',    condition: p => (p.perfectGames || 0) >= 1 },
+      { id: 'season_champion',    name: 'Juara Season',         description: 'Juara 1 di suatu season',          icon: '🏅',    condition: p => (p.seasonTitles || 0) >= 1 },
+      { id: 'brutal_winner',      name: 'Brutal',               description: 'Menang 3 ronde berturut-turut',     icon: '💀',    condition: p => (p.brutalWins || 0) >= 1 },
+      { id: 'ten games',          name: 'Double Digit',         description: '10 kemenangan total',              icon: '🎯',    condition: p => p.wins >= 10 },
+    ];
+
+    class CompetitiveDB {
+      constructor() {
+        this.data = null;
+        this.load();
+      }
+
+      get season() { return this.data ? this.data.season : 1; }
+      get matchCount() { return this.data ? this.data.matchCounter : 0; }
+      get playerCount() { return this.data ? Object.keys(this.data.players).length : 0; }
+
+      defaultData() {
+        return {
+          players: {},
+          matches: [],
+          season: 1,
+          matchCounter: 0,
+          lastMatchDate: null
+        };
+      }
+
+      load() {
+        try {
+          const raw = localStorage.getItem(COMPETITIVE_KEY);
+          if (raw) {
+            this.data = JSON.parse(raw);
+            // Ensure all players have all fields
+            Object.keys(this.data.players).forEach(name => {
+              this.data.players[name] = {
+                elo: this.data.players[name].elo || STARTING_ELO,
+                seasonalElo: this.data.players[name].seasonalElo || STARTING_ELO,
+                games: this.data.players[name].games || 0,
+                wins: this.data.players[name].wins || 0,
+                losses: this.data.players[name].losses || 0,
+                currentStreak: this.data.players[name].currentStreak || 0,
+                bestStreak: this.data.players[name].bestStreak || 0,
+                achievements: this.data.players[name].achievements || [],
+                firstPlayed: this.data.players[name].firstPlayed || new Date().toISOString(),
+                lastPlayed: this.data.players[name].lastPlayed || new Date().toISOString(),
+                captainWins: this.data.players[name].captainWins || 0,
+                assassinSurvivals: this.data.players[name].assassinSurvivals || 0,
+                comebacks: this.data.players[name].comebacks || 0,
+                perfectGames: this.data.players[name].perfectGames || 0,
+                seasonTitles: this.data.players[name].seasonTitles || 0,
+                brutalWins: this.data.players[name].brutalWins || 0,
+                eloHistory: this.data.players[name].eloHistory || [],
+              };
+            });
+          } else {
+            this.data = this.defaultData();
+            this.save();
+          }
+        } catch (e) {
+          console.warn('CompetitiveDB: Failed to load, resetting.', e);
+          this.data = this.defaultData();
+          this.save();
+        }
+      }
+
+      save() {
+        try {
+          localStorage.setItem(COMPETITIVE_KEY, JSON.stringify(this.data));
+        } catch (e) {
+          console.warn('CompetitiveDB: Failed to save.', e);
+        }
+      }
+
+      getPlayer(name) {
+        return this.data.players[name] || null;
+      }
+
+      ensurePlayer(name) {
+        if (!this.data.players[name]) {
+          this.data.players[name] = {
+            elo: STARTING_ELO,
+            seasonalElo: STARTING_ELO,
+            games: 0,
+            wins: 0,
+            losses: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            achievements: [],
+            firstPlayed: new Date().toISOString(),
+            lastPlayed: new Date().toISOString(),
+            captainWins: 0,
+            assassinSurvivals: 0,
+            comebacks: 0,
+            perfectGames: 0,
+            seasonTitles: 0,
+            brutalWins: 0,
+            eloHistory: []
+          };
+        }
+        return this.data.players[name];
+      }
+
+      expectedScore(ratingA, ratingB) {
+        return 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+      }
+
+      calculateEloChange(ratingA, ratingB, scoreA) {
+        const expectedA = this.expectedScore(ratingA, ratingB);
+        const expectedB = 1 - expectedA;
+        const changeA = Math.round(K_FACTOR * (scoreA - expectedA));
+        const changeB = Math.round(K_FACTOR * ((1 - scoreA) - expectedB));
+        return { changeA, changeB };
+      }
+
+      recordMatch(players, winnerTeam) {
+        this.data.matchCounter++;
+        this.data.lastMatchDate = new Date().toISOString();
+
+        // Check season rollover
+        if (this.data.matchCounter > 0 && this.data.matchCounter % GAMES_PER_SEASON === 0) {
+          this.data.season++;
+          // Reset seasonal ELO for all players
+          Object.keys(this.data.players).forEach(name => {
+            this.data.players[name].seasonalElo = STARTING_ELO;
+          });
+        }
+
+        // Separate teams
+        const teamAPlayers = players.filter(p => p.team === 'A');
+        const teamBPlayers = players.filter(p => p.team === 'B');
+
+        const allPlayerNames = players.map(p => p.name);
+
+        // Calculate average ELO per team
+        const avgEloA = teamAPlayers.reduce((sum, p) => {
+          this.ensurePlayer(p.name);
+          return sum + this.data.players[p.name].elo;
+        }, 0) / teamAPlayers.length;
+
+        const avgEloB = teamBPlayers.reduce((sum, p) => {
+          this.ensurePlayer(p.name);
+          return sum + this.data.players[p.name].elo;
+        }, 0) / teamBPlayers.length;
+
+        const teamAScore = winnerTeam === 'A' ? 1 : 0;
+        const teamBScore = winnerTeam === 'B' ? 1 : 0;
+
+        const eloChanges = {};
+
+        // Calculate and apply ELO changes
+        teamAPlayers.forEach(p => {
+          const player = this.data.players[p.name];
+          const { changeA } = this.calculateEloChange(
+            player.elo,
+            avgEloB,
+            teamAScore
+          );
+          const eloBefore = player.elo;
+          player.elo = Math.max(100, player.elo + changeA);
+          player.seasonalElo = Math.max(100, player.seasonalElo + changeA);
+          player.games++;
+          if (winnerTeam === 'A') {
+            player.wins++;
+            player.currentStreak = Math.max(0, player.currentStreak) + 1;
+            if (player.currentStreak > player.bestStreak) player.bestStreak = player.currentStreak;
+            if (p.captain) player.captainWins++;
+          } else {
+            player.losses++;
+            player.currentStreak = Math.min(0, player.currentStreak) - 1;
+          }
+          player.lastPlayed = new Date().toISOString();
+          player.eloHistory.push({ date: new Date().toISOString(), elo: player.elo, change: changeA });
+          eloChanges[p.name] = { before: eloBefore, after: player.elo, change: changeA };
+        });
+
+        teamBPlayers.forEach(p => {
+          const player = this.data.players[p.name];
+          const { changeB } = this.calculateEloChange(
+            player.elo,
+            avgEloA,
+            teamBScore
+          );
+          const eloBefore = player.elo;
+          player.elo = Math.max(100, player.elo + changeB);
+          player.seasonalElo = Math.max(100, player.seasonalElo + changeB);
+          player.games++;
+          if (winnerTeam === 'B') {
+            player.wins++;
+            player.currentStreak = Math.max(0, player.currentStreak) + 1;
+            if (player.currentStreak > player.bestStreak) player.bestStreak = player.currentStreak;
+            if (p.captain) player.captainWins++;
+          } else {
+            player.losses++;
+            player.currentStreak = Math.min(0, player.currentStreak) - 1;
+          }
+          player.lastPlayed = new Date().toISOString();
+          player.eloHistory.push({ date: new Date().toISOString(), elo: player.elo, change: changeB });
+          eloChanges[p.name] = { before: eloBefore, after: player.elo, change: changeB };
+        });
+
+        // Save match record
+        this.data.matches.push({
+          id: this.data.matchCounter,
+          season: this.data.season,
+          date: new Date().toISOString(),
+          players: allPlayerNames,
+          teams: {
+            A: teamAPlayers.map(p => p.name),
+            B: teamBPlayers.map(p => p.name)
+          },
+          winner: winnerTeam,
+          eloChanges
+        });
+
+        // Trim match history to last 500
+        if (this.data.matches.length > 500) {
+          this.data.matches = this.data.matches.slice(-500);
+        }
+
+        this.save();
+        return eloChanges;
+      }
+
+      getLeaderboard(sortBy = 'elo') {
+        const players = Object.entries(this.data.players).map(([name, stats]) => ({
+          name,
+          ...stats,
+          winRate: stats.games > 0 ? Math.round((stats.wins / stats.games) * 100) : 0,
+        }));
+
+        const sortMap = {
+          elo: (a, b) => b.elo - a.elo,
+          seasonalElo: (a, b) => b.seasonalElo - a.seasonalElo,
+          wins: (a, b) => b.wins - a.wins,
+          winRate: (a, b) => {
+            const ar = a.games >= 3 ? a.wins / a.games : -1;
+            const br = b.games >= 3 ? b.wins / b.games : -1;
+            return br - ar;
+          },
+          games: (a, b) => b.games - a.games,
+          bestStreak: (a, b) => b.bestStreak - a.bestStreak,
+        };
+
+        players.sort(sortMap[sortBy] || sortMap.elo);
+        return players;
+      }
+
+      getRankClass(elo) {
+        if (elo < 1000) return 'unranked';
+        if (elo < 1100) return 'bronze';
+        if (elo < 1200) return 'silver';
+        if (elo < 1400) return 'gold';
+        if (elo < 1600) return 'platinum';
+        return 'diamond';
+      }
+
+      getRankLabel(elo) {
+        if (elo < 1000) return 'Unranked';
+        if (elo < 1100) return 'Bronze';
+        if (elo < 1200) return 'Silver';
+        if (elo < 1400) return 'Gold';
+        if (elo < 1600) return 'Platinum';
+        return 'Diamond';
+      }
+
+      getPlayerMatches(playerName) {
+        return this.data.matches
+          .filter(m => m.players.includes(playerName))
+          .reverse()
+          .slice(0, 50);
+      }
+
+      getPlayerAchievements(playerName) {
+        const player = this.data.players[playerName];
+        if (!player) return [];
+        return ACHIEVEMENTS.map(a => ({
+          ...a,
+          unlocked: player.achievements.includes(a.id),
+          progress: a.condition(player) ? 1 : 0
+        }));
+      }
+
+      getPlayerCareerStats(playerName) {
+        const player = this.data.players[playerName];
+        if (!player) return null;
+        return {
+          ...player,
+          winRate: player.games > 0 ? Math.round((player.wins / player.games) * 100) : 0,
+          eloHistory: (player.eloHistory || []).slice(-30),
+          recentMatches: this.getPlayerMatches(playerName).slice(0, 10)
+        };
+      }
+
+      checkAchievements(playerName) {
+        const player = this.ensurePlayer(playerName);
+        let newAchievements = 0;
+
+        ACHIEVEMENTS.forEach(a => {
+          if (!player.achievements.includes(a.id) && a.condition(player)) {
+            player.achievements.push(a.id);
+            newAchievements++;
+          }
+        });
+
+        if (newAchievements > 0) {
+          this.save();
+        }
+
+        return newAchievements;
+      }
+    }
+
+    const competitive = new CompetitiveDB();
   </script>
 </body>
 </html>
