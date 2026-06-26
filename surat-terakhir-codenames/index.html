@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Codenames</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#F5F0FF', 100:'#EDE0FF', 500:'#8A2BE2', 600:'#7823CC' },
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    html { font-family: 'Geist', system-ui, sans-serif; }
+    body { -webkit-font-smoothing: antialiased; background: #0F1117; color: #E2E8F0; }
+    [x-cloak] { display: none !important; }
+
+    .panel {
+      background: #1A1D27;
+      border-radius: 16px;
+      border: 1px solid #2A2D3A;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .panel-header {
+      background: #232734;
+      border-radius: 16px 16px 0 0;
+      padding: 12px 18px;
+      border-bottom: 1px solid #2A2D3A;
+    }
+    .panel-body { padding: 16px; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8A2BE2, #7C3AED);
+      color: white;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(138,43,226,0.35); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-secondary {
+      background: #232734;
+      color: #94A3B8;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.15s;
+      border: 1px solid #2A2D3A;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: #2A2D3A; color: #E2E8F0; }
+    .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    .btn-action {
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.15s;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+    }
+    .btn-action:hover { transform: translateY(-1px); }
+    .btn-action:active { transform: translateY(0); }
+    .btn-action:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    /* === WORD CARD BASE === */
+    .word-card {
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 2px solid transparent;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      user-select: none;
+      background: #232734;
+      border-color: #2A2D3A;
+      color: #94A3B8;
+    }
+    .word-card:hover { background: #2A2D3A; border-color: #3B3F52; transform: translateY(-1px); }
+
+    /* === TEAM-SPECIFIC OWN WORDS (Spymaster View) === */
+    .word-card.own-red {
+      background: #2D0E0E !important;
+      border-color: #7F1D1D !important;
+      color: #FCA5A5 !important;
+      font-weight: 800 !important;
+      font-size: 14px !important;
+    }
+    .word-card.own-red:hover { background: #3B1010 !important; }
+
+    .word-card.own-blue {
+      background: #0A1530 !important;
+      border-color: #1E3A5F !important;
+      color: #93C5FD !important;
+      font-weight: 800 !important;
+      font-size: 14px !important;
+    }
+    .word-card.own-blue:hover { background: #0C1F3F !important; }
+
+    /* === ASSASSIN (Spymaster View — subtle, deceiving) === */
+    .word-card.danger-assassin {
+      background: #2A1525 !important;
+      border-color: #6B1D3A !important;
+      color: #E8A0B0 !important;
+      font-weight: 800 !important;
+      font-size: 14px !important;
+    }
+    .word-card.danger-assassin:hover { background: #3A1A2F !important; }
+
+    /* === TAPPED/SELECTED — distinctive, can't be confused with team colors === */
+    .word-card.sel-red {
+      background: #7F1D1D !important;
+      border-color: #F87171 !important;
+      border-width: 3px !important;
+      border-style: solid !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 28px rgba(239,68,68,0.5) !important;
+      transform: scale(1.06) !important;
+    }
+    .word-card.sel-red::after {
+      content: '✓';
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      background: #EF4444;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 20px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .word-card.sel-blue {
+      background: #1E3A5F !important;
+      border-color: #60A5FA !important;
+      border-width: 3px !important;
+      border-style: solid !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 28px rgba(59,130,246,0.5) !important;
+      transform: scale(1.06) !important;
+    }
+    .word-card.sel-blue::after {
+      content: '✓';
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      background: #3B82F6;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 20px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .word-card.sel-red:hover, .word-card.sel-blue:hover { transform: scale(1.06) !important; }
+
+    /* === REVEALED — completely different look from own/selected === */
+    .word-card.revealed {
+      cursor: default !important;
+      pointer-events: none !important;
+      opacity: 0.85;
+    }
+    .word-card.revealed-red {
+      background: #3B1010 !important;
+      border-color: #DC2626 !important;
+      border-width: 2px !important;
+      border-style: dashed !important;
+      color: #FCA5A5 !important;
+      font-size: 12px !important;
+      opacity: 0.75;
+    }
+    .word-card.revealed-blue {
+      background: #0C1F3F !important;
+      border-color: #2563EB !important;
+      border-width: 2px !important;
+      border-style: dashed !important;
+      color: #93C5FD !important;
+      font-size: 12px !important;
+      opacity: 0.75;
+    }
+    .word-card.revealed-neutral {
+      background: #1A1D27 !important;
+      border-color: #4B5563 !important;
+      border-width: 2px !important;
+      border-style: dashed !important;
+      color: #6B7280 !important;
+      font-size: 12px !important;
+    }
+    .word-card.revealed-assassin {
+      background: #000000 !important;
+      border-color: #7F1D1D !important;
+      border-width: 2px !important;
+      border-style: dashed !important;
+      color: #DC2626 !important;
+      font-size: 12px !important;
+    }
+
+    .revealed-label {
+      font-size: 10px;
+      margin-top: 2px;
+      opacity: 0.7;
+    }
+
+    /* === TIMER === */
+    .timer-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-warning { color: #F59E0B; }
+    .timer-danger { color: #EF4444; animation: pulse 0.5s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* === TOAST === */
+    @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slideOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-20px); opacity: 0; } }
+    .toast-enter { animation: slideIn 0.25s ease-out; }
+    .toast-leave { animation: slideOut 0.2s ease-in forwards; }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2A2D3A; border-radius: 3px; }
+
+    /* === SELECT/DROPDOWN === */
+    select { background-color: #232734; color: #E2E8F0; border-color: #2A2D3A; }
+    select:focus { border-color: #8A2BE2; outline: none; box-shadow: 0 0 0 2px rgba(138,43,226,0.2); }
+    input[type="text"] { background-color: #232734; color: #E2E8F0; border-color: #2A2D3A; }
+    input[type="text"]:focus { border-color: #8A2BE2; outline: none; box-shadow: 0 0 0 2px rgba(138,43,226,0.2); }
+
+    /* === BADGE === */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    /* === PUNISHMENT WHEEL === */
+    .wheel-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+    }
+    .wheel-pointer {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      font-size: 28px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+    .wheel-spinner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+      box-shadow: 0 0 0 6px #2A2D3A, 0 0 40px rgba(138,43,226,0.3);
+    }
+    .wheel-label {
+      position: absolute;
+      width: 30px;
+      height: 20px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      transform-origin: center;
+      pointer-events: none;
+    }
+    .wheel-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #1A1D27;
+      border: 3px solid #2A2D3A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      z-index: 5;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    /* === PUNISHMENT REVEAL === */
+    .punishment-reveal {
+      animation: punishReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes punishReveal {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* === SPIN BUTTON PULSE === */
+    .spin-btn {
+      background: linear-gradient(135deg, #8A2BE2, #6D28D9);
+      color: white;
+      border-radius: 999px;
+      padding: 14px 36px;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 24px rgba(138,43,226,0.4);
+    }
+    .spin-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 32px rgba(138,43,226,0.5); }
+    .spin-btn:active:not(:disabled) { transform: translateY(0); }
+    .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* === PUNISHMENT TEXT === */
+    .punishment-card {
+      background: linear-gradient(135deg, #1E1B4B, #2D1B69);
+      border: 1px solid #4C1D95;
+      border-radius: 16px;
+      padding: 24px 32px;
+      text-align: center;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .punishment-card .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #A78BFA;
+    }
+    .punishment-card .emoji {
+      font-size: 40px;
+      margin: 8px 0;
+    }
+    .punishment-card .text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #E2E8F0;
+      line-height: 1.5;
+    }
+
+    /* === STATS / HISTORY === */
+    .stat-card {
+      background: #232734;
+      border-radius: 12px;
+      padding: 14px 18px;
+      border: 1px solid #2A2D3A;
+    }
+    .stat-card .label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748B;
+    }
+    .stat-card .value {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .history-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .history-row:nth-child(odd) { background: rgba(255,255,255,0.03); }
+
+    /* === MOBILE RESPONSIVE === */
+    @media (max-width: 480px) {
+      .wheel-wrapper { width: 220px; height: 220px; }
+      .wheel-center { width: 44px; height: 44px; font-size: 18px; }
+      .wheel-label { font-size: 11px; width: 24px; }
+      .punishment-card { padding: 18px 20px; }
+      .punishment-card .text { font-size: 15px; }
+      .word-card { font-size: 11px !important; padding: 6px 3px !important; min-height: 44px; }
+      .word-card .text-[11px] { font-size: 10px !important; }
+      .word-card.own-red, .word-card.own-blue, .word-card.danger-assassin { font-size: 12px !important; }
+    }
+    @media (max-width: 380px) {
+      .word-card { font-size: 10px !important; padding: 4px 2px !important; min-height: 38px; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0F1117] antialiased">
+
+  <div x-data="codenamesGame()" x-init="init()">
+
+    <!-- ====== HEADER ====== -->
+    <header class="bg-[#1A1D27] border-b border-[#2A2D3A] sticky top-0 z-50">
+      <div class="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-xs font-black">BC</div>
+          <div>
+            <div class="text-white font-bold text-sm leading-tight">Bible Codenames</div>
+            <div class="text-[10px] text-gray-500 leading-tight">Hybrid Mode</div>
+          </div>
+        </div>
+
+        <div x-show="phase === 'game'" class="flex items-center gap-2">
+          <!-- Round -->
+          <div class="bg-[#232734] rounded-lg px-2.5 py-1.5 text-xs font-bold text-gray-400">
+            R<span x-text="currentRound"></span>
+          </div>
+
+          <!-- Assassin hits display -->
+          <div x-show="assassinHitsA > 0 || assassinHitsB > 0" class="bg-[#232734] rounded-lg px-2.5 py-1.5 flex items-center gap-1.5">
+            <span class="text-xs">☠️</span>
+            <span class="text-xs font-bold text-red-400" x-text="assassinHitsA"></span>
+            <span class="text-[10px] text-gray-500">/</span>
+            <span class="text-xs font-bold text-blue-400" x-text="assassinHitsB"></span>
+          </div>
+
+          <!-- Spy/Normal toggle -->
+          <button @click="toggleSpymasterView()" 
+                  :class="spymasterView ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' : 'bg-[#232734] text-gray-500 border-[#2A2D3A]'" 
+                  class="rounded-lg px-2.5 py-1.5 text-xs font-bold transition-all border flex items-center gap-1.5">
+            <span x-text="spymasterView ? '👁' : '👁'"></span>
+            <span x-text="spymasterView ? 'SPY' : 'N'"></span>
+          </button>
+
+          <!-- Timer -->
+          <div class="bg-[#232734] rounded-lg px-2.5 py-1.5 timer-display text-sm flex items-center gap-1.5"
+               :class="timer <= 10 ? 'timer-danger' : timer <= 30 ? 'timer-warning' : 'text-gray-300'">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5"/></svg>
+            <span x-text="formatTime(timer)"></span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ====== TOAST ====== -->
+    <div x-show="toast.show" x-transition:enter="toast-enter" x-transition:leave="toast-leave" 
+         class="fixed top-16 left-1/2 -translate-x-1/2 z-[60] w-full max-w-sm px-4 pointer-events-none">
+      <div class="rounded-xl shadow-2xl px-5 py-3 flex items-center gap-3 backdrop-blur-xl pointer-events-auto"
+           :class="toast.type === 'success' ? 'bg-green-600/90 text-white' : toast.type === 'error' ? 'bg-red-600/90 text-white' : toast.type === 'warning' ? 'bg-yellow-600/90 text-white' : 'bg-gray-800/90 text-white'">
+        <span class="text-2xl flex-shrink-0" x-text="toast.icon"></span>
+        <div class="min-w-0">
+          <div class="font-bold text-sm leading-tight" x-text="toast.title"></div>
+          <div class="text-xs opacity-80 mt-0.5 leading-tight" x-text="toast.message"></div>
+        </div>
+      </div>
+    </div>
+
+    <main class="max-w-5xl mx-auto px-4 py-6">
+
+      <!-- ====== PHASE: SETUP ====== -->
+      <div x-show="phase === 'setup'" x-cloak>
+        <div class="panel max-w-sm mx-auto">
+          <div class="panel-header text-center">
+            <div class="text-xs font-bold text-purple-400 tracking-widest">SETUP GAME</div>
+            <div class="text-white font-extrabold text-lg mt-0.5">Bible Codenames</div>
+          </div>
+          <div class="panel-body space-y-5">
+            <div class="text-center">
+              <div class="text-xs font-semibold text-gray-400 mb-3">Jumlah Pemain</div>
+              <div class="flex items-center justify-center gap-5">
+                <button @click="playerCount = Math.max(4, playerCount - 1)" 
+                        class="w-11 h-11 rounded-full bg-[#232734] hover:bg-[#2A2D3A] flex items-center justify-center text-white text-xl font-bold border border-[#2A2D3A] transition-all">−</button>
+                <div class="text-center">
+                  <div class="font-extrabold text-5xl text-white" x-text="playerCount"></div>
+                  <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-1">pemain</div>
+                </div>
+                <button @click="playerCount = Math.min(10, playerCount + 1)" 
+                        class="w-11 h-11 rounded-full bg-[#232734] hover:bg-[#2A2D3A] flex items-center justify-center text-white text-xl font-bold border border-[#2A2D3A] transition-all">+</button>
+              </div>
+              <div class="text-[11px] text-gray-500 mt-2">Minimal 4 pemain (2 per tim)</div>
+            </div>
+            <button @click="startNameInput()" :disabled="playerCount < 4" 
+                    class="w-full btn-primary py-3 text-sm flex items-center justify-center gap-2">
+              <span>LANJUTKAN</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== PHASE: INPUT NAMA ====== -->
+      <div x-show="phase === 'names'" x-cloak>
+        <div class="panel max-w-sm mx-auto">
+          <div class="panel-header">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-purple-400 tracking-widest">INPUT NAMA</div>
+                <div class="text-white font-bold text-sm mt-0.5">Masukkan nama pemain</div>
+              </div>
+              <div class="badge bg-purple-500/20 text-purple-300 border border-purple-500/20">
+                <span x-text="playerNames.length"></span>/<span x-text="playerCount"></span>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body space-y-3">
+            <div class="flex gap-2">
+              <input x-model="currentPlayerInput" @keydown.enter="addPlayer()" type="text" 
+                     class="flex-1 bg-[#232734] border border-[#2A2D3A] rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all" 
+                     placeholder="Nama pemain" maxlength="20">
+              <button @click="addPlayer()" :disabled="!currentPlayerInput.trim() || playerNames.length >= playerCount" 
+                      class="btn-primary px-4 flex items-center gap-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto">
+              <template x-for="(name, index) in playerNames" :key="index">
+                <div class="flex items-center justify-between bg-[#232734] rounded-xl px-4 py-2.5 border border-[#2A2D3A] group">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500/30 to-purple-700/30 flex items-center justify-center text-xs font-bold text-purple-300" 
+                         x-text="name.charAt(0).toUpperCase()"></div>
+                    <span class="text-sm font-medium text-gray-300" x-text="name"></span>
+                  </div>
+                  <button @click="removePlayer(index)" class="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </template>
+              <div x-show="playerNames.length === 0" class="text-center text-gray-600 text-xs py-4">
+                Belum ada pemain. Masukkan nama di atas.
+              </div>
+            </div>
+            <button @click="startVoting()" :disabled="!canStartVoting()" 
+                    class="w-full btn-primary py-3 text-sm">LANJUT KE VOTING</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== PHASE: VOTING KAPTEN ====== -->
+      <div x-show="phase === 'voting'" x-cloak>
+        <div class="panel max-w-sm mx-auto">
+          <div class="panel-header">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-purple-400 tracking-widest">VOTING KAPTEN</div>
+                <div class="text-white font-bold text-sm mt-0.5">Pilih 2 kapten tim</div>
+              </div>
+              <div class="badge bg-purple-500/20 text-purple-300 border border-purple-500/20">
+                <span x-text="currentVoterIndex + 1"></span>/<span x-text="playerNames.length"></span>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body space-y-4">
+            <div class="text-center border-b border-[#2A2D3A] pb-3">
+              <div class="text-[10px] text-gray-500 uppercase tracking-wider">Voting oleh</div>
+              <div class="font-extrabold text-lg text-white mt-0.5" x-text="playerNames[currentVoterIndex]"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1.5">Kapten 1</label>
+              <select x-model="selectedCaptain1" class="w-full rounded-xl px-4 py-2.5 text-sm">
+                <option value="">— Pilih —</option>
+                <template x-for="name in playerNames" :key="name">
+                  <option :value="name" x-text="name"></option>
+                </template>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1.5">Kapten 2</label>
+              <select x-model="selectedCaptain2" class="w-full rounded-xl px-4 py-2.5 text-sm">
+                <option value="">— Pilih —</option>
+                <template x-for="name in playerNames.filter(n => n !== selectedCaptain1)" :key="name">
+                  <option :value="name" x-text="name"></option>
+                </template>
+              </select>
+            </div>
+            <button @click="submitVote()" :disabled="!selectedCaptain1 || !selectedCaptain2 || selectedCaptain1 === selectedCaptain2" 
+                    class="w-full btn-primary py-3">SUBMIT VOTE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== PHASE: TEAMS ====== -->
+      <div x-show="phase === 'teams'" x-cloak>
+        <div class="grid md:grid-cols-2 gap-4">
+          <!-- Team A -->
+          <div class="panel overflow-hidden">
+            <div class="bg-gradient-to-r from-red-900/40 to-red-800/20 px-5 py-3 border-b border-red-900/30">
+              <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                <div>
+                  <div class="text-xs font-bold text-red-400 tracking-widest">TIM A</div>
+                  <div class="text-white font-extrabold text-base leading-tight" x-text="teamA.name"></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body space-y-3">
+              <div class="bg-[#232734] rounded-xl p-3 border border-[#2A2D3A]">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-lg">👑</span>
+                  <div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Kapten</div>
+                    <div class="font-bold text-sm text-red-400" x-text="teamA.captain"></div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Anggota</div>
+                <div class="space-y-1">
+                  <template x-for="name in teamA.players.filter(n => n !== teamA.captain)" :key="name">
+                    <div class="text-sm text-gray-400 flex items-center gap-2">
+                      <span class="w-1 h-1 rounded-full bg-red-500/50"></span>
+                      <span x-text="name"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div class="bg-[#232734] rounded-xl p-3 border border-[#2A2D3A]">
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Urutan Spymaster</div>
+                <div class="text-xs text-gray-400" x-text="spymasterOrderA.join(' → ')"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Team B -->
+          <div class="panel overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-900/40 to-blue-800/20 px-5 py-3 border-b border-blue-900/30">
+              <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                <div>
+                  <div class="text-xs font-bold text-blue-400 tracking-widest">TIM B</div>
+                  <div class="text-white font-extrabold text-base leading-tight" x-text="teamB.name"></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body space-y-3">
+              <div class="bg-[#232734] rounded-xl p-3 border border-[#2A2D3A]">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-lg">👑</span>
+                  <div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Kapten</div>
+                    <div class="font-bold text-sm text-blue-400" x-text="teamB.captain"></div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Anggota</div>
+                <div class="space-y-1">
+                  <template x-for="name in teamB.players.filter(n => n !== teamB.captain)" :key="name">
+                    <div class="text-sm text-gray-400 flex items-center gap-2">
+                      <span class="w-1 h-1 rounded-full bg-blue-500/50"></span>
+                      <span x-text="name"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div class="bg-[#232734] rounded-xl p-3 border border-[#2A2D3A]">
+                <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Urutan Spymaster</div>
+                <div class="text-xs text-gray-400" x-text="spymasterOrderB.join(' → ')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button @click="startGame()" 
+                class="w-full btn-primary py-4 mt-5 flex items-center justify-center gap-2 text-base">
+          <span>MULAI GAME</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- ====== PHASE: GAME ====== -->
+      <div x-show="phase === 'game'" x-cloak>
+
+        <!-- Current Turn Banner -->
+        <div class="rounded-2xl mb-4 overflow-hidden border"
+             :class="currentTeam === 'A' ? 'bg-gradient-to-r from-red-900/40 to-red-800/10 border-red-900/30' : 'bg-gradient-to-r from-blue-900/40 to-blue-800/10 border-blue-900/30'">
+          <div class="px-5 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-4 h-4 rounded-full"
+                   :class="currentTeam === 'A' ? 'bg-red-500 animate-pulse' : 'bg-blue-500 animate-pulse'"></div>
+              <div>
+                <div class="text-xs font-bold text-gray-500 tracking-widest">GILIRAN</div>
+                <div class="font-extrabold text-lg"
+                     :class="currentTeam === 'A' ? 'text-red-400' : 'text-blue-400'"
+                     x-text="currentTeamName()"></div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-bold text-gray-500 tracking-widest">SPYMASTER</div>
+              <div class="font-bold text-sm text-gray-300" x-text="currentSpymaster()"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score Cards -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="panel overflow-hidden">
+            <div class="flex items-stretch">
+              <div class="w-1.5 bg-red-500 flex-shrink-0"></div>
+              <div class="flex-1 px-4 py-3">
+                <div class="text-xs font-bold text-red-400 tracking-widest" x-text="teamA.name"></div>
+                <div class="flex items-baseline gap-3 mt-1">
+                  <span class="font-extrabold text-3xl text-red-300" x-text="scoreA"></span>
+                  <span class="text-xs text-gray-500">sisa <span class="font-bold text-red-400" x-text="remainingA"></span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel overflow-hidden">
+            <div class="flex items-stretch">
+              <div class="w-1.5 bg-blue-500 flex-shrink-0"></div>
+              <div class="flex-1 px-4 py-3">
+                <div class="text-xs font-bold text-blue-400 tracking-widest" x-text="teamB.name"></div>
+                <div class="flex items-baseline gap-3 mt-1">
+                  <span class="font-extrabold text-3xl text-blue-300" x-text="scoreB"></span>
+                  <span class="text-xs text-gray-500">sisa <span class="font-bold text-blue-400" x-text="remainingB"></span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assassin Warning Banner -->
+        <div x-show="assassinHitsA > 0 || assassinHitsB > 0" class="mb-4">
+          <div class="bg-red-900/20 border border-red-800/30 rounded-xl px-4 py-2.5 flex items-center gap-3">
+            <span class="text-lg">☠️</span>
+            <div class="flex-1">
+              <div class="text-xs font-bold text-red-400">ASSASSIN TERANCAM</div>
+              <div class="text-xs text-gray-500">
+                Tim Merah: <span class="text-red-400 font-bold" x-text="assassinHitsA"></span>/<span x-text="maxAssassinHits"></span> hit
+                · Tim Biru: <span class="text-blue-400 font-bold" x-text="assassinHitsB"></span>/<span x-text="maxAssassinHits"></span> hit
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Word Grid -->
+        <div class="panel mb-4 overflow-hidden">
+          <div class="panel-header flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-purple-400 tracking-widest">GRID 5×5</div>
+            </div>
+            <div class="text-[10px] text-gray-500">
+              <span x-show="spymasterView" class="text-purple-400 font-semibold">Spymaster View</span>
+              <span x-show="!spymasterView" class="text-gray-500">Normal View</span>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="grid grid-cols-5 gap-1.5">
+              <template x-for="(item, index) in grid" :key="item.word">
+                <div @click="toggleSelect(index)" class="word-card" :class="getWordCardClass(item, index)">
+                  <div class="leading-tight">
+                    <div class="text-[11px] leading-tight font-bold" x-text="item.word"></div>
+                    <div x-show="item.revealed" class="revealed-label" x-text="getRevealedLabel(item)"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Surrender Warning Banner (shows when close to auto-surrender) -->
+        <div x-show="consecutiveMissesA >= 1 || consecutiveMissesB >= 1" class="mb-4">
+          <div class="bg-yellow-900/20 border border-yellow-800/30 rounded-xl px-4 py-2.5 flex items-center gap-3">
+            <span class="text-lg">🏳️</span>
+            <div class="flex-1">
+              <div class="text-xs font-bold text-yellow-400">BAHAYA MENYERAH</div>
+              <div class="text-xs text-gray-500">
+                Tim Merah: <span class="text-red-400 font-bold" x-text="consecutiveMissesA + '/' + maxConsecutiveMisses"></span> giliran gagal
+                · Tim Biru: <span class="text-blue-400 font-bold" x-text="consecutiveMissesB + '/' + maxConsecutiveMisses"></span> giliran gagal
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="panel">
+          <div class="panel-body">
+            <div class="flex flex-wrap gap-2 justify-center">
+              <button @click="undoSelection()" :disabled="selectedIndices.length === 0" 
+                      class="btn-action bg-[#232734] text-gray-400 border border-[#2A2D3A] flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 10h13a4 4 0 010 8H7"/><path d="M7 6l-4 4 4 4"/></svg>
+                <span>UNDO</span>
+              </button>
+              <button @click="passTurn()" 
+                      class="btn-action bg-[#232734] text-gray-400 border border-[#2A2D3A] flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                <span>PASS</span>
+              </button>
+              <button @click="confirmTurn()" :disabled="selectedIndices.length === 0" 
+                      class="btn-action bg-purple-600 text-white hover:bg-purple-500 flex items-center gap-1.5 shadow-lg shadow-purple-600/25">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                <span>SELESAI GILIRAN</span>
+              </button>
+              <button @click="surrender()" 
+                      class="btn-action bg-red-900/60 text-red-300 border border-red-800/50 hover:bg-red-800/60 hover:text-red-200 flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M6 6v12a2 2 0 002 2h8a2 2 0 002-2V6M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/></svg>
+                <span>MENYERAH</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== PHASE: END ====== -->
+      <div x-show="phase === 'end'" x-cloak>
+        <div class="panel text-center max-w-lg mx-auto">
+          <div class="panel-body py-10">
+            <div class="text-6xl mb-3" x-text="winner === 'A' ? '🔴' : '🔵'"></div>
+            <h2 class="font-extrabold text-3xl mb-1"
+                :class="winner === 'A' ? 'text-red-400' : 'text-blue-400'"
+                x-text="winnerName() + ' MENANG!'"></h2>
+            <p class="text-gray-500 text-sm mb-1" x-text="winReason"></p>
+            <p class="text-xs text-gray-600 mb-5">Ronde <span x-text="currentRound"></span> selesai</p>
+
+            <!-- Current round scores -->
+            <div class="grid grid-cols-2 gap-3 max-w-xs mx-auto mb-6">
+              <div class="bg-[#232734] rounded-xl p-4 border border-[#2A2D3A]">
+                <div class="text-[10px] font-bold text-red-400 tracking-widest mb-1" x-text="teamA.name"></div>
+                <div class="font-extrabold text-3xl text-red-300" x-text="scoreA"></div>
+              </div>
+              <div class="bg-[#232734] rounded-xl p-4 border border-[#2A2D3A]">
+                <div class="text-[10px] font-bold text-blue-400 tracking-widest mb-1" x-text="teamB.name"></div>
+                <div class="font-extrabold text-3xl text-blue-300" x-text="scoreB"></div>
+              </div>
+            </div>
+
+            <!-- Stats: total wins -->
+            <div x-show="roundHistory.length > 0" class="max-w-xs mx-auto mb-6">
+              <div class="grid grid-cols-2 gap-3">
+                <div class="stat-card">
+                  <div class="label">🏆 <span x-text="teamA.name"></span></div>
+                  <div class="value text-red-400" x-text="totalWins('A') + ' menang'"></div>
+                </div>
+                <div class="stat-card">
+                  <div class="label">🏆 <span x-text="teamB.name"></span></div>
+                  <div class="value text-blue-400" x-text="totalWins('B') + ' menang'"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Round history list -->
+            <div x-show="roundHistory.length > 1" class="max-w-xs mx-auto mb-6 text-left">
+              <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Riwayat Ronde</div>
+              <template x-for="(r, i) in roundHistory" :key="i">
+                <div class="history-row">
+                  <span class="text-gray-600 font-mono w-6 text-right" x-text="'R' + r.round"></span>
+                  <span class="w-3 h-3 rounded-full flex-shrink-0"
+                        :class="r.winner === 'A' ? 'bg-red-500' : 'bg-blue-500'"></span>
+                  <span class="font-semibold text-gray-300" x-text="r.winnerName"></span>
+                  <span class="text-gray-600 text-[10px] ml-auto" x-text="r.scoreA + '-' + r.scoreB"></span>
+                </div>
+              </template>
+            </div>
+
+            <div class="flex flex-col gap-3 items-center">
+              <button @click="goToPunishment()" 
+                      class="spin-btn inline-flex items-center gap-2">
+                <span>🎯</span>
+                <span>LIHAT HUKUMAN</span>
+              </button>
+              <div class="flex gap-3">
+                <button @click="nextRound()" class="btn-primary px-6 py-2.5 text-sm flex items-center gap-2">
+                  <span>LANGSUNG RONDE BERIKUTNYA</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </button>
+                <button @click="resetGame()" class="btn-secondary px-5 py-2.5 text-sm">RESET</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== PHASE: PUNISHMENT ====== -->
+      <div x-show="phase === 'punishment'" x-cloak>
+        <div class="panel max-w-lg mx-auto text-center">
+          <div class="panel-body py-8">
+            <!-- Header -->
+            <div class="mb-6">
+              <div class="text-xs font-bold text-purple-400 tracking-widest mb-1">RODA HUKUMAN</div>
+              <h2 class="text-white font-extrabold text-2xl">Tim yang Kalah: <span class="text-yellow-400" x-text="loserName()"></span></h2>
+              <p class="text-gray-500 text-xs mt-1">Putar roda untuk menentukan hukuman!</p>
+            </div>
+
+            <!-- Wheel -->
+            <div class="wheel-wrapper mb-6">
+              <div class="wheel-pointer">🎯</div>
+              <div class="wheel-spinner" :style="{ transform: 'rotate(' + wheelRotation + 'deg)', background: getWheelBg() }">
+                <template x-for="(p, i) in punishments" :key="i">
+                  <div class="wheel-label" :style="getWheelLabelStyle(i)">
+                    <span x-text="i + 1"></span>
+                  </div>
+                </template>
+              </div>
+              <div class="wheel-center">🎲</div>
+            </div>
+
+            <!-- Spin button -->
+            <button x-show="!showPunishmentResult" @click="spinWheel()" :disabled="isSpinning" 
+                    class="spin-btn mb-5">
+              <span x-text="isSpinning ? 'MEMUTAR...' : 'PUTAR RODA HUKUMAN!'"></span>
+            </button>
+
+            <!-- Loading dots while spinning -->
+            <div x-show="isSpinning" class="text-gray-500 text-xs mb-5">
+              <span class="inline-flex gap-1">
+                <span class="animate-pulse">●</span>
+                <span class="animate-pulse" style="animation-delay:0.2s">●</span>
+                <span class="animate-pulse" style="animation-delay:0.4s">●</span>
+              </span>
+            </div>
+
+            <!-- Punishment result -->
+            <div x-show="showPunishmentResult && currentPunishment !== null" class="punishment-reveal">
+              <div class="punishment-card mb-5">
+                <div class="label">HUKUMAN</div>
+                <div class="emoji" x-text="punishments[currentPunishment].emoji"></div>
+                <div class="text" x-text="punishments[currentPunishment].text"></div>
+              </div>
+              <div class="bg-[#232734] rounded-xl border border-[#2A2D3A] px-5 py-3 mb-4 inline-block">
+                <div class="text-xs text-gray-500">Dilaksanakan oleh</div>
+                <div class="font-extrabold text-lg text-yellow-400" x-text="loserName()"></div>
+              </div>
+              <button @click="nextRound()" 
+                      class="btn-primary px-8 py-3.5 text-base flex items-center gap-2 mx-auto">
+                <span>LANJUT KE RONDE BERIKUTNYA</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    const WORDS = {
+      people: ["DAUD","MUSA","PAULUS","ABRAHAM","YAKUB","YUSUF","DANIEL","ESTER","RUT","NOAH","ELIA","ELISA","GIDEON","SAMSON","DEBORA","MARIA","PETRUS","YOHANES","MATIUS","LUKAS","MARKUS","TIMOTIUS","BARNABAS","STEFANUS","FILIPUS","YOSUA","KALEB","RAHAB","ABIGAIL","SARAH","HANA","NAOMI","BOAS","ISHAK","ESAU","BENYAMIN","YUDA","LEWI","AARON","MIRIAM","BALAAM","HERODES","PILATUS","YUDAS","SIMON","BARTIMEUS","ZAKHEUS","YEREMIA","YESAYA","AYUB","SONIA","TOMY","RACHEL","JOSUA","SAMUEL"],
+      places: ["YERUSALEM","YORDAN","SINAI","KARMEL","BETLEHEM","NAZARET","KAPERNAUM","ANTIOKHIA","ROMA","KORINTUS","EFESUS","FILIPPI","TESALONIKA","ATENA","BABEL","NINIWE","SODOMA","GOMORA","MESIR","KENAAN","GALILEA","SAMARIA","YUDEA","GOLGOTA","ZAITUN","TABOR","HERMON","GILEAD","MIZPA","BEERSEBA","YOPA","YERIKHO","PADANG","KALVARI","BETANIA","GATSYEMANI","KAISARIA","MAMRE","MORIA","HOREB","DAMASKUS","TARSUS","KRETA","MALTA","SIPRUS"],
+      objects: ["PEDANG","TOMBOK","SALIB","ROTAN","PAHAT","MAHKOTA","BAHTERA","TANGGA","BATU","LOH","TIANG","AWAN","API","AIR","GAPURA","TIRAI","MEZBAH","MINYAK","ANGGUR","LIDAH","MATA","TANGAN","KAKI","JANTUNG","HATI","ROH","JIWA","TULANG","KULIT","RAMBUT","DARAH","DAGING","MAKANAN","UANG","IKAT","TALI","GARAM","TERANG","GELAP","LAMPU","KUNCI","BENANG"],
+      concepts: ["DOA","IMAN","KASIH","HARAPAN","SUKACITA","HUKUM","INJIL","ANUGERAH","MUKJIZAT","PERTOBATAN","KEBENARAN","KEADILAN","KESABARAN","KERENDAHAN","KEBERANIAN","HIKMAT","PENGETAHUAN","PEMAHAMAN","NASIHAT","AJARAN","BERKAT","KUTUKAN","JANJI","PERJANJIAN","PENGAMPUNAN","KESELAMATAN","PELEPASAN","PEMULIHAN","PEMBARUAN","PENGUDUSAN","DOSA","MAKSUD","PANGGILAN","KETAATAN","PENDERITAAN","KESETIAAN","KARUNIA","PENGHARAPAN","KEMULIAAN","KERAJINAN"],
+      events: ["BANJIR","PEMBELAHAN","KEBANGKITAN","PENTAKOSTA","PENYALIBAN","PELIMPAHAN","PENGORBANAN","PEMBAPTISAN","TRANSFIGURASI","KENAIKAN","KEDATANGAN","PENCIPTAAN","PEMBANGKITAN","PELEPASAN","PEMBEBASAN","PEMULIHAN","PERTEMUAN","PERJALANAN","PERTARUNGAN","PERTEMPURAN","KEMENANGAN","KEKALAHAN","KEHANCURAN","PEMBANGUNAN","PEMBARUAN","PENGGENAPAN","PENGURBANAN","PERNIKAHAN","KELAHIRAN","KEMATIAN","PENGUNGSIAN","PEMBERONTAKAN","PENAKLUKAN","PEKABARAN","PERTUMBUHAN"],
+      animals: ["SINGA","ULAR","DOMBA","KAMBING","LEMBU","KELEDAI","KUDA","BURUNG","MERPATI","ELANG","IKAN","PAUS","SEMUT","BELALANG","LEBAH","ANJING","KUCING","RUSA","BABI","KATAK","CACING","KUMBANG","NGENGAT","RAJUNGT"],
+      nature: ["GUNUNG","LEMBAH","LAUT","SUNGAI","PADANG","GURUN","HUTAN","POHON","BUNGA","BUAH","BINTANG","BULAN","MATAHARI","AWAN","HUJAN","ANGIN","TANAH","BATU","BADAI","PASIR","DEBU","EMAS","PERAK","TEMBAGA","BESI","GEMPA","PELANGI"]
+    };
+
+    // =============== SOUND FX ===============
+    class SoundFX {
+      constructor() {
+        this.ctx = null;
+        this.initialized = false;
+      }
+      init() {
+        if (this.initialized) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.initialized = true;
+      }
+      play(type) {
+        this.init();
+        if (!this.ctx) return;
+        switch(type) {
+          case 'correct': this.playCorrect(); break;
+          case 'wrong': this.playWrong(); break;
+          case 'assassin': this.playAssassin(); break;
+          case 'win': this.playWin(); break;
+          case 'switch': this.playSwitch(); break;
+          case 'tick': this.playTick(); break;
+        }
+      }
+
+      playCorrect() {
+        // Bright ascending arpeggio: C5 → E5 → G5 → C6
+        const notes = [523, 659, 784, 1047];
+        notes.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.type = 'sine';
+          const t = this.ctx.currentTime + i * 0.07;
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.25, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+          osc.start(t);
+          osc.stop(t + 0.12);
+        });
+      }
+
+      playWrong() {
+        // Low buzzer: descending sawtooth
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.type = 'sawtooth';
+        const t = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(180, t);
+        osc.frequency.exponentialRampToValueAtTime(80, t + 0.35);
+        gain.gain.setValueAtTime(0.25, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+        osc.start(t);
+        osc.stop(t + 0.35);
+      }
+
+      playAssassin() {
+        // FAHHH! — Trombone-style descending "wah wah wah"
+        // 3 notes: C4 → G3 → D3 with brass-like timbre + filter sweep
+        const freqs = [262, 196, 147]; // C4, G3, D3
+        for (let i = 0; i < 3; i++) {
+          const t = this.ctx.currentTime + i * 0.28;
+          // Two oscillators for brass-like thickness
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          // Filter for "wah" effect
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+          
+          osc1.type = 'sawtooth';
+          osc2.type = 'triangle';
+          
+          osc1.frequency.setValueAtTime(freqs[i], t);
+          osc2.frequency.setValueAtTime(freqs[i] * 1.51, t); // Slightly detuned for body
+          
+          // Wah filter sweep: open → closed
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(1200, t);
+          filter.frequency.exponentialRampToValueAtTime(180, t + 0.22);
+          filter.Q.setValueAtTime(8, t);
+          
+          osc1.connect(filter);
+          osc2.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+          
+          gain.gain.setValueAtTime(0.25, t);
+          gain.gain.setValueAtTime(0.25, t + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+          
+          osc1.start(t);
+          osc1.stop(t + 0.3);
+          osc2.start(t);
+          osc2.stop(t + 0.3);
+        }
+      }
+
+      playWin() {
+        // Fanfare: ascending major triad
+        const melody = [523, 659, 784, 1047, 784, 1047, 1319];
+        melody.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.type = 'sine';
+          const t = this.ctx.currentTime + i * 0.1;
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.2, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+          osc.start(t);
+          osc.stop(t + 0.25);
+        });
+      }
+
+      playSwitch() {
+        // Quick swoosh
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.type = 'sine';
+        const t = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(300, t);
+        osc.frequency.exponentialRampToValueAtTime(800, t + 0.08);
+        gain.gain.setValueAtTime(0.12, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+        osc.start(t);
+        osc.stop(t + 0.1);
+      }
+
+      playTick() {
+        // Sharp tick
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.type = 'square';
+        const t = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(1200, t);
+        gain.gain.setValueAtTime(0.08, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+        osc.start(t);
+        osc.stop(t + 0.04);
+      }
+    }
+
+    const sfx = new SoundFX();
+
+    // =============== GAME LOGIC ===============
+    function codenamesGame() {
+      return {
+        phase: 'setup',
+        playerCount: 4,
+        playerNames: [],
+        currentPlayerInput: '',
+        captainVotes: {},
+        currentVoterIndex: 0,
+        selectedCaptain1: '',
+        selectedCaptain2: '',
+        teamA: { name: 'Tim Merah', players: [], captain: '' },
+        teamB: { name: 'Tim Biru', players: [], captain: '' },
+        teamAName: '',
+        teamBName: '',
+        grid: [],
+        gridA: [],
+        gridB: [],
+        currentTeam: 'A',
+        selectedIndices: [],
+        scoreA: 0,
+        scoreB: 0,
+        remainingA: 15,
+        remainingB: 15,
+        spymasterView: true,
+        spymasterOrderA: [],
+        spymasterOrderB: [],
+        spymasterIndexA: 0,
+        spymasterIndexB: 0,
+        assassinHitsA: 0,
+        assassinHitsB: 0,
+        maxAssassinHits: 2,
+        timer: 120,
+        timerInterval: null,
+        winner: null,
+        winReason: '',
+        moveHistory: [],
+        consecutiveMissesA: 0,
+        consecutiveMissesB: 0,
+        maxConsecutiveMisses: 3,
+        currentRound: 1,
+        toast: { show: false, type: '', icon: '', title: '', message: '' },
+
+        // ========== PUNISHMENT ROULETTE ==========
+        roundHistory: [],
+        currentPunishment: null,
+        isSpinning: false,
+        wheelRotation: 0,
+        showPunishmentResult: false,
+        punishments: [
+          { label: 'Story IG/WA', emoji: '📸', text: 'Buat Story IG atau Status WA tentang momen lucu di game ini!' },
+          { label: 'Cari Benda K', emoji: '🔍', text: 'Cari 3 benda yang diawali huruf K di sekitar ruangan! (kaca, kunci, kertas...)' },
+          { label: 'Telpon Teman', emoji: '📞', text: 'Telepon 1 teman dan bilang "Aku kangen kamu"!' },
+          { label: 'Push-up 10x', emoji: '💪', text: 'Push-up 10x sambil menyebutkan nama tim lawan!' },
+          { label: 'Nyanyi Lagu', emoji: '🎤', text: 'Nyanyi 1 lagu anak-anak di depan semua orang!' },
+          { label: '3 Pujian', emoji: '💬', text: 'Bilang 3 hal baik tentang anggota tim lawan!' },
+          { label: 'Dance 15dtk', emoji: '🕺', text: 'Dance 15 detik dengan gaya bebas!' },
+          { label: 'Puisi 2 Baris', emoji: '📝', text: 'Buat puisi 2 baris tentang kekalahan tim barusan!' },
+          { label: 'Jalan Kepiting', emoji: '🦀', text: 'Berjalan seperti kepiting dari ujung ke ujung ruangan!' },
+          { label: 'Aksen Daerah', emoji: '🗣️', text: 'Berbicara dengan aksen daerah tertentu selama 1 giliran!' },
+        ],
+
+        init() {},
+
+        // ========== SETUP ==========
+        startNameInput() {
+          this.phase = 'names';
+          this.playerNames = [];
+          this.currentPlayerInput = '';
+        },
+
+        addPlayer() {
+          const name = this.currentPlayerInput.trim();
+          if (name && !this.playerNames.includes(name) && this.playerNames.length < this.playerCount) {
+            this.playerNames.push(name);
+            this.currentPlayerInput = '';
+            sfx.play('switch');
+          }
+        },
+
+        removePlayer(index) {
+          this.playerNames.splice(index, 1);
+        },
+
+        canStartVoting() {
+          return this.playerNames.length === this.playerCount;
+        },
+
+        startVoting() {
+          this.phase = 'voting';
+          this.currentVoterIndex = 0;
+          this.captainVotes = {};
+          this.playerNames.forEach(name => { this.captainVotes[name] = 0; });
+          this.selectedCaptain1 = '';
+          this.selectedCaptain2 = '';
+        },
+
+        submitVote() {
+          if (this.selectedCaptain1 && this.selectedCaptain2 && this.selectedCaptain1 !== this.selectedCaptain2) {
+            this.captainVotes[this.selectedCaptain1]++;
+            this.captainVotes[this.selectedCaptain2]++;
+            this.selectedCaptain1 = '';
+            this.selectedCaptain2 = '';
+            this.currentVoterIndex++;
+            if (this.currentVoterIndex >= this.playerNames.length) {
+              this.formTeams();
+            }
+          }
+        },
+
+        formTeams() {
+          const sorted = Object.entries(this.captainVotes).sort((a, b) => b[1] - a[1]);
+          const captain1 = sorted[0][0];
+          const captain2 = sorted[1][0];
+          const others = this.playerNames.filter(n => n !== captain1 && n !== captain2).sort(() => Math.random() - 0.5);
+          const team1 = [captain1];
+          const team2 = [captain2];
+          others.forEach((name, i) => {
+            if (i % 2 === 0) team1.push(name);
+            else team2.push(name);
+          });
+          this.teamA = { name: 'Tim Merah', players: team1, captain: captain1 };
+          this.teamB = { name: 'Tim Biru', players: team2, captain: captain2 };
+          this.spymasterOrderA = [...team1].sort(() => Math.random() - 0.5);
+          this.spymasterOrderB = [...team2].sort(() => Math.random() - 0.5);
+          this.spymasterIndexA = 0;
+          this.spymasterIndexB = 0;
+          this.phase = 'teams';
+          sfx.play('switch');
+        },
+
+        // ========== GAME ==========
+        startGame() {
+          this.generateGrids();
+          this.grid = [...this.gridA];
+          this.phase = 'game';
+          this.currentRound = 1;
+          this.startTimer();
+          sfx.play('switch');
+        },
+
+        generateGrids() {
+          // === SEMANTIC CLUSTERING ===
+          // Split 7 categories into 2 thematic clusters.
+          // Both team words AND neutral/assassin dalam satu grid
+          // berasal dari cluster kategori yang SAMA — biar makin mengecoh.
+          const cats = ['people','places','objects','concepts','events','animals','nature'];
+          const shuffledCats = [...cats].sort(() => Math.random() - 0.5);
+          const catsA = shuffledCats.slice(0, 4); // 4 kategori untuk Grid A
+          const catsB = shuffledCats.slice(4);    // 3 kategori untuk Grid B
+
+          // Bangun pool kata per cluster (Set untuk dedup antar kategori)
+          const poolA = [...new Set(catsA.flatMap(c => WORDS[c]))];
+          const poolB = [...new Set(catsB.flatMap(c => WORDS[c]))];
+
+          // Acak dan ambil 25 kata per grid
+          const pickA = [...poolA].sort(() => Math.random() - 0.5).slice(0, 25);
+          const pickB = [...poolB].sort(() => Math.random() - 0.5).slice(0, 25);
+
+          // Acak warna per grid (komposisi tetap)
+          const gridAColors = [
+            ...Array(15).fill('red'),
+            ...Array(8).fill('neutral'),
+            ...Array(2).fill('assassin')
+          ].sort(() => Math.random() - 0.5);
+
+          const gridBColors = [
+            ...Array(15).fill('blue'),
+            ...Array(8).fill('neutral'),
+            ...Array(2).fill('assassin')
+          ].sort(() => Math.random() - 0.5);
+
+          this.gridA = pickA.map((word, i) => ({
+            word,
+            color: gridAColors[i],
+            revealed: false,
+            revealedBy: null
+          }));
+
+          this.gridB = pickB.map((word, i) => ({
+            word,
+            color: gridBColors[i],
+            revealed: false,
+            revealedBy: null
+          }));
+        },
+
+        toggleSelect(index) {
+          const item = this.grid[index];
+          if (item.revealed) return;
+          const idx = this.selectedIndices.indexOf(index);
+          if (idx === -1) {
+            this.selectedIndices.push(index);
+          } else {
+            this.selectedIndices.splice(idx, 1);
+          }
+        },
+
+        undoSelection() {
+          this.selectedIndices = [];
+          sfx.play('switch');
+        },
+
+        passTurn() {
+          sfx.play('switch');
+          this.switchTeam();
+        },
+
+        surrender() {
+          if (!confirm(this.currentTeamName() + ' benar-benar ingin MENYERAH? Tim lawan akan menang.')) return;
+          sfx.play('wrong');
+          const loser = this.currentTeamName();
+          this.endGame(this.currentTeam === 'A' ? 'B' : 'A', loser + ' memutuskan menyerah!');
+        },
+
+        confirmTurn() {
+          let hitAssassin = false;
+          let correctCount = 0;
+          let wrongCount = 0;
+
+          this.selectedIndices.forEach(index => {
+            const item = this.grid[index];
+            item.revealed = true;
+            item.revealedBy = this.currentTeam;
+
+            const myColor = this.currentTeam === 'A' ? 'red' : 'blue';
+            if (item.color === myColor) {
+              correctCount++;
+              if (this.currentTeam === 'A') {
+                this.remainingA--;
+                this.scoreA += 100;
+              } else {
+                this.remainingB--;
+                this.scoreB += 100;
+              }
+            } else if (item.color === 'assassin') {
+              hitAssassin = true;
+              if (this.currentTeam === 'A') {
+                this.assassinHitsA++;
+              } else {
+                this.assassinHitsB++;
+              }
+            } else {
+              wrongCount++;
+            }
+            this.moveHistory.push({ team: this.currentTeam, word: item.word, color: item.color });
+          });
+
+          this.selectedIndices = [];
+
+          // === ASSASSIN CHECK ===
+          if (hitAssassin) {
+            const hits = this.currentTeam === 'A' ? this.assassinHitsA : this.assassinHitsB;
+            const remaining = this.maxAssassinHits - hits;
+
+            if (hits >= this.maxAssassinHits) {
+              // KENA 2x ASSASSIN → TIM INI KALAH
+              sfx.play('assassin');
+              this.showToast('error', '☠️', 'ASSASSIN!', this.currentTeamName() + ' kena assassin 2x!', 2500);
+              setTimeout(() => {
+                this.endGame(this.currentTeam === 'A' ? 'B' : 'A', 'Tim lawan kena ASSASSIN 2x!');
+              }, 2000);
+              return;
+            } else {
+              // Peringatan pertama
+              sfx.play('assassin');
+              this.showToast('error', '☠️', 'ASSASSIN!', this.currentTeamName() + ': ' + remaining + 'x lagi kena assassin, langsung kalah!', 2500);
+            }
+          }
+
+          // === FEEDBACK TOAST ===
+          if (correctCount > 0 && wrongCount === 0 && !hitAssassin) {
+            sfx.play('correct');
+            this.showToast('success', '✓', 'BENAR!', correctCount + ' kata milik ' + this.currentTeamName() + ' ditemukan!', 2000);
+          } else if (correctCount > 0 && wrongCount > 0) {
+            sfx.play('correct');
+            this.showToast('success', '✓', 'BENAR!', correctCount + ' benar, ' + wrongCount + ' salah (bukan kata tim)', 2000);
+          } else if (wrongCount > 0 && !hitAssassin) {
+            sfx.play('wrong');
+            this.showToast('error', '✗', 'SALAH!', wrongCount + ' kata bukan milik ' + this.currentTeamName(), 2000);
+          }
+
+          // === WIN BY ALL WORDS FOUND ===
+          if (this.remainingA === 0) {
+            this.consecutiveMissesA = 0;
+            setTimeout(() => this.endGame('A', this.teamA.name + ' menemukan semua kata!'), 1200);
+            return;
+          }
+          if (this.remainingB === 0) {
+            this.consecutiveMissesB = 0;
+            setTimeout(() => this.endGame('B', this.teamB.name + ' menemukan semua kata!'), 1200);
+            return;
+          }
+
+          // === SURENDER AUTO: 3 giliran berturut-turut tanpa tebakan benar ===
+          if (!hitAssassin) {
+            if (correctCount === 0) {
+              // Tim ini gagal menebak — increment counter
+              if (this.currentTeam === 'A') {
+                this.consecutiveMissesA++;
+                if (this.consecutiveMissesA >= this.maxConsecutiveMisses) {
+                  sfx.play('wrong');
+                  this.showToast('error', '🏳️', 'MENYERAH!', this.teamA.name + ' gagal menebak ' + this.maxConsecutiveMisses + ' giliran berturut-turut!', 2500);
+                  setTimeout(() => {
+                    this.endGame('B', this.teamA.name + ' otomatis menyerah — ' + this.maxConsecutiveMisses + ' giliran tanpa tebakan benar');
+                  }, 2000);
+                  return;
+                }
+              } else {
+                this.consecutiveMissesB++;
+                if (this.consecutiveMissesB >= this.maxConsecutiveMisses) {
+                  sfx.play('wrong');
+                  this.showToast('error', '🏳️', 'MENYERAH!', this.teamB.name + ' gagal menebak ' + this.maxConsecutiveMisses + ' giliran berturut-turut!', 2500);
+                  setTimeout(() => {
+                    this.endGame('A', this.teamB.name + ' otomatis menyerah — ' + this.maxConsecutiveMisses + ' giliran tanpa tebakan benar');
+                  }, 2000);
+                  return;
+                }
+              }
+            } else {
+              // Berhasil menebak → reset counter
+              if (this.currentTeam === 'A') this.consecutiveMissesA = 0;
+              else this.consecutiveMissesB = 0;
+            }
+          }
+
+          this.switchTeam();
+        },
+
+        switchTeam() {
+          this.currentTeam = this.currentTeam === 'A' ? 'B' : 'A';
+          this.grid = [...(this.currentTeam === 'A' ? this.gridA : this.gridB)];
+          this.selectedIndices = [];
+          this.timer = 120;
+          sfx.play('switch');
+        },
+
+        endGame(winner, reason) {
+          this.winner = winner;
+          this.winReason = reason;
+          this.roundHistory.push({
+            round: this.currentRound,
+            winner,
+            winnerName: winner === 'A' ? this.teamA.name : this.teamB.name,
+            reason,
+            scoreA: this.scoreA,
+            scoreB: this.scoreB
+          });
+          this.phase = 'end';
+          this.stopTimer();
+          if (reason.includes('ASSASSIN')) {
+            sfx.play('assassin');
+          } else {
+            sfx.play('win');
+          }
+        },
+
+        // ========== ROUND HISTORY ==========
+        totalWins(team) {
+          return this.roundHistory.filter(r => r.winner === team).length;
+        },
+
+        nextRound() {
+          this.currentRound++;
+          this.generateGrids();
+          this.grid = [...this.gridA];
+          this.currentTeam = 'A';
+          this.selectedIndices = [];
+          this.scoreA = 0;
+          this.scoreB = 0;
+          this.remainingA = 15;
+          this.remainingB = 15;
+          this.assassinHitsA = 0;
+          this.assassinHitsB = 0;
+          this.consecutiveMissesA = 0;
+          this.consecutiveMissesB = 0;
+          this.moveHistory = [];
+          // Reset punishment state
+          this.currentPunishment = null;
+          this.wheelRotation = 0;
+          this.isSpinning = false;
+          this.showPunishmentResult = false;
+          this.phase = 'game';
+          this.startTimer();
+          sfx.play('switch');
+        },
+
+        resetGame() {
+          this.phase = 'setup';
+          this.playerCount = 4;
+          this.playerNames = [];
+          this.currentPlayerInput = '';
+          this.captainVotes = {};
+          this.currentVoterIndex = 0;
+          this.selectedCaptain1 = '';
+          this.selectedCaptain2 = '';
+          this.teamA = { name: 'Tim Merah', players: [], captain: '' };
+          this.teamB = { name: 'Tim Biru', players: [], captain: '' };
+          this.grid = [];
+          this.gridA = [];
+          this.gridB = [];
+          this.currentTeam = 'A';
+          this.selectedIndices = [];
+          this.scoreA = 0;
+          this.scoreB = 0;
+          this.remainingA = 15;
+          this.remainingB = 15;
+          this.spymasterView = true;
+          this.spymasterOrderA = [];
+          this.spymasterOrderB = [];
+          this.spymasterIndexA = 0;
+          this.spymasterIndexB = 0;
+          this.assassinHitsA = 0;
+          this.assassinHitsB = 0;
+          this.consecutiveMissesA = 0;
+          this.consecutiveMissesB = 0;
+          this.timer = 120;
+          this.winner = null;
+          this.winReason = '';
+          this.moveHistory = [];
+          this.currentRound = 1;
+          this.roundHistory = [];
+          this.currentPunishment = null;
+          this.wheelRotation = 0;
+          this.isSpinning = false;
+          this.showPunishmentResult = false;
+          this.toast = { show: false, type: '', icon: '', title: '', message: '' };
+          this.stopTimer();
+        },
+
+        // ========== TIMER ==========
+        startTimer() {
+          this.stopTimer();
+          this.timer = 120;
+          this.timerInterval = setInterval(() => {
+            if (this.timer > 0) {
+              this.timer--;
+              if (this.timer <= 10 && this.timer > 0) {
+                sfx.play('tick');
+              }
+            } else {
+              sfx.play('switch');
+              this.switchTeam();
+            }
+          }, 1000);
+        },
+
+        stopTimer() {
+          if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+          }
+        },
+
+        formatTime(seconds) {
+          const m = Math.floor(seconds / 60);
+          const s = seconds % 60;
+          return `${m}:${s.toString().padStart(2, '0')}`;
+        },
+
+        // ========== VIEW TOGGLE ==========
+        toggleSpymasterView() {
+          this.spymasterView = !this.spymasterView;
+          sfx.play('switch');
+        },
+
+        // ========== WORD CARD CLASS ==========
+        getWordCardClass(item, index) {
+          // 1. REVEALED — show true color
+          if (item.revealed) {
+            if (item.color === 'red') return 'revealed revealed-red';
+            if (item.color === 'blue') return 'revealed revealed-blue';
+            if (item.color === 'neutral') return 'revealed revealed-neutral';
+            if (item.color === 'assassin') return 'revealed revealed-assassin';
+          }
+
+          // 2. SELECTED (operative is picking)
+          if (this.selectedIndices.includes(index)) {
+            return this.currentTeam === 'A' ? 'sel-red' : 'sel-blue';
+          }
+
+          // 3. SPYMASTER VIEW — show team words + neutral + assassin (deceptively subtle)
+          if (this.spymasterView) {
+            const myColor = this.currentTeam === 'A' ? 'red' : 'blue';
+            if (item.color === myColor) {
+              return this.currentTeam === 'A' ? 'own-red' : 'own-blue';
+            } else if (item.color === 'assassin') {
+              // Assassin — shown but subtle, blends with team word styling
+              return 'danger-assassin';
+            } else {
+              // Neutral — show normally
+              return '';
+            }
+          }
+
+          // 4. NORMAL VIEW (operative) — all unrevealed words look the same
+          return '';
+        },
+
+        getRevealedLabel(item) {
+          if (item.color === 'red') return '🔴';
+          if (item.color === 'blue') return '🔵';
+          if (item.color === 'neutral') return '⚪';
+          if (item.color === 'assassin') return '☠️';
+          return '';
+        },
+
+        // ========== HELPERS ==========
+        currentTeamName() {
+          return this.currentTeam === 'A' ? this.teamA.name : this.teamB.name;
+        },
+
+        currentSpymaster() {
+          return this.currentTeam === 'A'
+            ? this.spymasterOrderA[this.spymasterIndexA % this.spymasterOrderA.length]
+            : this.spymasterOrderB[this.spymasterIndexB % this.spymasterOrderB.length];
+        },
+
+        winnerName() {
+          return this.winner === 'A' ? this.teamA.name : this.teamB.name;
+        },
+
+        loserName() {
+          return this.winner === 'A' ? this.teamB.name : this.teamA.name;
+        },
+
+        // ========== PUNISHMENT ROULETTE ==========
+        goToPunishment() {
+          this.currentPunishment = null;
+          this.wheelRotation = 0;
+          this.isSpinning = false;
+          this.showPunishmentResult = false;
+          this.phase = 'punishment';
+        },
+
+        spinWheel() {
+          if (this.isSpinning) return;
+          this.isSpinning = true;
+          this.showPunishmentResult = false;
+          sfx.play('switch');
+
+          const n = this.punishments.length;
+          const segAngle = 360 / n;
+          const idx = Math.floor(Math.random() * n);
+          const fullTurns = (5 + Math.floor(Math.random() * 4)) * 360;
+          const offset = idx * segAngle + Math.random() * (segAngle * 0.6);
+
+          this.wheelRotation = fullTurns + offset;
+
+          setTimeout(() => {
+            this.isSpinning = false;
+            this.currentPunishment = idx;
+            this.showPunishmentResult = true;
+            sfx.play('win');
+          }, 4200);
+        },
+
+        getWheelBg() {
+          const n = this.punishments.length;
+          const segAngle = 360 / n;
+          const colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F','#BB8FCE','#85C1E9'];
+          return colors.slice(0, n).map((c, i) => {
+            const s = Math.round(i * segAngle);
+            const e = Math.round((i + 1) * segAngle);
+            return `${c} ${s}deg ${e}deg`;
+          }).join(', ');
+        },
+
+        getWheelLabelStyle(i) {
+          const n = this.punishments.length;
+          const segAngle = 360 / n;
+          const midAngle = (i + 0.5) * segAngle;
+          const radius = 120; // px from center for number label
+          const rad = (midAngle - 90) * Math.PI / 180;
+          const x = radius * Math.cos(rad);
+          const y = radius * Math.sin(rad);
+          return `left: calc(50% + ${x}px); top: calc(50% + ${y}px); transform: translate(-50%, -50%) rotate(${midAngle}deg);`;
+        },
+
+        skipToNextRound() {
+          this.nextRound();
+        },
+
+        showToast(type, icon, title, message, duration = 2000) {
+          this.toast = { show: true, type, icon, title, message };
+          setTimeout(() => {
+            this.toast.show = false;
+          }, duration);
+        },
+      };
+    }
+  </script>
+</body>
+</html>
