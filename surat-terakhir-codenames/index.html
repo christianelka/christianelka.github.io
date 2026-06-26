@@ -99,6 +99,9 @@
       justify-content: center;
       position: relative;
       user-select: none;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      hyphens: auto;
       background: #232734;
       border-color: #2A2D3A;
       color: #94A3B8;
@@ -421,12 +424,12 @@
       .wheel-label { font-size: 11px; width: 24px; }
       .punishment-card { padding: 18px 20px; }
       .punishment-card .text { font-size: 15px; }
-      .word-card { font-size: 11px !important; padding: 6px 3px !important; min-height: 44px; }
-      .word-card .text-[11px] { font-size: 10px !important; }
-      .word-card.own-red, .word-card.own-blue, .word-card.danger-assassin { font-size: 12px !important; }
+      .word-card { font-size: clamp(9px, 2.4vw, 12px) !important; padding: 6px 3px !important; min-height: 44px; }
+      .word-card .text-[11px] { font-size: clamp(8px, 2vw, 11px) !important; }
+      .word-card.own-red, .word-card.own-blue, .word-card.danger-assassin { font-size: clamp(10px, 2.6vw, 13px) !important; }
     }
     @media (max-width: 380px) {
-      .word-card { font-size: 10px !important; padding: 4px 2px !important; min-height: 38px; }
+      .word-card { font-size: clamp(8px, 2.2vw, 11px) !important; padding: 4px 2px !important; min-height: 38px; }
     }
 
     /* ====== COMPETITIVE UI ====== */
@@ -716,6 +719,26 @@
             <div class="text-white font-extrabold text-lg mt-0.5">Bible Codenames</div>
           </div>
           <div class="panel-body space-y-5">
+            <!-- Resume game alert -->
+            <div x-show="showResumePrompt" 
+                 x-transition:enter="transition-all duration-300 ease-out"
+                 x-transition:enter-start="opacity-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="bg-amber-500/15 border border-amber-500/30 rounded-xl p-4 text-center">
+              <div class="text-2xl mb-2">🎮</div>
+              <div class="text-sm font-bold text-white mb-1">Game Tersimpan Ditemukan!</div>
+              <div class="text-xs text-gray-400 mb-4">Anda memiliki game yang belum selesai. Lanjutkan atau mulai baru?</div>
+              <div class="flex items-center justify-center gap-3">
+                <button @click="resumeGame()" 
+                        class="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold hover:from-amber-400 hover:to-amber-500 transition-all shadow-lg shadow-amber-500/25">
+                  🔄 Lanjutkan Game
+                </button>
+                <button @click="clearSavedGame()" 
+                        class="px-5 py-2 rounded-xl bg-[#232734] text-gray-400 text-xs font-bold border border-[#2A2D3A] hover:bg-[#2A2D3A] hover:text-white transition-all">
+                  Mulai Baru
+                </button>
+              </div>
+            </div>
             <div class="text-center">
               <div class="text-xs font-semibold text-gray-400 mb-3">Jumlah Pemain</div>
               <div class="flex items-center justify-center gap-5">
@@ -996,9 +1019,9 @@
           <div class="panel-body">
             <div class="word-grid grid grid-cols-5 gap-1.5">
               <template x-for="(item, index) in grid" :key="item.word">
-                <div @click="toggleSelect(index)" class="word-card" :class="getWordCardClass(item, index)">
-                  <div class="leading-tight">
-                    <div class="text-[11px] leading-tight font-bold" x-text="item.word"></div>
+                  <div @click="toggleSelect(index)" class="word-card" :class="getWordCardClass(item, index)">
+                    <div class="leading-tight min-w-0">
+                      <div class="text-[11px] leading-tight font-bold" x-text="item.word"></div>
                     <div x-show="item.revealed" class="revealed-label" x-text="getRevealedLabel(item)"></div>
                   </div>
                 </div>
@@ -1465,20 +1488,36 @@
       constructor() {
         this.ctx = null;
         this.initialized = false;
+        this.mp3Cache = {};
       }
       init() {
         if (this.initialized) return;
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         this.initialized = true;
       }
+      playMp3(src) {
+        this.init();
+        if (this.mp3Cache[src]) {
+          const clone = this.mp3Cache[src].cloneNode();
+          clone.volume = 0.6;
+          clone.play().catch(() => {});
+          return;
+        }
+        const audio = new Audio(src);
+        audio.volume = 0.6;
+        audio.addEventListener('canplaythrough', () => {
+          audio.play().catch(() => {});
+        });
+        this.mp3Cache[src] = audio;
+      }
       play(type) {
         this.init();
         if (!this.ctx) return;
         switch(type) {
-          case 'correct': this.playCorrect(); break;
-          case 'wrong': this.playWrong(); break;
-          case 'assassin': this.playAssassin(); break;
-          case 'win': this.playWin(); break;
+          case 'correct': this.playMp3('myinstants.mp3'); break;
+          case 'wrong': this.playMp3('fah.mp3'); break;
+          case 'assassin': this.playMp3('fah.mp3'); break;
+          case 'win': this.playMp3('tamat.mp3'); break;
           case 'switch': this.playSwitch(); break;
           case 'tick': this.playTick(); break;
         }
@@ -1651,6 +1690,90 @@
         consecutiveMissesA: 0,
         consecutiveMissesB: 0,
         maxConsecutiveMisses: 3,
+        consecutiveSkipsA: 0,
+        consecutiveSkipsB: 0,
+        showResumePrompt: false,
+        savedGameExists: false,
+
+        // ========== PERSISTENCE ==========
+        SAVE_KEY: 'bible_codenames_save',
+
+        saveGameState() {
+          const state = {
+            phase: this.phase,
+            playerCount: this.playerCount,
+            playerNames: [...this.playerNames],
+            currentPlayerInput: this.currentPlayerInput,
+            captainVotes: { ...this.captainVotes },
+            currentVoterIndex: this.currentVoterIndex,
+            selectedCaptain1: this.selectedCaptain1,
+            selectedCaptain2: this.selectedCaptain2,
+            teamA: JSON.parse(JSON.stringify(this.teamA)),
+            teamB: JSON.parse(JSON.stringify(this.teamB)),
+            teamAName: this.teamAName,
+            teamBName: this.teamBName,
+            gridA: this.gridA.map(g => ({ ...g })),
+            gridB: this.gridB.map(g => ({ ...g })),
+            currentTeam: this.currentTeam,
+            scoreA: this.scoreA,
+            scoreB: this.scoreB,
+            remainingA: this.remainingA,
+            remainingB: this.remainingB,
+            spymasterView: this.spymasterView,
+            spymasterOrderA: [...this.spymasterOrderA],
+            spymasterOrderB: [...this.spymasterOrderB],
+            spymasterIndexA: this.spymasterIndexA,
+            spymasterIndexB: this.spymasterIndexB,
+            assassinHitsA: this.assassinHitsA,
+            assassinHitsB: this.assassinHitsB,
+            consecutiveMissesA: this.consecutiveMissesA,
+            consecutiveMissesB: this.consecutiveMissesB,
+            consecutiveSkipsA: this.consecutiveSkipsA,
+            consecutiveSkipsB: this.consecutiveSkipsB,
+            currentRound: this.currentRound,
+            moveHistory: this.moveHistory.map(m => ({ ...m })),
+            roundHistory: this.roundHistory.map(r => ({ ...r })),
+            winner: this.winner,
+            winReason: this.winReason,
+            currentPunishment: this.currentPunishment ? { ...this.currentPunishment } : null,
+            wheelRotation: this.wheelRotation,
+            showPunishmentResult: this.showPunishmentResult,
+            lastEloChanges: this.lastEloChanges ? this.lastEloChanges.map(e => ({ ...e })) : null,
+          };
+          try {
+            localStorage.setItem(this.SAVE_KEY, JSON.stringify(state));
+          } catch (e) {
+            // quota exceeded or private mode — silently ignore
+          }
+        },
+
+        loadGameState() {
+          try {
+            const raw = localStorage.getItem(this.SAVE_KEY);
+            if (!raw) return null;
+            return JSON.parse(raw);
+          } catch (e) {
+            return null;
+          }
+        },
+
+        clearSavedGame() {
+          try {
+            localStorage.removeItem(this.SAVE_KEY);
+          } catch (e) {}
+          this.savedGameExists = false;
+          this.showResumePrompt = false;
+        },
+
+        resumeGame() {
+          const state = this.loadGameState();
+          if (!state) return;
+          Object.assign(this, state);
+          this.grid = this.currentTeam === 'A' ? [...this.gridA] : [...this.gridB];
+          this.selectedIndices = [];
+          if (this.phase === 'game') this.startTimer();
+          this.clearSavedGame();
+        },
         currentRound: 1,
         toast: { show: false, type: '', icon: '', title: '', message: '' },
 
@@ -1698,7 +1821,21 @@
           { label: 'Aksen Daerah', emoji: '🗣️', text: 'Berbicara dengan aksen daerah tertentu selama 1 giliran!' },
         ],
 
-        init() {},
+        init() {
+          // Cek save game
+          const saved = this.loadGameState();
+          if (saved && ['names','voting','teams','game','end','punishment'].includes(saved.phase)) {
+            this.savedGameExists = true;
+            this.showResumePrompt = true;
+          }
+          // beforeunload warning
+          window.addEventListener('beforeunload', (e) => {
+            if (this.phase !== 'setup' && this.phase !== '') {
+              e.preventDefault();
+              e.returnValue = '';
+            }
+          });
+        },
 
         // ========== SETUP ==========
         startNameInput() {
@@ -1765,6 +1902,7 @@
           this.spymasterIndexB = 0;
           this.phase = 'teams';
           sfx.play('switch');
+          this.saveGameState();
         },
 
         // ========== GAME ==========
@@ -1775,6 +1913,7 @@
           this.currentRound = 1;
           this.startTimer();
           sfx.play('switch');
+          this.saveGameState();
         },
 
         generateGrids() {
@@ -1840,7 +1979,21 @@
         },
 
         passTurn() {
-          sfx.play('switch');
+          // Skip rule: tidak boleh skip 2x berturut-turut
+          const skipCount = this.currentTeam === 'A' ? this.consecutiveSkipsA : this.consecutiveSkipsB;
+          if (skipCount >= 1) {
+            sfx.play('wrong'); // fah.mp3 — kalah karena skip 2x
+            const loserTeam = this.currentTeamName();
+            this.showToast('error', '⛔', 'SKIP 2x!', loserTeam + ' tidak boleh skip 2x berturut-turut!', 2500);
+            setTimeout(() => {
+              this.endGame(this.currentTeam === 'A' ? 'B' : 'A', loserTeam + ' skip 2x berturut-turut');
+            }, 1500);
+            return;
+          }
+          // Increment skip counter
+          if (this.currentTeam === 'A') this.consecutiveSkipsA++;
+          else this.consecutiveSkipsB++;
+          sfx.play('wrong'); // fah.mp3 — skip
           this.switchTeam();
         },
 
@@ -1906,15 +2059,21 @@
             }
           }
 
+          // Jika ada tebakan benar → reset skip counter (skip diperbolehkan lagi)
+          if (correctCount > 0) {
+            if (this.currentTeam === 'A') this.consecutiveSkipsA = 0;
+            else this.consecutiveSkipsB = 0;
+          }
+
           // === FEEDBACK TOAST ===
           if (correctCount > 0 && wrongCount === 0 && !hitAssassin) {
-            sfx.play('correct');
+            sfx.play('correct'); // myinstants.mp3
             this.showToast('success', '✓', 'BENAR!', correctCount + ' kata milik ' + this.currentTeamName() + ' ditemukan!', 2000);
           } else if (correctCount > 0 && wrongCount > 0) {
-            sfx.play('correct');
+            sfx.play('correct'); // myinstants.mp3
             this.showToast('success', '✓', 'BENAR!', correctCount + ' benar, ' + wrongCount + ' salah (bukan kata tim)', 2000);
           } else if (wrongCount > 0 && !hitAssassin) {
-            sfx.play('wrong');
+            sfx.play('wrong'); // fah.mp3
             this.showToast('error', '✗', 'SALAH!', wrongCount + ' kata bukan milik ' + this.currentTeamName(), 2000);
           }
 
@@ -1963,6 +2122,7 @@
           }
 
           this.switchTeam();
+          this.saveGameState();
         },
 
         switchTeam() {
@@ -1971,6 +2131,7 @@
           this.selectedIndices = [];
           this.timer = 120;
           sfx.play('switch');
+          this.saveGameState();
         },
 
         endGame(winner, reason) {
@@ -2005,6 +2166,7 @@
           } else {
             sfx.play('win');
           }
+          this.saveGameState();
         },
 
         // ========== ROUND HISTORY ==========
@@ -2026,6 +2188,8 @@
           this.assassinHitsB = 0;
           this.consecutiveMissesA = 0;
           this.consecutiveMissesB = 0;
+          this.consecutiveSkipsA = 0;
+          this.consecutiveSkipsB = 0;
           this.moveHistory = [];
           // Reset punishment state
           this.currentPunishment = null;
@@ -2035,6 +2199,7 @@
           this.phase = 'game';
           this.startTimer();
           sfx.play('switch');
+          this.saveGameState();
         },
 
         resetGame() {
@@ -2066,6 +2231,8 @@
           this.assassinHitsB = 0;
           this.consecutiveMissesA = 0;
           this.consecutiveMissesB = 0;
+          this.consecutiveSkipsA = 0;
+          this.consecutiveSkipsB = 0;
           this.timer = 120;
           this.winner = null;
           this.winReason = '';
@@ -2079,6 +2246,7 @@
           this.toast = { show: false, type: '', icon: '', title: '', message: '' };
           this.lastEloChanges = null;
           this.stopTimer();
+          this.clearSavedGame();
         },
 
         // ========== TIMER ==========
