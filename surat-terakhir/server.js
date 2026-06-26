@@ -49,7 +49,7 @@ let appConfig = {
   ai_timeout_ms: 30000,
   snapshot_interval_ms: 30000,
   max_players_per_room: 12,
-  round_durations: { baca: 60, diskusi: 240, voting: 30 },
+  round_durations: { baca: 300, diskusi: 600, voting: 30 },
   rate_limit: { auth_max: 5, auth_window_ms: 300000 },
   round_config: [
     { target: 'Mazmur',       abu: 'Amsal',         agen: 'Kidung Agung' },
@@ -281,8 +281,8 @@ const gameService = {
     if (g.phaseTimer) clearTimeout(g.phaseTimer);
     const dur = appConfig.round_durations[next];
     g.currentRoundData.phase = next;
-    g.currentRoundData.phaseEndsAt = Date.now() + dur * 1000;
-    if (next !== 'reveal') g.phaseTimer = setTimeout(() => this.advancePhase(gameId), dur * 1000);
+    g.currentRoundData.phaseEndsAt = dur ? Date.now() + dur * 1000 : null;
+    if (next !== 'reveal' && dur) g.phaseTimer = setTimeout(() => this.advancePhase(gameId), dur * 1000);
     return g.currentRoundData;
   },
   castVote(gameId, voterName, targetName) {
