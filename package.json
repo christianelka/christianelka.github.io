@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "postinstall": "cd surat-terakhir && npm ci"
   },
   "engines": {
     "node": ">=20.0.0"
