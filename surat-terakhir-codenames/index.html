@@ -359,6 +359,21 @@
     .spin-btn:active:not(:disabled) { transform: translateY(0); }
     .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    .finish-btn {
+      background: linear-gradient(135deg, #E11D48, #BE123C);
+      color: white;
+      border-radius: 999px;
+      padding: 14px 36px;
+      font-weight: 700;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 24px rgba(225,29,72,0.3);
+    }
+    .finish-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 32px rgba(225,29,72,0.4); }
+    .finish-btn:active { transform: translateY(0); }
+
     /* === PUNISHMENT TEXT === */
     .punishment-card {
       background: linear-gradient(135deg, #1E1B4B, #2D1B69);
@@ -1167,7 +1182,49 @@
                 </button>
                 <button @click="resetGame()" class="btn-secondary px-5 py-2.5 text-sm">RESET</button>
               </div>
+              <template x-if="roundHistory.length >= 1">
+                <button @click="concludeMatch()" 
+                        class="finish-btn inline-flex items-center gap-2 px-6 py-2.5 text-sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>SELESAIKAN PERTANDINGAN</span>
+                </button>
+              </template>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== PHASE: COMPLETED (Full Match Result) ====== -->
+      <div x-show="phase === 'completed'" x-cloak>
+        <div class="panel text-center max-w-lg mx-auto">
+          <div class="panel-body py-10">
+            <div class="text-6xl mb-3" x-text="winner === 'A' ? '🔴' : '🔵'"></div>
+            <h2 class="font-extrabold text-3xl mb-1"
+                :class="winner === 'A' ? 'text-red-400' : 'text-blue-400'"
+                x-text="winnerName() + ' JUARA PERTANDINGAN!'"></h2>
+            <p class="text-gray-500 text-sm mb-5">
+              <span x-text="matchScore('A')"></span> - <span x-text="matchScore('B')"></span> 
+              (<span x-text="roundHistory.length"></span> ronde)
+            </p>
+
+            <!-- Final round history -->
+            <div x-show="roundHistory.length > 0" class="max-w-xs mx-auto mb-6 text-left">
+              <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Riwayat Pertandingan</div>
+              <template x-for="(r, i) in roundHistory" :key="i">
+                <div class="history-row">
+                  <span class="text-gray-600 font-mono w-6 text-right" x-text="'R' + r.round"></span>
+                  <span class="w-3 h-3 rounded-full flex-shrink-0"
+                        :class="r.winner === 'A' ? 'bg-red-500' : 'bg-blue-500'"></span>
+                  <span class="font-semibold text-gray-300" x-text="r.winnerName"></span>
+                  <span class="text-gray-600 text-[10px] ml-auto" x-text="r.scoreA + '-' + r.scoreB"></span>
+                </div>
+              </template>
+            </div>
+
+            <button @click="resetGame()" class="btn-primary px-8 py-3 text-base flex items-center gap-2 mx-auto">
+              <span>KEMBALI KE SETUP</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </button>
           </div>
         </div>
       </div>
@@ -1222,11 +1279,16 @@
                 <div class="text-xs text-gray-500">Dilaksanakan oleh</div>
                 <div class="font-extrabold text-lg text-yellow-400" x-text="loserName()"></div>
               </div>
-              <button @click="nextRound()" 
-                      class="btn-primary px-8 py-3.5 text-base flex items-center gap-2 mx-auto">
-                <span>LANJUT KE RONDE BERIKUTNYA</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-              </button>
+              <div class="flex items-center justify-center gap-3">
+                <button @click="sfx.stop();" class="px-4 py-2 rounded-xl bg-[#232734] text-gray-400 text-xs font-bold border border-[#2A2D3A] hover:bg-[#2A2D3A] hover:text-white transition-all">
+                  ⏹ STOP MUSIC
+                </button>
+                <button @click="nextRound()" 
+                        class="btn-primary px-8 py-3.5 text-base flex items-center gap-2">
+                  <span>LANJUT KE RONDE BERIKUTNYA</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1474,12 +1536,12 @@
 
   <script>
     const WORDS = {
-      people: ["DAUD","MUSA","PAULUS","ABRAHAM","YAKUB","YUSUF","DANIEL","ESTER","RUT","NOAH","ELIA","ELISA","GIDEON","SAMSON","DEBORA","MARIA","PETRUS","YOHANES","MATIUS","LUKAS","MARKUS","TIMOTIUS","BARNABAS","STEFANUS","FILIPUS","YOSUA","KALEB","RAHAB","ABIGAIL","SARAH","HANA","NAOMI","BOAS","ISHAK","ESAU","BENYAMIN","YUDA","LEWI","AARON","MIRIAM","BALAAM","HERODES","PILATUS","YUDAS","SIMON","BARTIMEUS","ZAKHEUS","YEREMIA","YESAYA","AYUB","SONIA","TOMY","RACHEL","JOSUA","SAMUEL"],
+      people: ["DAUD","MUSA","PAULUS","ABRAHAM","YAKUB","YUSUF","DANIEL","ESTER","RUT","NOAH","ELIA","ELISA","GIDEON","SAMSON","DEBORA","MARIA","PETRUS","YOHANES","MATIUS","LUKAS","MARKUS","TIMOTIUS","BARNABAS","STEFANUS","FILIPUS","YOSUA","KALEB","RAHAB","ABIGAIL","SARAH","HANA","NAOMI","BOAS","ISHAK","ESAU","BENYAMIN","YUDA","LEWI","AARON","MIRIAM","BALAAM","HERODES","PILATUS","YUDAS","SIMON","BARTIMEUS","ZAKHEUS","YEREMIA","YESAYA","AYUB","NATAEL","TITUS","RACHEL","JOSUA","SAMUEL"],
       places: ["YERUSALEM","YORDAN","SINAI","KARMEL","BETLEHEM","NAZARET","KAPERNAUM","ANTIOKHIA","ROMA","KORINTUS","EFESUS","FILIPPI","TESALONIKA","ATENA","BABEL","NINIWE","SODOMA","GOMORA","MESIR","KENAAN","GALILEA","SAMARIA","YUDEA","GOLGOTA","ZAITUN","TABOR","HERMON","GILEAD","MIZPA","BEERSEBA","YOPA","YERIKHO","PADANG","KALVARI","BETANIA","GATSYEMANI","KAISARIA","MAMRE","MORIA","HOREB","DAMASKUS","TARSUS","KRETA","MALTA","SIPRUS"],
       objects: ["PEDANG","TOMBOK","SALIB","ROTAN","PAHAT","MAHKOTA","BAHTERA","TANGGA","BATU","LOH","TIANG","AWAN","API","AIR","GAPURA","TIRAI","MEZBAH","MINYAK","ANGGUR","LIDAH","MATA","TANGAN","KAKI","JANTUNG","HATI","ROH","JIWA","TULANG","KULIT","RAMBUT","DARAH","DAGING","MAKANAN","UANG","IKAT","TALI","GARAM","TERANG","GELAP","LAMPU","KUNCI","BENANG"],
       concepts: ["DOA","IMAN","KASIH","HARAPAN","SUKACITA","HUKUM","INJIL","ANUGERAH","MUKJIZAT","PERTOBATAN","KEBENARAN","KEADILAN","KESABARAN","KERENDAHAN","KEBERANIAN","HIKMAT","PENGETAHUAN","PEMAHAMAN","NASIHAT","AJARAN","BERKAT","KUTUKAN","JANJI","PERJANJIAN","PENGAMPUNAN","KESELAMATAN","PELEPASAN","PEMULIHAN","PEMBARUAN","PENGUDUSAN","DOSA","MAKSUD","PANGGILAN","KETAATAN","PENDERITAAN","KESETIAAN","KARUNIA","PENGHARAPAN","KEMULIAAN","KERAJINAN"],
-      events: ["BANJIR","PEMBELAHAN","KEBANGKITAN","PENTAKOSTA","PENYALIBAN","PELIMPAHAN","PENGORBANAN","PEMBAPTISAN","TRANSFIGURASI","KENAIKAN","KEDATANGAN","PENCIPTAAN","PEMBANGKITAN","PELEPASAN","PEMBEBASAN","PEMULIHAN","PERTEMUAN","PERJALANAN","PERTARUNGAN","PERTEMPURAN","KEMENANGAN","KEKALAHAN","KEHANCURAN","PEMBANGUNAN","PEMBARUAN","PENGGENAPAN","PENGURBANAN","PERNIKAHAN","KELAHIRAN","KEMATIAN","PENGUNGSIAN","PEMBERONTAKAN","PENAKLUKAN","PEKABARAN","PERTUMBUHAN"],
-      animals: ["SINGA","ULAR","DOMBA","KAMBING","LEMBU","KELEDAI","KUDA","BURUNG","MERPATI","ELANG","IKAN","PAUS","SEMUT","BELALANG","LEBAH","ANJING","KUCING","RUSA","BABI","KATAK","CACING","KUMBANG","NGENGAT","RAJUNGT"],
+      events: ["BANJIR","PEMBELAHAN","KEBANGKITAN","PENTAKOSTA","PENYALIBAN","PELIMPAHAN","PENGORBANAN","PEMBAPTISAN","TRANSFIGURASI","KENAIKAN","KEDATANGAN","PENCIPTAAN","PEMBANGKITAN","PELEPASAN","PEMBEBASAN","PEMULIHAN","PERTEMUAN","PERJALANAN","PERTARUNGAN","PERTEMPURAN","KEMENANGAN","KEKALAHAN","KEHANCURAN","PEMBANGUNAN","PEMBARUAN","PENGGENAPAN","PENGURBANAN","PERNIKAHAN","KELAHIRAN","KEMATIAN","PENGUNGSIAN","PEMBERONTAKAN","PENAKLUKAN","PENYEMBAHAN","PERTUMBUHAN"],
+      animals: ["SINGA","ULAR","DOMBA","KAMBING","LEMBU","KELEDAI","KUDA","BURUNG","MERPATI","ELANG","IKAN","PAUS","SEMUT","BELALANG","LEBAH","ANJING","KUCING","RUSA","BABI","KATAK","CACING","KUMBANG","NGENGAT","ONTA"],
       nature: ["GUNUNG","LEMBAH","LAUT","SUNGAI","PADANG","GURUN","HUTAN","POHON","BUNGA","BUAH","BINTANG","BULAN","MATAHARI","AWAN","HUJAN","ANGIN","TANAH","BATU","BADAI","PASIR","DEBU","EMAS","PERAK","TEMBAGA","BESI","GEMPA","PELANGI"]
     };
 
@@ -1489,6 +1551,7 @@
         this.ctx = null;
         this.initialized = false;
         this.mp3Cache = {};
+        this.currentAudio = null;
       }
       init() {
         if (this.initialized) return;
@@ -1497,18 +1560,30 @@
       }
       playMp3(src) {
         this.init();
+        // Stop any currently playing audio first
+        this.stop();
+
         if (this.mp3Cache[src]) {
           const clone = this.mp3Cache[src].cloneNode();
           clone.volume = 0.6;
+          this.currentAudio = clone;
           clone.play().catch(() => {});
           return;
         }
         const audio = new Audio(src);
         audio.volume = 0.6;
+        this.currentAudio = audio;
         audio.addEventListener('canplaythrough', () => {
           audio.play().catch(() => {});
         });
         this.mp3Cache[src] = audio;
+      }
+      stop() {
+        if (this.currentAudio) {
+          this.currentAudio.pause();
+          this.currentAudio.currentTime = 0;
+          this.currentAudio = null;
+        }
       }
       play(type) {
         this.init();
@@ -1735,10 +1810,14 @@
             roundHistory: this.roundHistory.map(r => ({ ...r })),
             winner: this.winner,
             winReason: this.winReason,
-            currentPunishment: this.currentPunishment ? { ...this.currentPunishment } : null,
+            // Punishment state
+            currentPunishment: this.currentPunishment,
             wheelRotation: this.wheelRotation,
             showPunishmentResult: this.showPunishmentResult,
-            lastEloChanges: this.lastEloChanges ? this.lastEloChanges.map(e => ({ ...e })) : null,
+            isSpinning: this.isSpinning,
+            usedPunishmentIndices: [...this.usedPunishmentIndices],
+            // ELO
+            lastEloChanges: this.lastEloChanges ? { ...this.lastEloChanges } : null,
           };
           try {
             localStorage.setItem(this.SAVE_KEY, JSON.stringify(state));
@@ -1772,7 +1851,9 @@
           this.grid = this.currentTeam === 'A' ? [...this.gridA] : [...this.gridB];
           this.selectedIndices = [];
           if (this.phase === 'game') this.startTimer();
-          this.clearSavedGame();
+          // Save is NOT cleared here — it persists so a second accidental refresh
+          // doesn't lose the game. Save is cleared only on explicit "Mulai Baru",
+          // resetGame(), or concludeMatch().
         },
         currentRound: 1,
         toast: { show: false, type: '', icon: '', title: '', message: '' },
@@ -1808,6 +1889,7 @@
         isSpinning: false,
         wheelRotation: 0,
         showPunishmentResult: false,
+        usedPunishmentIndices: [],
         punishments: [
           { label: 'Story IG/WA', emoji: '📸', text: 'Buat Story IG atau Status WA tentang momen lucu di game ini!' },
           { label: 'Cari Benda K', emoji: '🔍', text: 'Cari 3 benda yang diawali huruf K di sekitar ruangan! (kaca, kunci, kertas...)' },
@@ -1822,17 +1904,16 @@
         ],
 
         init() {
-          // Cek save game
+          // Cek save game — exclude completed matches
           const saved = this.loadGameState();
-          if (saved && ['names','voting','teams','game','end','punishment'].includes(saved.phase)) {
+          if (saved && !['setup','','completed'].includes(saved.phase)) {
             this.savedGameExists = true;
             this.showResumePrompt = true;
           }
-          // beforeunload warning
-          window.addEventListener('beforeunload', (e) => {
-            if (this.phase !== 'setup' && this.phase !== '') {
-              e.preventDefault();
-              e.returnValue = '';
+          // Save game state on tab close so re-open can resume
+          window.addEventListener('beforeunload', () => {
+            if (this.phase !== 'setup' && this.phase !== '' && this.phase !== 'completed') {
+              this.saveGameState();
             }
           });
         },
@@ -2173,8 +2254,31 @@
         totalWins(team) {
           return this.roundHistory.filter(r => r.winner === team).length;
         },
+        matchScore(team) {
+          return this.roundHistory.filter(r => r.winner === team).length;
+        },
+        concludeMatch() {
+          const winsA = this.roundHistory.filter(r => r.winner === 'A').length;
+          const winsB = this.roundHistory.filter(r => r.winner === 'B').length;
+          const totalRounds = this.roundHistory.length;
+          if (winsA > winsB) {
+            this.winReason = this.teamA.name + ' juara ' + winsA + '-' + winsB + ' dalam ' + totalRounds + ' ronde!';
+            this.winner = 'A';
+          } else if (winsB > winsA) {
+            this.winReason = this.teamB.name + ' juara ' + winsB + '-' + winsA + ' dalam ' + totalRounds + ' ronde!';
+            this.winner = 'B';
+          } else {
+            this.winReason = 'Hasil imbang ' + winsA + '-' + winsB + ' dalam ' + totalRounds + ' ronde!';
+            this.winner = 'A';
+          }
+          this.phase = 'completed';
+          this.stopTimer();
+          sfx.stop();
+          this.clearSavedGame();
+        },
 
         nextRound() {
+          sfx.stop(); // Stop any playing music
           this.currentRound++;
           this.generateGrids();
           this.grid = [...this.gridA];
@@ -2196,6 +2300,7 @@
           this.wheelRotation = 0;
           this.isSpinning = false;
           this.showPunishmentResult = false;
+          this.usedPunishmentIndices = [];
           this.phase = 'game';
           this.startTimer();
           sfx.play('switch');
@@ -2243,6 +2348,7 @@
           this.wheelRotation = 0;
           this.isSpinning = false;
           this.showPunishmentResult = false;
+          this.usedPunishmentIndices = [];
           this.toast = { show: false, type: '', icon: '', title: '', message: '' };
           this.lastEloChanges = null;
           this.stopTimer();
@@ -2347,6 +2453,7 @@
 
         // ========== PUNISHMENT ROULETTE ==========
         goToPunishment() {
+          sfx.stop(); // Stop win music when entering punishment
           this.currentPunishment = null;
           this.wheelRotation = 0;
           this.isSpinning = false;
@@ -2362,7 +2469,21 @@
 
           const n = this.punishments.length;
           const segAngle = 360 / n;
-          const idx = Math.floor(Math.random() * n);
+
+          // Pick only from unused punishments
+          const available = [];
+          for (let i = 0; i < n; i++) {
+            if (!this.usedPunishmentIndices.includes(i)) available.push(i);
+          }
+          // If all used, reset
+          if (available.length === 0) {
+            this.usedPunishmentIndices = [];
+            for (let i = 0; i < n; i++) available.push(i);
+          }
+
+          const idx = available[Math.floor(Math.random() * available.length)];
+          this.usedPunishmentIndices.push(idx);
+
           const fullTurns = (5 + Math.floor(Math.random() * 4)) * 360;
           const offset = idx * segAngle + Math.random() * (segAngle * 0.6);
 
@@ -2677,14 +2798,14 @@
 
         teamBPlayers.forEach(p => {
           const player = this.data.players[p.name];
-          const { changeB } = this.calculateEloChange(
+          const { changeA } = this.calculateEloChange(
             player.elo,
             avgEloA,
             teamBScore
           );
           const eloBefore = player.elo;
-          player.elo = Math.max(100, player.elo + changeB);
-          player.seasonalElo = Math.max(100, player.seasonalElo + changeB);
+          player.elo = Math.max(100, player.elo + changeA);
+          player.seasonalElo = Math.max(100, player.seasonalElo + changeA);
           player.games++;
           if (winnerTeam === 'B') {
             player.wins++;
@@ -2696,8 +2817,8 @@
             player.currentStreak = Math.min(0, player.currentStreak) - 1;
           }
           player.lastPlayed = new Date().toISOString();
-          player.eloHistory.push({ date: new Date().toISOString(), elo: player.elo, change: changeB });
-          eloChanges[p.name] = { before: eloBefore, after: player.elo, change: changeB };
+          player.eloHistory.push({ date: new Date().toISOString(), elo: player.elo, change: changeA });
+          eloChanges[p.name] = { before: eloBefore, after: player.elo, change: changeA };
         });
 
         // Save match record
