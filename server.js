@@ -11,6 +11,7 @@
  *   /surat-terakhir/*     → proxied to surat-terakhir (port 3001)
  *   /api/*                → proxied to surat-terakhir (port 3001)
  *   /socket.io/*          → proxied to surat-terakhir (port 3001, incl. WebSocket)
+ *   /moderator, /player, /display → proxied to surat-terakhir (game pages)
  *   /invitation/*, /nuke/*, /youth/*, /blur/*, /escalation-chatbot/* → static
  */
 
@@ -33,7 +34,7 @@ const proxy = createProxyMiddleware({
   target: `http://localhost:${INTERNAL_PORT}`,
   changeOrigin: true,
   ws: true,
-  pathFilter: ['/surat-terakhir', '/api', '/socket.io'],
+  pathFilter: ['/surat-terakhir', '/api', '/socket.io', '/moderator', '/player', '/display'],
 });
 
 // Proxy routes MUST come before express.static — otherwise /api/health would
