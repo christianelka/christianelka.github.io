@@ -282,7 +282,7 @@
             this.revealOpen = false;
           });
           this.socket.on('fragmen:assigned', d => { if (d.fragmen) this.fragmen = d.fragmen.teks; });
-          this.socket.on('phase:changed', d => { this.currentPhase = d.phase; this.phaseEndsAt = d.phaseEndsAt; if (navigator.vibrate) navigator.vibrate(50); });
+          this.socket.on('phase:changed', d => { console.log('[Player] Received phase:changed', d); this.currentPhase = d.phase; this.phaseEndsAt = d.phaseEndsAt; if (navigator.vibrate) navigator.vibrate(50); });
           this.socket.on('mystery:opened', d => {
             this.flipping = d.color; this.openedColor = d.color;
             setTimeout(() => this.flipping = null, 700);
