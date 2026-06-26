@@ -1325,7 +1325,7 @@
                 <div class="text-xs text-gray-500">Peringkat berdasarkan <span class="text-white font-bold">ELO</span></div>
                 <div class="flex items-center gap-2">
                   <span class="text-[10px] text-gray-500">Urut:</span>
-                  <select x-model="leaderboardSort" @change="refreshLeaderboard()" class="text-xs rounded-lg px-2 py-1 bg-[#232734] border border-[#2A2D3A] text-gray-300">
+                  <select x-model="leaderboardSort" class="text-xs rounded-lg px-2 py-1 bg-[#232734] border border-[#2A2D3A] text-gray-300">
                     <option value="elo">ELO</option>
                     <option value="seasonalElo">Season ELO</option>
                     <option value="wins">Menang</option>
@@ -1346,11 +1346,11 @@
                   <tr>
                     <th>#</th>
                     <th>Pemain</th>
-                    <th @click="leaderboardSort='elo';refreshLeaderboard()" class="text-right">ELO</th>
-                    <th @click="leaderboardSort='seasonalElo';refreshLeaderboard()" class="text-right">Season</th>
-                    <th @click="leaderboardSort='wins';refreshLeaderboard()" class="text-right">M/K</th>
-                    <th @click="leaderboardSort='winRate';refreshLeaderboard()" class="text-right">WR</th>
-                    <th @click="leaderboardSort='bestStreak';refreshLeaderboard()" class="text-right">Streak</th>
+                    <th @click="leaderboardSort='elo'" class="text-right">ELO</th>
+                    <th @click="leaderboardSort='seasonalElo'" class="text-right">Season</th>
+                    <th @click="leaderboardSort='wins'" class="text-right">M/K</th>
+                    <th @click="leaderboardSort='winRate'" class="text-right">WR</th>
+                    <th @click="leaderboardSort='bestStreak'" class="text-right">Streak</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1925,6 +1925,8 @@
               this.saveGameState();
             }
           });
+          // Reactive leaderboard refresh ketika opsi urutan berubah
+          this.$watch('leaderboardSort', () => this.refreshLeaderboard());
         },
 
         // ========== SETUP ==========
@@ -2551,7 +2553,6 @@
 
         sortLeaderboard(field) {
           this.leaderboardSort = field;
-          this.refreshLeaderboard();
         },
 
         getEloRankClass(elo) {

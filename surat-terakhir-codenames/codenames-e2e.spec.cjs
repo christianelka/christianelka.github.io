@@ -116,7 +116,7 @@ test('Player name input flow', async ({ page }) => {
   await page.waitForTimeout(300);
 
   // Click "LANJUTKAN" button
-  await page.locator('button:has-text("LANJUTKAN")').first().click();
+  await page.locator('button:has-text("LANJUTKAN")').last().click();
   await page.waitForTimeout(300);
 
   // Check input appears
