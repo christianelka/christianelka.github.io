@@ -30,8 +30,8 @@ async function setupGame(page, opts = {}) {
   await waitForAlpine(page);
   await page.waitForTimeout(500);
 
-  // Phase: setup → click "LANJUTKAN"
-  const lanjutkanBtn = page.locator('button:has-text("LANJUTKAN")').first();
+  // Phase: setup → click "LANJUTKAN" (setup button, NOT resume)
+  const lanjutkanBtn = page.locator('button:has-text("LANJUTKAN")').last();
   await expect(lanjutkanBtn).toBeVisible({ timeout: 5000 });
   await lanjutkanBtn.click();
   await page.waitForTimeout(300);

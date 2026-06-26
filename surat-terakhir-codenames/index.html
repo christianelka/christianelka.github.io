@@ -763,7 +763,7 @@
                   <div class="font-extrabold text-5xl text-white" x-text="playerCount"></div>
                   <div class="text-[10px] text-gray-500 uppercase tracking-wider mt-1">pemain</div>
                 </div>
-                <button @click="playerCount = Math.min(10, playerCount + 1)" 
+                <button @click="playerCount = Math.min(30, playerCount + 1)" 
                         class="w-11 h-11 rounded-full bg-[#232734] hover:bg-[#2A2D3A] flex items-center justify-center text-white text-xl font-bold border border-[#2A2D3A] transition-all">+</button>
               </div>
               <div class="text-[11px] text-gray-500 mt-2">Minimal 4 pemain (2 per tim)</div>
@@ -1550,40 +1550,49 @@
       constructor() {
         this.ctx = null;
         this.initialized = false;
-        this.mp3Cache = {};
-        this.currentAudio = null;
+        this.activeAudios = new Set();
       }
       init() {
         if (this.initialized) return;
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         this.initialized = true;
+        // Stop all audio when leaving the page
+        window.addEventListener('beforeunload', () => this.stop());
       }
       playMp3(src) {
         this.init();
         // Stop any currently playing audio first
         this.stop();
 
-        if (this.mp3Cache[src]) {
-          const clone = this.mp3Cache[src].cloneNode();
-          clone.volume = 0.6;
-          this.currentAudio = clone;
-          clone.play().catch(() => {});
-          return;
-        }
         const audio = new Audio(src);
         audio.volume = 0.6;
-        this.currentAudio = audio;
+        this.activeAudios.add(audio);
+
+        // Clean up when playback naturally ends
+        const cleanup = () => this.activeAudios.delete(audio);
+        audio.addEventListener('ended', cleanup, { once: true });
+        audio.addEventListener('error', cleanup, { once: true });
+
+        // Play when enough data is loaded
         audio.addEventListener('canplaythrough', () => {
-          audio.play().catch(() => {});
-        });
-        this.mp3Cache[src] = audio;
+          if (this.activeAudios.has(audio)) {
+            audio.play().catch(() => this.activeAudios.delete(audio));
+          }
+        }, { once: true });
+
+        // If already loaded (browser cache), canplaythrough won't re-fire
+        if (audio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+          if (this.activeAudios.has(audio)) {
+            audio.play().catch(() => this.activeAudios.delete(audio));
+          }
+        }
       }
       stop() {
-        if (this.currentAudio) {
-          this.currentAudio.pause();
-          this.currentAudio.currentTime = 0;
-          this.currentAudio = null;
+        for (const audio of this.activeAudios) {
+          audio.pause();
+          audio.currentTime = 0;
         }
+        this.activeAudios.clear();
       }
       play(type) {
         this.init();
