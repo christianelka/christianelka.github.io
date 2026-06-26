@@ -632,7 +632,7 @@
           this.socket.on('connect', () => { this.connected = true; });
           this.socket.on('disconnect', () => { this.connected = false; });
           this.socket.on('players:update', d => { this.players = d.players; });
-          this.socket.on('game:created', d => { this.totalRounds = d.totalRounds; this.tab = 'lobby'; });
+          this.socket.on('game:created', d => { this.roomCode = d.gameId; this.totalRounds = d.totalRounds; this.tab = 'lobby'; });
           this.socket.on('round:started', d => { this.currentRound = d.roundNumber; this.currentPhase = d.phase; this.phaseEndsAt = d.phaseEndsAt; this.tab = 'game'; this.roundData = null; });
           this.socket.on('phase:changed', d => { this.currentPhase = d.phase; this.phaseEndsAt = d.phaseEndsAt; });
           this.socket.on('moderator:roundData', d => { this.roundData = d.players; });
