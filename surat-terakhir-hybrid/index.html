@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Moderator · Surat Terakhir Hybrid</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#F5F0FF', 100:'#EDE0FF', 200:'#D9C2FF', 300:'#BE9BFF', 400:'#9F6BFF', 500:'#8A2BE2', 600:'#7823CC', 700:'#621CAA' },
+          },
+          boxShadow: {
+            card: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
+            cardHover: '0 8px 24px rgba(138,43,226,0.10), 0 2px 6px rgba(0,0,0,0.06)',
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    body { -webkit-font-smoothing: antialiased; }
+    [x-cloak] { display: none !important; }
+    .timer-num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+
+    .sec-header {
+      background: linear-gradient(135deg, #8A2BE2, #621CAA);
+      border-radius: 22px 22px 0 0;
+      padding: 14px 18px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sec-body { background: white; border-radius: 0 0 22px 22px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06); }
+
+    .action-card {
+      background: #F9FAFB; border: 1px solid #F3F4F6; border-radius: 16px;
+      padding: 14px; display: flex; align-items: center; gap: 10px;
+      transition: all 0.2s cubic-bezier(0.16,1,0.3,1); cursor: pointer;
+      text-align: left; width: 100%;
+    }
+    .action-card:hover:not(:disabled) { background: #F5F0FF; border-color: #EDE0FF; transform: translateY(-1px); }
+    .action-card:active:not(:disabled) { transform: scale(0.98); }
+    .action-card .icon-chip { width:32px; height:32px; border-radius:10px; background:#F5F0FF; color:#8A2BE2; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .action-card:hover:not(:disabled) .icon-chip { background:#8A2BE2; color:white; }
+    .action-card .label { font-size:12px; font-weight:600; color:#111827; }
+    .action-card .desc { font-size:10px; color:#6B7280; margin-top:1px; }
+
+    .phase-track { display:flex; align-items:center; gap:4px; justify-content:center; }
+    .phase-dot { width:10px; height:10px; border-radius:50%; background:#e5e7eb; transition:all 0.5s cubic-bezier(0.16,1,0.3,1); }
+    .phase-dot.past { background:#8A2BE2; }
+    .phase-dot.active { background:#8A2BE2; box-shadow:0 0 0 4px rgba(138,43,226,0.15), 0 0 12px rgba(138,43,226,0.4); transform:scale(1.3); }
+    .phase-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#9CA3AF; text-align:center; }
+    .phase-label.active { color:#8A2BE2; }
+    .phase-line { width:22px; height:2px; background:#e5e7eb; border-radius:1px; transition:background 0.3s; }
+    .phase-line.past { background:#8A2BE2; }
+
+    .score-bar { height:6px; background:#f3f4f6; border-radius:9999px; overflow:hidden; }
+    .score-fill { height:100%; border-radius:9999px; transition:width 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .score-fill.pembawa { background:linear-gradient(90deg,#8A2BE2,#BE9BFF); }
+    .score-fill.agen { background:linear-gradient(90deg,#ef4444,#f97316); }
+
+    .role-tag { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:2px 6px; border-radius:6px; }
+    .role-tag-pembawa { background:#F5F0FF; color:#8A2BE2; }
+    .role-tag-agen { background:#fef2f2; color:#ef4444; }
+    .role-tag-abu { background:#fffbeb; color:#d97706; }
+
+    .seg-pill { display:inline-flex; background:#F3F4F6; border-radius:14px; padding:4px; gap:2px; }
+    .seg-pill button { padding:8px 12px; border-radius:10px; font-size:12px; font-weight:600; color:#6B7280; transition:all .2s; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    .seg-pill button.active { background:#8A2BE2; color:white; box-shadow:0 1px 2px rgba(0,0,0,0.06); }
+
+    .cta-purple { background:#8A2BE2; color:white; border-radius:14px; padding:12px 18px; font-weight:600; display:inline-flex; align-items:center; gap:8px; transition:background 0.2s; }
+    .cta-purple:hover { background:#7823CC; }
+    .cta-purple:disabled { opacity:0.5; cursor:not-allowed; }
+
+    .vote-btn { background:#F9FAFB; border:2px solid #F3F4F6; border-radius:14px; padding:10px 16px; font-size:13px; font-weight:600; color:#374151; cursor:pointer; transition:all 0.2s; }
+    .vote-btn:hover { background:#F5F0FF; border-color:#8A2BE2; color:#8A2BE2; }
+    .vote-btn.voted { background:#8A2BE2; border-color:#8A2BE2; color:white; }
+
+    .env-btn { width:52px; height:52px; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:10px; font-weight:700; cursor:pointer; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); border:2px solid; }
+    .env-btn.merah { background:#fef2f2; border-color:#fecaca; color:#dc2626; }
+    .env-btn.kuning { background:#fffbeb; border-color:#fed7aa; color:#d97706; }
+    .env-btn.hijau { background:#f0fdf4; border-color:#bbf7d0; color:#16a34a; }
+    .env-btn:hover:not(:disabled) { transform:translateY(-2px) scale(1.05); }
+    .env-btn:disabled { opacity:0.3; cursor:default; }
+
+    .timer-num.warn { color:#d97706; }
+    .timer-num.danger { color:#dc2626; }
+
+    @keyframes cFall { 0%{transform:translateY(0) rotate(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+    @keyframes pulse-ring { 0%{transform:scale(1);opacity:0.6} 100%{transform:scale(1.5);opacity:0} }
+    @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
+
+  <header class="bg-brand-500 relative overflow-hidden shadow-lg">
+    <div class="absolute inset-0 opacity-20" style="background:radial-gradient(ellipse at 80% 50%, #BE9BFF, transparent 60%)"></div>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between text-white relative z-10">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+        </div>
+        <div>
+          <div class="font-extrabold text-sm leading-none">Surat Terakhir</div>
+          <div class="text-[10px] opacity-80 tracking-[0.15em] uppercase mt-0.5">Hybrid Mode</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-white/15 backdrop-blur rounded-full">
+          <span class="w-2 h-2 rounded-full bg-green-400" style="box-shadow:0 0 6px rgba(74,222,128,0.5)"></span>
+          <span class="text-[10px] font-bold tracking-wider uppercase">Offline</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div x-data="gameApp()" class="max-w-5xl mx-auto px-3 sm:px-6 py-5">
+
+    <div class="overflow-x-auto pb-1 mb-5">
+      <div class="seg-pill sticky top-3 z-30 backdrop-blur bg-white/80">
+        <button @click="tab='setup'" :class="tab==='setup'?'active':''">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Setup
+        </button>
+        <button @click="tab='lobby'" :class="tab==='lobby'?'active':''" :disabled="!gameCreated">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Lobby
+        </button>
+        <button @click="tab='game'" :class="tab==='game'?'active':''" :disabled="!gameStarted">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Game
+        </button>
+        <button @click="tab='selesai'" :class="tab==='selesai'?'active':''" :disabled="!gameOver">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          Selesai
+        </button>
+      </div>
+    </div>
+
+    <!-- ============ SETUP TAB ============ -->
+    <section x-show="tab==='setup'" x-transition.opacity x-cloak>
+      <div class="grid lg:grid-cols-3 gap-4">
+
+        <!-- Tier selector -->
+        <div class="lg:col-span-2">
+          <div class="sec-header">
+            <div>
+              <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Tahap 1</p>
+              <p class="font-extrabold text-xs mt-0.5">Pilih Tingkat Kesulitan</p>
+            </div>
+          </div>
+          <div class="sec-body">
+            <div class="grid sm:grid-cols-3 gap-3">
+              <template x-for="t in tiers" :key="t.n">
+                <button @click="tier=t.n" :class="tier===t.n ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-gray-300 bg-gray-50 hover:bg-gray-100'" class="text-left p-4 rounded-2xl border-2 transition-all">
+                  <div class="text-[10px] font-bold uppercase tracking-wider mb-2" :class="tier===t.n ? 'text-brand-500' : 'text-gray-400'" x-text="'Tier 0'+t.n"></div>
+                  <div class="font-bold text-base mb-1" x-text="t.name"></div>
+                  <p class="text-xs text-gray-500 leading-relaxed" x-text="t.desc"></p>
+                </button>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ronde counter -->
+        <div>
+          <div class="sec-header">
+            <div>
+              <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Tahap 2</p>
+              <p class="font-extrabold text-xs mt-0.5">Jumlah Ronde</p>
+            </div>
+          </div>
+          <div class="sec-body">
+            <div class="flex items-center justify-center gap-4 py-2">
+              <button @click="totalRounds=Math.max(1,totalRounds-1)" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-lg font-bold transition-colors">−</button>
+              <div class="text-center min-w-[70px]">
+                <div class="font-extrabold text-5xl text-brand-500 leading-none" x-text="totalRounds"></div>
+                <div class="text-[10px] uppercase tracking-wider text-gray-400 mt-2">ronde</div>
+              </div>
+              <button @click="totalRounds=Math.min(10,totalRounds+1)" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-lg font-bold transition-colors">+</button>
+            </div>
+            <p class="text-xs text-gray-400 text-center mt-3">3–5 ronde ≈ 15–30 menit</p>
+          </div>
+        </div>
+
+        <!-- Player name input -->
+        <div class="lg:col-span-2">
+          <div class="sec-header">
+            <div>
+              <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Tahap 3</p>
+              <p class="font-extrabold text-xs mt-0.5">Daftar Pemain</p>
+            </div>
+            <span class="text-xs font-bold opacity-90" x-text="players.length+'/8'"></span>
+          </div>
+          <div class="sec-body">
+            <div class="flex gap-2 mb-4">
+              <input
+                x-model="newPlayerName"
+                @keydown.enter="addPlayer()"
+                :disabled="players.length>=8"
+                type="text"
+                placeholder="Nama pemain, Enter untuk tambah"
+                class="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 disabled:opacity-50"
+                maxlength="20"
+              >
+              <button @click="addPlayer()" :disabled="players.length>=8||!newPlayerName.trim()" class="cta-purple rounded-2xl py-3 px-5 disabled:opacity-50">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+
+            <template x-if="players.length===0">
+              <div class="text-center py-8 text-gray-400">
+                <svg class="w-10 h-10 mx-auto mb-3 opacity-30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <p class="text-sm">Tambahkan minimal 3 pemain</p>
+              </div>
+            </template>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <template x-for="(p, i) in players" :key="i">
+                <div class="bg-gray-50 border border-gray-200 rounded-2xl p-3 flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold flex-shrink-0" x-text="i+1"></span>
+                    <span class="text-sm font-medium truncate" x-text="p"></span>
+                  </div>
+                  <button @click="removePlayer(i)" class="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </template>
+            </div>
+
+            <p x-show="players.length>0 && players.length<3" class="text-xs text-amber-600 mt-3 bg-amber-50 rounded-xl px-3 py-2">Butuh minimal 3 pemain untuk mulai.</p>
+          </div>
+        </div>
+
+        <!-- Info sidebar -->
+        <div>
+          <div class="sec-header">
+            <div>
+              <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Info</p>
+              <p class="font-extrabold text-xs mt-0.5">Cara Kerja</p>
+            </div>
+          </div>
+          <div class="sec-body space-y-3">
+            <template x-for="(s,i) in setupSteps" :key="i">
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold flex-shrink-0" x-text="i+1"></span>
+                <span class="text-xs text-gray-600 leading-relaxed" x-text="s"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+
+      <button @click="createGame()" :disabled="players.length<3" class="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-2xl py-4 mt-4 flex items-center justify-center gap-2 transition-all shadow-card hover:shadow-cardHover">
+        <span>Buat Sesi</span>
+        <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs">→</span>
+      </button>
+    </section>
+
+    <!-- ============ LOBBY TAB ============ -->
+    <section x-show="tab==='lobby'" x-transition.opacity x-cloak>
+      <div class="grid lg:grid-cols-3 gap-4">
+
+        <!-- Players grid -->
+        <div class="lg:col-span-2">
+          <div class="sec-header">
+            <div>
+              <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Lobby</p>
+              <p class="font-extrabold text-xs mt-0.5">Pemain Terdaftar</p>
+            </div>
+            <span class="text-xs font-bold opacity-90" x-text="players.length+'/8 pemain'"></span>
+          </div>
+          <div class="sec-body min-h-[300px] flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <span class="font-extrabold text-4xl text-brand-500 leading-none timer-num" x-text="players.length"></span>
+                <span class="text-[10px] text-gray-400 uppercase tracking-wider ml-1">/ 8</span>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-gray-500">Tier <span class="font-bold text-brand-500" x-text="tier"></span> · <span class="font-bold" x-text="totalRounds"></span> ronde</div>
+              </div>
+            </div>
+
+            <div class="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
+              <template x-for="(p,i) in players" :key="i">
+                <div class="bg-gray-50 border border-gray-200 rounded-2xl p-3 text-center">
+                  <div class="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-base mx-auto mb-2" x-text="p.charAt(0).toUpperCase()"></div>
+                  <div class="text-sm font-semibold truncate" x-text="p"></div>
+                  <div class="mt-1 flex items-center justify-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                    <span class="text-[10px] text-gray-400">Siap</span>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <button @click="startRound()" :disabled="players.length<3" class="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-2xl py-4 flex items-center justify-center gap-2 transition-all shadow-card">
+              <span>Mulai Ronde 1</span>
+              <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Guide -->
+        <div>
+          <div class="sec-header">
+            <div>
+              <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Panduan</p>
+              <p class="font-extrabold text-xs mt-0.5">Cara Main</p>
+            </div>
+          </div>
+          <div class="sec-body space-y-4">
+            <div>
+              <p class="text-[10px] font-bold uppercase tracking-wider text-brand-500 mb-2">Peran Pemain</p>
+              <div class="space-y-2">
+                <div class="flex items-start gap-2">
+                  <span class="role-tag role-tag-pembawa flex-shrink-0 mt-0.5">Pembawa</span>
+                  <p class="text-xs text-gray-600">Pegang fragmen dari kitab target. Tujuan: temukan agen.</p>
+                </div>
+                <div class="flex items-start gap-2">
+                  <span class="role-tag role-tag-agen flex-shrink-0 mt-0.5">Agen</span>
+                  <p class="text-xs text-gray-600">Pegang fragmen dari kitab lain. Tujuan: tidak ketahuan.</p>
+                </div>
+                <div class="flex items-start gap-2">
+                  <span class="role-tag role-tag-abu flex-shrink-0 mt-0.5">Abu-abu</span>
+                  <p class="text-xs text-gray-600">Pegang fragmen dari kitab dekat. Bisa membantu atau menyesatkan.</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold uppercase tracking-wider text-brand-500 mb-2">Alur Ronde</p>
+              <ol class="space-y-2">
+                <template x-for="(s,i) in lobbySteps" :key="i">
+                  <li class="flex items-start gap-2">
+                    <span class="w-5 h-5 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-[10px] font-bold flex-shrink-0" x-text="i+1"></span>
+                    <span class="text-xs text-gray-600 leading-relaxed" x-text="s"></span>
+                  </li>
+                </template>
+              </ol>
+            </div>
+            <div class="bg-brand-50 rounded-2xl p-3">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-brand-500 mb-1">Skor</p>
+              <div class="space-y-1 text-xs text-gray-600">
+                <p>Agen kena vote: Pembawa +5, Agen -10</p>
+                <p>Agen tidak kena: Pembawa +2, Agen +10</p>
+                <p>Hasil seri: semua +2/+5</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GAME TAB ============ -->
+    <section x-show="tab==='game'" x-transition.opacity x-cloak>
+      <div class="grid lg:grid-cols-3 gap-4">
+
+        <!-- Main control panel -->
+        <div class="lg:col-span-2 space-y-4">
+
+          <!-- Round header + phase tracker + timer -->
+          <div>
+            <div class="sec-header">
+              <div>
+                <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Ronde <span x-text="currentRound"></span> / <span x-text="totalRounds"></span></p>
+                <p class="font-extrabold text-xs mt-0.5" x-text="currentRoundConfig ? 'Target: '+currentRoundConfig.target : 'Menunggu...'"></p>
+              </div>
+              <div class="text-right bg-white/20 rounded-xl px-3 py-2">
+                <div class="timer-num font-mono text-2xl font-extrabold leading-none" :class="timerClass" x-text="timerLabel"></div>
+                <p class="text-[9px] font-bold uppercase tracking-wider opacity-80 mt-0.5">Sisa</p>
+              </div>
+            </div>
+            <div class="sec-body">
+
+              <!-- Phase track with labels -->
+              <div class="flex items-center justify-center gap-1 mb-2">
+                <div class="text-center" style="width:40px">
+                  <div class="phase-dot mx-auto mb-1" :class="phaseIndex>=0?(phaseIndex>0?'past':'active'):''"></div>
+                  <div class="phase-label" :class="phaseIndex===0?'active':''">Baca</div>
+                </div>
+                <div class="phase-line mb-3" :class="phaseIndex>0?'past':''"></div>
+                <div class="text-center" style="width:40px">
+                  <div class="phase-dot mx-auto mb-1" :class="phaseIndex>=1?(phaseIndex>1?'past':'active'):''"></div>
+                  <div class="phase-label" :class="phaseIndex===1?'active':''">Diskusi</div>
+                </div>
+                <div class="phase-line mb-3" :class="phaseIndex>1?'past':''"></div>
+                <div class="text-center" style="width:40px">
+                  <div class="phase-dot mx-auto mb-1" :class="phaseIndex>=2?(phaseIndex>2?'past':'active'):''"></div>
+                  <div class="phase-label" :class="phaseIndex===2?'active':''">Voting</div>
+                </div>
+                <div class="phase-line mb-3" :class="phaseIndex>2?'past':''"></div>
+                <div class="text-center" style="width:40px">
+                  <div class="phase-dot mx-auto mb-1" :class="phaseIndex>=3?'active':''"></div>
+                  <div class="phase-label" :class="phaseIndex===3?'active':''">Reveal</div>
+                </div>
+              </div>
+
+              <!-- Phase description -->
+              <div class="bg-gray-50 rounded-2xl p-3 mb-4 text-center">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5" x-text="phaseLabel"></p>
+                <p class="text-xs text-gray-600" x-text="phaseDesc"></p>
+              </div>
+
+              <!-- Control buttons -->
+              <div class="flex gap-2 mb-5">
+                <button @click="advancePhase()" :disabled="phaseIndex>=3" class="flex-1 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-2xl py-3.5 flex items-center justify-center gap-2 transition-all shadow-card">
+                  <span x-text="advanceLabel"></span>
+                  <span class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">→</span>
+                </button>
+                <button @click="confirmEndRound()" class="px-5 py-3.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-2xl hover:bg-gray-50 transition-colors text-sm">Akhiri Ronde</button>
+              </div>
+
+              <!-- Score bars -->
+              <div class="space-y-3 pt-4 border-t border-gray-100">
+                <div>
+                  <div class="flex justify-between text-sm mb-1.5">
+                    <span class="font-medium text-gray-700">Tim Pembawa</span>
+                    <span class="font-bold text-brand-500 timer-num" x-text="scores.pembawa"></span>
+                  </div>
+                  <div class="score-bar"><div class="score-fill pembawa" :style="`width:${scorePct.pembawa}%`"></div></div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-1.5">
+                    <span class="font-medium text-gray-700">Tim Agen</span>
+                    <span class="font-bold text-red-500 timer-num" x-text="scores.agen"></span>
+                  </div>
+                  <div class="score-bar"><div class="score-fill agen" :style="`width:${scorePct.agen}%`"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Voting panel (visible during voting phase) -->
+          <div x-show="phaseIndex===2" x-transition>
+            <div class="sec-header">
+              <div>
+                <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Fase Voting</p>
+                <p class="font-extrabold text-xs mt-0.5">Pilih yang divote terbanyak</p>
+              </div>
+              <span x-show="voteTally.length>0" class="text-xs font-bold bg-white/20 rounded-lg px-2 py-1" x-text="totalVotes+' suara'"></span>
+            </div>
+            <div class="sec-body">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                <template x-for="p in players" :key="p">
+                  <button @click="castVote(p)" class="vote-btn relative" :class="voteMap[p]>0?'voted':''">
+                    <span x-text="p"></span>
+                    <span x-show="voteMap[p]>0" class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-brand-500 text-white text-[10px] font-bold flex items-center justify-center" x-text="voteMap[p]"></span>
+                  </button>
+                </template>
+              </div>
+              <div x-show="totalVotes>0" class="bg-gray-50 rounded-2xl p-3">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Tally Voting</p>
+                <div class="space-y-1.5">
+                  <template x-for="v in voteTally" :key="v.name">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-medium text-gray-700 w-20 truncate" x-text="v.name"></span>
+                      <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full bg-brand-400 transition-all duration-500" :style="`width:${v.pct}%`"></div>
+                      </div>
+                      <span class="text-xs font-bold text-gray-600 w-4 text-right" x-text="v.votes"></span>
+                    </div>
+                  </template>
+                </div>
+                <button @click="resetVotes()" class="mt-3 text-[10px] text-gray-400 hover:text-red-500 transition-colors">Reset voting</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reveal panel (visible during reveal phase) -->
+          <div x-show="phaseIndex===3" x-transition>
+            <div class="sec-header">
+              <div>
+                <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Fase Reveal</p>
+                <p class="font-extrabold text-xs mt-0.5">Ungkap identitas agen</p>
+              </div>
+            </div>
+            <div class="sec-body" x-show="roundData">
+              <template x-if="roundData">
+                <div class="space-y-2">
+                  <template x-for="(pdata, pname) in roundData" :key="pname">
+                    <div class="border rounded-2xl p-3 transition-colors" :class="pdata.role==='agen'?'border-red-200 bg-red-50':pdata.role==='abu-abu'?'border-amber-200 bg-amber-50':'border-gray-200 bg-gray-50'">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="font-semibold text-sm" x-text="pname"></span>
+                        <span class="role-tag" :class="pdata.role==='agen'?'role-tag-agen':pdata.role==='abu-abu'?'role-tag-abu':'role-tag-pembawa'" x-text="pdata.role"></span>
+                        <span class="text-[10px] text-gray-400 ml-auto" x-text="pdata.kitab"></span>
+                      </div>
+                      <p class="text-xs text-gray-600 italic" x-text="'\u201c'+pdata.teks+'\u201d'"></p>
+                    </div>
+                  </template>
+                </div>
+              </template>
+
+              <!-- Scoring result -->
+              <div class="mt-4 bg-brand-50 rounded-2xl p-4">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-brand-500 mb-2">Hasil Ronde</p>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-sm text-gray-600">Yang divote:</span>
+                  <span class="font-bold text-sm" x-text="topVoted || '(belum ada)'"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-600">Agen sebenarnya:</span>
+                  <span class="font-bold text-sm text-red-500" x-text="roundAgentName || '?'"></span>
+                </div>
+                <div class="mt-3 p-2 rounded-xl bg-white" x-show="topVoted">
+                  <p class="text-xs font-bold" :class="topVoted===roundAgentName?'text-brand-600':'text-gray-700'" x-text="topVoted===roundAgentName?'Agen KETAHUAN — Pembawa +5, Agen -10':'Agen SELAMAT — Pembawa +2, Agen +10'"></p>
+                </div>
+              </div>
+
+              <button @click="finishRound()" class="w-full mt-4 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-2xl py-3.5 flex items-center justify-center gap-2 transition-all shadow-card">
+                <span x-text="currentRound>=totalRounds?'Lihat Hasil Akhir':'Lanjut Ronde Berikutnya'"></span>
+                <span class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">→</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sidebar: Mod View + Mystery + Questions -->
+        <div class="space-y-4">
+
+          <!-- Mod View -->
+          <div x-show="roundData" x-transition>
+            <div class="sec-header">
+              <div>
+                <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Mod View</p>
+                <p class="font-extrabold text-xs mt-0.5">Fragmen Pemain</p>
+              </div>
+            </div>
+            <div class="sec-body">
+              <div class="space-y-2 max-h-72 overflow-y-auto">
+                <template x-if="roundData">
+                  <template x-for="(pdata, pname) in roundData" :key="pname">
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-3">
+                      <div class="flex items-center gap-2 mb-1.5">
+                        <span class="font-semibold text-sm" x-text="pname"></span>
+                        <span class="role-tag" :class="pdata.role==='agen'?'role-tag-agen':pdata.role==='abu-abu'?'role-tag-abu':'role-tag-pembawa'" x-text="pdata.role"></span>
+                      </div>
+                      <p class="text-xs text-gray-600 italic leading-relaxed" x-text="'\u201c'+pdata.teks+'\u201d'"></p>
+                    </div>
+                  </template>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mystery envelopes -->
+          <div>
+            <div class="sec-header">
+              <div>
+                <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Amplop Misteri</p>
+                <p class="font-extrabold text-xs mt-0.5">Buka Amplop</p>
+              </div>
+            </div>
+            <div class="sec-body">
+              <template x-if="!roundData">
+                <p class="text-xs text-gray-400 text-center py-3">Mulai ronde untuk melihat amplop.</p>
+              </template>
+              <template x-if="roundData">
+                <div class="space-y-3">
+                  <template x-for="(pdata, pname) in roundData" :key="pname">
+                    <div>
+                      <p class="text-xs font-semibold text-gray-700 mb-1.5" x-text="pname"></p>
+                      <div class="flex gap-2">
+                        <template x-for="color in ['merah','kuning','hijau']" :key="color">
+                          <button
+                            @click="openMystery(pname, color)"
+                            :disabled="pdata.openedEnvelopes && pdata.openedEnvelopes.includes(color)"
+                            class="env-btn"
+                            :class="color"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M3 7l9-4 9 4M12 13v7"/></svg>
+                            <span x-text="color.charAt(0).toUpperCase()+color.slice(1)"></span>
+                          </button>
+                        </template>
+                      </div>
+                      <div x-show="pdata.openedEnvelopes && pdata.openedEnvelopes.length>0" class="mt-1">
+                        <span class="text-[10px] text-gray-400">Terbuka: </span>
+                        <template x-for="c in (pdata.openedEnvelopes||[])" :key="c">
+                          <span class="text-[10px] font-semibold" :class="c==='merah'?'text-red-500':c==='kuning'?'text-amber-500':'text-green-500'" x-text="c+' '"></span>
+                        </template>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Questions -->
+          <div>
+            <div class="sec-header">
+              <div>
+                <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Tier <span x-text="tier"></span></p>
+                <p class="font-extrabold text-xs mt-0.5">Pertanyaan Panduan</p>
+              </div>
+            </div>
+            <div class="sec-body">
+              <div class="space-y-1.5 max-h-64 overflow-y-auto">
+                <template x-for="(q,i) in currentQuestions" :key="i">
+                  <button @click="toggleQuestion(i)" :class="activeQuestions.includes(i)?'bg-brand-50 border-brand-300 text-brand-700':'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'" class="w-full text-left text-xs leading-relaxed p-2.5 rounded-xl border transition-colors">
+                    <span class="font-mono text-[10px] text-gray-400 mr-1.5" x-text="String(i+1).padStart(2,'0')"></span>
+                    <span x-text="q"></span>
+                  </button>
+                </template>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SELESAI TAB ============ -->
+    <section x-show="tab==='selesai'" x-transition.opacity x-cloak>
+      <div class="max-w-2xl mx-auto">
+        <div class="sec-header">
+          <div>
+            <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Selesai</p>
+            <p class="font-extrabold text-xs mt-0.5">Game Over</p>
+          </div>
+        </div>
+        <div class="sec-body text-center py-8">
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 mx-auto flex items-center justify-center mb-5 shadow-card">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="white"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          </div>
+          <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Pemenang</p>
+          <h1 class="font-extrabold text-4xl sm:text-5xl text-brand-500 mb-2" x-text="winner"></h1>
+          <p class="text-sm text-gray-500 mb-8" x-text="winnerDesc"></p>
+
+          <div class="grid grid-cols-2 gap-3 mb-6 text-left">
+            <div class="bg-gray-50 rounded-2xl p-5">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Tim Pembawa</p>
+              <p class="font-extrabold text-4xl text-brand-500 timer-num" x-text="scores.pembawa"></p>
+            </div>
+            <div class="bg-gray-50 rounded-2xl p-5">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Tim Agen</p>
+              <p class="font-extrabold text-4xl text-red-500 timer-num" x-text="scores.agen"></p>
+            </div>
+          </div>
+
+          <!-- Round history -->
+          <div x-show="roundHistory.length>0" class="text-left mb-6">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">Riwayat Ronde</p>
+            <div class="space-y-2">
+              <template x-for="(r,i) in roundHistory" :key="i">
+                <div class="flex items-center gap-3 bg-gray-50 rounded-xl px-3 py-2">
+                  <span class="text-[10px] font-bold text-gray-400 w-16" x-text="'Ronde '+(i+1)"></span>
+                  <span class="text-xs font-semibold flex-1" x-text="r.target"></span>
+                  <span class="text-xs" :class="r.agenCaught?'text-brand-600 font-bold':'text-red-500 font-bold'" x-text="r.agenCaught?'Agen tertangkap':'Agen lolos'"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <button @click="window.location.reload()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-2xl py-4 flex items-center justify-center gap-2 transition-all shadow-card">
+            <span>Sesi Baru</span>
+            <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="confetti" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+  <script>
+    // ============================================================
+    // FRAGMEN BANK (embedded from fragmen.json)
+    // ============================================================
+    const FRAGMEN_BANK = [
+      {"kitab":"Mazmur","tema":"perlindungan ilahi","teks":"TUHAN adalah gembalaku, takkan kekurangan aku","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"kasih setia","teks":"Bersyukurlah kepada TUHAN, sebab Ia baik, kasih setia-Nya untuk selamanya","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"penyembahan","teks":"Biarlah segenap tanah menyembah dan bermazmur kepada-Mu","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"kepenuhan doa","teks":"Hatiku remuk, lepasakanlah aku dari kesesakan, ya TUHAN","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"pujian jiwa","teks":"Puji TUHAN hai jiwaku, aku mau bermazmur bagi-Nya","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"ketenangan","teks":"Diamlah dan ketahuilah bahwa Akulah Allah","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"kekuatan","teks":"TUHAN adalah kekuatan umat-Nya, benteng keselamatan orang-orang yang diurapi-Nya","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"perlindungan","teks":"Dalam naungan sayap-Mu aku berlindung","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"sukacita kemenangan","teks":"Bersukacitalah karena TUHAN telah menang, Ia menjadi Raja atas bumi","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"pujian pagi","teks":"Pada pagi hari aku mendengar suaramu, ya TUHAN, berbicara kepadaku","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"pengharapan","teks":"TUHAN adalah perlindunganku, kepada siapa aku akan takut","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"pemulihan jiwa","teks":"Ia membimbing aku ke air yang tenang, menyegarkan jiwaku","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"kasih karunia","teks":"Tuhan itu baik, kasih setia-Nya untuk selama-lamanya, setia-Nya turun temurun","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"jalan terang","teks":"Firman-Mu itu pelita bagi kakiku, terang bagi jalanku","gaya_bahasa":"puitis"},
+      {"kitab":"Mazmur","tema":"kepuasan","teks":"Aku tidak kekurangan apa-apa, TUHAN membaringkan aku di padang rumput","gaya_bahasa":"puitis"},
+      {"kitab":"Amsal","tema":"hikmat","teks":"Jalan orang benar adalah menjauhi kejahatan, ia menjaga nyawanya","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"pendidikan","teks":"Anakku, dengarkanlah didikan ayahmu, jangan buang hukum ibumu","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"mulut","teks":"Siapa menjaga mulutnya, menjaga nyawanya, siapa membuka lebar-lebar, kebinasaan akan menimpa","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"persahabatan","teks":"Sahabat sejati lebih dekat dari saudara kandung","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"kemalasan","teks":"Malas menyebabkan kemiskinan, rajin menyebabkan kaya","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"kerendahan hati","teks":"Lebih baik yang rendah hati dari yang congkak, lebih baik sabar dari yang sombong","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"wanita bijak","teks":"Siapa mendapat istri yang baik, mendapat yang baik, anugerah TUHAN","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"kesabaran","teks":"Panjang sabar lebih baik dari pada pahlawan, siapa menguasai diri lebih baik dari pada penakluk kota","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"keadilan","teks":"TUHAN membenci timbangan yang palsu, tapi batu timbangan yang tepat berkenan","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"permulaan hikmat","teks":"Takut akan TUHAN adalah permulaan hikmat, mengenal Yang Maha Kudus adalah pengertian","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"iman","teks":"Percayalah kepada TUHAN dengan segenap hatimu, jangan bersandar pada pengertianmu","gaya_bahasa":"argumentatif"},
+      {"kitab":"Amsal","tema":"kebenaran","teks":"TUHAN itu benar, Ia tidak menyetujui yang curang, Ia membenci yang dusta","gaya_bahasa":"argumentatif"},
+      {"kitab":"Pengkhotbah","tema":"kefanaan","teks":"Segala sesuatu indah pada waktunya, ada waktu untuk segala sesuatu","gaya_bahasa":"naratif"},
+      {"kitab":"Pengkhotbah","tema":"kesia-siaan","teks":"Vanitas vanitatum, semuanya sia-sia, tanpa makna hakiki","gaya_bahasa":"naratif"},
+      {"kitab":"Pengkhotbah","tema":"sukacita sederhana","teks":"Tidak ada yang lebih baik bagi manusia selain bersukacita dalam pekerjaannya","gaya_bahasa":"naratif"},
+      {"kitab":"Pengkhotbah","tema":"kebersamaan","teks":"Lebih baik dua dari satu, karena mereka mendapat upah yang baik dalam jerih lelah mereka","gaya_bahasa":"naratif"},
+      {"kitab":"Pengkhotbah","tema":"hikmat praktis","teks":"Hikmat lebih baik dari pada senjata perang, tetapi satu orang yang salah jalan merusak banyak yang baik","gaya_bahasa":"naratif"},
+      {"kitab":"Pengkhotbah","tema":"belajar","teks":"Karena hikmat akan masuk ke dalam hatimu, dan pengetahuan akan menyenangkan jiwamu","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"kasih","teks":"Kasihilah sesamamu manusia seperti dirimu sendiri","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"iman","teks":"Aku tidak layak Tuhan masuk ke dalam rumahku, katakanlah saja satu firman","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"doa","teks":"Mintalah, maka akan diberikan kepadamu, carilah, maka kamu akan mendapat","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"pemuridan","teks":"Pergilah ke seluruh dunia, beritakanlah Injil kepada segala makhluk","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"garam dunia","teks":"Kamu adalah garam dunia, jika garam itu kehilangan asinnya, ia tidak berguna lagi","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"terang dunia","teks":"Kamu adalah terang dunia, kota di atas gunung tidak dapat tersembunyi","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"kelegaan","teks":"Marilah kepada-Ku semua yang letih lesu, Aku akan memberi kelegaan kepadamu","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"kepastian","teks":"Di mana dua atau tiga orang berkumpul dalam nama-Ku, Aku ada di tengah-tengah mereka","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"kemenangan iman","teks":"Aku telah mengalahkan dunia, jangan takut, Aku sertamu selalu","gaya_bahasa":"naratif"},
+      {"kitab":"Matius","tema":"pertobatan","teks":"Bertobatlah, karena Kerajaan Surga sudah dekat","gaya_bahasa":"profetis"},
+      {"kitab":"Markus","tema":"iman","teks":"Jangan takut, hanya percaya, jadilah teguh","gaya_bahasa":"naratif"},
+      {"kitab":"Markus","tema":"kemungkinan","teks":"Hai orang percaya, semua mungkin bagi yang percaya","gaya_bahasa":"naratif"},
+      {"kitab":"Markus","tema":"kepemimpinan","teks":"Siapa yang ingin menjadi yang terkemuka, harus menjadi hamba bagi semua","gaya_bahasa":"naratif"},
+      {"kitab":"Markus","tema":"kewaspadaan","teks":"Waspadalah terhadap ragi orang Farisi, yaitu kepalsuan","gaya_bahasa":"naratif"},
+      {"kitab":"Markus","tema":"kabar baik","teks":"Bertobatlah dan percayalah kepada Injil","gaya_bahasa":"profetis"},
+      {"kitab":"Markus","tema":"keluarga rohani","teks":"Siapa yang melakukan kehendak Allah, itulah saudaraku","gaya_bahasa":"naratif"},
+      {"kitab":"Markus","tema":"pelayanan","teks":"Anak Manusia datang untuk melayani, bukan untuk dilayani","gaya_bahasa":"naratif"},
+      {"kitab":"Markus","tema":"kuasa ilahi","teks":"Akulah jalan, kebenaran, dan kehidupan, tiada yang datang kepada Bapa selain melalui Aku","gaya_bahasa":"naratif"},
+      {"kitab":"Kisah Para Rasul","tema":"pertobatan Paulus","teks":"Saulus, Saulus, mengapa engkau menganiaya Aku","gaya_bahasa":"naratif"},
+      {"kitab":"Kisah Para Rasul","tema":"Roh Kudus","teks":"Pada hari Pentakosta, Roh Kudus turun ke atas mereka semua","gaya_bahasa":"naratif"},
+      {"kitab":"Kisah Para Rasul","tema":"panggilan","teks":"Ananias, pergilah ke jalan yang lurus, carilah Saulus dari Tarsus","gaya_bahasa":"naratif"},
+      {"kitab":"Kisah Para Rasul","tema":"kesaksian","teks":"Berani memberitakan Injil di hadapan umum, tidak pernah berhenti mengajar","gaya_bahasa":"naratif"},
+      {"kitab":"Kisah Para Rasul","tema":"kepemimpinan","teks":"Jemaat mula-mula bertekun dalam pengajaran rasul-rasul dan dalam persekutuan","gaya_bahasa":"naratif"},
+      {"kitab":"Kisah Para Rasul","tema":"pertumbuhan gereja","teks":"Demikianlah Firman TUHAN makin tersebar, dan jumlah murid makin bertambah","gaya_bahasa":"naratif"},
+      {"kitab":"Kisah Para Rasul","tema":"pengharapan","teks":"Kepada-Ku telah diberikan kuasa di surga dan di bumi","gaya_bahasa":"profetis"},
+      {"kitab":"Kisah Para Rasul","tema":"semangat","teks":"Mereka semua penuh dengan Roh Kudus, dan mereka memberitakan firman Allah","gaya_bahasa":"naratif"},
+      {"kitab":"Galatia","tema":"kebebasan","teks":"Berdirilah teguh, jangan lagi memikul kuk perhambaan","gaya_bahasa":"argumentatif"},
+      {"kitab":"Galatia","tema":"kasih karunia","teks":"Kamu yang oleh kasih karunia Allah telah diselamatkan oleh iman","gaya_bahasa":"argumentatif"},
+      {"kitab":"Galatia","tema":"peringatan","teks":"Janganlah disesatkan, Allah tidak membiarkan diri-Nya dipermainkan","gaya_bahasa":"profetis"},
+      {"kitab":"Galatia","tema":"saling memikul","teks":"Saudara-saudara, jikalau seorang kedapatan melakukan pelanggaran, kamu yang rohani harus memperbaiki dia","gaya_bahasa":"pastoral"},
+      {"kitab":"Galatia","tema":"ketekunan","teks":"Marilah kita tidak jemu-jemu berbuat baik, karena pada waktunya kita akan menuai","gaya_bahasa":"argumentatif"},
+      {"kitab":"Galatia","tema":"kemerdekaan rohani","teks":"Kamu telah dimerdekakan, jangan lagi menghambakan diri","gaya_bahasa":"argumentatif"},
+      {"kitab":"Galatia","tema":"sukacita damai","teks":"Marilah kita hidup menurut Roh, hasilnya damai sejahtera dan kasih sukacita","gaya_bahasa":"argumentatif"},
+      {"kitab":"Galatia","tema":"kasih berbuah","teks":"Buah Roh ialah kasih, sukacita, damai sejahtera, kesabaran, kemurahan","gaya_bahasa":"argumentatif"},
+      {"kitab":"Galatia","tema":"kebenaran salib","teks":"Jauhlah padaku bermegah, selain pada salib Tuhan kita Yesus Kristus","gaya_bahasa":"argumentatif"},
+      {"kitab":"Efesus","tema":"kasih karunia","teks":"Karena oleh kasih karunia kamu diselamatkan oleh iman, itu bukan hasil usahamu","gaya_bahasa":"pastoral"},
+      {"kitab":"Efesus","tema":"kasih Kristus","teks":"Hendaklah kamu saling mengasihi, seperti Kristus mengasihi jemaat","gaya_bahasa":"pastoral"},
+      {"kitab":"Efesus","tema":"doa","teks":"Aku berlutut di hadapan Bapa, dari siapa semua keluarga di surga dan di bumi","gaya_bahasa":"pastoral"},
+      {"kitab":"Efesus","tema":"menyingkirkan kegelapan","teks":"Marilah kita membuang perbuatan kegelapan dan mengenakan senjata terang","gaya_bahasa":"pastoral"},
+      {"kitab":"Efesus","tema":"kesatuan","teks":"Satu tubuh, satu Roh, satu pengharapan panggilanmu","gaya_bahasa":"pastoral"},
+      {"kitab":"Efesus","tema":"kewaspadaan","teks":"Bangunlah dan berdirilah teguh, ikatlah pinggangmu dengan kebenaran","gaya_bahasa":"pastoral"},
+      {"kitab":"Efesus","tema":"penghiburan","teks":"Damai sejahtera Allah yang melampaui segala akal akan menjaga hatimu","gaya_bahasa":"pastoral"},
+      {"kitab":"Efesus","tema":"pujian","teks":"Terpujilah Allah, Bapa Tuhan kita Yesus Kristus, yang telah memberkati kita","gaya_bahasa":"puitis"},
+      {"kitab":"Wahyu","tema":"keabadian","teks":"Aku adalah Alfa dan Omega, yang pertama dan yang terakhir, yang hidup","gaya_bahasa":"profetis"},
+      {"kitab":"Wahyu","tema":"kemenangan","teks":"Barangsiapa menang, ia akan mengenakan pakaian putih, Aku tidak akan menghapus namanya","gaya_bahasa":"profetis"},
+      {"kitab":"Wahyu","tema":"ajakan","teks":"Aku berdiri di muka pintu dan mengetuk, jikalau ada orang mendengar suaraku","gaya_bahasa":"profetis"},
+      {"kitab":"Wahyu","tema":"kebaruan","teks":"Aku akan membuat segalanya baru, Aku akan menghapus air mata dari mata mereka","gaya_bahasa":"profetis"},
+      {"kitab":"Wahyu","tema":"pengharapan","teks":"Suatu pagi nanti, mata air kehidupan akan jernih mengkilat dari takhta Allah","gaya_bahasa":"profetis"},
+      {"kitab":"Wahyu","tema":"kemenangan iman","teks":"Kemenangan yang mengalahkan dunia ialah iman kita","gaya_bahasa":"profetis"},
+      {"kitab":"Wahyu","tema":"pemulihan","teks":"Ia akan menghapus air mata dari mata mereka, maut tidak akan ada lagi","gaya_bahasa":"profetis"},
+      {"kitab":"Wahyu","tema":"kesetiaan","teks":"Aku adalah yang pertama dan yang terakhir, dan yang hidup, dan aku telah mati","gaya_bahasa":"profetis"},
+      {"kitab":"Kidung Agung","tema":"cinta romantis","teks":"Kekasihku berbicara kepadaku, bangunlah manisku, cantikku, marilah pergi","gaya_bahasa":"puitis"},
+      {"kitab":"Kidung Agung","tema":"musim semi","teks":"Lihat, musim dingin sudah lalu, hujan sudah berhenti, bunga-bunga muncul di tanah","gaya_bahasa":"puitis"},
+      {"kitab":"Kidung Agung","tema":"naungan","teks":"Di bawah naungan pohon apel aku ingin duduk, di samping pohon cedar yang harum","gaya_bahasa":"puitis"},
+      {"kitab":"Kidung Agung","tema":"kerinduan","teks":"Suara kekasihku, lihat ia datang melompat-lompat di gunung","gaya_bahasa":"puitis"},
+      {"kitab":"Kidung Agung","tema":"kecantikan","teks":"Mawar di antara duri-duri, demikianlah kekasihku di antara gadis-gadis","gaya_bahasa":"puitis"},
+      {"kitab":"Kidung Agung","tema":"rindu","teks":"Aku tidur, tetapi hatiku bangun, suara kekasihku mengetuk, bukakanlah","gaya_bahasa":"puitis"},
+      {"kitab":"Kidung Agung","tema":"cinta sejati","teks":"Air yang banyak tak dapat memadamkan cinta, sungai-sungai tak dapat menghanyutkannya","gaya_bahasa":"puitis"},
+      {"kitab":"Kidung Agung","tema":"kepasangan","teks":"Kasihmu lebih manis dari pada anggur, minyak wangimu harum semerbak","gaya_bahasa":"puitis"},
+      {"kitab":"1 Timotius","tema":"teladan pemuda","teks":"Janganlah engkau keras terhadap orang yang lebih muda, hendaklah teladan dalam perkataan","gaya_bahasa":"pastoral"},
+      {"kitab":"1 Timotius","tema":"menjauhi nafsu","teks":"Jauhilah nafsu orang muda, kejarlah keadilan, kesetiaan, dan kasih","gaya_bahasa":"pastoral"},
+      {"kitab":"1 Timotius","tema":"doa untuk semua","teks":"Berdoalah untuk semua orang, untuk raja dan semua pembesar","gaya_bahasa":"pastoral"},
+      {"kitab":"1 Timotius","tema":"iman yang benar","teks":"Inilah rahasia iman yang benar, yang diakui dengan hati bersih","gaya_bahasa":"pastoral"},
+      {"kitab":"1 Timotius","tema":"iman yang bertempur","teks":"Bertempurlah dalam pertandingan iman yang benar, rebutlah kehidupan yang kekal","gaya_bahasa":"pastoral"},
+      {"kitab":"1 Timotius","tema":"menjaga diri","teks":"Jagalah dirimu dan ajaranmu, bertekunlah dalam hal-hal itu","gaya_bahasa":"pastoral"},
+    ];
+
+    // ============================================================
+    // ROUND CONFIGS — 5 fixed rounds
+    // ============================================================
+    const ROUND_CONFIGS = [
+      {target:'Mazmur',    abu:'Amsal',       agen:'Kidung Agung'},
+      {target:'Matius',    abu:'Markus',      agen:'Kisah Para Rasul'},
+      {target:'Amsal',     abu:'Pengkhotbah', agen:'Kidung Agung'},
+      {target:'Markus',    abu:'Matius',      agen:'Wahyu'},
+      {target:'Galatia',   abu:'Efesus',      agen:'1 Timotius'},
+    ];
+
+    // ============================================================
+    // QUESTIONS BANK
+    // ============================================================
+    const QUESTIONS = {
+      1: [
+        'Apakah fragmen terasa seperti pujian atau lagu?',
+        'Apakah fragmen terasa mengkritik atau memperingatkan?',
+        'Apakah membahas aturan atau hukum tertentu?',
+        'Apakah tema utamanya adalah kasih atau kelembutan?',
+        'Apakah terasa merangkul dan menerima semua orang?',
+        'Apakah terasa instruktif, seperti nasihat orang tua?',
+        'Apakah gaya bahasanya sangat puitis dan bermakna ganda?',
+        'Apakah terasa seperti pepatah atau amsal bijak?',
+      ],
+      2: [
+        'Apakah banyak kata "kasih karunia" atau "anugerah"?',
+        'Apakah ada kata larangan atau hukum yang ketat?',
+        'Apakah ada referensi pada "tubuh" atau "persekutuan"?',
+        'Apakah "kasih" menjadi tema sentral yang dominan?',
+        'Apakah ada perintah tegas seperti "jangan" atau "jauhilah"?',
+        'Apakah ada daftar panjang ajaran atau doktrin?',
+        'Apakah terasa misterius atau bersifat nubuatan?',
+        'Apakah ada frasa tentang kepala, pemimpin, atau otoritas?',
+      ],
+      3: [
+        'Apakah fragmen menyebut konsep "hukum Taurat" secara implisit?',
+        'Apakah menyebut "kasih karunia" sebagai dasar keselamatan?',
+        'Apakah ada konsep "gereja sebagai komunitas yang dipilih"?',
+        'Apakah tema penderitaan atau pengorbanan sangat kental?',
+        'Apakah terasa seperti surat nasihat kepada pribadi tertentu?',
+        'Apakah menasihati satu orang tertentu secara langsung?',
+        'Apakah ada konsep otoritas rohani atau kepemimpinan?',
+        'Apakah tema "pertobatan dari kebiasaan lama" dominan?',
+        'Apakah ada nuansa pujian atau syukur di bagian awal?',
+        'Apakah menyebut konsep "surga, penebusan, atau keselamatan kosmis"?',
+      ],
+    };
+
+    // ============================================================
+    // PHASE CONFIGS
+    // ============================================================
+    const PHASES = [
+      {name:'baca',    label:'Fase Baca',    desc:'Tiap pemain membaca fragmen kertas mereka keras-keras. Dengarkan dengan seksama!', dur:60},
+      {name:'diskusi', label:'Diskusi',      desc:'Bebas berdiskusi. Max 3 pertanyaan Ya/Tidak ke moderator. Cari yang paling berbeda!', dur:240},
+      {name:'voting',  label:'Voting',       desc:'Tiap pemain vote 1 orang yang paling dicurigai. Klik nama untuk tambah suara.', dur:30},
+      {name:'reveal',  label:'Reveal',       desc:'Identitas agen terbuka! Lihat siapa yang berhasil disembunyikan atau tertangkap.', dur:0},
+    ];
+
+    // ============================================================
+    // UTILITY FUNCTIONS
+    // ============================================================
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function getFragmenByKitab(kitab) {
+      return FRAGMEN_BANK.filter(f => f.kitab === kitab);
+    }
+
+    // ============================================================
+    // ALPINE APP
+    // ============================================================
+    function gameApp() {
+      return {
+        // Navigation
+        tab: 'setup',
+        gameCreated: false,
+        gameStarted: false,
+        gameOver: false,
+
+        // Setup state
+        tier: 2,
+        totalRounds: 5,
+        players: [],
+        newPlayerName: '',
+
+        // Game state
+        currentRound: 0,
+        currentPhase: 'lobby',
+        phaseIndex: 0,
+        roundData: null,
+        roundHistory: [],
+
+        // Timer
+        timerSeconds: 0,
+        timerInterval: null,
+
+        // Voting
+        voteMap: {},
+
+        // Score
+        scores: { pembawa: 0, agen: 0 },
+
+        // Reveal
+        winner: '',
+        winnerDesc: '',
+
+        // Questions
+        activeQuestions: [],
+
+        // Static data
+        tiers: [
+          {n:1, name:'Pemula',   desc:'Pertanyaan perasaan & gaya bahasa. Cocok untuk jemaat baru atau anak-anak.'},
+          {n:2, name:'Menengah', desc:'Kata kunci dan tema kitab. Untuk pemuda aktif sekolah minggu.'},
+          {n:3, name:'Mahir',    desc:'Teologis mendalam. Butuh pemahaman konteks kitab yang baik.'},
+        ],
+        setupSteps: [
+          'Pilih tier kesulitan yang sesuai kelompok.',
+          'Tentukan jumlah ronde (3-5 direkomendasikan).',
+          'Input nama semua pemain (3-8 orang).',
+          'Klik "Buat Sesi" untuk generate game.',
+          'Di tab Lobby, klik "Mulai Ronde 1".',
+          'Distribusikan kartu kertas ke pemain sesuai Mod View.',
+        ],
+        lobbySteps: [
+          'Fase Baca (1 menit): Tiap pemain baca fragmen keras-keras.',
+          'Diskusi (4 menit): Bebas tanya, max 3 pertanyaan Y/T ke mod.',
+          'Voting (30 detik): Semua vote 1 pemain paling curiga.',
+          'Reveal: Identitas agen terbuka, amplop misteri dibuka.',
+          'Skor dihitung, lanjut ronde berikutnya.',
+        ],
+
+        // ---------------------- COMPUTED ----------------------
+        get currentRoundConfig() {
+          if (this.currentRound < 1) return null;
+          return ROUND_CONFIGS[(this.currentRound - 1) % ROUND_CONFIGS.length];
+        },
+        get currentQuestions() {
+          return QUESTIONS[this.tier] || [];
+        },
+        get phaseLabel() {
+          return PHASES[this.phaseIndex]?.label || 'Lobby';
+        },
+        get phaseDesc() {
+          return PHASES[this.phaseIndex]?.desc || '';
+        },
+        get advanceLabel() {
+          const labels = ['Mulai Diskusi', 'Mulai Voting', 'Buka Reveal'];
+          return labels[this.phaseIndex] || 'Selesai';
+        },
+        get timerLabel() {
+          const m = Math.floor(this.timerSeconds / 60);
+          const s = this.timerSeconds % 60;
+          return `${m}:${String(s).padStart(2, '0')}`;
+        },
+        get timerClass() {
+          if (this.timerSeconds <= 10 && this.timerSeconds > 0) return 'danger';
+          if (this.timerSeconds <= 30) return 'warn';
+          return '';
+        },
+        get totalVotes() {
+          return Object.values(this.voteMap).reduce((a, b) => a + b, 0);
+        },
+        get voteTally() {
+          const maxVotes = Math.max(...Object.values(this.voteMap), 1);
+          return Object.entries(this.voteMap)
+            .map(([name, votes]) => ({ name, votes, pct: Math.round(votes / maxVotes * 100) }))
+            .sort((a, b) => b.votes - a.votes);
+        },
+        get topVoted() {
+          if (this.totalVotes === 0) return '';
+          const tally = this.voteTally;
+          if (tally.length === 0) return '';
+          const top = tally[0];
+          // Check tie
+          if (tally.length > 1 && tally[1].votes === top.votes) return 'Seri!';
+          return top.name;
+        },
+        get roundAgentName() {
+          if (!this.roundData) return '';
+          const entry = Object.entries(this.roundData).find(([, d]) => d.role === 'agen');
+          return entry ? entry[0] : '';
+        },
+        get scorePct() {
+          const m = Math.max(this.scores.pembawa, this.scores.agen, 20);
+          return {
+            pembawa: Math.round(this.scores.pembawa / m * 100),
+            agen: Math.round(this.scores.agen / m * 100),
+          };
+        },
+
+        // ---------------------- SETUP ----------------------
+        addPlayer() {
+          const name = this.newPlayerName.trim();
+          if (!name || this.players.length >= 8) return;
+          if (this.players.includes(name)) return;
+          this.players.push(name);
+          this.newPlayerName = '';
+        },
+        removePlayer(i) {
+          this.players.splice(i, 1);
+        },
+
+        // ---------------------- GAME CREATE ----------------------
+        createGame() {
+          if (this.players.length < 3) return;
+          this.scores = { pembawa: 0, agen: 0 };
+          this.roundHistory = [];
+          this.currentRound = 0;
+          this.gameCreated = true;
+          this.gameStarted = false;
+          this.gameOver = false;
+          this.tab = 'lobby';
+        },
+
+        // ---------------------- ROUND INIT ----------------------
+        startRound() {
+          if (this.players.length < 3) return;
+          this.currentRound = 1;
+          this._initRound(1);
+          this.gameStarted = true;
+          this.tab = 'game';
+        },
+
+        _initRound(roundNum) {
+          const cfg = ROUND_CONFIGS[(roundNum - 1) % ROUND_CONFIGS.length];
+
+          // Pick fragmen
+          const targetPool = shuffle(getFragmenByKitab(cfg.target));
+          const abuPool    = shuffle(getFragmenByKitab(cfg.abu));
+          const agenPool   = shuffle(getFragmenByKitab(cfg.agen));
+
+          const shuffledPlayers = shuffle([...this.players]);
+
+          // Assign roles: 1 agen, 1 abu-abu, rest pembawa
+          const agenIdx = 0;
+          const abuIdx  = 1;
+
+          const data = {};
+          let targetIdx = 0;
+          let abuFragIdx = 0;
+          let agenFragIdx = 0;
+
+          shuffledPlayers.forEach((name, i) => {
+            let role, frag;
+            if (i === agenIdx) {
+              role = 'agen';
+              frag = agenPool[agenFragIdx % agenPool.length] || agenPool[0];
+              agenFragIdx++;
+            } else if (i === abuIdx) {
+              role = 'abu-abu';
+              frag = abuPool[abuFragIdx % abuPool.length] || abuPool[0];
+              abuFragIdx++;
+            } else {
+              role = 'pembawa';
+              frag = targetPool[targetIdx % targetPool.length] || targetPool[0];
+              targetIdx++;
+            }
+            data[name] = {
+              role,
+              kitab: frag.kitab,
+              tema: frag.tema,
+              teks: frag.teks,
+              gaya_bahasa: frag.gaya_bahasa,
+              openedEnvelopes: [],
+            };
+          });
+
+          this.roundData = data;
+          this.phaseIndex = 0;
+          this.currentPhase = PHASES[0].name;
+          this.voteMap = {};
+          this.players.forEach(p => { this.voteMap[p] = 0; });
+          this.activeQuestions = [];
+          this._startTimer(PHASES[0].dur);
+        },
+
+        // ---------------------- PHASE CONTROL ----------------------
+        advancePhase() {
+          if (this.phaseIndex >= 3) return;
+          this.phaseIndex++;
+          this.currentPhase = PHASES[this.phaseIndex].name;
+          this._startTimer(PHASES[this.phaseIndex].dur);
+        },
+
+        _startTimer(seconds) {
+          clearInterval(this.timerInterval);
+          this.timerSeconds = seconds;
+          if (seconds <= 0) return;
+          this.timerInterval = setInterval(() => {
+            if (this.timerSeconds > 0) {
+              this.timerSeconds--;
+            } else {
+              clearInterval(this.timerInterval);
+              // Auto-advance on baca and diskusi
+              if (this.phaseIndex < 2) {
+                this.advancePhase();
+              }
+            }
+          }, 1000);
+        },
+
+        // ---------------------- VOTING ----------------------
+        castVote(playerName) {
+          if (this.phaseIndex !== 2) return;
+          if (!(playerName in this.voteMap)) this.voteMap[playerName] = 0;
+          this.voteMap[playerName]++;
+        },
+        resetVotes() {
+          this.players.forEach(p => { this.voteMap[p] = 0; });
+        },
+
+        // ---------------------- MYSTERY ----------------------
+        openMystery(playerName, color) {
+          if (!this.roundData || !this.roundData[playerName]) return;
+          const pdata = this.roundData[playerName];
+          if (pdata.openedEnvelopes.includes(color)) return;
+          pdata.openedEnvelopes.push(color);
+          // Reactivity trigger
+          this.roundData = { ...this.roundData };
+        },
+
+        // ---------------------- END ROUND ----------------------
+        confirmEndRound() {
+          if (confirm('Akhiri ronde ini sekarang?')) {
+            this.phaseIndex = 3;
+            this.currentPhase = 'reveal';
+            clearInterval(this.timerInterval);
+            this.timerSeconds = 0;
+          }
+        },
+
+        finishRound() {
+          const agentName = this.roundAgentName;
+          const voted = this.topVoted;
+          const agenCaught = (voted === agentName);
+
+          let scorePembawa = 0;
+          let scoreAgen = 0;
+
+          if (voted === 'Seri!') {
+            scorePembawa = 2;
+            scoreAgen = 5;
+          } else if (agenCaught) {
+            scorePembawa = 5;
+            scoreAgen = -10;
+          } else {
+            scorePembawa = 2;
+            scoreAgen = 10;
+          }
+
+          this.scores.pembawa += scorePembawa;
+          this.scores.agen += scoreAgen;
+
+          // Record history
+          const cfg = this.currentRoundConfig;
+          this.roundHistory.push({
+            round: this.currentRound,
+            target: cfg ? cfg.target : '?',
+            agenCaught,
+            voted,
+            agentName,
+          });
+
+          if (this.currentRound >= this.totalRounds) {
+            // Game over
+            this._endGame();
+          } else {
+            // Next round
+            this.currentRound++;
+            this._initRound(this.currentRound);
+          }
+        },
+
+        _endGame() {
+          clearInterval(this.timerInterval);
+          this.gameOver = true;
+          this.roundData = null;
+
+          const pb = this.scores.pembawa;
+          const ag = this.scores.agen;
+          if (pb > ag) {
+            this.winner = 'Tim Pembawa';
+            this.winnerDesc = 'Para pembawa surat berhasil mengungkap agen!';
+          } else if (ag > pb) {
+            this.winner = 'Tim Agen';
+            this.winnerDesc = 'Agen berhasil bersembunyi hingga akhir!';
+          } else {
+            this.winner = 'Seri!';
+            this.winnerDesc = 'Pertandingan berakhir imbang!';
+          }
+
+          this.tab = 'selesai';
+          setTimeout(() => this.launchConfetti(), 400);
+        },
+
+        // ---------------------- QUESTIONS ----------------------
+        toggleQuestion(i) {
+          const idx = this.activeQuestions.indexOf(i);
+          if (idx >= 0) {
+            this.activeQuestions.splice(idx, 1);
+          } else {
+            this.activeQuestions.push(i);
+          }
+        },
+
+        // ---------------------- CONFETTI ----------------------
+        launchConfetti() {
+          const c = document.getElementById('confetti');
+          c.innerHTML = '';
+          const colors = ['#8A2BE2','#BE9BFF','#F59E0B','#EF4444','#10B981','#3B82F6'];
+          for (let i = 0; i < 80; i++) {
+            const p = document.createElement('div');
+            const size = 5 + Math.random() * 6;
+            p.style.cssText = `
+              position:absolute;
+              left:${Math.random() * 100}vw;
+              top:-20px;
+              width:${size}px;
+              height:${size * 1.6}px;
+              background:${colors[i % colors.length]};
+              border-radius:2px;
+              animation:cFall ${2 + Math.random() * 2.5}s linear ${Math.random() * 0.8}s forwards;
+            `;
+            c.appendChild(p);
+          }
+          setTimeout(() => { c.innerHTML = ''; }, 7000);
+        },
+
+        // ---------------------- INIT ----------------------
+        init() {
+          // Nothing to init for offline mode
+        },
+      };
+    }
+  </script>
+</body>
+</html>

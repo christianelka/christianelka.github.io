@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual Test Guide — Surat Terakhir</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--card:#16162a;--card2:#1a1a2e;--border:rgba(255,255,255,.06);--accent:#8A2BE2;--accent2:#a29bfe;--green:#00cec9;--red:#ff6b6b;--yellow:#fdcb6e;--text:#e8e8f0;--muted:#686880;--radius:12px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px}
+.container{max-width:960px;margin:0 auto}
+h1{font-size:1.8rem;margin-bottom:4px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{color:var(--muted);font-size:.85rem;margin-bottom:24px}
+h2{font-size:1.2rem;color:var(--accent2);margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+h3{font-size:1rem;color:var(--text);margin:20px 0 10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.card.warn{border-left:3px solid var(--yellow)}
+.card.info{border-left:3px solid var(--accent)}
+.card.success{border-left:3px solid var(--green)}
+.card.danger{border-left:3px solid var(--red)}
+label.task{display:flex;align-items:flex-start;gap:10px;padding:8px 0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03);font-size:.9rem}
+label.task:last-child{border-bottom:none}
+label.task input[type=checkbox]{accent-color:var(--accent);margin-top:4px;flex-shrink:0}
+label.task.done{opacity:.5;text-decoration:line-through}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+th{color:var(--accent2);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+td{color:var(--text)}
+code{background:var(--card2);padding:2px 6px;border-radius:4px;font-size:.8rem;color:var(--green)}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.7rem;font-weight:600}
+.badge.pass{background:rgba(0,206,201,.15);color:var(--green)}
+.badge.fail{background:rgba(255,107,107,.15);color:var(--red)}
+.badge.skip{background:rgba(253,203,110,.15);color:var(--yellow)}
+.badge.info{background:rgba(162,155,254,.15);color:var(--accent2)}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;margin-right:8px;flex-shrink:0}
+.step-row{display:flex;align-items:flex-start;gap:0;margin:6px 0}
+.step-content{flex:1}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s;z-index:999}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+.stat{background:var(--card2);border-radius:8px;padding:12px 16px;text-align:center;min-width:80px}
+.stat .num{font-size:1.4rem;font-weight:700;color:var(--accent2)}
+.stat .lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase}
+.bug-template{background:var(--card2);border-radius:8px;padding:12px;font-family:monospace;font-size:.8rem;color:var(--muted);white-space:pre-wrap}
+.scenario-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;transition:background .2s}
+.scenario-header:hover{background:var(--card2)}
+.scenario-header .arrow{transition:transform .2s;color:var(--muted)}
+.scenario-header.open .arrow{transform:rotate(90deg)}
+.scenario-body{display:none;padding:0 0 12px}
+.scenario-body.show{display:block}
+.copy-btn{background:var(--accent);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:.75rem;cursor:pointer}
+.copy-btn:hover{opacity:.8}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+@media(max-width:600px){body{padding:12px}h1{font-size:1.4rem}.stats{gap:8px}.stat{min-width:60px;padding:8px 12px}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="container">
+
+<h1>🧪 Manual Test Guide</h1>
+<p class="subtitle">Surat Terakhir — Pembawa Surat v1.0.0 &nbsp;|&nbsp; Dibuat: 2026-06-24</p>
+
+<div class="stats" id="stats">
+  <div class="stat"><div class="num" id="sTotal">48</div><div class="lbl">Total</div></div>
+  <div class="stat"><div class="num" id="sPass" style="color:var(--green)">0</div><div class="lbl">Pass</div></div>
+  <div class="stat"><div class="num" id="sFail" style="color:var(--red)">0</div><div class="lbl">Fail</div></div>
+  <div class="stat"><div class="num" id="sRemain">48</div><div class="lbl">Remaining</div></div>
+  <div class="stat"><div class="num" id="sPercent">0%</div><div class="lbl">Done</div></div>
+</div>
+
+<h2>🔧 Prasyarat</h2>
+<div class="card info">
+<table>
+<tr><td><strong>Node.js</strong></td><td>v20+ — <code>node -v</code></td></tr>
+<tr><td><strong>Server</strong></td><td><code>npm run dev</code> di folder project</td></tr>
+<tr><td><strong>Browser</strong></td><td>Chrome (primary) + 1 browser lain</td></tr>
+<tr><td><strong>Tabs</strong></td><td>Minimal 5: 1 moderator + 3 player + 1 display</td></tr>
+<tr><td><strong>Password</strong></td><td><code>PalingGayeng2026</code></td></tr>
+<tr><td><strong>API Key</strong></td><td>Gemini API key (opsional, untuk test AI)</td></tr>
+</table>
+</div>
+
+<div class="card warn">
+<strong>💡 Tips:</strong> Gunakan Incognito / beda browser agar session cookie tidak bentrok antar tab. Buka DevTools (F12) → Console di setiap tab untuk monitor error.
+</div>
+
+<!-- ============================================================ -->
+<h2>📋 Skenario 1: Full Game Flow</h2>
+<!-- ============================================================ -->
+
+<!-- STEP 1: LOGIN -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">1</span> <strong>Login Semua Role</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Password <code>PalingGayeng2026</code>, Nama: "Moderator", Role: <strong>moderator</strong></td><td>Redirect ke <code>/moderator</code></td></tr>
+    <tr><td>Tab 2</td><td>Password + Nama: "Anak A", Role: <strong>player</strong></td><td>Redirect ke <code>/player</code></td></tr>
+    <tr><td>Tab 3</td><td>Password + Nama: "Anak B", Role: <strong>player</strong></td><td>Redirect ke <code>/player</code></td></tr>
+    <tr><td>Tab 4</td><td>Password + Nama: "Anak C", Role: <strong>player</strong></td><td>Redirect ke <code>/player</code></td></tr>
+    <tr><td>Tab 5</td><td>Buka <code>/display</code></td><td>Tampil tanpa login</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="login"> Password salah → error merah + shake animation</label>
+  <label class="task"><input type="checkbox" data-cat="login"> Password benar → redirect otomatis sesuai role</label>
+  <label class="task"><input type="checkbox" data-cat="login"> Cookie session ter-set (DevTools → Application → Cookies)</label>
+  <label class="task"><input type="checkbox" data-cat="login"> Display page bisa diakses tanpa login</label>
+</div>
+
+<!-- STEP 2: CREATE ROOM -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">2</span> <strong>Moderator Create Room</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Pilih tier "Menengah", klik "Generate Kode Room"</td><td>Kode 6 karakter muncul besar</td></tr>
+    <tr><td>Tab 1</td><td>Klik tombol copy kode</td><td>Berhasil copy ke clipboard</td></tr>
+    <tr><td>Tab 5</td><td>Cek display</td><td>Room code tampil di display</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="room"> Kode room 6 karakter (huruf besar + angka)</label>
+  <label class="task"><input type="checkbox" data-cat="room"> Tombol copy works (clipboard)</label>
+  <label class="task"><input type="checkbox" data-cat="room"> Display page update real-time dengan room code</label>
+</div>
+
+<!-- STEP 3: PLAYER JOIN -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">3</span> <strong>Player Join Room</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 2-4</td><td>Input room code dari moderator, klik Join</td><td>Berhasil join, tampil lobby</td></tr>
+    <tr><td>Tab 1</td><td>Cek player list</td><td>3 player terdaftar, status connected</td></tr>
+    <tr><td>Tab 5</td><td>Cek display</td><td>Player list update</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="room"> Player list di moderator update real-time (tanpa refresh)</label>
+  <label class="task"><input type="checkbox" data-cat="room"> Nama player tampil di list dengan status connected</label>
+  <label class="task"><input type="checkbox" data-cat="room"> Display page tampilkan player list</label>
+  <label class="task"><input type="checkbox" data-cat="room"> Tombol "Mulai Ronde" disabled kalau &lt; 3 player</label>
+</div>
+
+<!-- STEP 4: RONDE 1 -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">4</span> <strong>Mulai Ronde 1 (Mazmur)</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Klik "Mulai Ronde 1"</td><td>Fase "Pembacaan" mulai, timer 60 detik</td></tr>
+    <tr><td>Tab 2-4</td><td>Cek layar</td><td>Fragmen muncul + 3 amplop misteri</td></tr>
+    <tr><td>Tab 5</td><td>Cek display</td><td>Ronde 1 aktif, fase "Pembacaan"</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Timer countdown real-time (sync antar semua tab)</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Fragmen tampil besar di mobile (bacaable)</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> 3 amplop misteri tampil (warna: merah/kuning/hijau, acak)</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Display page update fase "Pembacaan"</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Fragmen berbeda per player (4 Mazmur + 1 Amsal + 1 Kidung Agung)</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Moderator dashboard tahu siapa pegang fragmen apa (role hidden dari player)</label>
+</div>
+
+<!-- STEP 5: DISKUSI -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">5</span> <strong>Fase Diskusi</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Klik "Mulai Diskusi"</td><td>Timer 4 menit, fase berubah</td></tr>
+    <tr><td>Tab 2-4</td><td>Diskusi bebas (bicara langsung)</td><td>-</td></tr>
+    <tr><td>Tab 2</td><td>Tanya moderator pertanyaan</td><td>Moderator jawab Y/T</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Fase indicator update di semua tab</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Timer sync real-time antar tab</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Pertanyaan tier muncul di moderator dashboard</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Moderator bisa toggle pertanyaan (reveal/hide)</label>
+</div>
+
+<!-- STEP 6: VOTING -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">6</span> <strong>Fase Voting</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Klik "Mulai Voting"</td><td>Timer 30 detik</td></tr>
+    <tr><td>Tab 2</td><td>Vote "Anak C"</td><td>Vote tercatat</td></tr>
+    <tr><td>Tab 3</td><td>Vote "Anak C"</td><td>Vote tercatat</td></tr>
+    <tr><td>Tab 4</td><td>Vote "Anak A"</td><td>Vote tercatat</td></tr>
+    <tr><td>Tab 1</td><td>Cek vote count</td><td>Anak C: 2, Anak A: 1</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="vote"> Player hanya bisa vote 1x</label>
+  <label class="task"><input type="checkbox" data-cat="vote"> Tidak bisa vote diri sendiri</label>
+  <label class="task"><input type="checkbox" data-cat="vote"> Vote count update real-time di moderator</label>
+  <label class="task"><input type="checkbox" data-cat="vote"> Timer 30 detik, auto-end jika habis</label>
+</div>
+
+<!-- STEP 7: REVEAL -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">7</span> <strong>Fase Reveal (Buka Amplop)</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Klik "Buka Amplop" untuk Anak C</td><td>Pilih warna amplop</td></tr>
+    <tr><td>Tab 1</td><td>Pilih amplop merah</td><td>Reveal ke semua player</td></tr>
+    <tr><td>Tab 2-4</td><td>Cek layar</td><td>Efek amplop merah: "TERUNGKAP!"</td></tr>
+    <tr><td>Tab 1</td><td>Cek skor</td><td>Skor update sesuai hasil</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="vote"> Amplop merah → identitas terungkap (agen/bukan)</label>
+  <label class="task"><input type="checkbox" data-cat="vote"> Amplop kuning → bonus clue</label>
+  <label class="task"><input type="checkbox" data-cat="vote"> Amplop hijau → "Aman, no effect"</label>
+  <label class="task"><input type="checkbox" data-cat="vote"> Skor update di semua tab (moderator + player + display)</label>
+</div>
+
+<!-- STEP 8: RONDE 2-5 -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">8</span> <strong>Lanjut Ronde 2–5</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Klik "Lanjut Ronde 2"</td><td>Ronde 2 mulai, kitab berbeda (Matius)</td></tr>
+    <tr><td>Tab 2-4</td><td>Cek fragmen</td><td>Fragmen BARU (tidak重复 dari ronde 1)</td></tr>
+    <tr><td>Tab 1</td><td>Repeat step 4–7 untuk ronde 2–5</td><td>Flow sama, kitab berganti</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Kitab target berubah tiap ronde (Mazmur→Matius→Amsal→Markus→Galatia)</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Fragmen tidak重复 dalam sesi yang sama</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Role agen diacak ulang tiap ronde</label>
+  <label class="task"><input type="checkbox" data-cat="ronde"> Skor akumulatif (tidak reset tiap ronde)</label>
+</div>
+
+<!-- STEP 9: END GAME -->
+<div class="scenario-header" onclick="toggle(this)">
+  <span><span class="step-num">9</span> <strong>End Game</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Tab</th><th>Aksi</th><th>Ekspektasi</th></tr>
+    <tr><td>Tab 1</td><td>Setelah ronde 5, klik "Akhiri Game"</td><td>Leaderboard muncul</td></tr>
+    <tr><td>Tab 2-4</td><td>Cek layar</td><td>Final skor + pemenang</td></tr>
+    <tr><td>Tab 5</td><td>Cek display</td><td>"Game Selesai" + leaderboard</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="endgame"> Pemenang ditentukan (skor tertinggi)</label>
+  <label class="task"><input type="checkbox" data-cat="endgame"> Final skor akurat (sesuai akumulasi)</label>
+  <label class="task"><input type="checkbox" data-cat="endgame"> Tombol "Mulai Sesi Baru" → reset semua state</label>
+</div>
+
+<!-- ============================================================ -->
+<h2>⚡ Skenario 2: Edge Cases</h2>
+<!-- ============================================================ -->
+
+<div class="scenario-header" onclick="toggle(this)">
+  <span><strong>Edge Cases (8 skenario)</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E1 — Join mid-ronde:</strong> Tab baru join saat ronde 1 jalan → tidak terima fragmen, join ronde berikutnya</label>
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E2 — Player disconnect:</strong> Tutup tab player, buka lagi → auto-reconnect, state restored</label>
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E3 — Vote seri:</strong> 3 player vote 3 orang berbeda → skor khusus (seri)</label>
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E4 — Minimal player:</strong> Coba start dengan 2 player → error "Minimal 3 pemain"</label>
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E5 — Fragmen habis:</strong> Main 5+ ronde → auto-generate via AI atau error</label>
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E6 — Refresh mid-round:</strong> Refresh tab player saat fase diskusi → state restored</label>
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E7 — Password gate:</strong> Buka <code>/player</code> tanpa login → redirect ke <code>/</code></label>
+  <label class="task"><input type="checkbox" data-cat="edge"> <strong>E8 — Rate limit:</strong> Submit password salah 5x → error "Terlalu banyak percobaan"</label>
+</div>
+
+<!-- ============================================================ -->
+<h2>🤖 Skenario 3: AI Generation</h2>
+<!-- ============================================================ -->
+
+<div class="scenario-header" onclick="toggle(this)">
+  <span><strong>AI Generation (butuh Gemini API Key)</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <div class="card warn">⚠️ Skenario ini butuh <code>GEMINI_API_KEYS</code> di environment variables. Skip jika tidak punya API key.</div>
+  <label class="task"><input type="checkbox" data-cat="ai"> <strong>AI1 — Generate fragmen:</strong> Moderator klik "Generate AI" → pilih kitab "Mazmur" → 5 fragmen baru ditambahkan</label>
+  <label class="task"><input type="checkbox" data-cat="ai"> <strong>AI2 — Auto-generation:</strong> Main sampai pool Mazmur &lt; 3 → auto-generate di background</label>
+  <label class="task"><input type="checkbox" data-cat="ai"> <strong>AI3 — Key rotation:</strong> Set 2 API key, gen sampai limit → switch ke key berikutnya</label>
+  <label class="task"><input type="checkbox" data-cat="ai"> <strong>AI4 — All keys limited:</strong> Semua key kena limit → fallback ke seed fragmen</label>
+</div>
+
+<!-- ============================================================ -->
+<h2>📱 Skenario 4: Multi-Device</h2>
+<!-- ============================================================ -->
+
+<div class="scenario-header" onclick="toggle(this)">
+  <span><strong>Multi-Device Real Test</strong></span>
+  <span class="arrow">▶</span>
+</div>
+<div class="scenario-body">
+  <table>
+    <tr><th>Device</th><th>Browser</th><th>Role</th><th>Yang Dicek</th></tr>
+    <tr><td>Laptop</td><td>Chrome</td><td>Moderator</td><td>Dashboard responsif, semua kontrol works</td></tr>
+    <tr><td>HP Android</td><td>Chrome</td><td>Player</td><td>Fragmen bacaable, voting mudah, amplop tap-able</td></tr>
+    <tr><td>HP iPhone</td><td>Safari</td><td>Player</td><td>Socket.io reconnect, layout pas</td></tr>
+    <tr><td>Tablet</td><td>Chrome</td><td>Display</td><td>Font auto-scale, read-only</td></tr>
+    <tr><td>Laptop</td><td>Firefox</td><td>Player</td><td>Cross-browser compatibility</td></tr>
+  </table>
+  <label class="task"><input type="checkbox" data-cat="device"> Moderator dashboard works di laptop</label>
+  <label class="task"><input type="checkbox" data-cat="device"> Player page mobile-friendly di HP</label>
+  <label class="task"><input type="checkbox" data-cat="device"> Socket reconnect works di Safari/iOS</label>
+  <label class="task"><input type="checkbox" data-cat="device"> Display page auto-scale di TV/projector</label>
+</div>
+
+<!-- ============================================================ -->
+<h2>📊 Ringkasan per Kategori</h2>
+<!-- ============================================================ -->
+
+<div class="card">
+<table>
+<tr><th>Kategori</th><th>Total</th><th>Pass</th><th>Fail</th><th>Progress</th></tr>
+<tr><td>🔐 Login & Auth</td><td id="cLoginT">4</td><td id="cLoginP">0</td><td id="cLoginF">0</td><td id="cLoginBar">—</td></tr>
+<tr><td>🏠 Room & Lobby</td><td id="cRoomT">7</td><td id="cRoomP">0</td><td id="cRoomF">0</td><td id="cRoomBar">—</td></tr>
+<tr><td>🎮 Ronde Flow</td><td id="cRondeT">14</td><td id="cRondeP">0</td><td id="cRondeF">0</td><td id="cRondeBar">—</td></tr>
+<tr><td>🗳️ Voting & Reveal</td><td id="cVoteT">8</td><td id="cVoteP">0</td><td id="cVoteF">0</td><td id="cVoteBar">—</td></tr>
+<tr><td>🏁 End Game</td><td id="cEndgameT">3</td><td id="cEndgameP">0</td><td id="cEndgameF">0</td><td id="cEndgameBar">—</td></tr>
+<tr><td>⚡ Edge Cases</td><td id="cEdgeT">8</td><td id="cEdgeP">0</td><td id="cEdgeF">0</td><td id="cEdgeBar">—</td></tr>
+<tr><td>🤖 AI Generation</td><td id="cAiT">4</td><td id="cAiP">0</td><td id="cAiF">0</td><td id="cAiBar">—</td></tr>
+<tr><td>📱 Multi-Device</td><td id="cDeviceT">4</td><td id="cDeviceP">0</td><td id="cDeviceF">0</td><td id="cDeviceBar">—</td></tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<h2>🐛 Bug Report Template</h2>
+<!-- ============================================================ -->
+
+<div class="card danger">
+<p style="margin-bottom:8px;font-weight:600">Template untuk melaporkan bug:</p>
+<div class="bug-template" id="bugTemplate">**Bug #[N]:** [Judul singkat]
+**Skenario:** [Skenario mana]
+**Steps to Reproduce:**
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+**Expected:** [Yang seharusnya terjadi]
+**Actual:** [Yang actually terjadi]
+**Device/Browser:** [HP/Laptop, Chrome/Safari]
+**Screenshot:** [Lampirkan jika ada]
+**Severity:** Critical / High / Medium / Low</div>
+<button class="copy-btn" style="margin-top:8px" onclick="copyBug()">📋 Copy Template</button>
+</div>
+
+<!-- ============================================================ -->
+<h2>💾 Export / Import Progress</h2>
+<!-- ============================================================ -->
+
+<div class="card">
+  <p style="margin-bottom:10px;font-size:.85rem;color:var(--muted)">Progress tersimpan otomatis di localStorage. Gunakan tombol di bawah untuk backup/restore.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="copy-btn" onclick="exportProgress()">📤 Export JSON</button>
+    <button class="copy-btn" onclick="importProgress()">📥 Import JSON</button>
+    <button class="copy-btn" style="background:var(--red)" onclick="resetProgress()">🗑️ Reset Semua</button>
+  </div>
+</div>
+
+<p style="text-align:center;color:var(--muted);font-size:.75rem;margin-top:40px;padding-bottom:20px">
+  Surat Terakhir — Manual Test Guide v1.0.0 &nbsp;|&nbsp; Auto-saved to localStorage
+</p>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'surat-terakhir-test-progress';
+
+function getCheckboxes() {
+  return document.querySelectorAll('label.task input[type=checkbox]');
+}
+
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    getCheckboxes().forEach((cb, i) => {
+      if (saved[i]) cb.checked = true;
+      cb.closest('label.task').classList.toggle('done', cb.checked);
+    });
+  } catch(e) {}
+}
+
+function saveProgress() {
+  const state = {};
+  getCheckboxes().forEach((cb, i) => { if (cb.checked) state[i] = true; });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  updateStats();
+}
+
+function updateStats() {
+  const all = getCheckboxes();
+  const total = all.length;
+  let pass = 0;
+  all.forEach(cb => { if (cb.checked) pass++; });
+  const remain = total - pass;
+  const pct = total ? Math.round(pass / total * 100) : 0;
+
+  document.getElementById('sTotal').textContent = total;
+  document.getElementById('sPass').textContent = pass;
+  document.getElementById('sRemain').textContent = remain;
+  document.getElementById('sPercent').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  const cats = {login:0,room:0,ronde:0,vote:0,endgame:0,edge:0,ai:0,device:0};
+  const catTotal = {...cats};
+  all.forEach(cb => {
+    const c = cb.dataset.cat;
+    if (c in cats) {
+      catTotal[c]++;
+      if (cb.checked) cats[c]++;
+    }
+  });
+  for (const c of Object.keys(cats)) {
+    const t = catTotal[c], p = cats[c], f = 0;
+    const el = document.getElementById('c'+capitalize(c));
+    if (el) {
+      document.getElementById('c'+capitalize(c)+'P').textContent = p;
+      document.getElementById('c'+capitalize(c)+'F').textContent = f;
+      const bar = document.getElementById('c'+capitalize(c)+'Bar');
+      const barPct = t ? Math.round(p/t*100) : 0;
+      bar.textContent = barPct + '%';
+      bar.style.color = barPct === 100 ? 'var(--green)' : barPct > 0 ? 'var(--yellow)' : 'var(--muted)';
+    }
+  }
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function toggle(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('show');
+}
+
+function copyBug() {
+  navigator.clipboard.writeText(document.getElementById('bugTemplate').textContent)
+    .then(() => alert('Template copied!'))
+    .catch(() => alert('Gagal copy'));
+}
+
+function exportProgress() {
+  const all = getCheckboxes();
+  const data = { version: '1.0.0', exportedAt: new Date().toISOString(), items: [] };
+  all.forEach((cb, i) => {
+    data.items.push({ index: i, cat: cb.dataset.cat, checked: cb.checked, label: cb.closest('label').textContent.trim() });
+  });
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'surat-terakhir-test-progress.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importProgress() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.items) throw new Error('Invalid format');
+        data.items.forEach(item => {
+          const cb = getCheckboxes()[item.index];
+          if (cb) {
+            cb.checked = item.checked;
+            cb.closest('label.task').classList.toggle('done', cb.checked);
+          }
+        });
+        saveProgress();
+        alert('Progress imported! ' + data.items.filter(i => i.checked).length + ' items restored.');
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function resetProgress() {
+  if (!confirm('Reset semua progress? Ini tidak bisa di-undo.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  getCheckboxes().forEach(cb => {
+    cb.checked = false;
+    cb.closest('label.task').classList.remove('done');
+  });
+  updateStats();
+}
+
+getCheckboxes().forEach(cb => {
+  cb.addEventListener('change', () => {
+    cb.closest('label.task').classList.toggle('done', cb.checked);
+    saveProgress();
+  });
+});
+
+loadProgress();
+updateStats();
+</script>
+</body>
+</html>

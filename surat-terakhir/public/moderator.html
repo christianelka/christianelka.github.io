@@ -253,6 +253,25 @@
 
     <!-- LOBBY TAB -->
     <section x-show="tab === 'lobby'" x-transition.opacity x-cloak>
+
+      <!-- Room code hero -->
+      <div x-show="roomCode" x-transition.opacity.duration.500ms class="mb-5">
+        <div class="sec-header">
+          <div>
+            <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Kode Room Aktif</p>
+            <p class="font-extrabold text-xs mt-0.5">Bagikan ke pemain</p>
+          </div>
+          <div class="sec-x" @click="copyCode()">⧉</div>
+        </div>
+        <div class="sec-body text-center">
+          <div class="font-mono text-5xl sm:text-6xl font-extrabold tracking-widest text-brand-500 py-2" x-text="roomCode"></div>
+          <button @click="copyCode()" class="cta-purple mx-auto">
+            <span>Salin</span>
+            <span class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">⧉</span>
+          </button>
+        </div>
+      </div>
+
       <div class="grid lg:grid-cols-3 gap-4">
 
         <!-- Players list -->
@@ -628,7 +647,7 @@
         },
 
         async loadAIStatus() {
-          try { const r = await fetch('/api/ai/status', { credentials: 'include' }); const d = await r.json(); if (d.success) this.aiStatus = d.data; } catch {}
+          try { const r = await fetch('/api/ai/status', { credentials: 'include' }); const t = await r.text(); const d = JSON.parse(t); if (d.success) this.aiStatus = d.data; } catch {}
         },
         async createGame() { this.creating = true; try { const r = await this.socket.emit('moderator:createGame', { tier: this.tier, totalRounds: this.rounds }); if (r.success) { this.roomCode = r.data.gameId; this.totalRounds = r.data.totalRounds; } } catch {} finally { this.creating = false; } },
         async startRound() { const n = this.currentRound + 1; if (n > this.totalRounds) return; await this.socket.emit('moderator:startRound', { roundNumber: n }); },

@@ -45,12 +45,11 @@ Desktop.ini
 *.backup
 
 # --- Node.js / npm ---
-# Root-level lockfiles ignored (this repo doesn't use Node at root)
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/package-lock.json
+# Root package-lock.json is committed (used by Railway for builds)
 /yarn.lock
 /pnpm-lock.yaml
 

@@ -280,7 +280,9 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: pw.value.trim(), name: nm.value.trim(), role })
         });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch { throw new Error('Server tidak merespons dengan benar. Pastikan server berjalan.'); }
         if (!res.ok) throw new Error(data.error?.message || 'Gagal');
         btnText.textContent = 'Berhasil';
         setTimeout(() => window.location.href = role === 'moderator' ? '/moderator' : '/player', 300);
@@ -288,6 +290,7 @@
         const m = err.message || '';
         if (m.toLowerCase().includes('sandi') || m.includes('401')) showError('Sandi salah. Coba lagi.');
         else if (m.includes('429')) showError('Terlalu banyak percobaan. Tunggu 5 menit.');
+        else if (m.includes('Failed to fetch') || m.includes('NetworkError') || m.includes('tidak merespons')) showError('Tidak bisa terhubung ke server. Pastikan server berjalan.');
         else showError(m);
         setLoading(false);
       }

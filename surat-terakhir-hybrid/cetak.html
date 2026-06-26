@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cetak Kartu Fragmen — Surat Terakhir Hybrid</title>
+  <style>
+    /* ===== SCREEN STYLES ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple-900: #1a0533;
+      --purple-800: #2d0f4e;
+      --purple-700: #4a1a6e;
+      --purple-600: #6b2fa0;
+      --purple-500: #8b46c8;
+      --purple-400: #a855f7;
+      --purple-300: #c084fc;
+      --purple-200: #e9d5ff;
+      --purple-100: #f5f0ff;
+      --gold: #f0b429;
+      --gold-dark: #c68a00;
+      --text-main: #f0e8ff;
+      --text-muted: #c4a8e8;
+      --text-dim: #8a6aaa;
+      --card-bg: #2a0e45;
+      --card-border: #5a2a8a;
+      --input-bg: #1e0a38;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--purple-900) 0%, #0f0220 50%, var(--purple-800) 100%);
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    /* ===== SCREEN: HEADER ===== */
+    .screen-header {
+      background: linear-gradient(90deg, var(--purple-800) 0%, #1e0840 50%, var(--purple-800) 100%);
+      border-bottom: 1px solid var(--purple-700);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .screen-header .icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .screen-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--purple-200);
+      letter-spacing: -0.3px;
+    }
+
+    .screen-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ===== SCREEN: CONTROLS ===== */
+    .controls-panel {
+      max-width: 900px;
+      margin: 32px auto;
+      padding: 0 24px;
+    }
+
+    .controls-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+    }
+
+    .controls-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple-300);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .controls-grid { grid-template-columns: 1fr; }
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .field-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .field-group select {
+      background: var(--input-bg);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      font-size: 15px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b46c8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 38px;
+      transition: border-color 0.2s;
+    }
+
+    .field-group select:focus {
+      outline: none;
+      border-color: var(--purple-400);
+    }
+
+    .controls-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.18s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-600), var(--purple-500));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(107, 47, 160, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--purple-500), var(--purple-400));
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--purple-300);
+      border: 1px solid var(--purple-600);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(107, 47, 160, 0.15);
+    }
+
+    .btn-print {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #1a0533;
+      box-shadow: 0 4px 14px rgba(240, 180, 41, 0.3);
+    }
+
+    .btn-print:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* ===== SCREEN: INFO BOX ===== */
+    .info-box {
+      background: rgba(139, 70, 200, 0.12);
+      border: 1px solid rgba(139, 70, 200, 0.35);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .info-box strong {
+      color: var(--purple-300);
+    }
+
+    /* ===== SCREEN: MODERATOR REFERENCE ===== */
+    .moderator-section {
+      max-width: 900px;
+      margin: 0 auto 32px;
+      padding: 0 24px;
+    }
+
+    .moderator-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+    }
+
+    .moderator-card h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .moderator-card .subtitle {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .ronde-info {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .ronde-info .ronde-header {
+      font-weight: 700;
+      color: var(--purple-300);
+      margin-bottom: 8px;
+    }
+
+    .ronde-info .kitab-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 4px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-target { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+    .badge-abu { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+    .badge-agen { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+
+    .dist-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .dist-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: rgba(107, 47, 160, 0.2);
+      color: var(--purple-300);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .dist-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(90, 42, 138, 0.3);
+      color: var(--text-muted);
+    }
+
+    .dist-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .dist-table td:first-child {
+      font-weight: 700;
+      color: var(--text-main);
+      font-family: monospace;
+    }
+
+    /* ===== SCREEN: PREVIEW CARDS ===== */
+    .preview-section {
+      max-width: 900px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
+    }
+
+    .preview-section h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--purple-300);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-section h2 .count-badge {
+      background: var(--purple-700);
+      color: var(--purple-200);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .cards-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .card-preview {
+      background: #fff;
+      border: 2px dashed #9ca3af;
+      border-radius: 4px;
+      padding: 12px;
+      color: #1a1a1a;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-preview .card-meta {
+      font-size: 9px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-preview .card-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #374151;
+      font-family: monospace;
+    }
+
+    .card-preview .card-header {
+      font-size: 8px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .card-preview .card-text {
+      font-size: 13px;
+      color: #111;
+      text-align: center;
+      line-height: 1.5;
+      font-weight: 500;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0;
+    }
+
+    .card-preview .card-footer {
+      font-size: 7px;
+      color: #9ca3af;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-dim);
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        font-family: 'Times New Roman', Georgia, serif;
+      }
+
+      .screen-header,
+      .controls-panel,
+      .moderator-section,
+      .preview-section { display: none !important; }
+
+      .print-area { display: block !important; }
+
+      .print-page {
+        page-break-after: always;
+        width: 210mm;
+        min-height: 297mm;
+        padding: 12mm;
+        margin: 0 auto;
+      }
+
+      .print-page:last-child { page-break-after: auto; }
+
+      .print-page-header {
+        font-size: 10pt;
+        color: #555;
+        text-align: center;
+        margin-bottom: 8mm;
+        padding-bottom: 4mm;
+        border-bottom: 0.5pt solid #ccc;
+        font-family: 'Segoe UI', Arial, sans-serif;
+      }
+
+      .print-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4mm;
+      }
+
+      .print-card {
+        border: 1.5pt dashed #888;
+        padding: 5mm 4mm;
+        min-height: 55mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: #fff;
+        page-break-inside: avoid;
+      }
+
+      .print-card .pc-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 3mm;
+      }
+
+      .print-card .pc-meta {
+        font-size: 6pt;
+        color: #999;
+        font-family: Arial, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .print-card .pc-num {
+        font-size: 8pt;
+        font-weight: 700;
+        color: #333;
+        font-family: 'Courier New', monospace;
+      }
+
+      .print-card .pc-title {
+        font-size: 6pt;
+        font-weight: 700;
+        text-align: center;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 4mm;
+        font-family: Arial, sans-serif;
+      }
+
+      .print-card .pc-text {
+        font-size: 10pt;
+        text-align: center;
+        color: #000;
+        line-height: 1.55;
+        font-style: italic;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2mm 1mm;
+        font-family: Georgia, 'Times New Roman', serif;
+      }
+
+      .print-card .pc-footer {
+        font-size: 5.5pt;
+        text-align: center;
+        color: #aaa;
+        margin-top: 3mm;
+        padding-top: 2mm;
+        border-top: 0.3pt dotted #ccc;
+        font-family: Arial, sans-serif;
+        letter-spacing: 0.2px;
+      }
+
+      .print-cut-hint {
+        font-size: 7pt;
+        color: #aaa;
+        text-align: center;
+        margin-top: 6mm;
+        font-family: Arial, sans-serif;
+        font-style: italic;
+      }
+    }
+
+    /* Hide print area on screen */
+    .print-area { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ===== SCREEN: HEADER ===== -->
+<div class="screen-header">
+  <div class="icon">&#9999;&#65039;</div>
+  <div>
+    <h1>Cetak Kartu Fragmen</h1>
+    <p>Surat Terakhir Hybrid &mdash; Generator kartu untuk moderator</p>
+  </div>
+</div>
+
+<!-- ===== SCREEN: CONTROLS ===== -->
+<div class="controls-panel">
+  <div class="controls-card">
+    <div class="controls-title">Pengaturan Kartu</div>
+    <div class="controls-grid">
+      <div class="field-group">
+        <label for="select-ronde">Pilih Ronde</label>
+        <select id="select-ronde">
+          <option value="">-- Pilih Ronde --</option>
+          <option value="1">Ronde 1 &mdash; Mazmur vs Amsal vs Kidung Agung</option>
+          <option value="2">Ronde 2 &mdash; Matius vs Markus vs Lukas</option>
+          <option value="3">Ronde 3 &mdash; Yohanes vs Kisah Para Rasul vs Wahyu</option>
+          <option value="4">Ronde 4 &mdash; Galatia vs Efesus vs 1 Timotius</option>
+          <option value="5">Ronde 5 &mdash; Mazmur vs Yohanes vs Wahyu</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label for="select-players">Jumlah Pemain</label>
+        <select id="select-players">
+          <option value="">-- Pilih Pemain --</option>
+          <option value="3">3 Pemain</option>
+          <option value="4">4 Pemain</option>
+          <option value="5">5 Pemain</option>
+          <option value="6">6 Pemain</option>
+          <option value="7">7 Pemain</option>
+          <option value="8">8 Pemain</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls-actions">
+      <button class="btn btn-primary" onclick="generateKartu()">&#9654; Generate Kartu</button>
+      <button class="btn btn-print" onclick="cetakKartu()">&#128438; Print Kartu</button>
+      <button class="btn btn-secondary" onclick="resetAll()">&#8635; Reset</button>
+    </div>
+    <div class="info-box">
+      <strong>Panduan Moderator:</strong> Kartu tidak mencantumkan nama kitab.
+      Hanya moderator yang tahu distribusinya dari tabel referensi di bawah.
+      Setelah kartu digenerate, klik <strong>Print Kartu</strong> &rarr; potong sesuai garis putus-putus
+      &rarr; bagikan ke pemain secara acak (tertutup).
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: MODERATOR REFERENCE ===== -->
+<div class="moderator-section" id="moderator-section" style="display:none">
+  <div class="moderator-card">
+    <h2>&#128274; Referensi Moderator <span style="font-size:11px;font-weight:400;color:var(--text-dim)">(Tidak ikut tercetak)</span></h2>
+    <div class="subtitle">Simpan halaman ini atau foto sebelum print. Informasi ini tidak ada di kartu.</div>
+
+    <div id="ronde-summary"></div>
+
+    <div style="margin-top:16px">
+      <div style="font-size:12px;color:var(--purple-300);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Distribusi Kartu</div>
+      <table class="dist-table">
+        <thead>
+          <tr>
+            <th>No. Kartu</th>
+            <th>Kitab</th>
+            <th>Peran</th>
+            <th>Diberikan ke Pemain</th>
+          </tr>
+        </thead>
+        <tbody id="dist-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: PREVIEW ===== -->
+<div class="preview-section" id="preview-section" style="display:none">
+  <h2>
+    Preview Kartu
+    <span class="count-badge" id="preview-count">0 kartu</span>
+  </h2>
+  <div class="cards-preview-grid" id="cards-preview-grid"></div>
+</div>
+
+<!-- ===== PRINT AREA (hidden on screen, shown on print) ===== -->
+<div class="print-area" id="print-area"></div>
+
+<script>
+  // ===== DATA: FRAGMEN =====
+  const FRAGMEN = [
+    // Mazmur
+    {kitab:"Mazmur",teks:"TUHAN adalah gembalaku, takkan kekurangan aku"},
+    {kitab:"Mazmur",teks:"Bersyukurlah kepada TUHAN, sebab Ia baik, kasih setia-Nya untuk selamanya"},
+    {kitab:"Mazmur",teks:"Biarlah segenap tanah menyembah dan bermazmur kepada-Mu"},
+    {kitab:"Mazmur",teks:"Hatiku remuk, lepasakanlah aku dari kesesakan, ya TUHAN"},
+    {kitab:"Mazmur",teks:"Puji TUHAN hai jiwaku, aku mau bermazmur bagi-Nya"},
+    {kitab:"Mazmur",teks:"Diamlah dan ketahuilah bahwa Akulah Allah"},
+    {kitab:"Mazmur",teks:"TUHAN adalah kekuatan umat-Nya, benteng keselamatan orang-orang yang diurapi-Nya"},
+    {kitab:"Mazmur",teks:"Dalam naungan sayap-Mu aku berlindung"},
+    {kitab:"Mazmur",teks:"Bersukacitalah karena TUHAN telah menang, Ia menjadi Raja atas bumi"},
+    {kitab:"Mazmur",teks:"Pada pagi hari aku mendengar suaramu, ya TUHAN, berbicara kepadaku"},
+    {kitab:"Mazmur",teks:"TUHAN adalah perlindunganku, kepada siapa aku akan takut"},
+    {kitab:"Mazmur",teks:"Ia membimbing aku ke air yang tenang, menyegarkan jiwaku"},
+    {kitab:"Mazmur",teks:"Tuhan itu baik, kasih setia-Nya untuk selama-lamanya, setia-Nya turun temurun"},
+    {kitab:"Mazmur",teks:"Firman-Mu itu pelita bagi kakiku, terang bagi jalanku"},
+    {kitab:"Mazmur",teks:"Aku tidak kekurangan apa-apa, TUHAN membaringkan aku di padang rumput"},
+    // Amsal
+    {kitab:"Amsal",teks:"Jalan orang benar adalah menjauhi kejahatan, ia menjaga nyawanya"},
+    {kitab:"Amsal",teks:"Anakku, dengarkanlah didikan ayahmu, jangan buang hukum ibumu"},
+    {kitab:"Amsal",teks:"Siapa menjaga mulutnya, menjaga nyawanya, siapa membuka lebar-lebar, kebinasaan akan menimpa"},
+    {kitab:"Amsal",teks:"Sahabat sejati lebih dekat dari saudara kandung"},
+    {kitab:"Amsal",teks:"Malas menyebabkan kemiskinan, rajin menyebabkan kaya"},
+    {kitab:"Amsal",teks:"Lebih baik yang rendah hati dari yang congkak, lebih baik sabar dari yang sombong"},
+    {kitab:"Amsal",teks:"Siapa mendapat istri yang baik, mendapat yang baik, anugerah TUHAN"},
+    {kitab:"Amsal",teks:"Panjang sabar lebih baik dari pada pahlawan, siapa menguasai diri lebih baik dari pada penakluk kota"},
+    {kitab:"Amsal",teks:"TUHAN membenci timbangan yang palsu, tapi batu timbangan yang tepat berkenan"},
+    {kitab:"Amsal",teks:"Takut akan TUHAN adalah permulaan hikmat, mengenal Yang Maha Kudus adalah pengertian"},
+    {kitab:"Amsal",teks:"Percayalah kepada TUHAN dengan segenap hatimu, jangan bersandar pada pengertianmu"},
+    {kitab:"Amsal",teks:"TUHAN itu benar, Ia tidak menyetujui yang curang, Ia membenci yang dusta"},
+    // Pengkhotbah
+    {kitab:"Pengkhotbah",teks:"Segala sesuatu indah pada waktunya, ada waktu untuk segala sesuatu"},
+    {kitab:"Pengkhotbah",teks:"Vanitas vanitatum, semuanya sia-sia, tanpa makna hakiki"},
+    {kitab:"Pengkhotbah",teks:"Tidak ada yang lebih baik bagi manusia selain bersukacita dalam pekerjaannya"},
+    {kitab:"Pengkhotbah",teks:"Lebih baik dua dari satu, karena mereka mendapat upah yang baik dalam jerih lelah mereka"},
+    {kitab:"Pengkhotbah",teks:"Hikmat lebih baik dari pada senjata perang, tetapi satu orang yang salah jalan merusak banyak yang baik"},
+    {kitab:"Pengkhotbah",teks:"Karena hikmat akan masuk ke dalam hatimu, dan pengetahuan akan menyenangkan jiwamu"},
+    // Matius
+    {kitab:"Matius",teks:"Kasihilah sesamamu manusia seperti dirimu sendiri"},
+    {kitab:"Matius",teks:"Aku tidak layak Tuhan masuk ke dalam rumahku, katakanlah saja satu firman"},
+    {kitab:"Matius",teks:"Mintalah, maka akan diberikan kepadamu, carilah, maka kamu akan mendapat"},
+    {kitab:"Matius",teks:"Pergilah ke seluruh dunia, beritakanlah Injil kepada segala makhluk"},
+    {kitab:"Matius",teks:"Kamu adalah garam dunia, jika garam itu kehilangan asinnya, ia tidak berguna lagi"},
+    {kitab:"Matius",teks:"Kamu adalah terang dunia, kota di atas gunung tidak dapat tersembunyi"},
+    {kitab:"Matius",teks:"Marilah kepada-Ku semua yang letih lesu, Aku akan memberi kelegaan kepadamu"},
+    {kitab:"Matius",teks:"Di mana dua atau tiga orang berkumpul dalam nama-Ku, Aku ada di tengah-tengah mereka"},
+    {kitab:"Matius",teks:"Aku telah mengalahkan dunia, jangan takut, Aku sertamu selalu"},
+    {kitab:"Matius",teks:"Bertobatlah, karena Kerajaan Surga sudah dekat"},
+    // Markus
+    {kitab:"Markus",teks:"Jangan takut, hanya percaya, jadilah teguh"},
+    {kitab:"Markus",teks:"Hai orang percaya, semua mungkin bagi yang percaya"},
+    {kitab:"Markus",teks:"Siapa yang ingin menjadi yang terkemuka, harus menjadi hamba bagi semua"},
+    {kitab:"Markus",teks:"Waspadalah terhadap ragi orang Farisi, yaitu kepalsuan"},
+    {kitab:"Markus",teks:"Bertobatlah dan percayalah kepada Injil"},
+    {kitab:"Markus",teks:"Siapa yang melakukan kehendak Allah, itulah saudaraku"},
+    {kitab:"Markus",teks:"Anak Manusia datang untuk melayani, bukan untuk dilayani"},
+    {kitab:"Markus",teks:"Akulah jalan, kebenaran, dan kehidupan, tiada yang datang kepada Bapa selain melalui Aku"},
+    // Lukas
+    {kitab:"Lukas",teks:"Jangan takut, aku memberitakan kepadamu sukacita besar untuk semua orang"},
+    {kitab:"Lukas",teks:"Ada sukacita di surga karena satu orang berdosa bertobat"},
+    {kitab:"Lukas",teks:"Imanmu telah menyelamatkan engkau, pergilah dengan selamat"},
+    {kitab:"Lukas",teks:"Anak yang hilang itu, ayahnya berlari mendekat dan memeluknya"},
+    {kitab:"Lukas",teks:"Bersyukurlah kepada Tuhan, sebab Dia baik, kasih setia-Nya untuk selamanya"},
+    {kitab:"Lukas",teks:"Barangsiapa tidak menanggalkan semuanya, tidak dapat murid-Ku"},
+    {kitab:"Lukas",teks:"Berjagalah dan berdoalah, supaya kamu jangan jatuh ke dalam pencobaan"},
+    {kitab:"Lukas",teks:"Belas kasihanlah seperti Bapamu yang penyayang"},
+    // Yohanes
+    {kitab:"Yohanes",teks:"Allah begitu mengasihi dunia sehingga memberikan Anak-Nya yang tunggal"},
+    {kitab:"Yohanes",teks:"Akulah jalan, kebenaran, dan kehidupan"},
+    {kitab:"Yohanes",teks:"Akulah terang dunia, siapa mengikut Aku tidak berjalan dalam kegelapan"},
+    {kitab:"Yohanes",teks:"Damai sejahtera Kutinggalkan kepadamu, damai sejahtera-Ku Aku berikan kepadamu"},
+    {kitab:"Yohanes",teks:"Kasihilah sesamamu manusia, seperti Aku telah mengasihi kamu"},
+    {kitab:"Yohanes",teks:"Aku datang bukan untuk menghakimi, tetapi untuk menyelamatkan"},
+    {kitab:"Yohanes",teks:"Di dalam hal ini Bapa-Ku dimuliakan, yaitu kamu menghasilkan banyak buah"},
+    {kitab:"Yohanes",teks:"Di mana Aku, di situ juga pelayan-Ku akan ada"},
+    // Kisah Para Rasul
+    {kitab:"Kisah Para Rasul",teks:"Saulus, Saulus, mengapa engkau menganiaya Aku"},
+    {kitab:"Kisah Para Rasul",teks:"Pada hari Pentakosta, Roh Kudus turun ke atas mereka semua"},
+    {kitab:"Kisah Para Rasul",teks:"Ananias, pergilah ke jalan yang lurus, carilah Saulus dari Tarsus"},
+    {kitab:"Kisah Para Rasul",teks:"Berani memberitakan Injil di hadapan umum, tidak pernah berhenti mengajar"},
+    {kitab:"Kisah Para Rasul",teks:"Jemaat mula-mula bertekun dalam pengajaran rasul-rasul dan dalam persekutuan"},
+    {kitab:"Kisah Para Rasul",teks:"Demikianlah Firman TUHAN makin tersebar, dan jumlah murid makin bertambah"},
+    {kitab:"Kisah Para Rasul",teks:"Kepada-Ku telah diberikan kuasa di surga dan di bumi"},
+    {kitab:"Kisah Para Rasul",teks:"Mereka semua penuh dengan Roh Kudus, dan mereka memberitakan firman Allah"},
+    // Galatia
+    {kitab:"Galatia",teks:"Berdirilah teguh, jangan lagi memikul kuk perhambaan"},
+    {kitab:"Galatia",teks:"Kamu yang oleh kasih karunia Allah telah diselamatkan oleh iman"},
+    {kitab:"Galatia",teks:"Janganlah disesatkan, Allah tidak membiarkan diri-Nya dipermainkan"},
+    {kitab:"Galatia",teks:"Saudara-saudara, jikalau seorang kedapatan melakukan pelanggaran, kamu yang rohani harus memperbaiki dia"},
+    {kitab:"Galatia",teks:"Marilah kita tidak jemu-jemu berbuat baik, karena pada waktunya kita akan menuai"},
+    {kitab:"Galatia",teks:"Kamu telah dimerdekakan, jangan lagi menghambakan diri"},
+    {kitab:"Galatia",teks:"Janganlah kamu tertipu, persahabatan dengan dunia adalah permusuhan dengan Allah"},
+    {kitab:"Galatia",teks:"Marilah kita hidup menurut Roh, hasilnya damai sejahtera dan kasih sukacita"},
+    {kitab:"Galatia",teks:"Buah Roh ialah kasih, sukacita, damai sejahtera, kesabaran, kemurahan"},
+    {kitab:"Galatia",teks:"Jauhlah padaku bermegah, selain pada salib Tuhan kita Yesus Kristus"},
+    // Efesus
+    {kitab:"Efesus",teks:"Karena oleh kasih karunia kamu diselamatkan oleh iman, itu bukan hasil usahamu"},
+    {kitab:"Efesus",teks:"Hendaklah kamu saling mengasihi, seperti Kristus mengasihi jemaat"},
+    {kitab:"Efesus",teks:"Aku berlutut di hadapan Bapa, dari siapa semua keluarga di surga dan di bumi"},
+    {kitab:"Efesus",teks:"Marilah kita membuang perbuatan kegelapan dan mengenakan senjata terang"},
+    {kitab:"Efesus",teks:"Satu tubuh, satu Roh, satu pengharapan panggilanmu"},
+    {kitab:"Efesus",teks:"Bangunlah dan berdirilah teguh, ikatlah pinggangmu dengan kebenaran"},
+    {kitab:"Efesus",teks:"Damai sejahtera Allah yang melampaui segala akal akan menjaga hatimu"},
+    {kitab:"Efesus",teks:"Terpujilah Allah, Bapa Tuhan kita Yesus Kristus, yang telah memberkati kita"},
+    // Wahyu
+    {kitab:"Wahyu",teks:"Aku adalah Alfa dan Omega, yang pertama dan yang terakhir, yang hidup"},
+    {kitab:"Wahyu",teks:"Barangsiapa menang, ia akan mengenakan pakaian putih, Aku tidak akan menghapus namanya"},
+    {kitab:"Wahyu",teks:"Aku berdiri di muka pintu dan mengetuk, jikalau ada orang mendengar suaraku"},
+    {kitab:"Wahyu",teks:"Aku akan membuat segalanya baru, Aku akan menghapus air mata dari mata mereka"},
+    {kitab:"Wahyu",teks:"Suatu pagi nanti, mata air kehidupan akan jernih mengkilat dari takhta Allah"},
+    {kitab:"Wahyu",teks:"Kemenangan yang mengalahkan dunia ialah iman kita"},
+    {kitab:"Wahyu",teks:"Ia akan wiping air mata dari mata mereka, maut tidak akan ada lagi"},
+    {kitab:"Wahyu",teks:"Aku adalah yang pertama dan yang terakhir, dan yang hidup, dan aku telah mati"},
+    // Kidung Agung
+    {kitab:"Kidung Agung",teks:"Kekasihku berbicara kepadaku, bangunlah manisku, cantikku, marilah pergi"},
+    {kitab:"Kidung Agung",teks:"Lihat, musim dingin sudah lalu, hujan sudah berhenti, bunga-bunga muncul di tanah"},
+    {kitab:"Kidung Agung",teks:"Di bawah naungan pohon apel aku ingin duduk, di samping pohon cedar yang harum"},
+    {kitab:"Kidung Agung",teks:"Suara kekasihku, lihat ia datang melompat-lompat di gunung"},
+    {kitab:"Kidung Agung",teks:"Mawar di antara duri-duri, demikianlah kekasihku di antara gadis-gadis"},
+    {kitab:"Kidung Agung",teks:"Aku tidur, tetapi hatiku bangun, suara kekasihku mengetuk, bukakanlah"},
+    {kitab:"Kidung Agung",teks:"Air yang banyak tak dapat memadamkan cinta, sungai-sungai tak dapat menghanyutkannya"},
+    {kitab:"Kidung Agung",teks:"Kasihmu lebih manis dari pada anggur, minyak wangimu harum semerbak"},
+    // 1 Timotius
+    {kitab:"1 Timotius",teks:"Janganlah engkau keras terhadap orang yang lebih muda, hendaklah teladan dalam perkataan"},
+    {kitab:"1 Timotius",teks:"Jauhilah nafsu orang muda, kejarlah keadilan, kesetiaan, dan kasih"},
+    {kitab:"1 Timotius",teks:"Berdoalah untuk semua orang, untuk raja dan semua pembesar"},
+    {kitab:"1 Timotius",teks:"Inilah rahasia iman yang benar, yang diakui dengan hati bersih"},
+    {kitab:"1 Timotius",teks:"Bertempurlah dalam pertandingan iman yang benar, rebutlah kehidupan yang kekal"},
+    {kitab:"1 Timotius",teks:"Jagalah dirimu dan ajaranmu, bertekunlah dalam hal-hal itu"}
+  ];
+
+  // ===== CONFIG: RONDE =====
+  // Each ronde: { target, abu, agen }
+  const RONDE_CONFIG = {
+    1: { target: "Mazmur",          abu: "Amsal",            agen: "Kidung Agung" },
+    2: { target: "Matius",          abu: "Markus",           agen: "Lukas" },
+    3: { target: "Yohanes",         abu: "Kisah Para Rasul", agen: "Wahyu" },
+    4: { target: "Galatia",         abu: "Efesus",           agen: "1 Timotius" },
+    5: { target: "Mazmur",          abu: "Yohanes",          agen: "Wahyu" }
+  };
+
+  // ===== CONFIG: DISTRIBUSI PEMAIN =====
+  // kartuPerPemain[n] = { target_count, abu_count, agen_count }
+  // Total = n (jumlah pemain)
+  function getDistribusi(n) {
+    // agen selalu 1
+    // target = n - 1 - abu
+    // abu: 0 jika n=3, 1 jika n>=4
+    const agenCount = 1;
+    const abuCount  = n <= 3 ? 0 : 1;
+    const targetCount = n - agenCount - abuCount;
+    return { targetCount, abuCount, agenCount };
+  }
+
+  // ===== UTILITY: shuffle =====
+  function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function getFragmenByKitab(kitab) {
+    return FRAGMEN.filter(f => f.kitab === kitab);
+  }
+
+  // ===== STATE =====
+  let currentCards = [];
+
+  // ===== MAIN: GENERATE =====
+  function generateKartu() {
+    const rondeVal   = document.getElementById('select-ronde').value;
+    const playersVal = document.getElementById('select-players').value;
+
+    if (!rondeVal || !playersVal) {
+      alert('Pilih Ronde dan Jumlah Pemain terlebih dahulu.');
+      return;
+    }
+
+    const ronde   = parseInt(rondeVal);
+    const players = parseInt(playersVal);
+    const config  = RONDE_CONFIG[ronde];
+    const dist    = getDistribusi(players);
+
+    // Build card list
+    const targetFragmen = shuffleArray(getFragmenByKitab(config.target));
+    const abuFragmen    = shuffleArray(getFragmenByKitab(config.abu));
+    const agenFragmen   = shuffleArray(getFragmenByKitab(config.agen));
+
+    const cards = [];
+    let cardNum = 1;
+
+    // Target cards
+    for (let i = 0; i < dist.targetCount; i++) {
+      cards.push({
+        num: cardNum++,
+        teks: targetFragmen[i % targetFragmen.length].teks,
+        kitab: config.target,
+        peran: 'Pembawa'
+      });
+    }
+
+    // Abu-abu cards
+    for (let i = 0; i < dist.abuCount; i++) {
+      cards.push({
+        num: cardNum++,
+        teks: abuFragmen[i % abuFragmen.length].teks,
+        kitab: config.abu,
+        peran: 'Abu-abu'
+      });
+    }
+
+    // Agen cards
+    for (let i = 0; i < dist.agenCount; i++) {
+      cards.push({
+        num: cardNum++,
+        teks: agenFragmen[i % agenFragmen.length].teks,
+        kitab: config.agen,
+        peran: 'Agen'
+      });
+    }
+
+    // Shuffle card order (so K-1 is not always a target card)
+    const shuffledCards = shuffleArray(cards).map((c, idx) => ({
+      ...c,
+      num: idx + 1
+    }));
+
+    currentCards = shuffledCards;
+
+    renderModeratorRef(ronde, config, dist, shuffledCards);
+    renderPreview(shuffledCards);
+    renderPrintArea(ronde, shuffledCards);
+
+    document.getElementById('moderator-section').style.display = 'block';
+    document.getElementById('preview-section').style.display   = 'block';
+
+    // Scroll to reference
+    document.getElementById('moderator-section').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ===== RENDER: MODERATOR REFERENCE =====
+  function renderModeratorRef(ronde, config, dist, cards) {
+    // Ronde summary
+    const summaryEl = document.getElementById('ronde-summary');
+    summaryEl.innerHTML = `
+      <div class="ronde-info">
+        <div class="ronde-header">Ronde ${ronde}</div>
+        <div class="kitab-row">
+          <span class="badge badge-target">Pembawa</span>
+          <span>${config.target}</span>
+          <span style="color:var(--text-dim);font-size:11px">&mdash; ${dist.targetCount} kartu</span>
+        </div>
+        ${dist.abuCount > 0 ? `
+        <div class="kitab-row">
+          <span class="badge badge-abu">Abu-abu</span>
+          <span>${config.abu}</span>
+          <span style="color:var(--text-dim);font-size:11px">&mdash; ${dist.abuCount} kartu</span>
+        </div>` : ''}
+        <div class="kitab-row">
+          <span class="badge badge-agen">Agen</span>
+          <span>${config.agen}</span>
+          <span style="color:var(--text-dim);font-size:11px">&mdash; ${dist.agenCount} kartu</span>
+        </div>
+      </div>
+    `;
+
+    // Distribution table
+    const tbody = document.getElementById('dist-table-body');
+    tbody.innerHTML = cards.map((c, i) => {
+      const peranClass = c.peran === 'Pembawa' ? 'badge-target' : c.peran === 'Abu-abu' ? 'badge-abu' : 'badge-agen';
+      return `
+        <tr>
+          <td>K-${c.num}</td>
+          <td>${c.kitab}</td>
+          <td><span class="badge ${peranClass}">${c.peran}</span></td>
+          <td style="color:var(--text-dim)">Pemain ${i + 1}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // ===== RENDER: SCREEN PREVIEW =====
+  function renderPreview(cards) {
+    const countEl = document.getElementById('preview-count');
+    const gridEl  = document.getElementById('cards-preview-grid');
+    countEl.textContent = `${cards.length} kartu`;
+
+    gridEl.innerHTML = cards.map(c => `
+      <div class="card-preview">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="card-num">K-${c.num}</div>
+          <div class="card-meta">Surat Terakhir</div>
+        </div>
+        <div class="card-header">SURAT TERAKHIR</div>
+        <div class="card-text">${escapeHtml(c.teks)}</div>
+        <div class="card-footer">Simpan kartu ini. Jangan tunjukkan ke orang lain.</div>
+      </div>
+    `).join('');
+  }
+
+  // ===== RENDER: PRINT AREA =====
+  function renderPrintArea(ronde, cards) {
+    const printEl = document.getElementById('print-area');
+
+    // Group cards into pages (max 8 cards per A4 page = 2 rows x 4 cols)
+    const CARDS_PER_PAGE = 8;
+    const pages = [];
+    for (let i = 0; i < cards.length; i += CARDS_PER_PAGE) {
+      pages.push(cards.slice(i, i + CARDS_PER_PAGE));
+    }
+
+    printEl.innerHTML = pages.map((pageCards, pageIdx) => `
+      <div class="print-page">
+        <div class="print-page-header">
+          Surat Terakhir Hybrid &mdash; Ronde ${ronde} &mdash; Halaman ${pageIdx + 1} dari ${pages.length}
+        </div>
+        <div class="print-grid">
+          ${pageCards.map(c => `
+            <div class="print-card">
+              <div class="pc-top">
+                <span class="pc-meta">Surat Terakhir</span>
+                <span class="pc-num">K-${c.num}</span>
+              </div>
+              <div class="pc-title">SURAT TERAKHIR</div>
+              <div class="pc-text">${escapeHtml(c.teks)}</div>
+              <div class="pc-footer">Simpan kartu ini. Jangan tunjukkan ke orang lain.</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="print-cut-hint">Potong kartu sesuai garis putus-putus &mdash; ${pageCards.length} kartu di halaman ini</div>
+      </div>
+    `).join('');
+  }
+
+  // ===== ACTIONS =====
+  function cetakKartu() {
+    if (currentCards.length === 0) {
+      alert('Generate kartu terlebih dahulu sebelum mencetak.');
+      return;
+    }
+    window.print();
+  }
+
+  function resetAll() {
+    document.getElementById('select-ronde').value   = '';
+    document.getElementById('select-players').value = '';
+    document.getElementById('moderator-section').style.display = 'none';
+    document.getElementById('preview-section').style.display   = 'none';
+    document.getElementById('print-area').innerHTML = '';
+    currentCards = [];
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+</script>
+</body>
+</html>

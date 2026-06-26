@@ -188,7 +188,7 @@
   </div>
 
   <!-- Score pill floating -->
-  <div x-show="view === 'game'" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-10">
+  <div x-cloak x-show="view === 'game'" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-10">
     <div class="bg-white shadow-card rounded-full px-5 py-2 flex items-center gap-2">
       <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Skor</span>
       <span class="font-mono font-extrabold text-brand-500" x-text="myScore"></span>
@@ -196,8 +196,8 @@
   </div>
 
   <!-- Vote modal -->
-  <div x-show="voteOpen" x-transition.opacity class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm" @click.self="voteOpen = false">
-    <div class="bg-white rounded-3xl shadow-card p-6 w-full max-w-md">
+  <div x-cloak x-show="voteOpen" x-transition.opacity class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm" @click="voteOpen = false">
+    <div class="bg-white rounded-3xl shadow-card p-6 w-full max-w-md" @click.stop>
       <div class="sec-header" style="border-radius:14px 14px 0 0;">
         <div>
           <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Vote</p>
@@ -218,8 +218,8 @@
   </div>
 
   <!-- Reveal modal -->
-  <div x-show="revealOpen" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" @click.self="revealOpen = false">
-    <div class="bg-white rounded-3xl shadow-card w-full max-w-md overflow-hidden">
+  <div x-cloak x-show="revealOpen" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" @click="revealOpen = false">
+    <div class="bg-white rounded-3xl shadow-card w-full max-w-md overflow-hidden" @click.stop>
       <div class="sec-header">
         <div>
           <p class="text-[9px] font-bold tracking-[0.2em] uppercase opacity-80">Amplop Terbuka</p>
@@ -268,7 +268,7 @@
         get timerLabel() { if (!this.phaseEndsAt) return '0:00'; const r = Math.max(0, this.phaseEndsAt - Date.now()); const m = Math.floor(r/60000), s = Math.floor((r%60000)/1000); return `${m}:${String(s).padStart(2,'0')}`; },
         get timerClass() { if (!this.phaseEndsAt) return ''; const r = this.phaseEndsAt - Date.now(); if (r <= 10000) return 'danger'; if (r <= 30000) return 'warn'; return ''; },
 
-        init() { this.connect(); },
+        init() { this.revealOpen = false; this.voteOpen = false; this.connect(); },
 
         connect() {
           this.socket = io({ reconnection: true, withCredentials: true });
@@ -278,6 +278,7 @@
             this.currentState = s; this.myName = s.player.name;
             this.myScore = s.player.role === 'agen' ? (s.scores?.agen || 0) : (s.scores?.pembawa || 0);
             if (s.round) { this.fragmen = s.round.fragmen?.teks || ''; this.currentPhase = s.round.phase; this.phaseEndsAt = s.round.phaseEndsAt; if (s.round.openedMystery) this.openedColor = s.round.openedMystery; }
+            this.revealOpen = false;
           });
           this.socket.on('fragmen:assigned', d => { if (d.fragmen) this.fragmen = d.fragmen.teks; });
           this.socket.on('phase:changed', d => { this.currentPhase = d.phase; this.phaseEndsAt = d.phaseEndsAt; if (navigator.vibrate) navigator.vibrate(50); });
