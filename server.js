@@ -9,6 +9,7 @@
  * Routing table:
  *   /                     → root/index.html (Welcome Page)
  *   /surat-terakhir/*     → proxied to surat-terakhir (port 3001)
+ *   /surat-terakhir-codenames/* → static files (zero-server codenames game)
  *   /api/*                → proxied to surat-terakhir (port 3001)
  *   /socket.io/*          → proxied to surat-terakhir (port 3001, incl. WebSocket)
  *   /moderator, /player, /display → proxied to surat-terakhir (game pages)
@@ -29,6 +30,13 @@ const SURAT_TERAKHIR_DIR = path.join(__dirname, 'surat-terakhir');
 
 const app = express();
 const server = createServer(app);
+
+// Serve surat-terakhir-codenames as static files (zero-server, Alpine.js + Tailwind)
+// MUST come BEFORE the proxy, otherwise /surat-terakhir-* pathFilter catches it
+app.use('/surat-terakhir-codenames', express.static(path.join(__dirname, 'surat-terakhir-codenames'), {
+  maxAge: '1h',
+  dotfiles: 'ignore',
+}));
 
 const proxy = createProxyMiddleware({
   target: `http://localhost:${INTERNAL_PORT}`,
