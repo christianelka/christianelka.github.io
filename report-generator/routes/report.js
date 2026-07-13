@@ -237,43 +237,38 @@ router.post('/generate',
 router.get('/download/:filename', requireAuth, async (req, res) => {
   const filePath = join(outputDir, req.params.filename);
 
-  /* If file already exists, serve immediately */
   if (existsSync(filePath)) {
     return res.download(filePath, req.params.filename);
   }
 
-  /* File may still be generating — await the exact promise tracked by the
-     POST handler instead of polling the filesystem every second.
-     Railway Python spawns can take up to 120s. */
-  const pendingPromise = pendingDownloads.get(req.params.filename);
-  if (pendingPromise) {
-    try {
-      await Promise.race([
-        pendingPromise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Generation timeout')), 120000))
-      ]);
-    } catch (_) {
-      /* Timeout or error — fall through to 404 */
-    }
+  if (pendingDownloads.has(req.params.filename)) {
+    return res.status(202).type('text/html').send(
+      '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Generating...</title>' +
+      '<meta http-equiv="refresh" content="3">' +
+      '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
+      '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:420px}' +
+      '.spinner{width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:#6366f1;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}' +
+      '@keyframes spin{to{transform:rotate(360deg)}}' +
+      'h3{margin:0 0 6px;color:#111827;font-size:16px}p{margin:0;color:#6b7280;font-size:13px;line-height:1.5}' +
+      '</style></head><body><div class="card">' +
+      '<div class="spinner"></div>' +
+      '<h3>Generating Report...</h3>' +
+      '<p>File sedang diproses. Halaman akan refresh otomatis<br>dan download dimulai saat file siap.</p>' +
+      '</div></body></html>'
+    );
   }
 
-  /* Try again after promise resolved (or if there was no pending promise) */
-  if (existsSync(filePath)) {
-    return res.download(filePath, req.params.filename);
-  }
-
-  /* Return HTML instead of JSON so browser's <a download> doesn't save
-     the error body as .xlsx/.csv — it shows a readable error page instead. */
-  res.status(404).type('text/html').send(
-    '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>File Not Found</title>' +
-    '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f5f5f5}' +
-    '.card{background:white;padding:40px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);text-align:center;max-width:400px}' +
-    'h2{color:#333;margin:0 0 8px}p{color:#666;margin:0 0 20px;font-size:14px}' +
-    'a{color:#2563eb;text-decoration:none}a:hover{text-decoration:underline}</style>' +
-    '</head><body><div class="card">' +
-    '<h2>File Not Available</h2>' +
-    '<p>The file could not be generated. This may be due to a timeout or server load.</p>' +
-    '<a href="javascript:history.back()">← Go back and try again</a>' +
+  return res.status(404).type('text/html').send(
+    '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Not Found</title>' +
+    '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
+    '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:420px}' +
+    'h3{margin:0 0 6px;color:#111827;font-size:16px}p{margin:0 0 16px;color:#6b7280;font-size:13px;line-height:1.5}' +
+    'a{display:inline-block;padding:8px 20px;background:#6366f1;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500}' +
+    'a:hover{background:#4f46e5}' +
+    '</style></head><body><div class="card">' +
+    '<h3>File Not Found</h3>' +
+    '<p>File tidak ditemukan atau sudah expired.<br>Silakan generate ulang.</p>' +
+    '<a href="javascript:history.back()">Kembali</a>' +
     '</div></body></html>'
   );
 });
