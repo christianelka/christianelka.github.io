@@ -215,13 +215,13 @@ function renderResults(data, excelLink, csvLink) {
   let alertHtml = '<i class="bi bi-check-circle-fill me-2"></i><span>Report generated successfully!</span>';
 
   if (excelLink) {
-    alertHtml += `<a href="${BASE_PATH}${excelLink}" class="btn btn-sm btn-success ms-2" download>
+    alertHtml += `<a href="${BASE_PATH}${excelLink}" class="btn btn-sm btn-success ms-2" target="_blank">
       <i class="bi bi-file-earmark-excel"></i> Download XLS
     </a>`;
   }
 
   if (csvLink) {
-    alertHtml += `<a href="${BASE_PATH}${csvLink}" class="btn btn-sm btn-info ms-2" download>
+    alertHtml += `<a href="${BASE_PATH}${csvLink}" class="btn btn-sm btn-info ms-2" target="_blank">
       <i class="bi bi-filetype-csv"></i> Download CSV
     </a>`;
   }
