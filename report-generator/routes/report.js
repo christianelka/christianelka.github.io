@@ -60,49 +60,69 @@ function generateExcel(data, outputPath, reportDate, agents = []) {
 
     const input = JSON.stringify({ data, outputPath, reportDate, agents });
 
-    console.log('[generateExcel] Spawning python3:', scriptPath);
-    console.log('[generateExcel] Input size:', input.length, 'bytes');
+    // Try python3 first, fallback to python (Railway Nix env naming varies)
+    const candidates = ['python3', 'python'];
+    let python = null;
+    let triedFirst = false;
 
-    const python = spawn('python3', [scriptPath], {
-      stdio: ['pipe', 'pipe', 'pipe']
-    });
+    function trySpawn(bin) {
+      console.log('[generateExcel] Spawning', bin, ':', scriptPath);
+      const proc = spawn(bin, [scriptPath], { stdio: ['pipe', 'pipe', 'pipe'] });
+      return proc;
+    }
 
-    const timer = setTimeout(() => {
-      python.kill();
-      reject(new Error('Python script timeout (120s)'));
-    }, 120000);
-
-    let stdout = '';
-    let stderr = '';
-
-    python.stdin.write(input);
-    python.stdin.end();
-
-    python.stdout.on('data', (chunk) => { stdout += chunk; });
-    python.stderr.on('data', (chunk) => { stderr += chunk; });
-
-    python.on('error', (err) => {
-      clearTimeout(timer);
-      console.error('[generateExcel] Failed to spawn python3:', err.message);
-      reject(new Error('Python not found: ' + err.message));
-    });
-
-    python.on('close', (code) => {
-      clearTimeout(timer);
-      console.log('[generateExcel] Python exited with code:', code);
-      if (stderr) console.log('[generateExcel] stderr:', stderr);
-      if (code === 0) {
-        try {
-          const result = JSON.parse(stdout);
-          resolve(result);
-        } catch (e) {
-          console.error('[generateExcel] Failed to parse output:', stdout);
-          reject(new Error('Failed to parse Python output'));
-        }
-      } else {
-        reject(new Error(stderr || `Python exited with code ${code}`));
+    function attemptNext() {
+      const bin = candidates.shift();
+      if (!bin) {
+        return reject(new Error('Python not found. Tried python3 and python.'));
       }
-    });
+      const proc = trySpawn(bin);
+      proc.on('error', (err) => {
+        if (err.code === 'ENOENT') {
+          console.warn('[generateExcel]', bin, 'not found, trying next...');
+          attemptNext();
+        } else {
+          reject(new Error(`Failed to spawn ${bin}: ${err.message}`));
+        }
+      });
+      runScript(proc);
+    }
+
+    function runScript(proc) {
+      python = proc;
+      const timer = setTimeout(() => {
+        python.kill();
+        reject(new Error('Python script timeout (120s)'));
+      }, 120000);
+
+      let stdout = '';
+      let stderr = '';
+
+      python.stdin.write(input);
+      python.stdin.end();
+
+      python.stdout.on('data', (chunk) => { stdout += chunk; });
+      python.stderr.on('data', (chunk) => { stderr += chunk; });
+
+      python.on('close', (code) => {
+        clearTimeout(timer);
+        console.log('[generateExcel] Python exited with code:', code);
+        if (stderr) console.log('[generateExcel] stderr:', stderr);
+        if (code === 0) {
+          try {
+            const result = JSON.parse(stdout);
+            resolve(result);
+          } catch (e) {
+            console.error('[generateExcel] Failed to parse output:', stdout);
+            reject(new Error('Failed to parse Python output: ' + stdout.slice(0, 200)));
+          }
+        } else {
+          reject(new Error(stderr || `Python exited with code ${code}`));
+        }
+      });
+    }
+
+    attemptNext();
   });
 }
 
@@ -171,6 +191,7 @@ router.post('/generate',
 
       const excelFileName = `ITSD_Agent_Report_${reportDate}_${reportId}.xlsx`;
       const excelPath = join(outputDir, excelFileName);
+      const csvFile = excelFileName.replace('.xlsx', '.csv');
 
       const agentDetails = agentNiks.map(nik => {
         const agent = dbGetOne(db, 'SELECT nik, name FROM agents WHERE nik = ?', [nik]);
@@ -206,20 +227,18 @@ router.post('/generate',
       const genPromise = generateExcel(excelPayload, excelPath, reportDate, agentDetails)
         .then(result => {
           console.log('[report] Excel generated:', excelFileName);
+          pendingDownloads.delete(excelFileName);
+          pendingDownloads.delete(csvFile);
           return result;
         })
         .catch(err => {
           console.error('[report] Excel generation error:', err.message);
+          pendingDownloads.set(excelFileName, { error: err.message });
+          pendingDownloads.set(csvFile, { error: err.message });
         });
 
-      const csvFile = excelFileName.replace('.xlsx', '.csv');
       pendingDownloads.set(excelFileName, genPromise);
       pendingDownloads.set(csvFile, genPromise);
-
-      genPromise.finally(() => {
-        pendingDownloads.delete(excelFileName);
-        pendingDownloads.delete(csvFile);
-      });
 
     } catch (error) {
       console.error('[report] Generation error:', error);
@@ -242,6 +261,25 @@ router.get('/download/:filename', requireAuth, async (req, res) => {
   }
 
   if (pendingDownloads.has(req.params.filename)) {
+    const entry = pendingDownloads.get(req.params.filename);
+
+    if (entry && typeof entry === 'object' && entry.error) {
+      return res.status(500).type('text/html').send(
+        '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Generation Failed</title>' +
+        '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
+        '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:500px}' +
+        'h3{margin:0 0 6px;color:#dc2626;font-size:16px}p{margin:0 0 8px;color:#6b7280;font-size:13px;line-height:1.5}' +
+        'pre{background:#f3f4f6;padding:10px 14px;border-radius:6px;font-size:11px;color:#374151;text-align:left;overflow-x:auto;white-space:pre-wrap}' +
+        'a{display:inline-block;padding:8px 20px;background:#6366f1;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500}' +
+        '</style></head><body><div class="card">' +
+        '<h3>Report Generation Failed</h3>' +
+        '<p>Gagal membuat file Excel. Silakan coba generate ulang.</p>' +
+        '<pre>' + entry.error.replace(/</g, '&lt;').slice(0, 500) + '</pre>' +
+        '<br><a href="javascript:history.back()">Kembali</a>' +
+        '</div></body></html>'
+      );
+    }
+
     return res.status(202).type('text/html').send(
       '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Generating...</title>' +
       '<meta http-equiv="refresh" content="3">' +
