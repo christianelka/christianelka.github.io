@@ -55,6 +55,9 @@ const reportGenProxy = createProxyMiddleware({
   pathRewrite: { '^/report-generator': '' },
 });
 
+// Healthcheck endpoint — must come before proxies (routing order dependency)
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
 // Proxy routes MUST come before express.static — otherwise /api/health would
 // be treated as a file path lookup instead of being forwarded to the backend.
 // Using pathFilter (not Express path mounting) so req.url preserves the
