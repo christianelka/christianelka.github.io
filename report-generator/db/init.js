@@ -24,6 +24,21 @@ export async function initDb() {
   const schema = readFileSync(join(__dirname, 'schema.sql'), 'utf-8');
   db.run(schema);
 
+  // Migration: add role column if missing
+  const cols = db.exec("PRAGMA table_info(users)");
+  const colNames = cols[0]?.values.map(r => r[1]) || [];
+  if (!colNames.includes('role')) {
+    db.run("ALTER TABLE users ADD COLUMN role TEXT CHECK(role IN ('admin','user')) DEFAULT 'user'");
+  }
+
+  const adminExists = dbGetOne(db, "SELECT id FROM users WHERE role = 'admin'");
+  if (!adminExists) {
+    const firstUser = dbGetOne(db, "SELECT id FROM users ORDER BY id LIMIT 1");
+    if (firstUser) {
+      db.run("UPDATE users SET role = 'admin' WHERE id = ?", [firstUser.id]);
+    }
+  }
+
   saveDb(db);
 
   return db;

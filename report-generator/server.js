@@ -9,6 +9,7 @@ import { initDb, dbGetOne, dbInsert, saveDb } from './db/init.js';
 import authRoutes from './routes/auth.js';
 import reportRoutes from './routes/report.js';
 import agentRoutes from './routes/agents.js';
+import adminRoutes from './routes/admin.js';
 
 dotenv.config();
 
@@ -57,12 +58,16 @@ app.get('/v2', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'indexv2.html'));
 });
 
+app.get('/admin', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'admin.html'));
+});
+
 function seedDatabase(db) {
   const existingUser = dbGetOne(db, 'SELECT id FROM users LIMIT 1');
   if (!existingUser) {
     const hash = bcrypt.hashSync('admin123', 10);
-    dbInsert(db, 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)', ['Admin', 'admin@itsd.local', hash]);
-    console.log('[seed] Created default user: admin@itsd.local / admin123');
+    dbInsert(db, 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@itsd.local', hash, 'admin']);
+    console.log('[seed] Created default admin: admin@itsd.local / admin123');
   }
 
   const existingAgent = dbGetOne(db, 'SELECT id FROM agents LIMIT 1');
@@ -93,6 +98,7 @@ initDb().then(db => {
   app.use('/api/auth', authRoutes);
   app.use('/api/reports', reportRoutes);
   app.use('/api/agents', agentRoutes);
+  app.use('/api/admin', adminRoutes);
 
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });

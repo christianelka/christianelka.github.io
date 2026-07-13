@@ -6,6 +6,9 @@
 .playwright-mcp/
 playwright-report/
 test-results/
+report-generator/test*.json
+report-generator/test*.txt
+report-generator/.playwright-mcp/
 
 # --- nuke/ (Nursery rapor system) — exclude only sensitive/test/binary files ---
 # Project source (.html, .css, .js) IS committed

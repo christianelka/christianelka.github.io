@@ -12,7 +12,7 @@ async function seed() {
   const db = await initDb();
 
   const hash = bcrypt.hashSync('password123', 10);
-  db.run('INSERT OR IGNORE INTO users (name, email, password) VALUES (?, ?, ?)', ['Admin', 'admin@itoc.local', hash]);
+  db.run('INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@itoc.local', hash, 'admin']);
 
   const agentDutyPath = join(__dirname, '..', 'list-agent.txt');
   const agentDutyContent = readFileSync(agentDutyPath, 'utf-8');

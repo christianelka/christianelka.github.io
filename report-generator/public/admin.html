@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - ITSD Report</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          colors: {
+            border: 'hsl(220 13% 91%)',
+            input: 'hsl(220 13% 91%)',
+            ring: 'hsl(224 71% 45%)',
+            background: 'hsl(0 0% 100%)',
+            foreground: 'hsl(224 71% 4%)',
+            primary: { DEFAULT: 'hsl(224 71% 45%)', foreground: 'hsl(210 20% 98%)' },
+            secondary: { DEFAULT: 'hsl(220 14% 96%)', foreground: 'hsl(220 9% 46%)' },
+            destructive: { DEFAULT: 'hsl(0 84% 60%)', foreground: 'hsl(210 20% 98%)' },
+            muted: { DEFAULT: 'hsl(220 14% 96%)', foreground: 'hsl(220 9% 46%)' },
+            accent: { DEFAULT: 'hsl(220 14% 96%)', foreground: 'hsl(224 71% 4%)' },
+            card: { DEFAULT: 'hsl(0 0% 100%)', foreground: 'hsl(224 71% 4%)' },
+          },
+          borderRadius: {
+            lg: '0.5rem',
+            md: 'calc(0.5rem - 2px)',
+            sm: 'calc(0.5rem - 4px)',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 2px solid hsl(224 71% 45%); color: hsl(224 71% 4%); font-weight: 500; }
+    .tab-inactive { border-bottom: 2px solid transparent; color: hsl(220 9% 46%); }
+    .tab-inactive:hover { color: hsl(224 71% 4%); }
+    .modal-backdrop { background: rgba(0,0,0,0.5); }
+    .toast { animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  </style>
+</head>
+<body class="bg-background text-foreground min-h-screen">
+  <div class="flex min-h-screen">
+    <aside class="w-64 border-r bg-card p-4 flex flex-col">
+      <div class="mb-8">
+        <h1 class="text-xl font-bold">ITSD Admin</h1>
+        <p class="text-sm text-muted-foreground" id="adminName">Loading...</p>
+      </div>
+      <nav class="flex-1 space-y-1">
+        <a href="#" onclick="showTab('dashboard')" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium bg-accent" id="nav-dashboard">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          Dashboard
+        </a>
+        <a href="#" onclick="showTab('users')" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent" id="nav-users">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path></svg>
+          Users
+        </a>
+        <a href="#" onclick="showTab('activity')" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent" id="nav-activity">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          Activity Log
+        </a>
+      </nav>
+      <div class="border-t pt-4">
+        <button onclick="window.location.href='/'" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Back to App
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-8 overflow-auto">
+      <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+      <section id="tab-dashboard">
+        <h2 class="text-2xl font-bold mb-6">Dashboard</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="statsCards"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="border rounded-lg p-6 bg-card">
+            <h3 class="text-lg font-semibold mb-4">Top Users by Activity</h3>
+            <div id="topUsers"></div>
+          </div>
+          <div class="border rounded-lg p-6 bg-card">
+            <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+            <div id="recentActivity"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-users" class="hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">User Management</h2>
+          <button onclick="showCreateUserModal()" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+            + Add User
+          </button>
+        </div>
+        <div class="border rounded-lg bg-card">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b">
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Email</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Role</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Reports</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Actions</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Last Active</th>
+                <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Manage</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-activity" class="hidden">
+        <h2 class="text-2xl font-bold mb-6">Activity Log</h2>
+        <div class="flex gap-4 mb-6">
+          <select id="filterUser" onchange="loadActivity()" class="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"></select>
+          <select id="filterAction" onchange="loadActivity()" class="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm">
+            <option value="">All Actions</option>
+            <option value="login">Login</option>
+            <option value="logout">Logout</option>
+            <option value="report_generated">Report Generated</option>
+          </select>
+        </div>
+        <div class="border rounded-lg bg-card">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b">
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Time</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">User</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Action</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Details</th>
+              </tr>
+            </thead>
+            <tbody id="activityTable"></tbody>
+          </table>
+        </div>
+        <div class="flex justify-between items-center mt-4">
+          <p class="text-sm text-muted-foreground" id="activityCount"></p>
+          <div class="flex gap-2" id="activityPagination"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="userModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop fixed inset-0" onclick="closeModal()"></div>
+    <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card border rounded-lg shadow-lg w-full max-w-md p-6">
+      <h3 class="text-lg font-semibold mb-4" id="modalTitle">Create User</h3>
+      <form id="userForm" onsubmit="saveUser(event)">
+        <input type="hidden" id="editUserId">
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm font-medium">Name</label>
+            <input type="text" id="userName" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Email</label>
+            <input type="email" id="userEmail" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Password</label>
+            <input type="password" id="userPassword" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+            <p class="text-xs text-muted-foreground mt-1" id="passwordHint">Required for new users</p>
+          </div>
+          <div>
+            <label class="text-sm font-medium">Role</label>
+            <select id="userRole" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" onclick="closeModal()" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2">Cancel</button>
+          <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.pathname.includes('/report-generator') ? '/report-generator/api' : '/api';
+    let currentUser = null;
+    let activityOffset = 0;
+    const activityLimit = 20;
+
+    async function api(path, options = {}) {
+      const res = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        credentials: 'include'
+      });
+      if (res.status === 401) { window.location.href = '/report-generator/'; return null; }
+      return res.json();
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast px-4 py-3 rounded-lg shadow-lg text-sm font-medium ${type === 'success' ? 'bg-green-600 text-white' : 'bg-destructive text-destructive-foreground'}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function formatDate(str) {
+      if (!str) return '-';
+      const d = new Date(str);
+      return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function showTab(name) {
+      document.querySelectorAll('[id^="tab-"]').forEach(s => s.classList.add('hidden'));
+      document.getElementById(`tab-${name}`).classList.remove('hidden');
+      document.querySelectorAll('[id^="nav-"]').forEach(a => {
+        a.className = 'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent';
+      });
+      document.getElementById(`nav-${name}`).className = 'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium bg-accent';
+      if (name === 'dashboard') loadDashboard();
+      if (name === 'users') loadUsers();
+      if (name === 'activity') loadActivity();
+    }
+
+    async function loadDashboard() {
+      const data = await api('/admin/stats');
+      if (!data) return;
+
+      document.getElementById('statsCards').innerHTML = `
+        <div class="border rounded-lg p-6 bg-card"><p class="text-sm font-medium text-muted-foreground">Total Users</p><p class="text-3xl font-bold">${data.totalUsers}</p></div>
+        <div class="border rounded-lg p-6 bg-card"><p class="text-sm font-medium text-muted-foreground">Total Reports</p><p class="text-3xl font-bold">${data.totalReports}</p></div>
+        <div class="border rounded-lg p-6 bg-card"><p class="text-sm font-medium text-muted-foreground">Today Logins</p><p class="text-3xl font-bold">${data.todayLogins}</p></div>
+        <div class="border rounded-lg p-6 bg-card"><p class="text-sm font-medium text-muted-foreground">Today Reports</p><p class="text-3xl font-bold">${data.todayReports}</p></div>
+      `;
+
+      document.getElementById('topUsers').innerHTML = data.topUsers.length ? data.topUsers.map(u => `
+        <div class="flex items-center justify-between py-3 border-b last:border-0">
+          <div><p class="font-medium">${u.name}</p><p class="text-sm text-muted-foreground">${u.email}</p></div>
+          <div class="text-right"><p class="font-semibold">${u.action_count}</p><p class="text-xs text-muted-foreground">actions</p></div>
+        </div>
+      `).join('') : '<p class="text-muted-foreground text-sm">No activity yet</p>';
+
+      document.getElementById('recentActivity').innerHTML = data.recentActivity.length ? data.recentActivity.map(a => `
+        <div class="flex items-center justify-between py-3 border-b last:border-0">
+          <div><p class="font-medium">${a.user_name || 'Unknown'}</p><p class="text-sm text-muted-foreground">${a.action}: ${a.details || ''}</p></div>
+          <p class="text-xs text-muted-foreground">${formatDate(a.created_at)}</p>
+        </div>
+      `).join('') : '<p class="text-muted-foreground text-sm">No activity yet</p>';
+    }
+
+    async function loadUsers() {
+      const data = await api('/admin/users');
+      if (!data) return;
+
+      document.getElementById('usersTable').innerHTML = data.users.map(u => `
+        <tr class="border-b hover:bg-muted/50 transition-colors">
+          <td class="p-4 font-medium">${u.name}</td>
+          <td class="p-4 text-muted-foreground">${u.email}</td>
+          <td class="p-4"><span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${u.role === 'admin' ? 'bg-primary/10 text-primary' : 'bg-secondary text-secondary-foreground'}">${u.role}</span></td>
+          <td class="p-4">${u.total_reports || 0}</td>
+          <td class="p-4">${u.total_actions || 0}</td>
+          <td class="p-4 text-sm text-muted-foreground">${formatDate(u.last_active)}</td>
+          <td class="p-4 text-right">
+            <button onclick="editUser(${u.id})" class="inline-flex items-center justify-center rounded-md text-sm font-medium hover:bg-accent h-8 w-8" title="Edit">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            </button>
+            <button onclick="deleteUser(${u.id}, '${u.name}')" class="inline-flex items-center justify-center rounded-md text-sm font-medium hover:bg-destructive/10 text-destructive h-8 w-8" title="Delete">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadActivity() {
+      const userId = document.getElementById('filterUser').value;
+      const action = document.getElementById('filterAction').value;
+      const params = new URLSearchParams({ limit: activityLimit, offset: activityOffset });
+      if (userId) params.set('user_id', userId);
+      if (action) params.set('action', action);
+
+      const data = await api(`/admin/activity?${params}`);
+      if (!data) return;
+
+      document.getElementById('activityTable').innerHTML = data.logs.length ? data.logs.map(a => `
+        <tr class="border-b hover:bg-muted/50 transition-colors">
+          <td class="p-4 text-sm">${formatDate(a.created_at)}</td>
+          <td class="p-4 font-medium">${a.user_name || 'Unknown'}</td>
+          <td class="p-4"><span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground">${a.action}</span></td>
+          <td class="p-4 text-sm text-muted-foreground">${a.details || '-'}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="4" class="p-8 text-center text-muted-foreground">No activity found</td></tr>';
+
+      document.getElementById('activityCount').textContent = `Showing ${Math.min(activityOffset + activityLimit, data.total)} of ${data.total} entries`;
+
+      const totalPages = Math.ceil(data.total / activityLimit);
+      const currentPage = Math.floor(activityOffset / activityLimit) + 1;
+      let paginationHtml = '';
+      if (currentPage > 1) paginationHtml += `<button onclick="activityOffset=${(currentPage-2)*activityLimit};loadActivity()" class="inline-flex items-center justify-center rounded-md border h-8 px-3 text-sm">Prev</button>`;
+      paginationHtml += `<span class="inline-flex items-center justify-center h-8 px-3 text-sm">${currentPage} / ${totalPages || 1}</span>`;
+      if (currentPage < totalPages) paginationHtml += `<button onclick="activityOffset=${currentPage*activityLimit};loadActivity()" class="inline-flex items-center justify-center rounded-md border h-8 px-3 text-sm">Next</button>`;
+      document.getElementById('activityPagination').innerHTML = paginationHtml;
+    }
+
+    async function loadUserFilter() {
+      const data = await api('/admin/users');
+      if (!data) return;
+      const select = document.getElementById('filterUser');
+      select.innerHTML = '<option value="">All Users</option>' + data.users.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
+    }
+
+    function showCreateUserModal() {
+      document.getElementById('modalTitle').textContent = 'Create User';
+      document.getElementById('editUserId').value = '';
+      document.getElementById('userName').value = '';
+      document.getElementById('userEmail').value = '';
+      document.getElementById('userPassword').value = '';
+      document.getElementById('userPassword').required = true;
+      document.getElementById('passwordHint').textContent = 'Required';
+      document.getElementById('userRole').value = 'user';
+      document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    async function editUser(id) {
+      const data = await api('/admin/users');
+      if (!data) return;
+      const user = data.users.find(u => u.id === id);
+      if (!user) return;
+
+      document.getElementById('modalTitle').textContent = 'Edit User';
+      document.getElementById('editUserId').value = id;
+      document.getElementById('userName').value = user.name;
+      document.getElementById('userEmail').value = user.email;
+      document.getElementById('userPassword').value = '';
+      document.getElementById('userPassword').required = false;
+      document.getElementById('passwordHint').textContent = 'Leave empty to keep current password';
+      document.getElementById('userRole').value = user.role;
+      document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('userModal').classList.add('hidden');
+    }
+
+    async function saveUser(e) {
+      e.preventDefault();
+      const id = document.getElementById('editUserId').value;
+      const body = {
+        name: document.getElementById('userName').value,
+        email: document.getElementById('userEmail').value,
+        role: document.getElementById('userRole').value,
+      };
+      const password = document.getElementById('userPassword').value;
+      if (password) body.password = password;
+
+      if (id && !password) {
+        // Update without password
+      } else if (!id && !password) {
+        showToast('Password is required for new users', 'error');
+        return;
+      }
+
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/admin/users/${id}` : '/admin/users';
+      const result = await api(url, { method, body: JSON.stringify(body) });
+      if (result?.success) {
+        showToast(id ? 'User updated' : 'User created');
+        closeModal();
+        loadUsers();
+      } else {
+        showToast(result?.error || 'Failed', 'error');
+      }
+    }
+
+    async function deleteUser(id, name) {
+      if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+      const result = await api(`/admin/users/${id}`, { method: 'DELETE' });
+      if (result?.success) {
+        showToast('User deleted');
+        loadUsers();
+      } else {
+        showToast(result?.error || 'Failed', 'error');
+      }
+    }
+
+    async function init() {
+      const me = await api('/auth/me');
+      if (!me?.user || me.user.role !== 'admin') {
+        window.location.href = '/';
+        return;
+      }
+      currentUser = me.user;
+      document.getElementById('adminName').textContent = currentUser.name;
+      loadDashboard();
+      loadUserFilter();
+    }
+
+    init();
+  </script>
+</body>
+</html>
