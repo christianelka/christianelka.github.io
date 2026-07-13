@@ -1003,8 +1003,14 @@
             </div>
             <div class="shad-card-body-flush">
               <div id="recentReports">
-                <div class="empty-state" style="padding: 24px;">
-                  <p style="font-size:13px; color: var(--muted); margin:0;">No reports yet</p>
+                <div class="empty-state" style="padding: 20px;">
+                  <p style="font-size:13px; color: var(--muted); margin:0 0 10px 0;"><strong>Cara Pakai:</strong></p>
+                  <ol style="font-size:12px; color: var(--muted); margin:0; padding-left:18px; line-height:1.7;">
+                    <li>Upload file SLA &amp; Report</li>
+                    <li>Pilih Agent NIK (opsional)</li>
+                    <li>Klik <strong>Generate Report</strong></li>
+                    <li>Download XLS / CSV setelah selesai</li>
+                  </ol>
                 </div>
               </div>
             </div>
@@ -1165,9 +1171,9 @@
     const _recentProxy = {
       set innerHTML(val) {
         const container = document.getElementById('recentReports');
-        // If it's the "no reports yet" string
-        if (val.includes('No reports yet') && !val.includes('list-group-item')) {
-          container.innerHTML = '<div class="empty-state" style="padding:20px;"><p style="font-size:13px;color:var(--muted);margin:0;">No reports yet</p></div>';
+        // If it's the empty state (falls back from app.js when no reports exist)
+        if (val.includes('Cara Pakai') && !val.includes('list-group-item')) {
+          container.innerHTML = '<div class="empty-state" style="padding:20px;"><p style="font-size:13px;color:var(--muted);margin:0 0 10px 0;"><strong>Cara Pakai:</strong></p><ol style="font-size:12px;color:var(--muted);margin:0;padding-left:18px;line-height:1.7;"><li>Upload file SLA &amp; Report</li><li>Pilih Agent NIK (opsional)</li><li>Klik <strong>Generate Report</strong></li><li>Download XLS / CSV setelah selesai</li></ol></div>';
           return;
         }
         // Parse the Bootstrap HTML and re-render shadcn style

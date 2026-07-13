@@ -292,7 +292,7 @@ async function loadRecentReports() {
     const container = document.getElementById('recentReports');
 
     if (!data.reports.length) {
-      container.innerHTML = '<div class="text-center text-muted py-3">No reports yet</div>';
+      container.innerHTML = '<div class="text-center text-muted py-3" style="font-size:13px;"><strong>Cara Pakai:</strong><br>1. Upload file SLA &amp; Report<br>2. Pilih Agent NIK (opsional)<br>3. Klik Generate Report<br>4. Download XLS / CSV</div>';
       return;
     }
 

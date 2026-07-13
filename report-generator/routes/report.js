@@ -44,6 +44,12 @@ const upload = multer({
 
 const router = Router();
 
+/* Tracks file-generation promises so the download route can await the
+   exact promise instead of polling the filesystem in a sleep loop.
+   Key: filename (e.g. "ITSD_Agent_Report_2024-01-01_123.xlsx")
+   Value: Promise that resolves when the Python script finishes. */
+const pendingDownloads = new Map();
+
 function generateExcel(data, outputPath, reportDate, agents = []) {
   return new Promise((resolve, reject) => {
     const scriptPath = join(__dirname, '..', 'scripts', 'generate_excel.py');
@@ -194,10 +200,26 @@ router.post('/generate',
         console.error('[report] Post-response DB error (non-fatal):', postError);
       }
 
-      /* Generate Excel fire-and-forget after response sent (Railway 504 workaround) */
-      generateExcel(excelPayload, excelPath, reportDate, agentDetails)
-        .then(() => console.log('[report] Excel generated:', excelFileName))
-        .catch(err => console.error('[report] Excel generation error:', err.message));
+      /* Generate Excel fire-and-forget after response sent (Railway 504 workaround).
+         The promise is tracked in pendingDownloads so GET /download/:filename can
+         await completion instead of polling the filesystem. */
+      const genPromise = generateExcel(excelPayload, excelPath, reportDate, agentDetails)
+        .then(result => {
+          console.log('[report] Excel generated:', excelFileName);
+          return result;
+        })
+        .catch(err => {
+          console.error('[report] Excel generation error:', err.message);
+        });
+
+      const csvFile = excelFileName.replace('.xlsx', '.csv');
+      pendingDownloads.set(excelFileName, genPromise);
+      pendingDownloads.set(csvFile, genPromise);
+
+      genPromise.finally(() => {
+        pendingDownloads.delete(excelFileName);
+        pendingDownloads.delete(csvFile);
+      });
 
     } catch (error) {
       console.error('[report] Generation error:', error);
@@ -215,21 +237,45 @@ router.post('/generate',
 router.get('/download/:filename', requireAuth, async (req, res) => {
   const filePath = join(outputDir, req.params.filename);
 
-  /* File may still be generating — wait up to 30s before giving up.
-     Why: generateExcel() runs fire-and-forget after res.json() to avoid
-     Railway 504 timeout. The download link is served immediately but the
-     file takes a few seconds to materialize. */
-  for (let i = 0; i < 30; i++) {
-    if (existsSync(filePath)) {
-      return res.download(filePath, req.params.filename);
-    }
-    await new Promise(r => setTimeout(r, 1000));
+  /* If file already exists, serve immediately */
+  if (existsSync(filePath)) {
+    return res.download(filePath, req.params.filename);
   }
 
-  return res.status(404).json({
-    error: 'File not found or still generating after 30 seconds',
-    file: req.params.filename
-  });
+  /* File may still be generating — await the exact promise tracked by the
+     POST handler instead of polling the filesystem every second.
+     Railway Python spawns can take up to 120s. */
+  const pendingPromise = pendingDownloads.get(req.params.filename);
+  if (pendingPromise) {
+    try {
+      await Promise.race([
+        pendingPromise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Generation timeout')), 120000))
+      ]);
+    } catch (_) {
+      /* Timeout or error — fall through to 404 */
+    }
+  }
+
+  /* Try again after promise resolved (or if there was no pending promise) */
+  if (existsSync(filePath)) {
+    return res.download(filePath, req.params.filename);
+  }
+
+  /* Return HTML instead of JSON so browser's <a download> doesn't save
+     the error body as .xlsx/.csv — it shows a readable error page instead. */
+  res.status(404).type('text/html').send(
+    '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>File Not Found</title>' +
+    '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f5f5f5}' +
+    '.card{background:white;padding:40px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);text-align:center;max-width:400px}' +
+    'h2{color:#333;margin:0 0 8px}p{color:#666;margin:0 0 20px;font-size:14px}' +
+    'a{color:#2563eb;text-decoration:none}a:hover{text-decoration:underline}</style>' +
+    '</head><body><div class="card">' +
+    '<h2>File Not Available</h2>' +
+    '<p>The file could not be generated. This may be due to a timeout or server load.</p>' +
+    '<a href="javascript:history.back()">← Go back and try again</a>' +
+    '</div></body></html>'
+  );
 });
 
 router.get('/', requireAuth, (req, res) => {
