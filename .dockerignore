@@ -1,0 +1,7 @@
+node_modules
+surat-terakhir/node_modules
+report-generator/node_modules
+.git
+*.md
+.ecc-design
+.opencode
