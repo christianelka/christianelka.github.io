@@ -99,6 +99,9 @@ def write_pivot_section(ws, records, title, start_row, start_col):
     sc(ws, r, c, "Grand Total", font=HFN, fill=HF, border=TB)
     rightmost = c
 
+    for empty_c in range(start_col + 2, rightmost + 1):
+        sc(ws, r - 1, empty_c, '', font=HFN, fill=HF, border=TB)
+
     for rd in records:
         r += 1
         sc(ws, r, start_col, rd.get(row_key, ''), border=TB)
@@ -175,6 +178,9 @@ def write_ola_section(ws, records, ola_date, start_row, start_col):
         sc(ws, r, c, cn, font=HFN, fill=HF, border=TB); c += 1
     sc(ws, r, c, "Grand Total", font=HFN, fill=HF, border=TB)
     rightmost = c
+
+    for empty_c in range(start_col + 2, rightmost + 1):
+        sc(ws, r - 1, empty_c, '', font=HFN, fill=HF, border=TB)
 
     r += 1
     sc(ws, r, start_col, f"<{ola_date}", font=Font(italic=True), border=TB)
@@ -255,18 +261,31 @@ def create_report(data, output_path, report_date, agents=None):
         max_right_left = max(max_right_left, last_c)
 
     inprogress = data.get('inprogress', [])
-    if inprogress:
-        uk = list(inprogress[0].keys())[0]
-        last_r, last_c = write_simple_section(ws, inprogress, "Inprogress", uk, cur_row, LEFT_START_COL)
-        cur_row = last_r + 2
-        max_right_left = max(max_right_left, last_c)
-
     assigned = data.get('assigned', [])
-    if assigned:
-        uk = list(assigned[0].keys())[0]
-        last_r, last_c = write_simple_section(ws, assigned, "Assigned", uk, cur_row, LEFT_START_COL)
-        cur_row = last_r + 2
-        max_right_left = max(max_right_left, last_c)
+    resolved_row_count = len(data.get('resolved', []))
+
+    if resolved_row_count >= 5 and inprogress and assigned:
+        uk_ip = list(inprogress[0].keys())[0]
+        uk_as = list(assigned[0].keys())[0]
+        assigned_col = LEFT_START_COL + 3
+
+        last_r_ip, last_c_ip = write_simple_section(ws, inprogress, "Inprogress", uk_ip, cur_row, LEFT_START_COL)
+        last_r_as, last_c_as = write_simple_section(ws, assigned, "Assigned", uk_as, cur_row, assigned_col)
+
+        cur_row = max(last_r_ip, last_r_as) + 2
+        max_right_left = max(max_right_left, last_c_ip, last_c_as)
+    else:
+        if inprogress:
+            uk = list(inprogress[0].keys())[0]
+            last_r, last_c = write_simple_section(ws, inprogress, "Inprogress", uk, cur_row, LEFT_START_COL)
+            cur_row = last_r + 2
+            max_right_left = max(max_right_left, last_c)
+
+        if assigned:
+            uk = list(assigned[0].keys())[0]
+            last_r, last_c = write_simple_section(ws, assigned, "Assigned", uk, cur_row, LEFT_START_COL)
+            cur_row = last_r + 2
+            max_right_left = max(max_right_left, last_c)
 
     MID_START_COL = max_right_left + 2
 
@@ -342,25 +361,35 @@ def generate_csv(data, csv_path, agents, mid_col, right_col):
     resolved   = data.get('resolved', [])
     if resolved:  cur_row = put_pivot(resolved,  "Resolved",  cur_row, LEFT)
 
-    def put_simple(records, title, uk, start_row):
+    def put_simple(records, title, uk, start_row, col=LEFT):
         nonlocal max_right_left
         r = start_row
-        put(r, LEFT, title); r += 1
-        put(r, LEFT, "Row Labels"); put(r, LEFT + 1, "Count of Incident ID*+")
-        max_right_left = max(max_right_left, LEFT + 1)
+        put(r, col, title); r += 1
+        put(r, col, "Row Labels"); put(r, col + 1, "Count of Incident ID*+")
+        max_right_left = max(max_right_left, col + 1)
         for rd in records:
-            r += 1; put(r, LEFT, num(rd.get(uk, ''))); put(r, LEFT + 1, rd.get('count', ''))
-        r += 1; put(r, LEFT, "Grand Total"); put(r, LEFT + 1, sum(rd.get('count', 0) for rd in records))
+            r += 1; put(r, col, num(rd.get(uk, ''))); put(r, col + 1, rd.get('count', ''))
+        r += 1; put(r, col, "Grand Total"); put(r, col + 1, sum(rd.get('count', 0) for rd in records))
         return r + 2
 
     inprogress = data.get('inprogress', [])
-    if inprogress:
-        uk = list(inprogress[0].keys())[0]
-        cur_row = put_simple(inprogress, "Inprogress", uk, cur_row)
     assigned = data.get('assigned', [])
-    if assigned:
-        uk = list(assigned[0].keys())[0]
-        cur_row = put_simple(assigned, "Assigned", uk, cur_row)
+    resolved_row_count = len(data.get('resolved', []))
+
+    if resolved_row_count >= 5 and inprogress and assigned:
+        uk_ip = list(inprogress[0].keys())[0]
+        uk_as = list(assigned[0].keys())[0]
+        assigned_col = LEFT + 3
+        r_ip = put_simple(inprogress, "Inprogress", uk_ip, cur_row, LEFT)
+        r_as = put_simple(assigned, "Assigned", uk_as, cur_row, assigned_col)
+        cur_row = max(r_ip, r_as)
+    else:
+        if inprogress:
+            uk = list(inprogress[0].keys())[0]
+            cur_row = put_simple(inprogress, "Inprogress", uk, cur_row)
+        if assigned:
+            uk = list(assigned[0].keys())[0]
+            cur_row = put_simple(assigned, "Assigned", uk, cur_row)
 
     MC = mid_col
     mid_row = 1
