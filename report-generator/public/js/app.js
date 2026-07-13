@@ -1,5 +1,6 @@
 let currentUser = null;
 let selectedAgents = [];
+const BASE_PATH = window.location.pathname.replace(/\/$/, '');
 
 document.addEventListener('DOMContentLoaded', () => {
   checkAuth();
@@ -9,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function checkAuth() {
   try {
-    const res = await fetch('/api/auth/me');
+    const res = await fetch(`${BASE_PATH}/api/auth/me`);
     if (res.ok) {
       const data = await res.json();
       currentUser = data.user;
@@ -38,7 +39,7 @@ async function handleLogin(e) {
   const password = document.getElementById('loginPassword').value;
 
   try {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${BASE_PATH}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -63,7 +64,7 @@ async function handleRegister(e) {
   const password = document.getElementById('regPassword').value;
 
   try {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch(`${BASE_PATH}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password })
@@ -82,7 +83,7 @@ async function handleRegister(e) {
 }
 
 async function logout() {
-  await fetch('/api/auth/logout', { method: 'POST' });
+  await fetch(`${BASE_PATH}/api/auth/logout`, { method: 'POST' });
   currentUser = null;
   showAuth();
 }
@@ -126,7 +127,7 @@ function initAgentInput() {
 async function searchAgents(q) {
   const dropdown = document.getElementById('agentDropdown');
   try {
-    const res = await fetch(`/api/agents/search?q=${encodeURIComponent(q)}`);
+    const res = await fetch(`${BASE_PATH}/api/agents/search?q=${encodeURIComponent(q)}`);
     const data = await res.json();
     const filtered = data.agents.filter(a => !selectedAgents.some(s => s.nik === a.nik));
 
@@ -185,7 +186,7 @@ async function handleGenerate(e) {
   formData.append('agentNiks', document.getElementById('agentNiks').value);
 
   try {
-    const res = await fetch('/api/reports/generate', {
+    const res = await fetch(`${BASE_PATH}/api/reports/generate`, {
       method: 'POST',
       body: formData
     });
@@ -214,13 +215,13 @@ function renderResults(data, excelLink, csvLink) {
   let alertHtml = '<i class="bi bi-check-circle-fill me-2"></i><span>Report generated successfully!</span>';
 
   if (excelLink) {
-    alertHtml += `<a href="${excelLink}" class="btn btn-sm btn-success ms-2" download>
+    alertHtml += `<a href="${BASE_PATH}${excelLink}" class="btn btn-sm btn-success ms-2" download>
       <i class="bi bi-file-earmark-excel"></i> Download XLS
     </a>`;
   }
 
   if (csvLink) {
-    alertHtml += `<a href="${csvLink}" class="btn btn-sm btn-info ms-2" download>
+    alertHtml += `<a href="${BASE_PATH}${csvLink}" class="btn btn-sm btn-info ms-2" download>
       <i class="bi bi-filetype-csv"></i> Download CSV
     </a>`;
   }
@@ -286,7 +287,7 @@ function renderSimpleTable(tableId, data, col1, col2) {
 
 async function loadRecentReports() {
   try {
-    const res = await fetch('/api/reports');
+    const res = await fetch(`${BASE_PATH}/api/reports`);
     const data = await res.json();
     const container = document.getElementById('recentReports');
 
