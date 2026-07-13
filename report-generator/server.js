@@ -28,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 const isSecure = !!process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production';
 
 app.use(session({
+  name: 'report_gen.sid',
   secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
   resave: false,
   saveUninitialized: false,

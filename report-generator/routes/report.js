@@ -176,11 +176,17 @@ router.post('/generate',
         csvLink: `/api/reports/download/${excelFileName.replace('.xlsx', '.csv')}`
       });
 
-      dbRun(db, 'UPDATE reports SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        ['completed', reportId]);
+      /* Post-response operations — isolated try/catch so failures don't crash the process
+         (which would destroy in-memory sessions and log the user out) */
+      try {
+        dbRun(db, 'UPDATE reports SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+          ['completed', reportId]);
 
-      dbRun(db, 'INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)',
-        [req.session.userId, 'report_generated', `Report #${reportId} generated successfully`]);
+        dbRun(db, 'INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)',
+          [req.session.userId, 'report_generated', `Report #${reportId} generated successfully`]);
+      } catch (postError) {
+        console.error('[report] Post-response DB error (non-fatal):', postError);
+      }
 
       /* Generate Excel fire-and-forget after response sent (Railway 504 workaround) */
       generateExcel(results, excelPath, reportDate, agentDetails)
