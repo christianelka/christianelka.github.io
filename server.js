@@ -146,9 +146,6 @@ function startReportGenerator() {
   return child;
 }
 
-childProcess = startSuratTerakhir();
-reportGenProcess = startReportGenerator();
-
 function shutdown(sig) {
   console.log(`[root] Shutting down (${sig})`);
   if (childProcess && !childProcess.killed) childProcess.kill(sig);
@@ -159,8 +156,17 @@ function shutdown(sig) {
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('uncaughtException', (err) => {
+  console.error('[root] Uncaught exception:', err);
+});
+process.on('unhandledRejection', (err) => {
+  console.error('[root] Unhandled rejection:', err);
+});
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`[root] Server listening on :${PORT}`);
   console.log(`[root] Proxying /surat-terakhir, /api, /socket.io → :${INTERNAL_PORT}`);
+
+  try { childProcess = startSuratTerakhir(); } catch (e) { console.error('[root] surat-terakhir spawn failed:', e.message); }
+  try { reportGenProcess = startReportGenerator(); } catch (e) { console.error('[root] report-generator spawn failed:', e.message); }
 });
