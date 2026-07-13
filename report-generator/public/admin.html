@@ -62,6 +62,10 @@
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
           Activity Log
         </a>
+        <a href="#" onclick="showTab('agents')" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent" id="nav-agents">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-3.99-3.99M21 21v-2a4 4 0 00-3-3.87M3 21v-2a4 4 0 013-3.87"></path></svg>
+          Agents
+        </a>
       </nav>
       <div class="border-t pt-4">
         <button onclick="window.location.href='/'" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent">
@@ -143,6 +147,28 @@
           <div class="flex gap-2" id="activityPagination"></div>
         </div>
       </section>
+
+      <section id="tab-agents" class="hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">Agent Duty Management</h2>
+          <button onclick="showCreateAgentModal()" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+            + Add Agent
+          </button>
+        </div>
+        <div class="border rounded-lg bg-card">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b">
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">NIK</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Domain</th>
+                <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Manage</th>
+              </tr>
+            </thead>
+            <tbody id="agentsTable"></tbody>
+          </table>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -176,6 +202,34 @@
         </div>
         <div class="flex justify-end gap-3 mt-6">
           <button type="button" onclick="closeModal()" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2">Cancel</button>
+          <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="agentModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop fixed inset-0" onclick="closeAgentModal()"></div>
+    <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card border rounded-lg shadow-lg w-full max-w-md p-6">
+      <h3 class="text-lg font-semibold mb-4" id="agentModalTitle">Create Agent</h3>
+      <form id="agentForm" onsubmit="saveAgent(event)">
+        <input type="hidden" id="editAgentId">
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm font-medium">NIK</label>
+            <input type="text" id="agentNik" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Name</label>
+            <input type="text" id="agentName" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Domain ID</label>
+            <input type="text" id="agentDomain" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1">
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" onclick="closeAgentModal()" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent h-10 px-4 py-2">Cancel</button>
           <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Save</button>
         </div>
       </form>
@@ -223,6 +277,7 @@
       if (name === 'dashboard') loadDashboard();
       if (name === 'users') loadUsers();
       if (name === 'activity') loadActivity();
+      if (name === 'agents') loadAgents();
     }
 
     async function loadDashboard() {
@@ -381,6 +436,83 @@
       if (result?.success) {
         showToast('User deleted');
         loadUsers();
+      } else {
+        showToast(result?.error || 'Failed', 'error');
+      }
+    }
+
+    async function loadAgents() {
+      const data = await api('/admin/agents');
+      if (!data) return;
+      document.getElementById('agentsTable').innerHTML = data.agents.length ? data.agents.map(a => `
+        <tr class="border-b hover:bg-muted/50 transition-colors">
+          <td class="p-4 font-medium">${a.nik}</td>
+          <td class="p-4">${a.name}</td>
+          <td class="p-4 text-muted-foreground">${a.domain_id || '-'}</td>
+          <td class="p-4 text-right">
+            <button onclick="editAgent(${a.id})" class="inline-flex items-center justify-center rounded-md text-sm font-medium hover:bg-accent h-8 w-8" title="Edit">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            </button>
+            <button onclick="deleteAgent(${a.id}, '${a.name}')" class="inline-flex items-center justify-center rounded-md text-sm font-medium hover:bg-destructive/10 text-destructive h-8 w-8" title="Delete">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="4" class="p-8 text-center text-muted-foreground">No agents yet</td></tr>';
+    }
+
+    function showCreateAgentModal() {
+      document.getElementById('agentModalTitle').textContent = 'Create Agent';
+      document.getElementById('editAgentId').value = '';
+      document.getElementById('agentNik').value = '';
+      document.getElementById('agentName').value = '';
+      document.getElementById('agentDomain').value = '';
+      document.getElementById('agentModal').classList.remove('hidden');
+    }
+
+    async function editAgent(id) {
+      const data = await api('/admin/agents');
+      if (!data) return;
+      const agent = data.agents.find(a => a.id === id);
+      if (!agent) return;
+      document.getElementById('agentModalTitle').textContent = 'Edit Agent';
+      document.getElementById('editAgentId').value = id;
+      document.getElementById('agentNik').value = agent.nik;
+      document.getElementById('agentName').value = agent.name;
+      document.getElementById('agentDomain').value = agent.domain_id || '';
+      document.getElementById('agentModal').classList.remove('hidden');
+    }
+
+    function closeAgentModal() {
+      document.getElementById('agentModal').classList.add('hidden');
+    }
+
+    async function saveAgent(e) {
+      e.preventDefault();
+      const id = document.getElementById('editAgentId').value;
+      const body = {
+        nik: document.getElementById('agentNik').value,
+        name: document.getElementById('agentName').value,
+        domain_id: document.getElementById('agentDomain').value || null,
+      };
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/admin/agents/${id}` : '/admin/agents';
+      const result = await api(url, { method, body: JSON.stringify(body) });
+      if (result?.success) {
+        showToast(id ? 'Agent updated' : 'Agent created');
+        closeAgentModal();
+        loadAgents();
+      } else {
+        showToast(result?.error || 'Failed', 'error');
+      }
+    }
+
+    async function deleteAgent(id, name) {
+      if (!confirm(`Delete agent "${name}"? This cannot be undone.`)) return;
+      const result = await api(`/admin/agents/${id}`, { method: 'DELETE' });
+      if (result?.success) {
+        showToast('Agent deleted');
+        loadAgents();
       } else {
         showToast(result?.error || 'Failed', 'error');
       }

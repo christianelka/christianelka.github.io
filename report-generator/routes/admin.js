@@ -155,4 +155,60 @@ router.get('/stats', (req, res) => {
   });
 });
 
+// --- Agent duty management (admin only) ---
+router.get('/agents', (req, res) => {
+  const db = req.app.locals.db;
+  const agents = dbGetAll(db, 'SELECT id, nik, name, domain_id FROM agents ORDER BY nik');
+  res.json({ agents });
+});
+
+router.post('/agents', (req, res) => {
+  const { nik, name, domain_id } = req.body;
+  if (!nik || !name) {
+    return res.status(400).json({ error: 'NIK and name required' });
+  }
+  const db = req.app.locals.db;
+  try {
+    const id = dbInsert(db, 'INSERT INTO agents (nik, name, domain_id) VALUES (?, ?, ?)', [nik, name, domain_id || null]);
+    res.json({ success: true, agent: { id, nik, name, domain_id: domain_id || null } });
+  } catch (e) {
+    if (e.message?.includes('UNIQUE')) {
+      return res.status(409).json({ error: 'NIK already exists' });
+    }
+    throw e;
+  }
+});
+
+router.put('/agents/:id', (req, res) => {
+  const { nik, name, domain_id } = req.body;
+  const db = req.app.locals.db;
+  const agent = dbGetOne(db, 'SELECT * FROM agents WHERE id = ?', [req.params.id]);
+  if (!agent) {
+    return res.status(404).json({ error: 'Agent not found' });
+  }
+  const updatedNik = nik || agent.nik;
+  const updatedName = name || agent.name;
+  const updatedDomain = domain_id !== undefined ? domain_id : agent.domain_id;
+  try {
+    dbRun(db, 'UPDATE agents SET nik = ?, name = ?, domain_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [updatedNik, updatedName, updatedDomain, req.params.id]);
+    res.json({ success: true, agent: { id: parseInt(req.params.id), nik: updatedNik, name: updatedName, domain_id: updatedDomain } });
+  } catch (e) {
+    if (e.message?.includes('UNIQUE')) {
+      return res.status(409).json({ error: 'NIK already exists' });
+    }
+    throw e;
+  }
+});
+
+router.delete('/agents/:id', (req, res) => {
+  const db = req.app.locals.db;
+  const agent = dbGetOne(db, 'SELECT * FROM agents WHERE id = ?', [req.params.id]);
+  if (!agent) {
+    return res.status(404).json({ error: 'Agent not found' });
+  }
+  dbRun(db, 'DELETE FROM agents WHERE id = ?', [req.params.id]);
+  res.json({ success: true });
+});
+
 export default router;
