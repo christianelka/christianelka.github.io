@@ -12,6 +12,14 @@ import agentRoutes from './routes/agents.js';
 
 dotenv.config();
 
+process.on('uncaughtException', (err, origin) => {
+  console.error(`[fatal] uncaughtException: ${err.message}`, { stack: err.stack, origin });
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[fatal] unhandledRejection:', reason instanceof Error ? { message: reason.message, stack: reason.stack } : reason);
+});
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 mkdirSync(join(__dirname, 'data'), { recursive: true });
 mkdirSync(join(__dirname, 'uploads'), { recursive: true });

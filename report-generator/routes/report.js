@@ -152,7 +152,13 @@ router.post('/generate',
         assigned: aggregateAssigned(merged, agentNiks),
         olaResponse: olaResult.data || [],
         olaDate: olaResult.date || reportDate,
-        topCategories: aggregateTopCategories(merged, 5),
+        topCategories: aggregateTopCategories(merged, 5)
+      };
+
+      /* Generate Excel payload separately (no rawReport/rawSLA — those bloat memory
+         and cause Railway OOM kills, which crash the child process + wipe sessions) */
+      const excelPayload = {
+        ...results,
         rawReport: merged,
         rawSLA: cleanedSLA
       };
@@ -189,7 +195,7 @@ router.post('/generate',
       }
 
       /* Generate Excel fire-and-forget after response sent (Railway 504 workaround) */
-      generateExcel(results, excelPath, reportDate, agentDetails)
+      generateExcel(excelPayload, excelPath, reportDate, agentDetails)
         .then(() => console.log('[report] Excel generated:', excelFileName))
         .catch(err => console.error('[report] Excel generation error:', err.message));
 
