@@ -63,12 +63,25 @@ app.get('/admin', (req, res) => {
 });
 
 function seedDatabase(db) {
-  const existingUser = dbGetOne(db, 'SELECT id FROM users LIMIT 1');
-  if (!existingUser) {
-    const hash = bcrypt.hashSync('admin123', 10);
-    dbInsert(db, 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@itsd.local', hash, 'admin']);
-    console.log('[seed] Created default admin: admin@itsd.local / admin123');
+  const adminHash = bcrypt.hashSync('admin123', 10);
+  db.run('INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@itsd.local', adminHash, 'admin']);
+
+  const teamMembers = [
+    { nik: '25384131', name: 'Panji', password: 'Auto5547#' },
+    { nik: '25384124', name: 'Rais', password: 'Auto2840#' },
+    { nik: '25384129', name: 'Rizky', password: 'Auto9753#' },
+    { nik: '25384353', name: 'Tri', password: 'Auto3099#' },
+    { nik: '25384507', name: 'Anelka', password: 'Auto6325#' },
+    { nik: '25384509', name: 'Afif', password: 'Auto9141#' },
+    { nik: '25385675', name: 'Gangga', password: 'Auto7015#' },
+    { nik: '25385676', name: 'Gilang', password: 'Auto7372#' },
+    { nik: '25388385', name: 'Bintang', password: 'Auto9719#' },
+  ];
+  for (const m of teamMembers) {
+    const hash = bcrypt.hashSync(m.password, 10);
+    db.run('INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [m.name, `${m.nik}@itsd`, hash, 'user']);
   }
+  console.log('[seed] Users seeded');
 
   const existingAgent = dbGetOne(db, 'SELECT id FROM agents LIMIT 1');
   if (!existingAgent) {
