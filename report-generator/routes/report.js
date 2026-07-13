@@ -63,8 +63,8 @@ function generateExcel(data, outputPath, reportDate, agents = []) {
 
     const timer = setTimeout(() => {
       python.kill();
-      reject(new Error('Python script timeout (30s)'));
-    }, 30000);
+      reject(new Error('Python script timeout (120s)'));
+    }, 120000);
 
     let stdout = '';
     let stderr = '';
@@ -165,32 +165,27 @@ router.post('/generate',
         return agent || { nik, name: nik };
       });
 
-      let excelResult = null;
-      try {
-        excelResult = await generateExcel(results, excelPath, reportDate, agentDetails);
-      } catch (excelErr) {
-        console.error('[report] Excel generation error:', excelErr.message);
-      }
-
-      const excelLink = excelResult?.success ? `/api/reports/download/${excelFileName}` : null;
-      const csvFileName = excelFileName.replace('.xlsx', '.csv');
-      const csvLink = excelResult?.success ? `/api/reports/download/${csvFileName}` : null;
-
-      dbRun(db, 'UPDATE reports SET status = ?, google_sheet_link = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-        ['completed', excelLink, reportId]);
-
-      dbRun(db, 'INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)',
-        [req.session.userId, 'report_generated', `Report #${reportId} generated successfully`]);
-
+      /* Respond immediately before Excel generation to avoid Railway 504 timeout */
       res.json({
         success: true,
         reportId,
         data: results,
         excelFile: excelFileName,
-        excelLink,
-        csvFile: csvFileName,
-        csvLink
+        excelLink: `/api/reports/download/${excelFileName}`,
+        csvFile: excelFileName.replace('.xlsx', '.csv'),
+        csvLink: `/api/reports/download/${excelFileName.replace('.xlsx', '.csv')}`
       });
+
+      dbRun(db, 'UPDATE reports SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+        ['completed', reportId]);
+
+      dbRun(db, 'INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)',
+        [req.session.userId, 'report_generated', `Report #${reportId} generated successfully`]);
+
+      /* Generate Excel fire-and-forget after response sent (Railway 504 workaround) */
+      generateExcel(results, excelPath, reportDate, agentDetails)
+        .then(() => console.log('[report] Excel generated:', excelFileName))
+        .catch(err => console.error('[report] Excel generation error:', err.message));
 
     } catch (error) {
       console.error('[report] Generation error:', error);
