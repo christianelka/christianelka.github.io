@@ -35,7 +35,15 @@ app.use(session({
   }
 }));
 
+app.get('/', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'indexv2.html'));
+});
+
 app.use(express.static(join(__dirname, 'public')));
+
+app.get('/v2', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'indexv2.html'));
+});
 
 function seedDatabase(db) {
   const existingUser = dbGetOne(db, 'SELECT id FROM users LIMIT 1');
