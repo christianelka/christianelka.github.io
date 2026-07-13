@@ -194,7 +194,7 @@
         headers: { 'Content-Type': 'application/json', ...options.headers },
         credentials: 'include'
       });
-      if (res.status === 401) { window.location.href = '/report-generator/'; return null; }
+      if (res.status === 401) { document.getElementById('accessDeniedModal').classList.remove('hidden'); setTimeout(() => { window.location.href = '/report-generator/'; }, 3000); return null; }
       return res.json();
     }
 
