@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
   <title>ITSD Agent Auto Report Generator</title>
   <!-- Bootstrap required by app.js for Toast + Tabs -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -10,34 +14,38 @@
   <style>
     /* ─── Design Tokens ─── */
     :root {
-      --bg:           #f9fafb;
-      --surface:      #ffffff;
-      --border:       #e5e7eb;
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --border: #e5e7eb;
       --border-focus: #6366f1;
-      --muted:        #6b7280;
-      --muted-bg:     #f3f4f6;
-      --text:         #111827;
-      --text-sm:      #374151;
-      --accent:       #6366f1;
+      --muted: #6b7280;
+      --muted-bg: #f3f4f6;
+      --text: #111827;
+      --text-sm: #374151;
+      --accent: #6366f1;
       --accent-hover: #4f46e5;
-      --accent-fg:    #ffffff;
-      --accent-soft:  #eef2ff;
-      --success:      #16a34a;
+      --accent-fg: #ffffff;
+      --accent-soft: #eef2ff;
+      --success: #16a34a;
       --success-soft: #f0fdf4;
-      --success-border:#bbf7d0;
-      --danger:       #dc2626;
-      --danger-soft:  #fef2f2;
-      --warning:      #d97706;
-      --radius:       8px;
-      --radius-sm:    6px;
-      --radius-lg:    12px;
-      --shadow-sm:    0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow:       0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
-      --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --success-border: #bbf7d0;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --warning: #d97706;
+      --radius: 8px;
+      --radius-sm: 6px;
+      --radius-lg: 12px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     /* ─── Base ─── */
-    *, *::before, *::after { box-sizing: border-box; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
     body {
       font-family: var(--font);
@@ -135,6 +143,7 @@
       color: var(--accent-fg);
       border-color: var(--accent);
     }
+
     .btn-primary-shad:hover:not(:disabled) {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
@@ -145,6 +154,7 @@
       color: var(--text-sm);
       border-color: var(--border);
     }
+
     .btn-outline-shad:hover {
       background: var(--muted-bg);
       color: var(--text);
@@ -155,6 +165,7 @@
       color: var(--muted);
       border-color: transparent;
     }
+
     .btn-ghost-shad:hover {
       background: var(--muted-bg);
       color: var(--text);
@@ -167,7 +178,10 @@
       font-size: 12px;
       padding: 5px 10px;
     }
-    .btn-success-shad:hover { background: #166534; }
+
+    .btn-success-shad:hover {
+      background: #166534;
+    }
 
     .btn-info-shad {
       background: #0284c7;
@@ -176,9 +190,14 @@
       font-size: 12px;
       padding: 5px 10px;
     }
-    .btn-info-shad:hover { background: #0369a1; }
 
-    .btn-full { width: 100%; }
+    .btn-info-shad:hover {
+      background: #0369a1;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
 
     /* ─── Page Shell ─── */
     .page-wrap {
@@ -250,11 +269,18 @@
       box-shadow: var(--shadow-sm);
     }
 
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
 
     /* ─── Form Controls ─── */
-    .field { margin-bottom: 16px; }
+    .field {
+      margin-bottom: 16px;
+    }
 
     .field-label {
       display: block;
@@ -283,15 +309,19 @@
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
     }
 
-    .field-input::placeholder { color: #9ca3af; }
+    .field-input::placeholder {
+      color: #9ca3af;
+    }
 
     input[type="file"].field-input {
       padding: 6px 10px;
       cursor: pointer;
     }
+
     input[type="file"].field-input::-webkit-file-upload-button {
       display: none;
     }
+
     input[type="file"].field-input::file-selector-button {
       display: none;
     }
@@ -334,7 +364,9 @@
     }
 
     /* ─── Tag Input ─── */
-    .tag-input-container { position: relative; }
+    .tag-input-container {
+      position: relative;
+    }
 
     .tag-input-wrapper {
       display: flex;
@@ -387,7 +419,10 @@
       opacity: 0.6;
       transition: opacity 0.1s;
     }
-    .agent-tag .remove-tag:hover { opacity: 1; }
+
+    .agent-tag .remove-tag:hover {
+      opacity: 1;
+    }
 
     #agentDropdown {
       position: absolute;
@@ -413,7 +448,10 @@
       font-size: 13px;
       transition: background 0.1s;
     }
-    #agentDropdown .dropdown-item:hover { background: var(--muted-bg); }
+
+    #agentDropdown .dropdown-item:hover {
+      background: var(--muted-bg);
+    }
 
     #agentDropdown .dropdown-item .nik {
       font-weight: 600;
@@ -423,6 +461,7 @@
       padding: 1px 6px;
       border-radius: 4px;
     }
+
     #agentDropdown .dropdown-item .name {
       color: var(--muted);
       font-size: 12.5px;
@@ -437,7 +476,9 @@
     }
 
     @media (max-width: 900px) {
-      .app-grid { grid-template-columns: 1fr; }
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ─── Cards ─── */
@@ -470,8 +511,13 @@
       font-size: 15px;
     }
 
-    .shad-card-body { padding: 20px; }
-    .shad-card-body-flush { padding: 0; }
+    .shad-card-body {
+      padding: 20px;
+    }
+
+    .shad-card-body-flush {
+      padding: 0;
+    }
 
     /* ─── Badge ─── */
     .status-badge {
@@ -483,12 +529,31 @@
       font-size: 11px;
       font-weight: 500;
     }
-    .badge-success { background: var(--success-soft); color: var(--success); border: 1px solid var(--success-border); }
-    .badge-danger  { background: var(--danger-soft);  color: var(--danger);  border: 1px solid #fecaca; }
-    .badge-warning { background: #fffbeb; color: var(--warning); border: 1px solid #fde68a; }
+
+    .badge-success {
+      background: var(--success-soft);
+      color: var(--success);
+      border: 1px solid var(--success-border);
+    }
+
+    .badge-danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .badge-warning {
+      background: #fffbeb;
+      color: var(--warning);
+      border: 1px solid #fde68a;
+    }
 
     /* ─── Recent Reports List ─── */
-    .recent-list { list-style: none; margin: 0; padding: 0; }
+    .recent-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
 
     .recent-item {
       display: flex;
@@ -498,14 +563,21 @@
       border-bottom: 1px solid var(--border);
       transition: background 0.1s;
     }
-    .recent-item:last-child { border-bottom: none; }
-    .recent-item:hover { background: var(--muted-bg); }
+
+    .recent-item:last-child {
+      border-bottom: none;
+    }
+
+    .recent-item:hover {
+      background: var(--muted-bg);
+    }
 
     .recent-item-date {
       font-size: 13px;
       font-weight: 500;
       color: var(--text);
     }
+
     .recent-item-time {
       font-size: 11.5px;
       color: var(--muted);
@@ -571,7 +643,11 @@
     }
 
     /* ─── Accordion ─── */
-    .shad-accordion { display: flex; flex-direction: column; gap: 8px; }
+    .shad-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
     .shad-acc-item {
       background: var(--surface);
@@ -597,15 +673,23 @@
       letter-spacing: -0.01em;
     }
 
-    .shad-acc-trigger:hover { background: var(--muted-bg); }
+    .shad-acc-trigger:hover {
+      background: var(--muted-bg);
+    }
 
-    .shad-acc-trigger.open { 
+    .shad-acc-trigger.open {
       background: var(--accent-soft);
       color: var(--accent);
     }
 
-    .shad-acc-trigger .acc-icon { color: var(--muted); font-size: 14px; }
-    .shad-acc-trigger.open .acc-icon { color: var(--accent); }
+    .shad-acc-trigger .acc-icon {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .shad-acc-trigger.open .acc-icon {
+      color: var(--accent);
+    }
 
     .acc-chevron {
       margin-left: auto;
@@ -613,17 +697,25 @@
       color: var(--muted);
       transition: transform 0.2s ease;
     }
-    .shad-acc-trigger.open .acc-chevron { transform: rotate(180deg); }
+
+    .shad-acc-trigger.open .acc-chevron {
+      transform: rotate(180deg);
+    }
 
     .shad-acc-body {
       display: none;
       border-top: 1px solid var(--border);
       overflow: hidden;
     }
-    .shad-acc-body.open { display: block; }
+
+    .shad-acc-body.open {
+      display: block;
+    }
 
     /* ─── Tables ─── */
-    .shad-table-wrap { overflow-x: auto; }
+    .shad-table-wrap {
+      overflow-x: auto;
+    }
 
     .shad-table {
       width: 100%;
@@ -651,8 +743,14 @@
       border-bottom: 1px solid var(--border);
       transition: background 0.1s;
     }
-    .shad-table tbody tr:last-child { border-bottom: none; }
-    .shad-table tbody tr:hover { background: var(--muted-bg); }
+
+    .shad-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .shad-table tbody tr:hover {
+      background: var(--muted-bg);
+    }
 
     .shad-table td {
       padding: 9px 14px;
@@ -671,13 +769,18 @@
       display: inline-block;
       width: 14px;
       height: 14px;
-      border: 2px solid rgba(255,255,255,0.4);
+      border: 2px solid rgba(255, 255, 255, 0.4);
       border-top-color: #fff;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       vertical-align: middle;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* ─── Toast ─── */
     .shad-toast-wrap {
@@ -691,7 +794,7 @@
       align-items: flex-end;
     }
 
-    /* Bootstrap toast override to match shadcn style */
+    /* Toast still exists for errors — we suppress success via JS override */
     #liveToast {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -709,8 +812,14 @@
       font-size: 13px;
     }
 
-    .toast-header.bg-danger { background: var(--danger) !important; }
-    .toast-body { padding: 10px 14px; color: var(--text-sm); }
+    .toast-header.bg-danger {
+      background: var(--danger) !important;
+    }
+
+    .toast-body {
+      padding: 10px 14px;
+      color: var(--text-sm);
+    }
 
     /* ─── Divider ─── */
     .shad-divider {
@@ -720,17 +829,31 @@
     }
 
     /* ─── Misc ─── */
-    .text-muted-shad { color: var(--muted); font-size: 12.5px; }
+    .text-muted-shad {
+      color: var(--muted);
+      font-size: 12.5px;
+    }
 
     /* Override Bootstrap accordion (for Bootstrap tab markup we keep) */
-    .nav-tabs { display: none !important; }
-    .tab-content > .tab-pane { display: none; }
-    .tab-content > .tab-pane.active { display: block; }
+    .nav-tabs {
+      display: none !important;
+    }
+
+    .tab-content>.tab-pane {
+      display: none;
+    }
+
+    .tab-content>.tab-pane.active {
+      display: block;
+    }
 
     /* Keep Bootstrap accordion hidden if it bleeds in */
-    .accordion-button::after { display: none; }
+    .accordion-button::after {
+      display: none;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- ─── Navbar ─── -->
@@ -792,7 +915,8 @@
             </div>
             <div class="field">
               <label class="field-label" for="regPassword">Password</label>
-              <input type="password" class="field-input" id="regPassword" placeholder="Min. 6 characters" required minlength="6">
+              <input type="password" class="field-input" id="regPassword" placeholder="Min. 6 characters" required
+                minlength="6">
             </div>
             <button type="submit" class="btn-shad btn-primary-shad btn-full" style="margin-top:4px;">
               Create account
@@ -855,15 +979,16 @@
                   <div class="tag-input-container">
                     <div class="tag-input-wrapper" id="agentTagWrapper">
                       <div id="agentTags" class="d-flex flex-wrap gap-1"></div>
-                      <input type="text" class="tag-input" id="agentInput"
-                             placeholder="Type NIK to search…" autocomplete="off">
+                      <input type="text" class="tag-input" id="agentInput" placeholder="Type NIK to search…"
+                        autocomplete="off">
                     </div>
                     <div class="dropdown-menu" id="agentDropdown"></div>
                   </div>
                   <input type="hidden" id="agentNiks" value="[]">
                 </div>
 
-                <button type="submit" class="btn-shad btn-primary-shad btn-full" id="btnGenerate" style="margin-top:8px;">
+                <button type="submit" class="btn-shad btn-primary-shad btn-full" id="btnGenerate"
+                  style="margin-top:8px;">
                   <i class="bi bi-gear"></i> Generate Report
                 </button>
               </form>
@@ -890,9 +1015,7 @@
         <main>
           <!-- Results (hidden until generated) -->
           <div id="resultsArea" style="display:none;">
-            <div class="alert-success result-banner" id="resultBanner">
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Report generated successfully!</span>
+            <div class="result-banner" id="resultBanner">
               <div class="banner-actions" id="downloadActions"></div>
             </div>
 
@@ -1034,43 +1157,7 @@
     }
 
     /* ── Patch renderResults to use shadcn banner + table styles ── */
-    /* app.js writes to .alert-success — we intercept via DOM after it runs */
-    const _origRenderResults = window.renderResults;
-
-    /* Override the alert writing logic: app.js uses querySelector('#resultsArea .alert-success')
-       Our banner doesn't use that class — patch after app.js loads */
-    document.addEventListener('DOMContentLoaded', () => {
-      // Patch: app.js uses document.querySelector('#resultsArea .alert-success')
-      // We inject a hidden .alert-success shim that app.js can write to,
-      // then mirror its innerHTML into our visible banner
-      const shim = document.createElement('div');
-      shim.className = 'alert alert-success d-flex align-items-center';
-      shim.style.display = 'none';
-      shim.id = '_alertShim';
-      document.getElementById('resultsArea').prepend(shim);
-
-      // Observe shim changes and mirror to our banner
-      const obs = new MutationObserver(() => {
-        const banner = document.getElementById('resultBanner');
-        // Extract text node
-        const msg = shim.querySelector('span')?.textContent || 'Report generated successfully!';
-        let html = `<i class="bi bi-check-circle-fill"></i><span>${msg}</span>`;
-        // Extract download links
-        const links = shim.querySelectorAll('a');
-        if (links.length) {
-          let actions = '<div class="banner-actions">';
-          links.forEach(a => {
-            const isExcel = a.href.includes('.xls') || a.textContent.includes('XLS');
-            const cls = isExcel ? 'btn-success-shad' : 'btn-info-shad';
-            actions += `<a href="${a.href}" class="btn-shad ${cls}" download>${a.innerHTML}</a>`;
-          });
-          actions += '</div>';
-          html += actions;
-        }
-        banner.innerHTML = html;
-      });
-      obs.observe(shim, { childList: true, subtree: true, characterData: true });
-    });
+    /* Create hidden shim for app.js's renderResults to target, then override */
 
     /* ── Patch recent reports rendering to match shadcn style ── */
     /* app.js writes raw Bootstrap list-group HTML to #recentReports.
@@ -1097,7 +1184,7 @@
           const iconCls = icon ? icon.className : '';
           let badgeCls = 'badge-warning';
           if (iconCls.includes('text-success')) badgeCls = 'badge-success';
-          if (iconCls.includes('text-danger'))  badgeCls = 'badge-danger';
+          if (iconCls.includes('text-danger')) badgeCls = 'badge-danger';
           const dot = iconCls.includes('text-success') ? '✓' : iconCls.includes('text-danger') ? '✕' : '·';
           html += `<li class="recent-item">
             <div style="display:flex;align-items:center;gap:8px;">
@@ -1114,7 +1201,7 @@
 
     /* Intercept app.js setting innerHTML on #recentReports */
     const _origGetById = document.getElementById.bind(document);
-    document.getElementById = function(id) {
+    document.getElementById = function (id) {
       const el = _origGetById(id);
       if (id === 'recentReports' && el) {
         return new Proxy(el, {
@@ -1133,7 +1220,7 @@
 
     /* ── Patch table rendering: app.js writes to table IDs, 
        we apply shadcn classes after render ── */
-    const TABLE_IDS = ['tableCancelled','tableResolved','tableInprogress','tableAssigned','tableOla','tableTop5'];
+    const TABLE_IDS = ['tableCancelled', 'tableResolved', 'tableInprogress', 'tableAssigned', 'tableOla', 'tableTop5'];
 
     /* Use MutationObserver on each table to add .shad-table class and style headers */
     document.addEventListener('DOMContentLoaded', () => {
@@ -1154,5 +1241,41 @@
     });
   </script>
   <script src="js/app.js"></script>
+  <script>
+    /* Nuclear override: no shim, no original renderResults, write directly to banner */
+    window.renderResults = function(data, excelLink, csvLink) {
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('resultsArea').style.display = 'block';
+
+      var banner = document.getElementById('resultBanner');
+      var html = '<i class="bi bi-check-circle-fill"></i><span>Report generated successfully!</span>';
+
+      if (excelLink) {
+        html += '<div class="banner-actions">';
+        html += '<a href="' + excelLink + '" class="btn-shad btn-success-shad" download><i class="bi bi-file-earmark-excel"></i> Download XLS</a>';
+        if (csvLink) {
+          html += '<a href="' + csvLink + '" class="btn-shad btn-info-shad" download><i class="bi bi-filetype-csv"></i> Download CSV</a>';
+        }
+        html += '</div>';
+      }
+      banner.innerHTML = html;
+
+      /* Call table rendering functions directly */
+      window.renderPivotTable && window.renderPivotTable('tableCancelled', data.cancelled);
+      window.renderPivotTable && window.renderPivotTable('tableResolved', data.resolved);
+      window.renderSimpleTable && window.renderSimpleTable('tableInprogress', data.inprogress, 'User', 'Count');
+      window.renderSimpleTable && window.renderSimpleTable('tableAssigned', data.assigned, 'User', 'Count');
+      window.renderPivotTable && window.renderPivotTable('tableOla', data.olaResponse);
+      window.renderSimpleTable && window.renderSimpleTable('tableTop5', data.topCategories, 'Category', 'Count');
+    };
+
+    /* Suppress success toast — banner already shows it */
+    var _origST = window.showToast;
+    window.showToast = function(title, body, type) {
+      if (body === 'Report generated successfully') return;
+      _origST(title, body, type);
+    };
+  </script>
 </body>
+
 </html>
