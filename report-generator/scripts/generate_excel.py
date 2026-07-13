@@ -80,6 +80,7 @@ def write_pivot_section(ws, records, title, start_row, start_col):
     Returns (last_row_used, rightmost_col_used)
     """
     row_key, agent_cols = split_pivot_keys(records)
+    records = sorted(records, key=lambda rd: str(rd.get(row_key, '')).lower())
 
     r = start_row
     sc(ws, r, start_col, title, font=Font(bold=True, size=12))
@@ -309,6 +310,7 @@ def generate_csv(data, csv_path, agents, mid_col, right_col):
     def put_pivot(records, title, start_row, sc_):
         nonlocal max_right_left
         row_key, agent_cols = split_pivot_keys(records)
+        records = sorted(records, key=lambda rd: str(rd.get(row_key, '')).lower())
         r = start_row
         put(r, sc_, title); r += 1
         put(r, sc_, "Count of Incident ID*+"); put(r, sc_ + 1, "Column Labels"); r += 1
