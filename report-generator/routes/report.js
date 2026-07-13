@@ -212,14 +212,24 @@ router.post('/generate',
   }
 );
 
-router.get('/download/:filename', requireAuth, (req, res) => {
+router.get('/download/:filename', requireAuth, async (req, res) => {
   const filePath = join(outputDir, req.params.filename);
 
-  if (!existsSync(filePath)) {
-    return res.status(404).json({ error: 'File not found' });
+  /* File may still be generating — wait up to 30s before giving up.
+     Why: generateExcel() runs fire-and-forget after res.json() to avoid
+     Railway 504 timeout. The download link is served immediately but the
+     file takes a few seconds to materialize. */
+  for (let i = 0; i < 30; i++) {
+    if (existsSync(filePath)) {
+      return res.download(filePath, req.params.filename);
+    }
+    await new Promise(r => setTimeout(r, 1000));
   }
 
-  res.download(filePath, req.params.filename);
+  return res.status(404).json({
+    error: 'File not found or still generating after 30 seconds',
+    file: req.params.filename
+  });
 });
 
 router.get('/', requireAuth, (req, res) => {

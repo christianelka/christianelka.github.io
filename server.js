@@ -51,7 +51,7 @@ const proxy = createProxyMiddleware({
 const reportGenProxy = createProxyMiddleware({
   target: `http://localhost:${REPORT_GEN_PORT}`,
   changeOrigin: true,
-  pathFilter: ['/report-generator'],
+  pathFilter: ['/report-generator', '/api/reports'],
   pathRewrite: { '^/report-generator': '' },
 });
 
