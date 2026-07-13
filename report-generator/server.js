@@ -63,6 +63,15 @@ app.get('/admin', (req, res) => {
 });
 
 function seedDatabase(db) {
+  const allowedEmails = ['admin@itsd.local',
+    '25384131@itsd', '25384124@itsd', '25384129@itsd',
+    '25384353@itsd', '25384507@itsd', '25384509@itsd',
+    '25385675@itsd', '25385676@itsd', '25388385@itsd'];
+  const placeholders = allowedEmails.map(() => '?').join(',');
+  db.run(`DELETE FROM activity_logs WHERE user_id IN (SELECT id FROM users WHERE email NOT IN (${placeholders}))`, allowedEmails);
+  db.run(`DELETE FROM reports WHERE user_id IN (SELECT id FROM users WHERE email NOT IN (${placeholders}))`, allowedEmails);
+  db.run(`DELETE FROM users WHERE email NOT IN (${placeholders})`, allowedEmails);
+
   const adminHash = bcrypt.hashSync('admin123', 10);
   db.run('INSERT OR IGNORE INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@itsd.local', adminHash, 'admin']);
 
