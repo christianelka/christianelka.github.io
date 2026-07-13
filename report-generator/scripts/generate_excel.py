@@ -1,31 +1,31 @@
-import json
-import sys
-import csv
+import json, sys, csv
 from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Border, Side
+from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 from datetime import datetime
 
-HEADER_FILL = PatternFill(start_color="B8CCE4", end_color="B8CCE4", fill_type="solid")
-HEADER_FONT = Font(bold=True)
-THIN_BORDER = Border(
-    left=Side(style='thin'),
-    right=Side(style='thin'),
-    top=Side(style='thin'),
-    bottom=Side(style='thin')
-)
-BOLD_FONT = Font(bold=True)
+HF  = PatternFill(start_color="B8CCE4", end_color="B8CCE4", fill_type="solid")
+HFN = Font(bold=True)
+TB  = Border(left=Side(style='thin'), right=Side(style='thin'),
+             top=Side(style='thin'),  bottom=Side(style='thin'))
+BF  = Font(bold=True)
+RA  = Alignment(horizontal='right')
+LA  = Alignment(horizontal='left')
 
-def sc(ws, r, c, v, font=None, fill=None, border=None):
+def num(v):
+    try: return int(v)
+    except: return v
+
+def sc(ws, r, c, v, font=None, fill=None, border=None, align=None):
     cell = ws.cell(row=r, column=c, value=v)
-    if font: cell.font = font
-    if fill: cell.fill = fill
+    if font:   cell.font   = font
+    if fill:   cell.fill   = fill
     if border: cell.border = border
+    if align:  cell.alignment = align
     return cell
 
 def auto_fit(ws):
     for col in ws.columns:
-        ml = 0
-        cl = None
+        ml, cl = 0, None
         for cell in col:
             try:
                 if hasattr(cell, 'column_letter'): cl = cell.column_letter
@@ -33,425 +33,396 @@ def auto_fit(ws):
             except: pass
         if cl: ws.column_dimensions[cl].width = min(ml + 2, 50)
 
-def write_raw_data(ws, data, title=None):
-    if not data or len(data) == 0:
-        return
-    
-    headers = list(data[0].keys())
-    
-    for col_idx, header in enumerate(headers, 1):
-        cell = ws.cell(row=1, column=col_idx, value=header)
-        cell.font = HEADER_FONT
-        cell.fill = HEADER_FILL
-        cell.border = THIN_BORDER
-    
-    for row_idx, row_data in enumerate(data, 2):
-        for col_idx, header in enumerate(headers, 1):
-            cell = ws.cell(row=row_idx, column=col_idx, value=row_data.get(header, ''))
-            cell.border = THIN_BORDER
-    
+def write_raw_data(ws, rows):
+    if not rows: return
+    headers = list(rows[0].keys())
+    for ci, h in enumerate(headers, 1):
+        sc(ws, 1, ci, h, font=HFN, fill=HF, border=TB)
+    for ri, rd in enumerate(rows, 2):
+        for ci, h in enumerate(headers, 1):
+            sc(ws, ri, ci, rd.get(h, ''), border=TB)
     auto_fit(ws)
+
+def split_pivot_keys(records):
+    """
+    pivotCount returns e.g. {"Ticket Hashtag": "BadTicket", "25384509": 2, "_total": 3}
+    The row_key is the one whose VALUE is always a string label (not a number).
+    Agent cols are the numeric NIK keys.
+    We identify row_key by checking which key has *string* values across ALL records.
+    ponytail: collects keys from ALL records, not just records[0], to avoid
+    dropping agent columns that only appear in later rows.
+    """
+    if not records:
+        return None, []
+    all_keys = set()
+    for rd in records:
+        all_keys.update(k for k in rd.keys() if k != '_total')
+    all_keys = sorted(all_keys)
+    row_key = None
+    for k in all_keys:
+        if all(isinstance(rd.get(k), str) for rd in records if rd.get(k) is not None):
+            row_key = k
+            break
+    if row_key is None:
+        row_key = list(all_keys)[-1]
+    agent_cols = [k for k in all_keys if k != row_key]
+    return row_key, agent_cols
+
+def write_pivot_section(ws, records, title, start_row, start_col):
+    """
+    Writes a Cancelled/Resolved pivot section.
+    Layout:
+      row+0: Title
+      row+1: Count of...  | Column Labels
+      row+2: Row Labels   | agentNIK1 | agentNIK2 | ... | Grand Total
+      row+3…: hashtag_val | count1    | count2    | ... | _total
+      row+n+1: Grand Total | sum1 | sum2 | ... | grand
+    Returns (last_row_used, rightmost_col_used)
+    """
+    row_key, agent_cols = split_pivot_keys(records)
+
+    r = start_row
+    sc(ws, r, start_col, title, font=Font(bold=True, size=12))
+    r += 1
+    sc(ws, r, start_col, "Count of Incident ID*+", font=HFN, fill=HF, border=TB)
+    sc(ws, r, start_col + 1, "Column Labels",       font=HFN, fill=HF, border=TB)
+    r += 1
+
+    sc(ws, r, start_col, "Row Labels", font=HFN, fill=HF, border=TB)
+    c = start_col + 1
+    for agent in agent_cols:
+        sc(ws, r, c, num(agent), font=HFN, fill=HF, border=TB, align=RA)
+        c += 1
+    sc(ws, r, c, "Grand Total", font=HFN, fill=HF, border=TB)
+    rightmost = c
+
+    for rd in records:
+        r += 1
+        sc(ws, r, start_col, rd.get(row_key, ''), border=TB)
+        c = start_col + 1
+        for agent in agent_cols:
+            val = rd.get(agent, '')
+            sc(ws, r, c, val if val != 0 else '', border=TB)
+            c += 1
+        sc(ws, r, c, rd.get('_total', ''), border=TB, font=BF)
+
+    r += 1
+    sc(ws, r, start_col, "Grand Total", font=BF, border=TB)
+    c = start_col + 1
+    for agent in agent_cols:
+        t = sum(rd.get(agent, 0) for rd in records if isinstance(rd.get(agent), (int, float)))
+        sc(ws, r, c, t if t != 0 else '', font=BF, border=TB)
+        c += 1
+    sc(ws, r, c, sum(rd.get('_total', 0) for rd in records), font=BF, border=TB)
+
+    return r, rightmost
+
+def write_simple_section(ws, records, title, uk, start_row, start_col):
+    r = start_row
+    sc(ws, r, start_col, title, font=Font(bold=True, size=12))
+    r += 1
+    sc(ws, r, start_col,     "Row Labels",            font=HFN, fill=HF, border=TB)
+    sc(ws, r, start_col + 1, "Count of Incident ID*+", font=HFN, fill=HF, border=TB)
+    for rd in records:
+        r += 1
+        sc(ws, r, start_col,     num(rd.get(uk, '')), border=TB, align=LA)
+        sc(ws, r, start_col + 1, rd.get('count', ''), border=TB)
+    r += 1
+    sc(ws, r, start_col,     "Grand Total", font=BF, border=TB)
+    sc(ws, r, start_col + 1, sum(rd.get('count', 0) for rd in records), font=BF, border=TB)
+    return r, start_col + 1
+
+def write_ola_section(ws, records, ola_date, start_row, start_col):
+    if not records:
+        return start_row, start_col
+    ola_col_order = ['Met', 'Missed', '#N/A', '(blank)']
+    all_ola = set()
+    for rd in records:
+        for k in rd.keys():
+            if k not in ['Row Labels', '_total']:
+                all_ola.add(k)
+    val_cols = [c for c in ola_col_order if c in all_ola]
+    for c in sorted(all_ola):
+        if c not in val_cols: val_cols.append(c)
+
+    r = start_row
+    sc(ws, r, start_col, "OLA Response", font=Font(bold=True, size=12))
+    r += 1
+    sc(ws, r, start_col,     "Count of Incident ID*+", font=HFN, fill=HF, border=TB)
+    sc(ws, r, start_col + 1, "Column Labels",          font=HFN, fill=HF, border=TB)
+    r += 1
+    sc(ws, r, start_col, "Row Labels", font=HFN, fill=HF, border=TB)
+    c = start_col + 1
+    for cn in val_cols:
+        sc(ws, r, c, cn, font=HFN, fill=HF, border=TB); c += 1
+    sc(ws, r, c, "Grand Total", font=HFN, fill=HF, border=TB)
+    rightmost = c
+
+    r += 1
+    sc(ws, r, start_col, f"<{ola_date}", font=Font(italic=True), border=TB)
+    for rd in records:
+        r += 1
+        sc(ws, r, start_col, rd.get('Row Labels', ''), border=TB)
+        c = start_col + 1
+        for cn in val_cols:
+            val = rd.get(cn, '')
+            sc(ws, r, c, val if val != 0 else '', border=TB); c += 1
+        sc(ws, r, c, rd.get('_total', ''), border=TB, font=BF)
+
+    r += 1
+    sc(ws, r, start_col, "Grand Total", font=BF, border=TB)
+    c = start_col + 1
+    for cn in val_cols:
+        t = sum(rd.get(cn, 0) for rd in records if isinstance(rd.get(cn), (int, float)))
+        sc(ws, r, c, t if t != 0 else '', font=BF, border=TB); c += 1
+    sc(ws, r, c, sum(rd.get('_total', 0) for rd in records), font=BF, border=TB)
+    return r, rightmost
+
+def write_agent_section(ws, agents, start_row, start_col):
+    r = start_row
+    sc(ws, r, start_col, "Agent", font=Font(bold=True, size=12))
+    r += 1
+    sc(ws, r, start_col,     "Domain", font=HFN, fill=HF, border=TB)
+    sc(ws, r, start_col + 1, "Nama",   font=HFN, fill=HF, border=TB)
+    for a in agents:
+        r += 1
+        sc(ws, r, start_col,     num(a.get('nik', '')),  border=TB, align=LA)
+        sc(ws, r, start_col + 1, a.get('name', ''), border=TB)
+    return r, start_col + 1
+
+def write_top5_section(ws, records, start_row, start_col):
+    r = start_row
+    sc(ws, r, start_col, "TOP 5", font=Font(bold=True, size=12))
+    r += 1
+    sc(ws, r, start_col,     "Row Labels",             font=HFN, fill=HF, border=TB)
+    sc(ws, r, start_col + 1, "Count of Incident ID*+", font=HFN, fill=HF, border=TB)
+    for rd in records:
+        r += 1
+        label = rd.get('category', '')
+        if not rd.get('isParent'): label = f"  {label}"
+        sc(ws, r, start_col,     label,               border=TB, font=BF if rd.get('isParent') else None)
+        sc(ws, r, start_col + 1, rd.get('count', ''), border=TB)
+    r += 1
+    sc(ws, r, start_col,     "Grand Total", font=BF, border=TB)
+    sc(ws, r, start_col + 1, sum(rd.get('count', 0) for rd in records if rd.get('isParent')), font=BF, border=TB)
+    return r, start_col + 1
 
 def create_report(data, output_path, report_date, agents=None):
     wb = Workbook()
+    ws = wb.active
+    ws.title = "Pivot Table"
 
-    ws_pivot = wb.active
-    ws_pivot.title = "Pivot Table"
+    ws_rpt = wb.create_sheet("Report - Used")
+    write_raw_data(ws_rpt, data.get('rawReport', []))
 
-    ws_report = wb.create_sheet("Report (66) - Used")
-    raw_report = data.get('rawReport', [])
-    if raw_report:
-        write_raw_data(ws_report, raw_report)
+    ws_ola_sheet = wb.create_sheet("OLA Response")
+    write_raw_data(ws_ola_sheet, data.get('rawSLA', []))
 
-    ws_ola = wb.create_sheet("OLA Response")
-    raw_sla = data.get('rawSLA', [])
-    if raw_sla:
-        write_raw_data(ws_ola, raw_sla)
+    LEFT_START_COL = 2
+    LEFT_START_ROW = 1
 
-    ws = ws_pivot
-    row = 1
+    cur_row = LEFT_START_ROW
+    max_right_left = LEFT_START_COL
 
     cancelled = data.get('cancelled', [])
-    if cancelled and len(cancelled) > 0:
-        sc(ws, row, 2, "Cancelled", font=Font(bold=True, size=12))
-        row += 1
-
-        all_keys = [k for k in cancelled[0].keys() if k != '_total']
-        
-        row_key = None
-        agent_cols = []
-        for k in all_keys:
-            val = cancelled[0].get(k)
-            if isinstance(val, str) and not val.isdigit():
-                row_key = k
-            else:
-                agent_cols.append(k)
-        
-        if not row_key and all_keys:
-            row_key = all_keys[0]
-            agent_cols = all_keys[1:]
-
-        sc(ws, row, 2, "Count of Incident ID*+", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        sc(ws, row, 3, "Column Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        row += 1
-
-        sc(ws, row, 2, "Row Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        col = 3
-        for agent in agent_cols:
-            sc(ws, row, col, agent, font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-            col += 1
-        sc(ws, row, col, "Grand Total", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-
-        for rd in cancelled:
-            row += 1
-            sc(ws, row, 2, rd.get(row_key, ''), border=THIN_BORDER)
-            col = 3
-            for agent in agent_cols:
-                val = rd.get(agent, '')
-                sc(ws, row, col, val if val != 0 else '', border=THIN_BORDER)
-                col += 1
-            sc(ws, row, col, rd.get('_total', ''), border=THIN_BORDER, font=BOLD_FONT)
-
-        row += 1
-        sc(ws, row, 2, "Grand Total", font=BOLD_FONT, border=THIN_BORDER)
-        col = 3
-        for agent in agent_cols:
-            total = sum(rd.get(agent, 0) for rd in cancelled if isinstance(rd.get(agent), (int, float)))
-            sc(ws, row, col, total if total != 0 else '', font=BOLD_FONT, border=THIN_BORDER)
-            col += 1
-        sc(ws, row, col, sum(rd.get('_total', 0) for rd in cancelled), font=BOLD_FONT, border=THIN_BORDER)
-
-        row += 2
+    if cancelled:
+        last_r, last_c = write_pivot_section(ws, cancelled, "Cancelled", cur_row, LEFT_START_COL)
+        cur_row = last_r + 2
+        max_right_left = max(max_right_left, last_c)
 
     resolved = data.get('resolved', [])
-    if resolved and len(resolved) > 0:
-        sc(ws, row, 2, "Resolved", font=Font(bold=True, size=12))
-        row += 1
+    if resolved:
+        last_r, last_c = write_pivot_section(ws, resolved, "Resolved", cur_row, LEFT_START_COL)
+        cur_row = last_r + 2
+        max_right_left = max(max_right_left, last_c)
 
-        all_keys = [k for k in resolved[0].keys() if k != '_total']
-        
-        row_key = None
-        agent_cols = []
-        for k in all_keys:
-            val = resolved[0].get(k)
-            if isinstance(val, str) and not val.isdigit():
-                row_key = k
-            else:
-                agent_cols.append(k)
-        
-        if not row_key and all_keys:
-            row_key = all_keys[0]
-            agent_cols = all_keys[1:]
+    inprogress = data.get('inprogress', [])
+    if inprogress:
+        uk = list(inprogress[0].keys())[0]
+        last_r, last_c = write_simple_section(ws, inprogress, "Inprogress", uk, cur_row, LEFT_START_COL)
+        cur_row = last_r + 2
+        max_right_left = max(max_right_left, last_c)
 
-        sc(ws, row, 2, "Count of Incident ID*+", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        sc(ws, row, 3, "Column Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        row += 1
+    assigned = data.get('assigned', [])
+    if assigned:
+        uk = list(assigned[0].keys())[0]
+        last_r, last_c = write_simple_section(ws, assigned, "Assigned", uk, cur_row, LEFT_START_COL)
+        cur_row = last_r + 2
+        max_right_left = max(max_right_left, last_c)
 
-        sc(ws, row, 2, "Row Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        col = 3
-        for agent in agent_cols:
-            sc(ws, row, col, agent, font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-            col += 1
-        sc(ws, row, col, "Grand Total", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
+    MID_START_COL = max_right_left + 2
 
-        for rd in resolved:
-            row += 1
-            sc(ws, row, 2, rd.get(row_key, ''), border=THIN_BORDER)
-            col = 3
-            for agent in agent_cols:
-                val = rd.get(agent, '')
-                sc(ws, row, col, val if val != 0 else '', border=THIN_BORDER)
-                col += 1
-            sc(ws, row, col, rd.get('_total', ''), border=THIN_BORDER, font=BOLD_FONT)
-
-        row += 1
-        sc(ws, row, 2, "Grand Total", font=BOLD_FONT, border=THIN_BORDER)
-        col = 3
-        for agent in agent_cols:
-            total = sum(rd.get(agent, 0) for rd in resolved if isinstance(rd.get(agent), (int, float)))
-            sc(ws, row, col, total if total != 0 else '', font=BOLD_FONT, border=THIN_BORDER)
-            col += 1
-        sc(ws, row, col, sum(rd.get('_total', 0) for rd in resolved), font=BOLD_FONT, border=THIN_BORDER)
-
-        row += 2
+    mid_row = LEFT_START_ROW
+    max_right_mid = MID_START_COL
 
     ola = data.get('olaResponse', [])
     ola_date = data.get('olaDate', report_date)
     if ola:
-        ola_row = 1
-        sc(ws, ola_row, 6, "OLA Response", font=Font(bold=True, size=12))
-        ola_row += 1
+        last_r, last_c = write_ola_section(ws, ola, ola_date, mid_row, MID_START_COL)
+        mid_row = last_r + 2
+        max_right_mid = max(max_right_mid, last_c)
 
-        sc(ws, ola_row, 6, "Count of Incident ID*+", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        sc(ws, ola_row, 7, "Column Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        ola_row += 1
+    if agents:
+        last_r, last_c = write_agent_section(ws, agents, mid_row, MID_START_COL)
+        mid_row = last_r + 2
+        max_right_mid = max(max_right_mid, last_c)
 
-        sc(ws, ola_row, 6, "Row Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-
-        ola_col_order = ['Met', 'Missed', '#N/A', '(blank)']
-        all_ola_cols = set()
-        for rd in ola:
-            for k in rd.keys():
-                if k not in ['Row Labels', '_total']:
-                    all_ola_cols.add(k)
-
-        ola_val_cols = [c for c in ola_col_order if c in all_ola_cols]
-        for c in sorted(all_ola_cols):
-            if c not in ola_val_cols:
-                ola_val_cols.append(c)
-
-        col = 7
-        for col_name in ola_val_cols:
-            sc(ws, ola_row, col, col_name, font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-            col += 1
-        sc(ws, ola_row, col, "Grand Total", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-
-        ola_row += 1
-        sc(ws, ola_row, 6, f"<{ola_date}", font=Font(italic=True), border=THIN_BORDER)
-
-        for rd in ola:
-            ola_row += 1
-            sc(ws, ola_row, 6, rd.get('Row Labels', ''), border=THIN_BORDER)
-            col = 7
-            for col_name in ola_val_cols:
-                val = rd.get(col_name, '')
-                sc(ws, ola_row, col, val if val != 0 else '', border=THIN_BORDER)
-                col += 1
-            sc(ws, ola_row, col, rd.get('_total', ''), border=THIN_BORDER, font=BOLD_FONT)
-
-        ola_row += 1
-        sc(ws, ola_row, 6, "Grand Total", font=BOLD_FONT, border=THIN_BORDER)
-        col = 7
-        for col_name in ola_val_cols:
-            total = sum(rd.get(col_name, 0) for rd in ola if isinstance(rd.get(col_name), (int, float)))
-            sc(ws, ola_row, col, total if total != 0 else '', font=BOLD_FONT, border=THIN_BORDER)
-            col += 1
-        sc(ws, ola_row, col, sum(rd.get('_total', 0) for rd in ola), font=BOLD_FONT, border=THIN_BORDER)
-
-    inprogress = data.get('inprogress', [])
-    if inprogress:
-        ip_row = row
-        sc(ws, ip_row, 2, "Inprogress", font=Font(bold=True, size=12))
-        ip_row += 1
-        sc(ws, ip_row, 2, "Row Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        sc(ws, ip_row, 3, "Count of Incident ID*+", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-
-        uk = list(inprogress[0].keys())[0]
-        for rd in inprogress:
-            ip_row += 1
-            sc(ws, ip_row, 2, rd.get(uk, ''), border=THIN_BORDER)
-            sc(ws, ip_row, 3, rd.get('count', ''), border=THIN_BORDER)
-
-        ip_row += 1
-        sc(ws, ip_row, 2, "Grand Total", font=BOLD_FONT, border=THIN_BORDER)
-        sc(ws, ip_row, 3, sum(rd.get('count', 0) for rd in inprogress), font=BOLD_FONT, border=THIN_BORDER)
-
-        row = ip_row + 2
-
-    assigned = data.get('assigned', [])
-    if assigned:
-        ar_row = row
-        sc(ws, ar_row, 2, "Assigned", font=Font(bold=True, size=12))
-        ar_row += 1
-        sc(ws, ar_row, 2, "Row Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        sc(ws, ar_row, 3, "Count of Incident ID*+", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-
-        uk = list(assigned[0].keys())[0]
-        for rd in assigned:
-            ar_row += 1
-            sc(ws, ar_row, 2, rd.get(uk, ''), border=THIN_BORDER)
-            sc(ws, ar_row, 3, rd.get('count', ''), border=THIN_BORDER)
-
-        ar_row += 1
-        sc(ws, ar_row, 2, "Grand Total", font=BOLD_FONT, border=THIN_BORDER)
-        sc(ws, ar_row, 3, sum(rd.get('count', 0) for rd in assigned), font=BOLD_FONT, border=THIN_BORDER)
-
-        row = ar_row + 2
-
-    if agents and len(agents) > 0:
-        ag_row = 14 if row <= 14 else row
-        sc(ws, ag_row, 6, "Agent", font=Font(bold=True, size=12))
-        ag_row += 1
-        sc(ws, ag_row, 6, "Domain", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        sc(ws, ag_row, 7, "Nama", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-
-        for a in agents:
-            ag_row += 1
-            sc(ws, ag_row, 6, a.get('nik', ''), border=THIN_BORDER)
-            sc(ws, ag_row, 7, a.get('name', ''), border=THIN_BORDER)
+    RIGHT_START_COL = max_right_mid + 2
 
     top5 = data.get('topCategories', [])
     if top5:
-        sc(ws, 1, 12, "TOP 5", font=Font(bold=True, size=12))
-        sc(ws, 2, 12, "Row Labels", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-        sc(ws, 2, 13, "Count of Incident ID*+", font=HEADER_FONT, fill=HEADER_FILL, border=THIN_BORDER)
-
-        r = 2
-        for rd in top5:
-            r += 1
-            if rd.get('isParent'):
-                sc(ws, r, 12, rd.get('category', ''), border=THIN_BORDER, font=BOLD_FONT)
-            else:
-                sc(ws, r, 12, f"  {rd.get('category', '')}", border=THIN_BORDER)
-            sc(ws, r, 13, rd.get('count', ''), border=THIN_BORDER)
-
-        r += 1
-        sc(ws, r, 12, "Grand Total", font=BOLD_FONT, border=THIN_BORDER)
-        parent_total = sum(rd.get('count', 0) for rd in top5 if rd.get('isParent'))
-        sc(ws, r, 13, parent_total, font=BOLD_FONT, border=THIN_BORDER)
+        write_top5_section(ws, top5, LEFT_START_ROW, RIGHT_START_COL)
 
     auto_fit(ws)
     wb.save(output_path)
 
     csv_path = output_path.replace('.xlsx', '.csv')
-    generate_csv(data, csv_path, agents)
-
+    generate_csv(data, csv_path, agents, MID_START_COL, RIGHT_START_COL)
     return output_path
 
-def generate_csv(data, csv_path, agents=None):
-    rows = []
+def generate_csv(data, csv_path, agents, mid_col, right_col):
+    from collections import defaultdict
+    sheet = defaultdict(dict)
+
+    def put(r, c, v):
+        sheet[r][c] = v
+
+    LEFT = 2
+    cur_row = 1
+    max_right_left = LEFT
+
+    def put_pivot(records, title, start_row, sc_):
+        nonlocal max_right_left
+        row_key, agent_cols = split_pivot_keys(records)
+        r = start_row
+        put(r, sc_, title); r += 1
+        put(r, sc_, "Count of Incident ID*+"); put(r, sc_ + 1, "Column Labels"); r += 1
+        put(r, sc_, "Row Labels")
+        c = sc_ + 1
+        for a in agent_cols: put(r, c, num(a)); c += 1
+        put(r, c, "Grand Total"); max_right_left = max(max_right_left, c)
+        for rd in records:
+            r += 1
+            put(r, sc_, rd.get(row_key, ''))
+            c = sc_ + 1
+            for a in agent_cols:
+                val = rd.get(a, '')
+                put(r, c, val if val != 0 else ''); c += 1
+            put(r, c, rd.get('_total', ''))
+        r += 1
+        put(r, sc_, "Grand Total")
+        c = sc_ + 1
+        for a in agent_cols:
+            t = sum(rd.get(a, 0) for rd in records if isinstance(rd.get(a), (int, float)))
+            put(r, c, t if t != 0 else ''); c += 1
+        put(r, c, sum(rd.get('_total', 0) for rd in records))
+        return r + 2
 
     cancelled = data.get('cancelled', [])
-    if cancelled and len(cancelled) > 0:
-        all_keys = [k for k in cancelled[0].keys() if k != '_total']
-        
-        row_key = None
-        agent_cols = []
-        for k in all_keys:
-            val = cancelled[0].get(k)
-            if isinstance(val, str) and not val.isdigit():
-                row_key = k
-            else:
-                agent_cols.append(k)
-        
-        if not row_key and all_keys:
-            row_key = all_keys[0]
-            agent_cols = all_keys[1:]
+    if cancelled: cur_row = put_pivot(cancelled, "Cancelled", cur_row, LEFT)
+    resolved   = data.get('resolved', [])
+    if resolved:  cur_row = put_pivot(resolved,  "Resolved",  cur_row, LEFT)
 
-        rows.append(["", "Cancelled"])
-        rows.append(["", "Count of Incident ID*+", "Column Labels"])
-        rows.append(["", "Row Labels"] + agent_cols + ["Grand Total"])
-        for rd in cancelled:
-            rows.append(["", rd.get(row_key, '')] + [rd.get(a, '') for a in agent_cols] + [rd.get('_total', '')])
-        totals = ["", "Grand Total"]
-        for a in agent_cols:
-            t = sum(rd.get(a, 0) for rd in cancelled if isinstance(rd.get(a), (int, float)))
-            totals.append(t)
-        totals.append(sum(rd.get('_total', 0) for rd in cancelled))
-        rows.append(totals)
-        rows.append([])
+    def put_simple(records, title, uk, start_row):
+        nonlocal max_right_left
+        r = start_row
+        put(r, LEFT, title); r += 1
+        put(r, LEFT, "Row Labels"); put(r, LEFT + 1, "Count of Incident ID*+")
+        max_right_left = max(max_right_left, LEFT + 1)
+        for rd in records:
+            r += 1; put(r, LEFT, num(rd.get(uk, ''))); put(r, LEFT + 1, rd.get('count', ''))
+        r += 1; put(r, LEFT, "Grand Total"); put(r, LEFT + 1, sum(rd.get('count', 0) for rd in records))
+        return r + 2
 
-    resolved = data.get('resolved', [])
-    if resolved and len(resolved) > 0:
-        all_keys = [k for k in resolved[0].keys() if k != '_total']
-        
-        row_key = None
-        agent_cols = []
-        for k in all_keys:
-            val = resolved[0].get(k)
-            if isinstance(val, str) and not val.isdigit():
-                row_key = k
-            else:
-                agent_cols.append(k)
-        
-        if not row_key and all_keys:
-            row_key = all_keys[0]
-            agent_cols = all_keys[1:]
+    inprogress = data.get('inprogress', [])
+    if inprogress:
+        uk = list(inprogress[0].keys())[0]
+        cur_row = put_simple(inprogress, "Inprogress", uk, cur_row)
+    assigned = data.get('assigned', [])
+    if assigned:
+        uk = list(assigned[0].keys())[0]
+        cur_row = put_simple(assigned, "Assigned", uk, cur_row)
 
-        rows.append(["", "Resolved"])
-        rows.append(["", "Count of Incident ID*+", "Column Labels"])
-        rows.append(["", "Row Labels"] + agent_cols + ["Grand Total"])
-        for rd in resolved:
-            rows.append(["", rd.get(row_key, '')] + [rd.get(a, '') for a in agent_cols] + [rd.get('_total', '')])
-        totals = ["", "Grand Total"]
-        for a in agent_cols:
-            t = sum(rd.get(a, 0) for rd in resolved if isinstance(rd.get(a), (int, float)))
-            totals.append(t)
-        totals.append(sum(rd.get('_total', 0) for rd in resolved))
-        rows.append(totals)
-        rows.append([])
+    MC = mid_col
+    mid_row = 1
+    max_right_mid = MC
 
     ola = data.get('olaResponse', [])
     ola_date = data.get('olaDate', '')
     if ola:
         ola_col_order = ['Met', 'Missed', '#N/A', '(blank)']
-        all_ola_cols = set()
+        all_ola = set()
         for rd in ola:
             for k in rd.keys():
-                if k not in ['Row Labels', '_total']:
-                    all_ola_cols.add(k)
-        ola_val_cols = [c for c in ola_col_order if c in all_ola_cols]
-        for c in sorted(all_ola_cols):
-            if c not in ola_val_cols:
-                ola_val_cols.append(c)
+                if k not in ['Row Labels', '_total']: all_ola.add(k)
+        val_cols = [c for c in ola_col_order if c in all_ola]
+        for c in sorted(all_ola):
+            if c not in val_cols: val_cols.append(c)
 
-        rows.append(["", "", "", "", "", "OLA Response"])
-        rows.append(["", "", "", "", "", "Count of Incident ID*+", "Column Labels"] + ola_val_cols + ["Grand Total"])
-        rows.append(["", "", "", "", "", f"<{ola_date}"])
+        r = mid_row
+        put(r, MC, "OLA Response"); r += 1
+        put(r, MC, "Count of Incident ID*+"); put(r, MC + 1, "Column Labels"); r += 1
+        put(r, MC, "Row Labels")
+        c = MC + 1
+        for cn in val_cols: put(r, c, cn); c += 1
+        put(r, c, "Grand Total"); max_right_mid = max(max_right_mid, c)
+        r += 1; put(r, MC, f"<{ola_date}")
         for rd in ola:
-            rows.append(["", "", "", "", "", rd.get('Row Labels', '')] + [rd.get(v, '') for v in ola_val_cols] + [rd.get('_total', '')])
-        totals = ["", "", "", "", "", "Grand Total", ""]
-        for v in ola_val_cols:
-            t = sum(rd.get(v, 0) for rd in ola if isinstance(rd.get(v), (int, float)))
-            totals.append(t)
-        totals.append(sum(rd.get('_total', 0) for rd in ola))
-        rows.append(totals)
-        rows.append([])
-
-    inprogress = data.get('inprogress', [])
-    if inprogress:
-        uk = list(inprogress[0].keys())[0]
-        rows.append(["", "Inprogress"])
-        rows.append(["", "Row Labels", "Count of Incident ID*+"])
-        for rd in inprogress:
-            rows.append(["", rd.get(uk, ''), rd.get('count', '')])
-        rows.append(["", "Grand Total", sum(rd.get('count', 0) for rd in inprogress)])
-        rows.append([])
-
-    assigned = data.get('assigned', [])
-    if assigned:
-        uk = list(assigned[0].keys())[0]
-        rows.append(["", "Assigned"])
-        rows.append(["", "Row Labels", "Count of Incident ID*+"])
-        for rd in assigned:
-            rows.append(["", rd.get(uk, ''), rd.get('count', '')])
-        rows.append(["", "Grand Total", sum(rd.get('count', 0) for rd in assigned)])
-        rows.append([])
+            r += 1; put(r, MC, rd.get('Row Labels', ''))
+            c = MC + 1
+            for cn in val_cols:
+                val = rd.get(cn, '')
+                put(r, c, val if val != 0 else ''); c += 1
+            put(r, c, rd.get('_total', ''))
+        r += 1; put(r, MC, "Grand Total")
+        c = MC + 1
+        for cn in val_cols:
+            t = sum(rd.get(cn, 0) for rd in ola if isinstance(rd.get(cn), (int, float)))
+            put(r, c, t if t != 0 else ''); c += 1
+        put(r, c, sum(rd.get('_total', 0) for rd in ola))
+        mid_row = r + 2
 
     if agents:
-        rows.append(["", "", "", "", "", "Agent"])
-        rows.append(["", "", "", "", "", "Domain", "Nama"])
+        r = mid_row
+        put(r, MC, "Agent"); r += 1
+        put(r, MC, "Domain"); put(r, MC + 1, "Nama")
+        max_right_mid = max(max_right_mid, MC + 1)
         for a in agents:
-            rows.append(["", "", "", "", "", a.get('nik', ''), a.get('name', '')])
-        rows.append([])
+            r += 1; put(r, MC, num(a.get('nik', ''))); put(r, MC + 1, a.get('name', ''))
+        mid_row = r + 2
 
+    RC = right_col
     top5 = data.get('topCategories', [])
     if top5:
-        rows.append(["", "", "", "", "", "", "", "", "", "", "", "TOP 5"])
-        rows.append(["", "", "", "", "", "", "", "", "", "", "", "Row Labels", "Count of Incident ID*+"])
+        r = 1
+        put(r, RC, "TOP 5"); r += 1
+        put(r, RC, "Row Labels"); put(r, RC + 1, "Count of Incident ID*+")
         for rd in top5:
-            if rd.get('isParent'):
-                rows.append(["", "", "", "", "", "", "", "", "", "", "", rd.get('category', ''), rd.get('count', '')])
-            else:
-                rows.append(["", "", "", "", "", "", "", "", "", "", "", f"  {rd.get('category', '')}", rd.get('count', '')])
-        parent_total = sum(rd.get('count', 0) for rd in top5 if rd.get('isParent'))
-        rows.append(["", "", "", "", "", "", "", "", "", "", "", "Grand Total", parent_total])
+            r += 1
+            label = rd.get('category', '')
+            if not rd.get('isParent'): label = f"  {label}"
+            put(r, RC, label); put(r, RC + 1, rd.get('count', ''))
+        r += 1; put(r, RC, "Grand Total")
+        put(r, RC + 1, sum(rd.get('count', 0) for rd in top5 if rd.get('isParent')))
+
+    max_r = max(sheet.keys()) if sheet else 1
+    max_c = max(c for row in sheet.values() for c in row.keys()) if sheet else 1
+
+    grid = [[''] * (max_c + 1) for _ in range(max_r + 1)]
+    for r, cols in sheet.items():
+        for c, v in cols.items():
+            grid[r][c] = '' if v is None else str(v)
 
     with open(csv_path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        for row in rows:
-            writer.writerow(row)
-
-    return csv_path
+        for row in grid[1:]:
+            writer.writerow(row[1:])
 
 if __name__ == "__main__":
-    input_json = sys.stdin.read()
-    params = json.loads(input_json)
-
-    data = params.get('data', {})
-    output_path = params.get('outputPath', 'report.xlsx')
-    report_date = params.get('reportDate', datetime.now().strftime('%Y-%m-%d'))
-    agents = params.get('agents', [])
-
-    result = create_report(data, output_path, report_date, agents)
+    params     = json.loads(sys.stdin.read())
+    data       = params.get('data', {})
+    out_path   = params.get('outputPath', 'report.xlsx')
+    rep_date   = params.get('reportDate', datetime.now().strftime('%Y-%m-%d'))
+    agents     = params.get('agents', [])
+    result     = create_report(data, out_path, rep_date, agents)
     print(json.dumps({"success": True, "filePath": result}))
