@@ -47,11 +47,24 @@ const router = Router();
 function generateExcel(data, outputPath, reportDate, agents = []) {
   return new Promise((resolve, reject) => {
     const scriptPath = join(__dirname, '..', 'scripts', 'generate_excel.py');
+
+    if (!existsSync(scriptPath)) {
+      return reject(new Error('generate_excel.py not found at: ' + scriptPath));
+    }
+
     const input = JSON.stringify({ data, outputPath, reportDate, agents });
+
+    console.log('[generateExcel] Spawning python3:', scriptPath);
+    console.log('[generateExcel] Input size:', input.length, 'bytes');
 
     const python = spawn('python3', [scriptPath], {
       stdio: ['pipe', 'pipe', 'pipe']
     });
+
+    const timer = setTimeout(() => {
+      python.kill();
+      reject(new Error('Python script timeout (30s)'));
+    }, 30000);
 
     let stdout = '';
     let stderr = '';
@@ -62,12 +75,22 @@ function generateExcel(data, outputPath, reportDate, agents = []) {
     python.stdout.on('data', (chunk) => { stdout += chunk; });
     python.stderr.on('data', (chunk) => { stderr += chunk; });
 
+    python.on('error', (err) => {
+      clearTimeout(timer);
+      console.error('[generateExcel] Failed to spawn python3:', err.message);
+      reject(new Error('Python not found: ' + err.message));
+    });
+
     python.on('close', (code) => {
+      clearTimeout(timer);
+      console.log('[generateExcel] Python exited with code:', code);
+      if (stderr) console.log('[generateExcel] stderr:', stderr);
       if (code === 0) {
         try {
           const result = JSON.parse(stdout);
           resolve(result);
         } catch (e) {
+          console.error('[generateExcel] Failed to parse output:', stdout);
           reject(new Error('Failed to parse Python output'));
         }
       } else {

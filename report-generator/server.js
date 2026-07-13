@@ -78,6 +78,11 @@ initDb().then(db => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
+  app.use((err, req, res, next) => {
+    console.error('[server] Unhandled error:', err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
+  });
+
   app.listen(PORT, () => {
     console.log(`[report-generator] Listening on http://localhost:${PORT}`);
   });

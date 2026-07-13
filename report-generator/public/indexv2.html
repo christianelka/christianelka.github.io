@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITSD Agent Auto Report Generator</title>
+  <!-- Bootstrap required by app.js for Toast + Tabs -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    /* ─── Design Tokens ─── */
+    :root {
+      --bg:           #f9fafb;
+      --surface:      #ffffff;
+      --border:       #e5e7eb;
+      --border-focus: #6366f1;
+      --muted:        #6b7280;
+      --muted-bg:     #f3f4f6;
+      --text:         #111827;
+      --text-sm:      #374151;
+      --accent:       #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-fg:    #ffffff;
+      --accent-soft:  #eef2ff;
+      --success:      #16a34a;
+      --success-soft: #f0fdf4;
+      --success-border:#bbf7d0;
+      --danger:       #dc2626;
+      --danger-soft:  #fef2f2;
+      --warning:      #d97706;
+      --radius:       8px;
+      --radius-sm:    6px;
+      --radius-lg:    12px;
+      --shadow-sm:    0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow:       0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+      --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    /* ─── Base ─── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Navbar ─── */
+    .app-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .app-nav-inner {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .app-nav-brand .brand-icon {
+      width: 30px;
+      height: 30px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    #navUser {
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #navUserName {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ─── Buttons ─── */
+    .btn-shad {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-shad:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-primary-shad {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
+    .btn-primary-shad:hover:not(:disabled) {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-outline-shad {
+      background: transparent;
+      color: var(--text-sm);
+      border-color: var(--border);
+    }
+    .btn-outline-shad:hover {
+      background: var(--muted-bg);
+      color: var(--text);
+    }
+
+    .btn-ghost-shad {
+      background: transparent;
+      color: var(--muted);
+      border-color: transparent;
+    }
+    .btn-ghost-shad:hover {
+      background: var(--muted-bg);
+      color: var(--text);
+    }
+
+    .btn-success-shad {
+      background: #15803d;
+      color: white;
+      border-color: #15803d;
+      font-size: 12px;
+      padding: 5px 10px;
+    }
+    .btn-success-shad:hover { background: #166534; }
+
+    .btn-info-shad {
+      background: #0284c7;
+      color: white;
+      border-color: #0284c7;
+      font-size: 12px;
+      padding: 5px 10px;
+    }
+    .btn-info-shad:hover { background: #0369a1; }
+
+    .btn-full { width: 100%; }
+
+    /* ─── Page Shell ─── */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* ─── Auth Card ─── */
+    .auth-wrap {
+      min-height: calc(100vh - 56px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-card-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .auth-card-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* ─── Tabs ─── */
+    .shad-tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--muted-bg);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      margin-bottom: 24px;
+    }
+
+    .shad-tab-btn {
+      flex: 1;
+      padding: 6px 12px;
+      border-radius: 5px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .shad-tab-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ─── Form Controls ─── */
+    .field { margin-bottom: 16px; }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-sm);
+      margin-bottom: 6px;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
+    }
+
+    .field-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    .field-input::placeholder { color: #9ca3af; }
+
+    input[type="file"].field-input {
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    input[type="file"].field-input::-webkit-file-upload-button {
+      display: none;
+    }
+    input[type="file"].field-input::file-selector-button {
+      display: none;
+    }
+
+    /* ─── File Input Custom ─── */
+    .file-drop-zone {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--muted-bg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .file-drop-zone:hover {
+      border-color: var(--border-focus);
+      background: var(--accent-soft);
+    }
+
+    .file-drop-zone input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .file-drop-label {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .file-drop-name {
+      font-size: 12.5px;
+      color: var(--accent);
+      font-weight: 500;
+      display: none;
+    }
+
+    /* ─── Tag Input ─── */
+    .tag-input-container { position: relative; }
+
+    .tag-input-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      min-height: 42px;
+      align-items: center;
+      cursor: text;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .tag-input-wrapper:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    .tag-input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 120px;
+      padding: 4px;
+      font-size: 13px;
+      font-family: var(--font);
+      color: var(--text);
+      background: transparent;
+    }
+
+    .agent-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid #c7d2fe;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    .agent-tag .remove-tag {
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      opacity: 0.6;
+      transition: opacity 0.1s;
+    }
+    .agent-tag .remove-tag:hover { opacity: 1; }
+
+    #agentDropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      z-index: 200;
+      max-height: 200px;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+      display: none;
+    }
+
+    #agentDropdown .dropdown-item {
+      padding: 9px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      transition: background 0.1s;
+    }
+    #agentDropdown .dropdown-item:hover { background: var(--muted-bg); }
+
+    #agentDropdown .dropdown-item .nik {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 12px;
+      background: var(--accent-soft);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    #agentDropdown .dropdown-item .name {
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    /* ─── Layout ─── */
+    .app-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .app-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Cards ─── */
+    .shad-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .shad-card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .shad-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .shad-card-icon {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .shad-card-body { padding: 20px; }
+    .shad-card-body-flush { padding: 0; }
+
+    /* ─── Badge ─── */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge-success { background: var(--success-soft); color: var(--success); border: 1px solid var(--success-border); }
+    .badge-danger  { background: var(--danger-soft);  color: var(--danger);  border: 1px solid #fecaca; }
+    .badge-warning { background: #fffbeb; color: var(--warning); border: 1px solid #fde68a; }
+
+    /* ─── Recent Reports List ─── */
+    .recent-list { list-style: none; margin: 0; padding: 0; }
+
+    .recent-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-item:hover { background: var(--muted-bg); }
+
+    .recent-item-date {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .recent-item-time {
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    /* ─── Empty State ─── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 24px;
+      text-align: center;
+    }
+
+    .empty-state-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--muted-bg);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 24px;
+      color: var(--muted);
+    }
+
+    .empty-state-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .empty-state-sub {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 280px;
+    }
+
+    /* ─── Success Banner ─── */
+    .result-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--success-soft);
+      border: 1px solid var(--success-border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--success);
+    }
+
+    .result-banner .banner-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* ─── Accordion ─── */
+    .shad-accordion { display: flex; flex-direction: column; gap: 8px; }
+
+    .shad-acc-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .shad-acc-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: left;
+      transition: background 0.15s;
+      letter-spacing: -0.01em;
+    }
+
+    .shad-acc-trigger:hover { background: var(--muted-bg); }
+
+    .shad-acc-trigger.open { 
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .shad-acc-trigger .acc-icon { color: var(--muted); font-size: 14px; }
+    .shad-acc-trigger.open .acc-icon { color: var(--accent); }
+
+    .acc-chevron {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+    .shad-acc-trigger.open .acc-chevron { transform: rotate(180deg); }
+
+    .shad-acc-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .shad-acc-body.open { display: block; }
+
+    /* ─── Tables ─── */
+    .shad-table-wrap { overflow-x: auto; }
+
+    .shad-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .shad-table thead tr {
+      background: var(--muted-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .shad-table th {
+      padding: 9px 14px;
+      text-align: left;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .shad-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+    .shad-table tbody tr:last-child { border-bottom: none; }
+    .shad-table tbody tr:hover { background: var(--muted-bg); }
+
+    .shad-table td {
+      padding: 9px 14px;
+      color: var(--text-sm);
+    }
+
+    .no-data-row td {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px;
+      font-style: italic;
+    }
+
+    /* ─── Spinner ─── */
+    .spin {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Toast ─── */
+    .shad-toast-wrap {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    /* Bootstrap toast override to match shadcn style */
+    #liveToast {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 16px rgb(0 0 0 / 0.10);
+      min-width: 300px;
+      font-size: 13px;
+    }
+
+    .toast-header {
+      background: transparent;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px 10px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .toast-header.bg-danger { background: var(--danger) !important; }
+    .toast-body { padding: 10px 14px; color: var(--text-sm); }
+
+    /* ─── Divider ─── */
+    .shad-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    /* ─── Misc ─── */
+    .text-muted-shad { color: var(--muted); font-size: 12.5px; }
+
+    /* Override Bootstrap accordion (for Bootstrap tab markup we keep) */
+    .nav-tabs { display: none !important; }
+    .tab-content > .tab-pane { display: none; }
+    .tab-content > .tab-pane.active { display: block; }
+
+    /* Keep Bootstrap accordion hidden if it bleeds in */
+    .accordion-button::after { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Navbar ─── -->
+  <nav class="app-nav">
+    <div class="app-nav-inner">
+      <a class="app-nav-brand" href="#">
+        <span class="brand-icon"><i class="bi bi-bar-chart-line-fill"></i></span>
+        ITSD Report Generator
+      </a>
+      <div id="navUser">
+        <span id="navUserName"></span>
+        <button class="btn-shad btn-outline-shad" onclick="logout()">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── Auth Section ─── -->
+  <div id="authSection">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <p class="auth-card-title">Welcome back</p>
+        <p class="auth-card-sub">Sign in to your account or create a new one</p>
+
+        <!-- Custom Tab Toggle -->
+        <div class="shad-tabs" id="authTabToggle">
+          <button class="shad-tab-btn active" onclick="switchAuthTab('login', this)">Login</button>
+          <button class="shad-tab-btn" onclick="switchAuthTab('register', this)">Register</button>
+        </div>
+
+        <!-- Login Panel -->
+        <div class="tab-panel active" id="loginPanel">
+          <form onsubmit="handleLogin(event)">
+            <div class="field">
+              <label class="field-label" for="loginEmail">Email</label>
+              <input type="email" class="field-input" id="loginEmail" placeholder="you@example.com" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="loginPassword">Password</label>
+              <input type="password" class="field-input" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-shad btn-primary-shad btn-full" style="margin-top:4px;">
+              Sign in
+            </button>
+          </form>
+        </div>
+
+        <!-- Register Panel -->
+        <div class="tab-panel" id="registerPanel">
+          <form onsubmit="handleRegister(event)">
+            <div class="field">
+              <label class="field-label" for="regName">Full Name</label>
+              <input type="text" class="field-input" id="regName" placeholder="Your name" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="regEmail">Email</label>
+              <input type="email" class="field-input" id="regEmail" placeholder="you@example.com" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="regPassword">Password</label>
+              <input type="password" class="field-input" id="regPassword" placeholder="Min. 6 characters" required minlength="6">
+            </div>
+            <button type="submit" class="btn-shad btn-primary-shad btn-full" style="margin-top:4px;">
+              Create account
+            </button>
+          </form>
+        </div>
+
+        <!-- Hidden Bootstrap tabs (required by app.js for tab switching) -->
+        <div style="display:none;">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#loginTab">Login</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#registerTab">Register</button>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="loginTab"></div>
+            <div class="tab-pane fade" id="registerTab"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── App Section ─── -->
+  <div id="appSection" style="display:none;">
+    <div class="page-wrap">
+      <div class="app-grid">
+
+        <!-- Sidebar -->
+        <aside>
+          <!-- Generate Report Form -->
+          <div class="shad-card">
+            <div class="shad-card-header">
+              <i class="bi bi-cloud-upload shad-card-icon"></i>
+              <span class="shad-card-title">Generate Report</span>
+            </div>
+            <div class="shad-card-body">
+              <form id="reportForm" onsubmit="handleGenerate(event)">
+
+                <div class="field">
+                  <label class="field-label">SLA File <span class="text-muted-shad">(.xlsx / .csv)</span></label>
+                  <input type="file" class="field-input" id="slaFile" accept=".xlsx,.xls,.csv" required>
+                </div>
+
+                <div class="field">
+                  <label class="field-label">Report File <span class="text-muted-shad">(.xlsx / .csv)</span></label>
+                  <input type="file" class="field-input" id="reportFile" accept=".xlsx,.xls,.csv" required>
+                </div>
+
+                <div class="field">
+                  <label class="field-label">Report Date</label>
+                  <input type="date" class="field-input" id="reportDate">
+                </div>
+
+                <div class="field">
+                  <label class="field-label">Agent Duty <span class="text-muted-shad">(NIK)</span></label>
+                  <div class="tag-input-container">
+                    <div class="tag-input-wrapper" id="agentTagWrapper">
+                      <div id="agentTags" class="d-flex flex-wrap gap-1"></div>
+                      <input type="text" class="tag-input" id="agentInput"
+                             placeholder="Type NIK to search…" autocomplete="off">
+                    </div>
+                    <div class="dropdown-menu" id="agentDropdown"></div>
+                  </div>
+                  <input type="hidden" id="agentNiks" value="[]">
+                </div>
+
+                <button type="submit" class="btn-shad btn-primary-shad btn-full" id="btnGenerate" style="margin-top:8px;">
+                  <i class="bi bi-gear"></i> Generate Report
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Recent Reports -->
+          <div class="shad-card">
+            <div class="shad-card-header">
+              <i class="bi bi-clock-history shad-card-icon"></i>
+              <span class="shad-card-title">Recent Reports</span>
+            </div>
+            <div class="shad-card-body-flush">
+              <div id="recentReports">
+                <div class="empty-state" style="padding: 24px;">
+                  <p style="font-size:13px; color: var(--muted); margin:0;">No reports yet</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Results Area -->
+        <main>
+          <!-- Results (hidden until generated) -->
+          <div id="resultsArea" style="display:none;">
+            <div class="alert-success result-banner" id="resultBanner">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Report generated successfully!</span>
+              <div class="banner-actions" id="downloadActions"></div>
+            </div>
+
+            <div class="shad-accordion" id="resultsAccordion">
+
+              <!-- Cancelled -->
+              <div class="shad-acc-item" id="accCancelled">
+                <button class="shad-acc-trigger open" onclick="toggleAcc('accCancelled', this)">
+                  <i class="bi bi-x-circle acc-icon"></i>
+                  Cancelled Incidents
+                  <i class="bi bi-chevron-down acc-chevron"></i>
+                </button>
+                <div class="shad-acc-body open">
+                  <div class="shad-table-wrap">
+                    <table class="shad-table" id="tableCancelled"></table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Resolved -->
+              <div class="shad-acc-item" id="accResolved">
+                <button class="shad-acc-trigger" onclick="toggleAcc('accResolved', this)">
+                  <i class="bi bi-check-circle acc-icon"></i>
+                  Resolved Incidents
+                  <i class="bi bi-chevron-down acc-chevron"></i>
+                </button>
+                <div class="shad-acc-body">
+                  <div class="shad-table-wrap">
+                    <table class="shad-table" id="tableResolved"></table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- In Progress -->
+              <div class="shad-acc-item" id="accInprogress">
+                <button class="shad-acc-trigger" onclick="toggleAcc('accInprogress', this)">
+                  <i class="bi bi-arrow-repeat acc-icon"></i>
+                  In Progress
+                  <i class="bi bi-chevron-down acc-chevron"></i>
+                </button>
+                <div class="shad-acc-body">
+                  <div class="shad-table-wrap">
+                    <table class="shad-table" id="tableInprogress"></table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Assigned -->
+              <div class="shad-acc-item" id="accAssigned">
+                <button class="shad-acc-trigger" onclick="toggleAcc('accAssigned', this)">
+                  <i class="bi bi-person-check acc-icon"></i>
+                  Assigned
+                  <i class="bi bi-chevron-down acc-chevron"></i>
+                </button>
+                <div class="shad-acc-body">
+                  <div class="shad-table-wrap">
+                    <table class="shad-table" id="tableAssigned"></table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OLA Response -->
+              <div class="shad-acc-item" id="accOla">
+                <button class="shad-acc-trigger" onclick="toggleAcc('accOla', this)">
+                  <i class="bi bi-speedometer acc-icon"></i>
+                  OLA Response
+                  <i class="bi bi-chevron-down acc-chevron"></i>
+                </button>
+                <div class="shad-acc-body">
+                  <div class="shad-table-wrap">
+                    <table class="shad-table" id="tableOla"></table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top 5 Categories -->
+              <div class="shad-acc-item" id="accTop5">
+                <button class="shad-acc-trigger" onclick="toggleAcc('accTop5', this)">
+                  <i class="bi bi-bar-chart acc-icon"></i>
+                  Top 5 Categories
+                  <i class="bi bi-chevron-down acc-chevron"></i>
+                </button>
+                <div class="shad-acc-body">
+                  <div class="shad-table-wrap">
+                    <table class="shad-table" id="tableTop5"></table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="emptyState" class="shad-card">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i class="bi bi-file-earmark-spreadsheet"></i>
+              </div>
+              <p class="empty-state-title">No report generated yet</p>
+              <p class="empty-state-sub">Upload your SLA and report files, select agents, then click Generate.</p>
+            </div>
+          </div>
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Toast (Bootstrap required by app.js) ─── -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong class="me-auto" id="toastTitle">Notification</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="toastBody"></div>
+    </div>
+  </div>
+
+  <!-- ─── Scripts ─── -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /* ── Auth Tab Switcher (client-side only, shadcn style) ── */
+    function switchAuthTab(tab, btn) {
+      document.querySelectorAll('.shad-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(tab + 'Panel').classList.add('active');
+    }
+
+    /* ── Accordion toggle ── */
+    function toggleAcc(itemId, btn) {
+      const item = document.getElementById(itemId);
+      const body = item.querySelector('.shad-acc-body');
+      const isOpen = btn.classList.contains('open');
+      btn.classList.toggle('open', !isOpen);
+      body.classList.toggle('open', !isOpen);
+    }
+
+    /* ── Patch renderResults to use shadcn banner + table styles ── */
+    /* app.js writes to .alert-success — we intercept via DOM after it runs */
+    const _origRenderResults = window.renderResults;
+
+    /* Override the alert writing logic: app.js uses querySelector('#resultsArea .alert-success')
+       Our banner doesn't use that class — patch after app.js loads */
+    document.addEventListener('DOMContentLoaded', () => {
+      // Patch: app.js uses document.querySelector('#resultsArea .alert-success')
+      // We inject a hidden .alert-success shim that app.js can write to,
+      // then mirror its innerHTML into our visible banner
+      const shim = document.createElement('div');
+      shim.className = 'alert alert-success d-flex align-items-center';
+      shim.style.display = 'none';
+      shim.id = '_alertShim';
+      document.getElementById('resultsArea').prepend(shim);
+
+      // Observe shim changes and mirror to our banner
+      const obs = new MutationObserver(() => {
+        const banner = document.getElementById('resultBanner');
+        // Extract text node
+        const msg = shim.querySelector('span')?.textContent || 'Report generated successfully!';
+        let html = `<i class="bi bi-check-circle-fill"></i><span>${msg}</span>`;
+        // Extract download links
+        const links = shim.querySelectorAll('a');
+        if (links.length) {
+          let actions = '<div class="banner-actions">';
+          links.forEach(a => {
+            const isExcel = a.href.includes('.xls') || a.textContent.includes('XLS');
+            const cls = isExcel ? 'btn-success-shad' : 'btn-info-shad';
+            actions += `<a href="${a.href}" class="btn-shad ${cls}" download>${a.innerHTML}</a>`;
+          });
+          actions += '</div>';
+          html += actions;
+        }
+        banner.innerHTML = html;
+      });
+      obs.observe(shim, { childList: true, subtree: true, characterData: true });
+    });
+
+    /* ── Patch recent reports rendering to match shadcn style ── */
+    /* app.js writes raw Bootstrap list-group HTML to #recentReports.
+       We override the container's innerHTML via a proxy. */
+    const _recentProxy = {
+      set innerHTML(val) {
+        const container = document.getElementById('recentReports');
+        // If it's the "no reports yet" string
+        if (val.includes('No reports yet') && !val.includes('list-group-item')) {
+          container.innerHTML = '<div class="empty-state" style="padding:20px;"><p style="font-size:13px;color:var(--muted);margin:0;">No reports yet</p></div>';
+          return;
+        }
+        // Parse the Bootstrap HTML and re-render shadcn style
+        const tmp = document.createElement('div');
+        tmp.innerHTML = val;
+        const items = tmp.querySelectorAll('.list-group-item');
+        if (!items.length) { container.innerHTML = val; return; }
+
+        let html = '<ul class="recent-list">';
+        items.forEach(item => {
+          const strong = item.querySelector('strong');
+          const small = item.querySelector('small');
+          const icon = item.querySelector('i');
+          const iconCls = icon ? icon.className : '';
+          let badgeCls = 'badge-warning';
+          if (iconCls.includes('text-success')) badgeCls = 'badge-success';
+          if (iconCls.includes('text-danger'))  badgeCls = 'badge-danger';
+          const dot = iconCls.includes('text-success') ? '✓' : iconCls.includes('text-danger') ? '✕' : '·';
+          html += `<li class="recent-item">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="status-badge ${badgeCls}">${dot}</span>
+              <span class="recent-item-date">${strong?.textContent ?? ''}</span>
+            </div>
+            <span class="recent-item-time">${small?.textContent ?? ''}</span>
+          </li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+      }
+    };
+
+    /* Intercept app.js setting innerHTML on #recentReports */
+    const _origGetById = document.getElementById.bind(document);
+    document.getElementById = function(id) {
+      const el = _origGetById(id);
+      if (id === 'recentReports' && el) {
+        return new Proxy(el, {
+          set(target, prop, value) {
+            if (prop === 'innerHTML') {
+              _recentProxy.innerHTML = value;
+              return true;
+            }
+            target[prop] = value;
+            return true;
+          }
+        });
+      }
+      return el;
+    };
+
+    /* ── Patch table rendering: app.js writes to table IDs, 
+       we apply shadcn classes after render ── */
+    const TABLE_IDS = ['tableCancelled','tableResolved','tableInprogress','tableAssigned','tableOla','tableTop5'];
+
+    /* Use MutationObserver on each table to add .shad-table class and style headers */
+    document.addEventListener('DOMContentLoaded', () => {
+      TABLE_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        // el already has class shad-table from HTML, observer for content
+        const obs = new MutationObserver(() => {
+          // Ensure no-data rows get centered
+          el.querySelectorAll('td[colspan], td.text-muted').forEach(td => {
+            td.style.textAlign = 'center';
+            td.style.color = 'var(--muted)';
+            td.style.padding = '20px';
+          });
+        });
+        obs.observe(el, { childList: true, subtree: true });
+      });
+    });
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>
