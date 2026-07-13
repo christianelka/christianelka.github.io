@@ -49,7 +49,7 @@ function generateExcel(data, outputPath, reportDate, agents = []) {
     const scriptPath = join(__dirname, '..', 'scripts', 'generate_excel.py');
     const input = JSON.stringify({ data, outputPath, reportDate, agents });
 
-    const python = spawn('python', [scriptPath], {
+    const python = spawn('python3', [scriptPath], {
       stdio: ['pipe', 'pipe', 'pipe']
     });
 
