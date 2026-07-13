@@ -1,0 +1,134 @@
+body {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+}
+
+.card-header {
+  border-bottom: 1px solid #e9ecef;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.tag-input-container {
+  position: relative;
+}
+
+.tag-input-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: #fff;
+  min-height: 42px;
+  align-items: center;
+  cursor: text;
+}
+
+.tag-input-wrapper:focus-within {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.tag-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 120px;
+  padding: 4px;
+  font-size: 0.9rem;
+}
+
+.agent-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: #e7f1ff;
+  color: #0a58ca;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.agent-tag .remove-tag {
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.agent-tag .remove-tag:hover {
+  opacity: 1;
+}
+
+#agentDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#agentDropdown .dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+#agentDropdown .dropdown-item:hover {
+  background: #f0f4ff;
+}
+
+#agentDropdown .dropdown-item .nik {
+  font-weight: 600;
+  color: #0a58ca;
+}
+
+#agentDropdown .dropdown-item .name {
+  color: #6c757d;
+  margin-left: 8px;
+}
+
+.table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.table td {
+  font-size: 0.9rem;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #e7f1ff;
+  color: #0a58ca;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+#btnGenerate:disabled {
+  cursor: not-allowed;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
