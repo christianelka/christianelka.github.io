@@ -2,9 +2,10 @@ import express from 'express';
 import session from 'express-session';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { mkdirSync } from 'fs';
+import { mkdirSync, readFileSync, existsSync } from 'fs';
+import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
-import { initDb } from './db/init.js';
+import { initDb, dbGetOne, dbInsert, saveDb } from './db/init.js';
 import authRoutes from './routes/auth.js';
 import reportRoutes from './routes/report.js';
 import agentRoutes from './routes/agents.js';
@@ -14,6 +15,7 @@ dotenv.config();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 mkdirSync(join(__dirname, 'data'), { recursive: true });
 mkdirSync(join(__dirname, 'uploads'), { recursive: true });
+mkdirSync(join(__dirname, 'output'), { recursive: true });
 
 const app = express();
 const PORT = process.env.PORT || 3100;
@@ -35,8 +37,38 @@ app.use(session({
 
 app.use(express.static(join(__dirname, 'public')));
 
+function seedDatabase(db) {
+  const existingUser = dbGetOne(db, 'SELECT id FROM users LIMIT 1');
+  if (!existingUser) {
+    const hash = bcrypt.hashSync('admin123', 10);
+    dbInsert(db, 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)', ['Admin', 'admin@itsd.local', hash]);
+    console.log('[seed] Created default user: admin@itsd.local / admin123');
+  }
+
+  const existingAgent = dbGetOne(db, 'SELECT id FROM agents LIMIT 1');
+  if (!existingAgent) {
+    const agentListPath = join(__dirname, 'list-agent.txt');
+    if (existsSync(agentListPath)) {
+      const content = readFileSync(agentListPath, 'utf-8');
+      const lines = content.trim().split('\n');
+      for (const line of lines) {
+        const parts = line.trim().split(/\s+/);
+        const nik = parts[0];
+        const name = parts.slice(1).join(' ');
+        if (nik && name) {
+          db.run('INSERT OR IGNORE INTO agents (nik, name, domain_id) VALUES (?, ?, ?)', [nik, name, null]);
+        }
+      }
+      saveDb(db);
+      console.log(`[seed] Loaded ${lines.length} agents from list-agent.txt`);
+    }
+  }
+}
+
 initDb().then(db => {
   app.locals.db = db;
+
+  seedDatabase(db);
 
   app.use('/api/auth', authRoutes);
   app.use('/api/reports', reportRoutes);

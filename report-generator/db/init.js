@@ -4,10 +4,12 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DB_PATH = join(__dirname, '..', 'data', 'itoc.db');
+const DB_PATH = join(__dirname, '..', 'data', 'report.db');
 
 export async function initDb() {
-  const SQL = await initSqlJs();
+  const SQL = await initSqlJs({
+    locateFile: file => join(__dirname, '..', 'node_modules', 'sql.js', 'dist', file)
+  });
 
   let db;
   if (existsSync(DB_PATH)) {
