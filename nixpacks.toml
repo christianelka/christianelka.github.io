@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs", "python3", "python3Packages.pip"]
+nixPkgs = ["nodejs", "python3"]
 
 [phases.install]
-cmds = ["python3 -m pip install openpyxl"]
+cmds = ["apt-get update -qq && apt-get install -y -qq python3-pip > /dev/null 2>&1 && pip3 install openpyxl"]
