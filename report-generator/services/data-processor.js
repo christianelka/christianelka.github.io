@@ -206,11 +206,11 @@ export function aggregateOlaResponse(data) {
   }
 
   const hourOrder = [];
-  for (let h = 1; h <= 12; h++) {
-    hourOrder.push(`${h} AM`);
+  for (let h = 0; h < 12; h++) {
+    hourOrder.push(`${h === 0 ? 12 : h} AM`);
   }
-  for (let h = 1; h <= 12; h++) {
-    hourOrder.push(`${h} PM`);
+  for (let h = 0; h < 12; h++) {
+    hourOrder.push(`${h === 0 ? 12 : h} PM`);
   }
 
   const result = [];

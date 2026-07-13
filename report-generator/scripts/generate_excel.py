@@ -177,7 +177,7 @@ def write_ola_section(ws, records, ola_date, start_row, start_col):
     sc(ws, r, start_col, f"<{ola_date}", font=Font(italic=True), border=TB)
     for rd in records:
         r += 1
-        sc(ws, r, start_col, rd.get('Row Labels', ''), border=TB)
+        sc(ws, r, start_col, rd.get('Row Labels', ''), font=BF, border=TB)
         c = start_col + 1
         for cn in val_cols:
             val = rd.get(cn, '')
@@ -371,7 +371,7 @@ def generate_csv(data, csv_path, agents, mid_col, right_col):
             for k in rd.keys():
                 if k not in ['Row Labels', '_total']: all_ola.add(k)
         val_cols = [c for c in ola_col_order if c in all_ola]
-        for c in sorted(all_ola):
+        for c in sorted(all_ola, key=_ola_sort_key):
             if c not in val_cols: val_cols.append(c)
 
         r = mid_row
