@@ -132,6 +132,21 @@ def write_simple_section(ws, records, title, uk, start_row, start_col):
     sc(ws, r, start_col + 1, sum(rd.get('count', 0) for rd in records), font=BF, border=TB)
     return r, start_col + 1
 
+def _ola_sort_key(col):
+    fixed = {'Met': 0, 'Missed': 1, '#N/A': 2, '(blank)': 3}
+    if col in fixed:
+        return (0, fixed[col])
+    s = col.strip().upper()
+    if s.endswith('AM') or s.endswith('PM'):
+        try:
+            h = int(s[:-2].strip()) % 12
+            if s.endswith('PM'):
+                h += 12
+            return (1, h)
+        except ValueError:
+            pass
+    return (2, col)
+
 def write_ola_section(ws, records, ola_date, start_row, start_col):
     if not records:
         return start_row, start_col
@@ -142,7 +157,7 @@ def write_ola_section(ws, records, ola_date, start_row, start_col):
             if k not in ['Row Labels', '_total']:
                 all_ola.add(k)
     val_cols = [c for c in ola_col_order if c in all_ola]
-    for c in sorted(all_ola):
+    for c in sorted(all_ola, key=_ola_sort_key):
         if c not in val_cols: val_cols.append(c)
 
     r = start_row

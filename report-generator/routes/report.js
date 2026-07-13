@@ -175,7 +175,7 @@ router.post('/generate',
       const agentDetails = agentNiks.map(nik => {
         const agent = dbGetOne(db, 'SELECT nik, name FROM agents WHERE nik = ?', [nik]);
         return agent || { nik, name: nik };
-      });
+      }).sort((a, b) => Number(a.nik) - Number(b.nik));
 
       /* Respond immediately before Excel generation to avoid Railway 504 timeout */
       res.json({

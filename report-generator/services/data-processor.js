@@ -140,7 +140,7 @@ export function aggregateInprogress(data, agentNiks) {
   return agentNiks.map(nik => ({
     [userKey]: nik,
     count: counts[nik] || 0
-  })).filter(item => item.count > 0).sort((a, b) => b.count - a.count);
+  })).filter(item => item.count > 0).sort((a, b) => Number(a[userKey]) - Number(b[userKey]));
 }
 
 export function aggregateAssigned(data, agentNiks) {
@@ -162,7 +162,7 @@ export function aggregateAssigned(data, agentNiks) {
   return agentNiks.map(nik => ({
     [userKey]: nik,
     count: counts[nik] || 0
-  })).filter(item => item.count > 0).sort((a, b) => b.count - a.count);
+  })).filter(item => item.count > 0).sort((a, b) => Number(a[userKey]) - Number(b[userKey]));
 }
 
 export function aggregateOlaResponse(data) {
