@@ -2,4 +2,4 @@
 nixPkgs = ["nodejs", "python3"]
 
 [phases.install]
-cmds = ["apt-get update -qq && apt-get install -y -qq python3-pip > /dev/null 2>&1 && pip3 install openpyxl"]
+cmds = ["python3 -c \"import subprocess,sys; subprocess.check_call([sys.executable,'-m','ensurepip','--upgrade'])\" 2>/dev/null; $(python3 -c \"import sys;print(sys.executable)\") -m pip install openpyxl"]
