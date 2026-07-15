@@ -138,7 +138,7 @@ def write_simple_section(ws, records, title, uk, start_row, start_col):
     sc(ws, r, start_col + 1, sum(rd.get('count', 0) for rd in records), font=BF, border=TB)
     return r, start_col + 1
 
-def _ola_sort_key(col):
+def _ola_sort_key(col, night_shift=False):
     fixed = {'Met': 0, 'Missed': 1, '#N/A': 2, '(blank)': 3}
     if col in fixed:
         return (0, fixed[col])
@@ -148,6 +148,8 @@ def _ola_sort_key(col):
             h = int(s[:-2].strip()) % 12
             if s.endswith('PM'):
                 h += 12
+            if night_shift and h >= 12:
+                h -= 24
             return (1, h)
         except ValueError:
             pass
@@ -163,7 +165,19 @@ def write_ola_section(ws, records, ola_date, start_row, start_col):
             if k not in ['Row Labels', '_total']:
                 all_ola.add(k)
     val_cols = [c for c in ola_col_order if c in all_ola]
-    for c in sorted(all_ola, key=_ola_sort_key):
+    hours = []
+    for c in all_ola:
+        s = c.strip().upper()
+        if s.endswith('AM') or s.endswith('PM'):
+            try:
+                h = int(s[:-2].strip()) % 12
+                if s.endswith('PM'):
+                    h += 12
+                hours.append(h)
+            except ValueError:
+                pass
+    night_shift = len(hours) > 1 and (max(hours) - min(hours)) > 12
+    for c in sorted(all_ola, key=lambda col: _ola_sort_key(col, night_shift)):
         if c not in val_cols: val_cols.append(c)
 
     r = start_row
