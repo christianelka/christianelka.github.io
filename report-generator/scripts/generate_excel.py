@@ -418,7 +418,19 @@ def generate_csv(data, csv_path, agents, mid_col, right_col):
             for k in rd.keys():
                 if k not in ['Row Labels', '_total']: all_ola.add(k)
         val_cols = [c for c in ola_col_order if c in all_ola]
-        for c in sorted(all_ola, key=_ola_sort_key):
+        hours = []
+        for c in all_ola:
+            s = c.strip().upper()
+            if s.endswith('AM') or s.endswith('PM'):
+                try:
+                    h = int(s[:-2].strip()) % 12
+                    if s.endswith('PM'):
+                        h += 12
+                    hours.append(h)
+                except ValueError:
+                    pass
+        night_shift = len(hours) > 1 and (max(hours) - min(hours)) > 12
+        for c in sorted(all_ola, key=lambda col: _ola_sort_key(col, night_shift)):
             if c not in val_cols: val_cols.append(c)
 
         r = mid_row

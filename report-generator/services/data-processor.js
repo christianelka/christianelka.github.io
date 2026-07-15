@@ -213,8 +213,25 @@ export function aggregateOlaResponse(data) {
     hourOrder.push(`${h === 0 ? 12 : h} PM`);
   }
 
+  const presentHours = hourOrder.filter(h => hourGroups[h]);
+  let nightShift = false;
+  if (presentHours.length > 1) {
+    const to24 = h => {
+      const [num, ampm] = h.split(' ');
+      let hr = parseInt(num) % 12;
+      if (ampm === 'PM') hr += 12;
+      return hr;
+    };
+    const hrs = presentHours.map(to24);
+    nightShift = (Math.max(...hrs) - Math.min(...hrs)) > 12;
+  }
+
+  const sortedHourOrder = nightShift
+    ? [...hourOrder.slice(23), ...hourOrder.slice(0, 23)]
+    : hourOrder;
+
   const result = [];
-  for (const hourKey of hourOrder) {
+  for (const hourKey of sortedHourOrder) {
     if (hourGroups[hourKey]) {
       const rowData = { 'Row Labels': hourKey };
       let total = 0;
