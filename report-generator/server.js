@@ -57,6 +57,15 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', ready: ready, timestamp: new Date().toISOString() });
 });
 
+app.use('/report-generator', (req, res) => {
+  res.redirect(302, '/');
+});
+
+app.use(
+  '/escalation-chatbot',
+  express.static(join(__dirname, '..', 'escalation-chatbot'), { index: 'index.html' }),
+);
+
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'indexv2.html'));
 });
