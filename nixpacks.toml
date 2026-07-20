@@ -3,10 +3,9 @@ nixPkgs = ["nodejs_20", "python3"]
 
 [phases.install]
 cmds = [
-  "npm ci || npm install",
-  "cd surat-terakhir && (npm ci || npm install)",
-  "cd report-generator && (npm ci || npm install)",
-  "python3 -c \"import urllib.request; urllib.request.urlretrieve('https://bootstrap.pypa.io/get-pip.py', '/tmp/get-pip.py')\" && python3 /tmp/get-pip.py --break-system-packages && python3 -m pip install openpyxl --break-system-packages"
+  "if [ -f surat-terakhir/package.json ]; then cd surat-terakhir && (npm ci || npm install) && cd ..; fi",
+  "if [ -f report-generator/package.json ]; then cd report-generator && (npm ci || npm install) && cd ..; fi",
+  "if [ -f report-generator/package.json ]; then python3 -c \"import urllib.request; urllib.request.urlretrieve('https://bootstrap.pypa.io/get-pip.py', '/tmp/get-pip.py')\" && python3 /tmp/get-pip.py --break-system-packages && python3 -m pip install openpyxl --break-system-packages; fi"
 ]
 
 [start]

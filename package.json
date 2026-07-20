@@ -3,8 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "postinstall": "npm --prefix surat-terakhir install --omit=dev && npm --prefix report-generator install --omit=dev"
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=20"

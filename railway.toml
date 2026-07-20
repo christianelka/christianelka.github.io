@@ -1,5 +1,4 @@
 [deploy]
 startCommand = "node server.js"
-healthcheckPath = "/gateway-health"
+healthcheckPath = "/api/health"
 healthcheckTimeout = 120
-restartPolicyType = "ON_FAILURE"
