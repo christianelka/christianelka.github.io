@@ -930,11 +930,33 @@
                 <div class="field">
                   <label class="field-label">SLA File <span class="text-muted-shad">(.xlsx / .csv)</span></label>
                   <input type="file" class="field-input" id="slaFile" accept=".xlsx,.xls,.csv" required>
+                  
+                  <div style="margin-top:8px;">
+                    <label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                      <input type="checkbox" id="toggleSlaMulti" onchange="document.getElementById('slaMultiWrap').style.display = this.checked ? 'block' : 'none'">
+                      Data > 1000 (Upload file part 2/3)
+                    </label>
+                  </div>
+                  <div id="slaMultiWrap" style="display:none; margin-top:8px; padding-left:12px; border-left:2px solid var(--border);">
+                    <input type="file" class="field-input" id="slaFilePart2" accept=".xlsx,.xls,.csv" style="margin-bottom:6px" placeholder="Part 2">
+                    <input type="file" class="field-input" id="slaFilePart3" accept=".xlsx,.xls,.csv" placeholder="Part 3">
+                  </div>
                 </div>
 
                 <div class="field">
                   <label class="field-label">Report File <span class="text-muted-shad">(.xlsx / .csv)</span></label>
                   <input type="file" class="field-input" id="reportFile" accept=".xlsx,.xls,.csv" required>
+                  
+                  <div style="margin-top:8px;">
+                    <label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                      <input type="checkbox" id="toggleReportMulti" onchange="document.getElementById('reportMultiWrap').style.display = this.checked ? 'block' : 'none'">
+                      Data > 1000 (Upload file part 2/3)
+                    </label>
+                  </div>
+                  <div id="reportMultiWrap" style="display:none; margin-top:8px; padding-left:12px; border-left:2px solid var(--border);">
+                    <input type="file" class="field-input" id="reportFilePart2" accept=".xlsx,.xls,.csv" style="margin-bottom:6px" placeholder="Part 2">
+                    <input type="file" class="field-input" id="reportFilePart3" accept=".xlsx,.xls,.csv" placeholder="Part 3">
+                  </div>
                 </div>
 
                 <div class="field">

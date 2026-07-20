@@ -19,6 +19,50 @@ export function loadFile(filePath) {
   throw new Error(`Unsupported file type: .${ext}`);
 }
 
+function looksLikeHeaderRow(row, primaryHeaders) {
+  if (!row || typeof row !== 'object') return false;
+  const vals = Object.values(row).map(v => String(v || '').trim());
+  if (vals.length === 0) return false;
+  let matches = 0;
+  for (const p of primaryHeaders) {
+    if (vals.some(v => v.toLowerCase() === p.toLowerCase())) matches++;
+  }
+  return matches >= Math.ceil(primaryHeaders.length / 2);
+}
+
+function shiftColumnsLeft(row) {
+  const entries = Object.entries(row);
+  if (entries.length <= 1) return {};
+  const out = {};
+  for (let i = 1; i < entries.length; i++) {
+    out[entries[i][0]] = entries[i][1];
+  }
+  return out;
+}
+
+export function mergeFileParts(parts) {
+  if (!parts || parts.length === 0) return [];
+  if (parts.length === 1) return parts[0];
+
+  const base = [...parts[0]];
+  const baseHeaders = Object.keys(base[0] || {});
+
+  for (let p = 1; p < parts.length; p++) {
+    const part = parts[p];
+    if (!part || part.length === 0) continue;
+
+    let processed = part.map(shiftColumnsLeft);
+
+    if (processed.length > 0 && looksLikeHeaderRow(processed[0], baseHeaders)) {
+      processed = processed.slice(1);
+    }
+
+    base.push(...processed);
+  }
+
+  return base;
+}
+
 export function cleanSLA(rawData) {
   const headers = Object.keys(rawData[0] || {});
 

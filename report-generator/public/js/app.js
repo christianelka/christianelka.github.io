@@ -185,6 +185,15 @@ async function handleGenerate(e) {
   formData.append('reportDate', document.getElementById('reportDate').value);
   formData.append('agentNiks', document.getElementById('agentNiks').value);
 
+  const slaPart2 = document.getElementById('slaFilePart2')?.files[0];
+  const slaPart3 = document.getElementById('slaFilePart3')?.files[0];
+  const reportPart2 = document.getElementById('reportFilePart2')?.files[0];
+  const reportPart3 = document.getElementById('reportFilePart3')?.files[0];
+  if (slaPart2) formData.append('slaFilePart2', slaPart2);
+  if (slaPart3) formData.append('slaFilePart3', slaPart3);
+  if (reportPart2) formData.append('reportFilePart2', reportPart2);
+  if (reportPart3) formData.append('reportFilePart3', reportPart3);
+
   try {
     const res = await fetch(`${BASE_PATH}/api/reports/generate`, {
       method: 'POST',

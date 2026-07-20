@@ -6,7 +6,7 @@ import { spawn } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 import { requireAuth } from './auth.js';
 import {
-  loadFile, cleanSLA, mergeData,
+  loadFile, cleanSLA, mergeData, mergeFileParts,
   aggregateCancelled, aggregateResolved,
   aggregateInprogress, aggregateAssigned,
   aggregateOlaResponse, aggregateTopCategories
@@ -130,7 +130,11 @@ router.post('/generate',
   requireAuth,
   upload.fields([
     { name: 'slaFile', maxCount: 1 },
-    { name: 'reportFile', maxCount: 1 }
+    { name: 'slaFilePart2', maxCount: 1 },
+    { name: 'slaFilePart3', maxCount: 1 },
+    { name: 'reportFile', maxCount: 1 },
+    { name: 'reportFilePart2', maxCount: 1 },
+    { name: 'reportFilePart3', maxCount: 1 },
   ]),
   async (req, res) => {
     const db = req.app.locals.db;
@@ -159,8 +163,16 @@ router.post('/generate',
         [req.session.userId, reportDate, slaFile.path, reportFile.path, JSON.stringify(agentNiks), 'processing']
       );
 
-      const slaRaw = loadFile(slaFile.path);
-      const reportRaw = loadFile(reportFile.path);
+      const slaParts = [loadFile(slaFile.path)];
+      if (req.files?.slaFilePart2?.[0]) slaParts.push(loadFile(req.files.slaFilePart2[0].path));
+      if (req.files?.slaFilePart3?.[0]) slaParts.push(loadFile(req.files.slaFilePart3[0].path));
+
+      const reportParts = [loadFile(reportFile.path)];
+      if (req.files?.reportFilePart2?.[0]) reportParts.push(loadFile(req.files.reportFilePart2[0].path));
+      if (req.files?.reportFilePart3?.[0]) reportParts.push(loadFile(req.files.reportFilePart3[0].path));
+
+      const slaRaw = mergeFileParts(slaParts);
+      const reportRaw = mergeFileParts(reportParts);
 
       const cleanedSLA = cleanSLA(slaRaw);
       const merged = mergeData(reportRaw, cleanedSLA);
