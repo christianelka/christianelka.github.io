@@ -6,10 +6,19 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DB_PATH = join(__dirname, '..', 'data', 'report.db');
 
+function wasmPath(file) {
+  const candidates = [
+    join(__dirname, '..', 'node_modules', 'sql.js', 'dist', file),
+    join(__dirname, '..', '..', 'node_modules', 'sql.js', 'dist', file),
+  ];
+  for (const p of candidates) {
+    if (existsSync(p)) return p;
+  }
+  return candidates[candidates.length - 1];
+}
+
 export async function initDb() {
-  const SQL = await initSqlJs({
-    locateFile: file => join(__dirname, '..', 'node_modules', 'sql.js', 'dist', file)
-  });
+  const SQL = await initSqlJs({ locateFile: wasmPath });
 
   let db;
   if (existsSync(DB_PATH)) {
@@ -22,7 +31,7 @@ export async function initDb() {
   db.run('PRAGMA foreign_keys = ON');
 
   const schema = readFileSync(join(__dirname, 'schema.sql'), 'utf-8');
-  db.run(schema);
+  db.exec(schema);
 
   // Migration: add role column if missing
   const cols = db.exec("PRAGMA table_info(users)");

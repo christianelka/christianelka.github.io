@@ -48,6 +48,15 @@ app.use(session({
   }
 }));
 
+let ready = false;
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', ready: ready, timestamp: new Date().toISOString() });
+});
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', ready: ready, timestamp: new Date().toISOString() });
+});
+
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'indexv2.html'));
 });
@@ -112,33 +121,32 @@ function seedDatabase(db) {
   }
 }
 
-initDb().then(db => {
+app.use((err, req, res, next) => {
+  console.error('[server] Unhandled error:', err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const host = process.env.HOST || '0.0.0.0';
+const port = Number(PORT) || 3100;
+
+const server = app.listen(port, host, () => {
+  console.log(`[report-generator] Listening on http://${host}:${port}`);
+});
+server.on('error', (err) => {
+  console.error('[report-generator] listen error:', err);
+  process.exit(1);
+});
+
+initDb().then((db) => {
   app.locals.db = db;
-
   seedDatabase(db);
-
   app.use('/api/auth', authRoutes);
   app.use('/api/reports', reportRoutes);
   app.use('/api/agents', agentRoutes);
   app.use('/api/admin', adminRoutes);
-
-  app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-  });
-  app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-  });
-
-  app.use((err, req, res, next) => {
-    console.error('[server] Unhandled error:', err);
-    res.status(500).json({ error: err.message || 'Internal server error' });
-  });
-
-  const host = process.env.HOST || '0.0.0.0';
-  app.listen(PORT, host, () => {
-    console.log(`[report-generator] Listening on http://${host}:${PORT}`);
-  });
-}).catch(err => {
+  ready = true;
+  console.log('[report-generator] DB ready');
+}).catch((err) => {
   console.error('Failed to initialize database:', err);
   process.exit(1);
 });
