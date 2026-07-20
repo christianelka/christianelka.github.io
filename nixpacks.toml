@@ -1,8 +1,13 @@
 [phases.setup]
-nixPkgs = ["nodejs", "python3"]
+nixPkgs = ["nodejs_20", "python3"]
 
 [phases.install]
-cmds = ["python3 -c \"import urllib.request; urllib.request.urlretrieve('https://bootstrap.pypa.io/get-pip.py', '/tmp/get-pip.py')\" && python3 /tmp/get-pip.py --break-system-packages && python3 -m pip install openpyxl --break-system-packages"]
+cmds = [
+  "npm ci || npm install",
+  "cd surat-terakhir && (npm ci || npm install)",
+  "cd report-generator && (npm ci || npm install)",
+  "python3 -c \"import urllib.request; urllib.request.urlretrieve('https://bootstrap.pypa.io/get-pip.py', '/tmp/get-pip.py')\" && python3 /tmp/get-pip.py --break-system-packages && python3 -m pip install openpyxl --break-system-packages"
+]
 
 [start]
 cmd = "node server.js"

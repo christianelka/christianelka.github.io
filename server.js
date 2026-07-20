@@ -1,27 +1,9 @@
-/**
- * Root Proxy Server
- *
- * Serves the Welcome Page (index.html) and all sub-projects as static files.
- * Proxies /surat-terakhir, /api, /socket.io to the surat-terakhir game backend
- * (spawned as a child process on an internal port, so the 632-line monolith
- * with Socket.io runs unchanged).
- *
- * Routing table:
- *   /                     → root/index.html (Welcome Page)
- *   /surat-terakhir/*     → proxied to surat-terakhir (port 3001)
- *   /surat-terakhir-codenames/* → static files (zero-server codenames game)
- *   /api/*                → proxied to surat-terakhir (port 3001)
- *   /socket.io/*          → proxied to surat-terakhir (port 3001, incl. WebSocket)
- *   /moderator, /player, /display → proxied to surat-terakhir (game pages)
- *   /invitation/*, /nuke/*, /youth/*, /blur/*, /escalation-chatbot/* → static
- *   /report-generator/*   → proxied to report-generator (port 3102)
- */
-
 import express from 'express';
 import { createServer } from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { spawn } from 'child_process';
 import path from 'path';
+import { existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -31,38 +13,53 @@ const REPORT_GEN_PORT = 3102;
 const SURAT_TERAKHIR_DIR = path.join(__dirname, 'surat-terakhir');
 const REPORT_GEN_DIR = path.join(__dirname, 'report-generator');
 
+// ponytail: 127.0.0.1 — Node 17+ localhost can resolve to ::1 and ECONNREFUSED
+const SURAT_TARGET = `http://127.0.0.1:${INTERNAL_PORT}`;
+const REPORT_TARGET = `http://127.0.0.1:${REPORT_GEN_PORT}`;
+
 const app = express();
 const server = createServer(app);
 
-// Serve surat-terakhir-codenames as static files (zero-server, Alpine.js + Tailwind)
-// MUST come BEFORE the proxy, otherwise /surat-terakhir-* pathFilter catches it
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'root-proxy' }));
+app.get('/api/health-root', (req, res) => res.json({ status: 'ok', service: 'root-proxy' }));
+
 app.use('/surat-terakhir-codenames', express.static(path.join(__dirname, 'surat-terakhir-codenames'), {
   maxAge: '1h',
   dotfiles: 'ignore',
 }));
 
+const reportGenProxy = createProxyMiddleware({
+  target: REPORT_TARGET,
+  changeOrigin: true,
+  cookiePathRewrite: { '/': '/report-generator' },
+  on: {
+    error(err, req, res) {
+      console.error('[report-generator proxy]', err.message);
+      if (res && !res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'text/plain' });
+        res.end('report-generator unavailable: ' + err.message);
+      }
+    },
+  },
+});
+
 const proxy = createProxyMiddleware({
-  target: `http://localhost:${INTERNAL_PORT}`,
+  target: SURAT_TARGET,
   changeOrigin: true,
   ws: true,
   pathFilter: ['/surat-terakhir', '/api', '/socket.io', '/moderator', '/player', '/display'],
+  on: {
+    error(err, req, res) {
+      console.error('[surat-terakhir proxy]', err.message);
+      if (res && !res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'text/plain' });
+        res.end('surat-terakhir unavailable: ' + err.message);
+      }
+    },
+  },
 });
 
-const reportGenProxy = createProxyMiddleware({
-  target: `http://localhost:${REPORT_GEN_PORT}`,
-  changeOrigin: true,
-  pathFilter: ['/report-generator', '/api/reports'],
-  pathRewrite: { '^/report-generator': '' },
-});
-
-// Healthcheck endpoint — must come before proxies (routing order dependency)
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
-
-// Proxy routes MUST come before express.static — otherwise /api/health would
-// be treated as a file path lookup instead of being forwarded to the backend.
-// Using pathFilter (not Express path mounting) so req.url preserves the
-// full path — Express strips mount prefixes, which would break proxy forwarding.
-app.use(reportGenProxy);
+app.use('/report-generator', reportGenProxy);
 app.use(proxy);
 
 app.use(express.static(__dirname, {
@@ -70,7 +67,6 @@ app.use(express.static(__dirname, {
   dotfiles: 'ignore',
 }));
 
-// WebSocket upgrade: only forward socket.io traffic to the proxy
 server.on('upgrade', (req, socket, head) => {
   if (req.url?.startsWith('/socket.io/')) {
     proxy.upgrade(req, socket, head);
@@ -82,68 +78,55 @@ server.on('upgrade', (req, socket, head) => {
 let childProcess = null;
 let reportGenProcess = null;
 
-function startSuratTerakhir() {
+function spawnChild(name, cwd, port, onRestart) {
+  if (!existsSync(path.join(cwd, 'server.js'))) {
+    console.error(`[root] ${name}: server.js not found at ${cwd}`);
+    return null;
+  }
+
   const child = spawn('node', ['server.js'], {
-    cwd: SURAT_TERAKHIR_DIR,
-    env: { ...process.env, PORT: String(INTERNAL_PORT) },
+    cwd,
+    env: { ...process.env, PORT: String(port) },
     stdio: ['pipe', 'pipe', 'pipe'],
   });
 
   child.stdout.on('data', (data) => {
     for (const line of data.toString().trimEnd().split('\n')) {
-      console.log(`[surat-terakhir] ${line.trimEnd()}`);
+      console.log(`[${name}] ${line.trimEnd()}`);
     }
   });
 
   child.stderr.on('data', (data) => {
     for (const line of data.toString().trimEnd().split('\n')) {
-      console.error(`[surat-terakhir] ${line.trimEnd()}`);
+      console.error(`[${name}] ${line.trimEnd()}`);
     }
   });
 
   child.on('error', (err) => {
-    console.error(`[surat-terakhir] Failed to spawn: ${err.message}`);
+    console.error(`[${name}] Failed to spawn: ${err.message}`);
   });
 
   child.on('exit', (code, signal) => {
-    console.log(`[surat-terakhir] exited (code=${code}, signal=${signal}), restarting in 1s...`);
-    setTimeout(() => { childProcess = startSuratTerakhir(); }, 1000);
+    console.log(`[${name}] exited (code=${code}, signal=${signal}), restarting in 1s...`);
+    setTimeout(() => onRestart(), 1000);
   });
 
-  console.log(`[root] Spawned surat-terakhir (PID=${child.pid}, port=${INTERNAL_PORT})`);
+  console.log(`[root] Spawned ${name} (PID=${child.pid}, port=${port})`);
   return child;
 }
 
+function startSuratTerakhir() {
+  childProcess = spawnChild('surat-terakhir', SURAT_TERAKHIR_DIR, INTERNAL_PORT, () => {
+    childProcess = startSuratTerakhir();
+  });
+  return childProcess;
+}
+
 function startReportGenerator() {
-  const child = spawn('node', ['server.js'], {
-    cwd: REPORT_GEN_DIR,
-    env: { ...process.env, PORT: String(REPORT_GEN_PORT) },
-    stdio: ['pipe', 'pipe', 'pipe'],
+  reportGenProcess = spawnChild('report-generator', REPORT_GEN_DIR, REPORT_GEN_PORT, () => {
+    reportGenProcess = startReportGenerator();
   });
-
-  child.stdout.on('data', (data) => {
-    for (const line of data.toString().trimEnd().split('\n')) {
-      console.log(`[report-generator] ${line.trimEnd()}`);
-    }
-  });
-
-  child.stderr.on('data', (data) => {
-    for (const line of data.toString().trimEnd().split('\n')) {
-      console.error(`[report-generator] ${line.trimEnd()}`);
-    }
-  });
-
-  child.on('error', (err) => {
-    console.error(`[report-generator] Failed to spawn: ${err.message}`);
-  });
-
-  child.on('exit', (code, signal) => {
-    console.log(`[report-generator] exited (code=${code}, signal=${signal}), restarting in 1s...`);
-    setTimeout(() => { reportGenProcess = startReportGenerator(); }, 1000);
-  });
-
-  console.log(`[root] Spawned report-generator (PID=${child.pid}, port=${REPORT_GEN_PORT})`);
-  return child;
+  return reportGenProcess;
 }
 
 function shutdown(sig) {
@@ -165,8 +148,9 @@ process.on('unhandledRejection', (err) => {
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`[root] Server listening on :${PORT}`);
-  console.log(`[root] Proxying /surat-terakhir, /api, /socket.io → :${INTERNAL_PORT}`);
+  console.log(`[root] /report-generator → ${REPORT_TARGET}`);
+  console.log(`[root] /surat-terakhir, /api, /socket.io → ${SURAT_TARGET}`);
 
-  try { childProcess = startSuratTerakhir(); } catch (e) { console.error('[root] surat-terakhir spawn failed:', e.message); }
-  try { reportGenProcess = startReportGenerator(); } catch (e) { console.error('[root] report-generator spawn failed:', e.message); }
+  try { startSuratTerakhir(); } catch (e) { console.error('[root] surat-terakhir spawn failed:', e.message); }
+  try { startReportGenerator(); } catch (e) { console.error('[root] report-generator spawn failed:', e.message); }
 });
