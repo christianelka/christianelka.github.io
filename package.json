@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "postinstall": "npm --prefix surat-terakhir install --omit=dev"
+    "postinstall": "npm --prefix surat-terakhir install --omit=dev && npm --prefix report-generator install --omit=dev"
   },
   "engines": {
     "node": ">=20"

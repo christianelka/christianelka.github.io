@@ -122,6 +122,9 @@ initDb().then(db => {
   app.use('/api/agents', agentRoutes);
   app.use('/api/admin', adminRoutes);
 
+  app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
@@ -131,8 +134,9 @@ initDb().then(db => {
     res.status(500).json({ error: err.message || 'Internal server error' });
   });
 
-  app.listen(PORT, () => {
-    console.log(`[report-generator] Listening on http://localhost:${PORT}`);
+  const host = process.env.HOST || '0.0.0.0';
+  app.listen(PORT, host, () => {
+    console.log(`[report-generator] Listening on http://${host}:${PORT}`);
   });
 }).catch(err => {
   console.error('Failed to initialize database:', err);
