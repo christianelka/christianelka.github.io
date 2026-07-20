@@ -1,23 +1,12 @@
 {
   "name": "christianelka-github-io",
-  "version": "1.0.0",
-  "description": "Root proxy server. Routes /surat-terakhir, /api, /socket.io to surat-terakhir game backend. Serves all other sub-projects as static files.",
+  "private": true,
   "type": "module",
-  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "postinstall": "cd surat-terakhir && npm ci && cd ../report-generator && npm ci"
+    "postinstall": "npm --prefix surat-terakhir install --omit=dev"
   },
   "engines": {
-    "node": ">=20.0.0"
-  },
-  "dependencies": {
-    "express": "^4.19.2",
-    "http-proxy-middleware": "^3.0.3",
-    "playwright": "^1.61.1"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.61.1"
+    "node": ">=20"
   }
 }

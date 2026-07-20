@@ -416,9 +416,12 @@ app.post('/api/auth', authLimiter, async (req, res) => {
 
 app.post('/api/logout', (req, res) => { res.clearCookie('session'); res.json({ success: true }); });
 
-app.get('/api/health', (req, res) => {
+const healthHandler = (req, res) => {
   res.json({ status: 'ok', uptime: Math.floor(process.uptime()), active_games: gameService.activeGames.size, active_players: [...gameService.activeGames.values()].reduce((s, g) => s + g.players.size, 0), fragmen_total: fragmenBank.length, ai: aiService.getStatus(), version: '1.0.0' });
-});
+};
+// ponytail: /health for Coolify defaults; /api/health kept for existing clients
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 app.get('/api/fragmen/stats', (req, res) => res.json({ success: true, data: fragmenService.getStats() }));
 app.get('/api/ai/status', (req, res) => res.json({ success: true, data: aiService.getStatus() }));
