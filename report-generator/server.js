@@ -132,6 +132,9 @@ const port = Number(PORT) || 3100;
 const server = app.listen(port, host, () => {
   console.log(`[report-generator] Listening on http://${host}:${port}`);
 });
+// Railway edge reuses connections; Node defaults are too low → intermittent 502
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 125000;
 server.on('error', (err) => {
   console.error('[report-generator] listen error:', err);
   process.exit(1);
