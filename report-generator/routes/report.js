@@ -269,47 +269,100 @@ router.post('/generate',
   }
 );
 
-router.get('/download/:filename', requireAuth, async (req, res) => {
-  const filePath = join(outputDir, req.params.filename);
+function downloadReadyHtml(filename) {
+  const safe = String(filename).replace(/[^a-zA-Z0-9._-]/g, '');
+  return (
+    '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Download</title>' +
+    '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
+    '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:420px}' +
+    'h3{margin:0 0 6px;color:#111827;font-size:16px}p{margin:0;color:#6b7280;font-size:13px;line-height:1.5}' +
+    '</style></head><body><div class="card">' +
+    '<h3>Download dimulai...</h3>' +
+    '<p>Tab ini akan tertutup otomatis.</p>' +
+    '<script>(function(){' +
+    'var u=' + JSON.stringify('/api/reports/download/' + safe + '?raw=1') + ';' +
+    'var a=document.createElement("a");a.href=u;a.download=' + JSON.stringify(safe) + ';' +
+    'document.body.appendChild(a);a.click();' +
+    'setTimeout(function(){try{window.close()}catch(e){}},1200);' +
+    '})();</script>' +
+    '</div></body></html>'
+  );
+}
 
-  if (existsSync(filePath)) {
-    return res.download(filePath, req.params.filename);
+function downloadWaitHtml() {
+  return (
+    '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Generating...</title>' +
+    '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
+    '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:420px}' +
+    '.spinner{width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:#6366f1;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}' +
+    '@keyframes spin{to{transform:rotate(360deg)}}' +
+    'h3{margin:0 0 6px;color:#111827;font-size:16px}p{margin:0;color:#6b7280;font-size:13px;line-height:1.5}' +
+    '</style></head><body><div class="card">' +
+    '<div class="spinner"></div>' +
+    '<h3>Generating Report...</h3>' +
+    '<p>File sedang diproses. Download dimulai otomatis saat siap,<br>lalu tab ini tertutup sendiri.</p>' +
+    '<script>setTimeout(function(){location.reload()},2500);</script>' +
+    '</div></body></html>'
+  );
+}
+
+function downloadFailHtml(message) {
+  return (
+    '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Generation Failed</title>' +
+    '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
+    '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:500px}' +
+    'h3{margin:0 0 6px;color:#dc2626;font-size:16px}p{margin:0 0 8px;color:#6b7280;font-size:13px;line-height:1.5}' +
+    'pre{background:#f3f4f6;padding:10px 14px;border-radius:6px;font-size:11px;color:#374151;text-align:left;overflow-x:auto;white-space:pre-wrap}' +
+    'a{display:inline-block;padding:8px 20px;background:#6366f1;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500}' +
+    '</style></head><body><div class="card">' +
+    '<h3>Report Generation Failed</h3>' +
+    '<p>Gagal membuat file Excel. Silakan coba generate ulang.</p>' +
+    '<pre>' + String(message || '').replace(/</g, '&lt;').slice(0, 500) + '</pre>' +
+    '<br><a href="javascript:window.close()">Tutup</a>' +
+    '</div></body></html>'
+  );
+}
+
+router.get('/download/:filename', requireAuth, async (req, res) => {
+  const filename = req.params.filename;
+  if (!/^[a-zA-Z0-9._-]+$/.test(filename)) {
+    return res.status(400).send('Invalid filename');
+  }
+  const filePath = join(outputDir, filename);
+  const wantsRaw = req.query.raw === '1';
+
+  // Wait for in-flight generation before serving (avoids half-written corrupt xlsx)
+  if (pendingDownloads.has(filename)) {
+    const entry = pendingDownloads.get(filename);
+    if (entry && typeof entry === 'object' && entry.error) {
+      return res.status(500).type('text/html').send(downloadFailHtml(entry.error));
+    }
+    if (entry && typeof entry.then === 'function') {
+      try {
+        await entry;
+      } catch (err) {
+        return res.status(500).type('text/html').send(downloadFailHtml(err.message || String(err)));
+      }
+      const after = pendingDownloads.get(filename);
+      if (after && typeof after === 'object' && after.error) {
+        return res.status(500).type('text/html').send(downloadFailHtml(after.error));
+      }
+    }
   }
 
-  if (pendingDownloads.has(req.params.filename)) {
-    const entry = pendingDownloads.get(req.params.filename);
-
-    if (entry && typeof entry === 'object' && entry.error) {
-      return res.status(500).type('text/html').send(
-        '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Generation Failed</title>' +
-        '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
-        '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:500px}' +
-        'h3{margin:0 0 6px;color:#dc2626;font-size:16px}p{margin:0 0 8px;color:#6b7280;font-size:13px;line-height:1.5}' +
-        'pre{background:#f3f4f6;padding:10px 14px;border-radius:6px;font-size:11px;color:#374151;text-align:left;overflow-x:auto;white-space:pre-wrap}' +
-        'a{display:inline-block;padding:8px 20px;background:#6366f1;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500}' +
-        '</style></head><body><div class="card">' +
-        '<h3>Report Generation Failed</h3>' +
-        '<p>Gagal membuat file Excel. Silakan coba generate ulang.</p>' +
-        '<pre>' + entry.error.replace(/</g, '&lt;').slice(0, 500) + '</pre>' +
-        '<br><a href="javascript:history.back()">Kembali</a>' +
-        '</div></body></html>'
-      );
+  if (existsSync(filePath)) {
+    if (wantsRaw || (req.headers.accept || '').includes('application/octet-stream')) {
+      return res.download(filePath, filename);
     }
+    // Browser tab: trigger download then close
+    if ((req.headers.accept || '').includes('text/html')) {
+      return res.type('text/html').send(downloadReadyHtml(filename));
+    }
+    return res.download(filePath, filename);
+  }
 
-    return res.status(202).type('text/html').send(
-      '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Generating...</title>' +
-      '<meta http-equiv="refresh" content="3">' +
-      '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f9fafb}' +
-      '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:420px}' +
-      '.spinner{width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:#6366f1;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}' +
-      '@keyframes spin{to{transform:rotate(360deg)}}' +
-      'h3{margin:0 0 6px;color:#111827;font-size:16px}p{margin:0;color:#6b7280;font-size:13px;line-height:1.5}' +
-      '</style></head><body><div class="card">' +
-      '<div class="spinner"></div>' +
-      '<h3>Generating Report...</h3>' +
-      '<p>File sedang diproses. Halaman akan refresh otomatis<br>dan download dimulai saat file siap.</p>' +
-      '</div></body></html>'
-    );
+  if (pendingDownloads.has(filename)) {
+    return res.status(202).type('text/html').send(downloadWaitHtml());
   }
 
   return res.status(404).type('text/html').send(
@@ -318,11 +371,10 @@ router.get('/download/:filename', requireAuth, async (req, res) => {
     '.card{background:white;padding:40px 48px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;max-width:420px}' +
     'h3{margin:0 0 6px;color:#111827;font-size:16px}p{margin:0 0 16px;color:#6b7280;font-size:13px;line-height:1.5}' +
     'a{display:inline-block;padding:8px 20px;background:#6366f1;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500}' +
-    'a:hover{background:#4f46e5}' +
     '</style></head><body><div class="card">' +
     '<h3>File Not Found</h3>' +
     '<p>File tidak ditemukan atau sudah expired.<br>Silakan generate ulang.</p>' +
-    '<a href="javascript:history.back()">Kembali</a>' +
+    '<a href="javascript:window.close()">Tutup</a>' +
     '</div></body></html>'
   );
 });

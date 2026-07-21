@@ -529,10 +529,15 @@ def create_report(data, output_path, report_date, agents=None):
         write_top5_section(ws, top5, LEFT_START_ROW, RIGHT_START_COL, wb=wb, raw_rows=raw_report)
 
     auto_fit(ws)
-    wb.save(output_path)
+    import os
+    tmp_path = output_path + '.tmp'
+    wb.save(tmp_path)
+    os.replace(tmp_path, output_path)
 
     csv_path = output_path.replace('.xlsx', '.csv')
-    generate_csv(data, csv_path, agents, MID_START_COL, RIGHT_START_COL)
+    csv_tmp = csv_path + '.tmp'
+    generate_csv(data, csv_tmp, agents, MID_START_COL, RIGHT_START_COL)
+    os.replace(csv_tmp, csv_path)
     return output_path
 
 def generate_csv(data, csv_path, agents, mid_col, right_col):
