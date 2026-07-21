@@ -60,21 +60,25 @@ function generateExcel(data, outputPath, reportDate, agents = []) {
 
     const input = JSON.stringify({ data, outputPath, reportDate, agents });
 
-    // Try python3 first, fallback to python (Railway Nix env naming varies)
-    const candidates = ['python3', 'python'];
+    const candidates = [
+      process.env.PYTHON,
+      process.env.PYTHON3,
+      '/usr/bin/python3',
+      '/usr/local/bin/python3',
+      'python3',
+      'python',
+    ].filter(Boolean);
     let python = null;
-    let triedFirst = false;
 
     function trySpawn(bin) {
       console.log('[generateExcel] Spawning', bin, ':', scriptPath);
-      const proc = spawn(bin, [scriptPath], { stdio: ['pipe', 'pipe', 'pipe'] });
-      return proc;
+      return spawn(bin, [scriptPath], { stdio: ['pipe', 'pipe', 'pipe'] });
     }
 
     function attemptNext() {
       const bin = candidates.shift();
       if (!bin) {
-        return reject(new Error('Python not found. Tried python3 and python.'));
+        return reject(new Error('Python not found. Tried python3 and python. Ensure Dockerfile installs python3+openpyxl.'));
       }
       const proc = trySpawn(bin);
       proc.on('error', (err) => {
@@ -82,7 +86,7 @@ function generateExcel(data, outputPath, reportDate, agents = []) {
           console.warn('[generateExcel]', bin, 'not found, trying next...');
           attemptNext();
         } else {
-          reject(new Error(`Failed to spawn ${bin}: ${err.message}`));
+          reject(new Error('Failed to spawn ' + bin + ': ' + err.message));
         }
       });
       runScript(proc);
