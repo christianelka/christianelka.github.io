@@ -12,8 +12,21 @@ export function loadFile(filePath) {
   }
 
   if (ext === 'csv') {
-    const content = readFileSync(filePath, 'latin1');
-    return parse(content, { columns: true, skip_empty_lines: true, trim: true });
+    const buf = readFileSync(filePath);
+    // Strip UTF-8 BOM if present
+    const content = buf.length >= 3 && buf[0] === 0xEF && buf[1] === 0xBB && buf[2] === 0xBF
+      ? buf.subarray(3) : buf;
+    // Try UTF-8 first; if replacement chars appear, file is likely Windows-1252/latin1
+    let text = content.toString('utf-8');
+    if (text.includes('\uFFFD')) text = content.toString('latin1');
+    const opts = { columns: true, skip_empty_lines: true, trim: true, relax_column_count: true };
+    try {
+      return parse(text, opts);
+    } catch (e) {
+      // ponytail: skip malformed rows instead of failing the whole report
+      console.warn('[csvParser] Strict parse failed, retrying with error skipping:', e.message);
+      return parse(text, { ...opts, skip_records_with_error: true });
+    }
   }
 
   throw new Error(`Unsupported file type: .${ext}`);
