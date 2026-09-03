@@ -55,7 +55,7 @@
         temperature: 0.1,
         timeoutMs: 60000,
         useProxy: false,
-        proxyUrl: 'proxy.php'
+        proxyUrl: '/api/proxy'
     };
 
     const keyHealthByBaseUrl = new Map();

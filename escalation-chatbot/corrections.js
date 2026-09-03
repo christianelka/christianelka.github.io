@@ -76,6 +76,25 @@
             persist(state);
         }
 
+        function recordAcceptance({ query, acceptedEntry }) {
+            if (!query || !acceptedEntry) return;
+            const tokens = tokenSetFromQuery(query);
+            if (!tokens.length) return;
+
+            state.entries.push({
+                id: 'a_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+                queryRaw: query,
+                queryTokens: tokens,
+                acceptedHashtag: acceptedEntry.hashtag,
+                acceptedGroup: acceptedEntry.group,
+                acceptedKip: acceptedEntry.kip,
+                type: 'accept',
+                timestamp: new Date().toISOString()
+            });
+
+            persist(state);
+        }
+
         function boostFor(query, entryIdx) {
             const entry = data[entryIdx];
             if (!entry) return 0;
@@ -83,13 +102,14 @@
             if (!tokens.length) return 0;
 
             let boost = 0;
-            for (const correction of state.entries) {
-                const sim = jaccard(tokens, correction.queryTokens);
+            for (const record of state.entries) {
+                const sim = jaccard(tokens, record.queryTokens);
                 if (sim < 0.3) continue;
 
-                if (correction.acceptedHashtag === entry.hashtag) {
-                    boost += 80 * sim;
-                } else if (correction.rejectedHashtags && correction.rejectedHashtags.includes(entry.hashtag)) {
+                if (record.acceptedHashtag === entry.hashtag) {
+                    const multiplier = record.type === 'accept' ? 60 : 80;
+                    boost += multiplier * sim;
+                } else if (record.rejectedHashtags && record.rejectedHashtags.includes(entry.hashtag)) {
                     boost -= 40 * sim;
                 }
             }
@@ -133,6 +153,7 @@
 
         return {
             recordCorrection,
+            recordAcceptance,
             boostFor,
             exportJson,
             importJson,

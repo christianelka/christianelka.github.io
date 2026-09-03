@@ -62,11 +62,49 @@
         unsavedBannerText: document.getElementById('unsavedBannerText'),
         unsavedExportCorr: document.getElementById('unsavedExportCorr'),
         unsavedExportHist: document.getElementById('unsavedExportHist'),
-        unsavedDismiss: document.getElementById('unsavedDismiss')
+        unsavedDismiss: document.getElementById('unsavedDismiss'),
+        syncHashtagBtn: document.getElementById('syncHashtagBtn'),
+        syncFileInput: document.getElementById('syncFileInput'),
+        exportDataBtn: document.getElementById('exportDataBtn'),
+        resetSyncBtn: document.getElementById('resetSyncBtn'),
+        syncModal: document.getElementById('syncModal'),
+        closeSyncModal: document.getElementById('closeSyncModal'),
+        closeSyncModal2: document.getElementById('closeSyncModal2'),
+        syncTableBody: document.getElementById('syncTableBody'),
+        syncApply: document.getElementById('syncApply'),
+        selectAll: document.getElementById('selectAll'),
+        syncStats: document.getElementById('syncStats'),
+        countNew: document.getElementById('countNew'),
+        countModified: document.getElementById('countModified'),
+        countDeleted: document.getElementById('countDeleted'),
+        countUnchanged: document.getElementById('countUnchanged'),
+        openSyncGuide: document.getElementById('openSyncGuide'),
+        syncGuideModal: document.getElementById('syncGuideModal'),
+        closeSyncGuide: document.getElementById('closeSyncGuide')
     };
 
-    const data = (typeof ESCALATION_DATA !== 'undefined' ? ESCALATION_DATA : (window.ESCALATION_DATA || []));
-    const searchIndex = window.EscSearch.buildIndex(data);
+    const data = [...(typeof ESCALATION_DATA !== 'undefined' ? ESCALATION_DATA : (window.ESCALATION_DATA || []))];
+    // ponytail: localStorage = additions only, data.js = always fresh base
+    // migrate old full-dataset key → additions-only
+    if (!localStorage.getItem('escbot_synced_additions') && localStorage.getItem('escbot_synced_data')) {
+        try {
+            const old = JSON.parse(localStorage.getItem('escbot_synced_data'));
+            const baseTags = new Set(data.map(d => d.hashtag));
+            const additions = old.filter(d => !baseTags.has(d.hashtag));
+            localStorage.setItem('escbot_synced_additions', JSON.stringify(additions));
+        } catch(e) {}
+        localStorage.removeItem('escbot_synced_data');
+    }
+    const savedAdditions = localStorage.getItem('escbot_synced_additions');
+    if (savedAdditions) {
+        try {
+            const baseTags = new Set(data.map(d => d.hashtag));
+            JSON.parse(savedAdditions).forEach(item => {
+                if (!baseTags.has(item.hashtag)) data.push(item);
+            });
+        } catch(e) {}
+    }
+    let searchIndex = window.EscSearch.buildIndex(data);
     const corrections = window.EscCorrections.createCorrectionsManager(data);
     const history = window.EscHistory.createHistoryManager();
     let aiSettings = window.EscAI.loadSettings();
@@ -209,6 +247,21 @@
             unsavedBannerDismissed = true;
             els.unsavedBanner.hidden = true;
         });
+
+        els.syncHashtagBtn.addEventListener('click', () => els.syncFileInput.click());
+        els.syncFileInput.addEventListener('change', handleSyncImport);
+        els.exportDataBtn.addEventListener('click', handleSyncExport);
+        els.resetSyncBtn.addEventListener('click', () => {
+            localStorage.removeItem('escbot_synced_additions');
+            localStorage.removeItem('escbot_synced_data');
+            location.reload();
+        });
+        els.closeSyncModal.addEventListener('click', () => { els.syncModal.hidden = true; });
+        els.closeSyncModal2.addEventListener('click', () => { els.syncModal.hidden = true; });
+        els.syncApply.addEventListener('click', handleSyncApply);
+        els.selectAll.addEventListener('change', handleSyncSelectAll);
+        els.openSyncGuide.addEventListener('click', () => { els.syncGuideModal.hidden = false; });
+        els.closeSyncGuide.addEventListener('click', () => { els.syncGuideModal.hidden = true; });
 
         window.addEventListener('beforeunload', e => {
             const status = hasUnsavedData();
@@ -460,6 +513,10 @@
                         acceptedEntry: accepted,
                         rejectedEntries: others,
                         type: 'confirm'
+                    });
+                    corrections.recordAcceptance({
+                        query,
+                        acceptedEntry: accepted
                     });
                     refreshCorrectionStats();
                     showToast('Tersimpan - bot akan ingat preferensi ini', 'success');
@@ -1195,6 +1252,95 @@
         currentThreadId = null;
         resetChat();
         showToast('Riwayat dihapus', 'success');
+    }
+
+    let syncDiffResult = null;
+    let syncNewData = null;
+
+    async function handleSyncImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        e.target.value = '';
+        try {
+            syncNewData = await SyncHashtag.parseExcel(file);
+            syncDiffResult = SyncHashtag.diff(data, syncNewData);
+            renderSyncTable(syncDiffResult);
+            els.syncModal.hidden = false;
+        } catch (err) {
+            showToast(String(err), 'error');
+        }
+    }
+
+    function handleSyncExport() {
+        SyncHashtag.exportToExcel(data);
+        showToast('Data diekspor ke Excel', 'success');
+    }
+
+    function handleSyncSelectAll() {
+        const checked = els.selectAll.checked;
+        els.syncTableBody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            if (!cb.closest('tr').classList.contains('row-unchanged')) {
+                cb.checked = checked;
+            }
+        });
+    }
+
+    function handleSyncApply() {
+        const selections = { added: [], modified: [], deleted: new Set() };
+        els.syncTableBody.querySelectorAll('tr').forEach(tr => {
+            const cb = tr.querySelector('input[type="checkbox"]');
+            if (!cb || !cb.checked) return;
+            const type = tr.dataset.type;
+            const tag = tr.dataset.hashtag;
+            if (type === 'added') {
+                selections.added.push(syncNewData.find(d => d.hashtag === tag));
+            } else if (type === 'modified') {
+                selections.modified.push(syncDiffResult.modified.find(m => m.new.hashtag === tag));
+            } else if (type === 'deleted') {
+                selections.deleted.add(tag);
+            }
+        });
+        const newData = SyncHashtag.applyChanges(data, syncDiffResult, selections);
+        data.length = 0;
+        newData.forEach(d => data.push(d));
+        const baseTags = new Set((typeof ESCALATION_DATA !== 'undefined' ? ESCALATION_DATA : []).map(d => d.hashtag));
+        const additions = data.filter(d => !baseTags.has(d.hashtag));
+        localStorage.setItem('escbot_synced_additions', JSON.stringify(additions));
+        searchIndex = window.EscSearch.buildIndex(data);
+        els.totalEntries.textContent = data.length;
+        els.totalGroups.textContent = new Set(data.map(d => d.group)).size;
+        els.syncModal.hidden = true;
+        showToast(`Diterapkan: +${selections.added.length} ~${selections.modified.length} -${selections.deleted.size}`, 'success');
+    }
+
+    function renderSyncTable(result) {
+        const rows = [];
+        result.added.forEach(item => {
+            rows.push({ type: 'added', badge: 'Baru', badgeClass: 'badge-new', ...item });
+        });
+        result.modified.forEach(m => {
+            rows.push({ type: 'modified', badge: 'Diubah', badgeClass: 'badge-modified', group: m.new.group, kip: m.new.kip, hashtag: m.new.hashtag });
+        });
+        result.deleted.forEach(item => {
+            rows.push({ type: 'deleted', badge: 'Hapus', badgeClass: 'badge-deleted', ...item });
+        });
+        result.unchanged.forEach(item => {
+            rows.push({ type: 'unchanged', badge: 'Sama', badgeClass: 'badge-unchanged', ...item });
+        });
+        els.countNew.textContent = result.added.length;
+        els.countModified.textContent = result.modified.length;
+        els.countDeleted.textContent = result.deleted.length;
+        els.countUnchanged.textContent = result.unchanged.length;
+        els.syncStats.hidden = false;
+        els.syncTableBody.innerHTML = rows.map(r => `
+            <tr class="row-${r.type}" data-type="${r.type}" data-hashtag="${escapeHtml(r.hashtag)}">
+                <td><input type="checkbox" ${r.type !== 'unchanged' ? 'checked' : ''} ${r.type === 'unchanged' ? 'disabled' : ''}></td>
+                <td><span class="badge ${r.badgeClass}">${r.badge}</span></td>
+                <td>${escapeHtml(r.group)}</td>
+                <td>${escapeHtml(r.kip)}</td>
+                <td>${escapeHtml(r.hashtag)}</td>
+            </tr>
+        `).join('');
     }
 
     function formatRelativeTime(iso) {
