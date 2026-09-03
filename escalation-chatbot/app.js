@@ -279,6 +279,19 @@
         if (els.closeGuide) els.closeGuide.addEventListener('click', closeGuide);
         if (els.guideStart) els.guideStart.addEventListener('click', closeGuide);
 
+        const changelogBtn = document.getElementById('changelogBtn');
+        const changelogModal = document.getElementById('changelogModal');
+        const closeChangelogBtn = document.getElementById('closeChangelogBtn');
+        if (changelogBtn && changelogModal) {
+            changelogBtn.addEventListener('click', () => { changelogModal.hidden = false; });
+        }
+        if (closeChangelogBtn && changelogModal) {
+            closeChangelogBtn.addEventListener('click', () => { changelogModal.hidden = true; });
+        }
+        if (changelogModal) {
+            changelogModal.addEventListener('click', e => { if (e.target === changelogModal) changelogModal.hidden = true; });
+        }
+
         document.querySelectorAll('.modal-backdrop').forEach(modal => {
             modal.addEventListener('click', e => {
                 if (e.target === modal) {
