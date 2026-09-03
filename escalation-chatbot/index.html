@@ -21,9 +21,6 @@
                     <span>EscBot</span>
                 </div>
                 <div class="header-actions">
-                    <button class="icon-btn" id="changelogBtn" title="Changelog" aria-label="Changelog">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    </button>
                     <button class="icon-btn" id="guideBtn" title="Panduan Tester" aria-label="Panduan Tester">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     </button>
@@ -57,11 +54,10 @@
                         <div class="history-actions">
                             <button class="btn-mini" id="exportHistory" title="Download semua thread sebagai JSON">Export</button>
                             <button class="btn-mini btn-danger" id="clearHistory" title="Hapus semua thread">Bersihkan</button>
+                        </div>
+                    </div>
+                    <div class="history-list" id="historyList"></div>
                 </div>
-            </div>
-            </div>
-        </div>
-    </div>
 
                 <div class="learning-card">
                     <h3>Pembelajaran</h3>
@@ -597,66 +593,6 @@
                 </div>
                 <div class="guide-callout info">
                     <strong>Merge Otomatis:</strong> Saat dev mengirim update (zip baru), <code>data.js</code> akan ditimpa dengan data terbaru. Tambahan hashtag dari Anda tetap tersimpan di browser dan otomatis di-merge. Klik <span class="demo-btn">Reset</span> untuk kembali ke data asli dari <code>data.js</code>.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="changelogModal" class="modal-backdrop" hidden>
-        <div class="modal modal-changelog">
-            <div class="modal-header">
-                <h3>Changelog</h3>
-                <button class="icon-btn" id="closeChangelogBtn" aria-label="Tutup">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="changelog-entries">
-                <div class="changelog-entry">
-                    <div class="changelog-version">3 Sep 2026</div>
-                    <ul>
-                        <li><strong>Sync menu</strong> — import &amp; export dataset via SheetJS (.xlsx)</li>
-                        <li>Diff preview: data added, modified, deleted, unchanged</li>
-                        <li>Selective merge — pilih perubahan mana yang mau di-apply</li>
-                        <li>Export ke .xlsx atau generate kode JS langsung</li>
-                        <li>Test suite baru (test-accuracy.cjs) untuk validasi pencarian</li>
-                        <li>UI enhancements — sync modal, styling refinements</li>
-                    </ul>
-                </div>
-                <div class="changelog-entry">
-                    <div class="changelog-version">16 Agu 2026</div>
-                    <ul>
-                        <li>Performance improvements &amp; code refinements</li>
-                        <li>Search engine &amp; token handling optimizations</li>
-                    </ul>
-                </div>
-                <div class="changelog-entry">
-                    <div class="changelog-version">24 Jun 2026</div>
-                    <ul>
-                        <li><strong>Core search engine</strong> — hybrid TF-IDF + abbreviation expansion + synonym mapping</li>
-                        <li>Indonesian tokenization, stopword filtering, term frequency scoring</li>
-                        <li><strong>Fuzzy matching</strong> — Levenshtein distance untuk koreksi typo</li>
-                        <li><strong>Active learning</strong> — Jaccard similarity boost dari koreksi user sebelumnya</li>
-                        <li><strong>Multi-provider AI</strong> — 9router, OpenAI, Gemini, OpenRouter, Ollama (local)</li>
-                        <li>API key rotation, cooldown management, auto fallback ke local search</li>
-                        <li>Saran teks otomatis &amp; rekomendasi group/kode</li>
-                    </ul>
-                </div>
-                <div class="changelog-entry">
-                    <div class="changelog-version">3-4 Jun 2026</div>
-                    <ul>
-                        <li>Escalation data configuration — 672 kasus, 664 hashtag</li>
-                        <li>Group routing &amp; KIP (Kategori/Isu/Problem) mapping</li>
-                    </ul>
-                </div>
-                <div class="changelog-entry">
-                    <div class="changelog-version">20-23 Mei 2026</div>
-                    <ul>
-                        <li>Project inisialisasi — chatbot UI, messaging logic, AI integration</li>
-                        <li>Password-protected auth gate &amp; modular chat architecture</li>
-                        <li>Multi-thread chat history (localStorage) — create, switch, rename, delete</li>
-                        <li>Cloudflare Pages deployment &amp; migration guide</li>
-                    </ul>
                 </div>
             </div>
         </div>
