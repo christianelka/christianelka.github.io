@@ -1965,3 +1965,50 @@ kbd {
 }
 
 .btn-ghost:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+
+.modal-changelog {
+    padding: 0;
+}
+
+.modal-changelog .modal-body {
+    padding: 16px 24px 24px;
+    overflow-y: auto;
+}
+
+.modal-changelog .modal-header h3 {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+.changelog-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.changelog-entry {
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+}
+
+.changelog-version {
+    color: var(--accent-light);
+    font-weight: 600;
+    font-size: 0.82rem;
+    margin-bottom: 6px;
+}
+
+.changelog-entry ul {
+    margin: 0;
+    padding-left: 18px;
+    list-style: disc;
+}
+
+.changelog-entry li {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    margin-bottom: 2px;
+}
