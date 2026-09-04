@@ -598,6 +598,51 @@
         </div>
     </div>
 
+    <div class="modal-backdrop" id="importWizardModal" hidden>
+        <div class="modal sync-modal">
+            <div class="modal-header">
+                <h2 id="wizardTitle">Import Hashtag dari Excel</h2>
+                <button class="icon-btn" id="closeWizard" aria-label="Tutup">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <div class="wizard-step" id="wizardStepUpload">
+                <div class="wizard-upload-area" id="wizardUploadArea">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p>Klik atau seret file Excel ke sini</p>
+                    <span class="wizard-upload-hint">Format: .xlsx atau .xls</span>
+                </div>
+                <input type="file" id="wizardFileInput" accept=".xlsx,.xls" hidden>
+            </div>
+
+            <div class="wizard-step" id="wizardStepSelect" hidden>
+                <p class="wizard-instruction">Pilih sheet yang ingin di-import:</p>
+                <div class="wizard-sheet-list" id="wizardSheetList"></div>
+                <div class="wizard-preview-wrap" id="wizardPreviewWrap" hidden>
+                    <p class="wizard-preview-title">Preview <span id="wizardPreviewSheetName"></span> <span id="wizardPreviewCount"></span></p>
+                    <div class="wizard-preview-table-wrap">
+                        <table class="sync-table wizard-preview-table">
+                            <thead>
+                                <tr>
+                                    <th>Assigned Group</th>
+                                    <th>KIP / Experience</th>
+                                    <th>Hashtag</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wizardPreviewBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-ghost" id="wizardCancel">Batal</button>
+                <button class="btn-primary" id="wizardImportBtn" hidden>Import Data</button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast" hidden></div>
 
     <script src="data.js"></script>

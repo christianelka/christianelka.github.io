@@ -83,27 +83,34 @@
         closeSyncGuide: document.getElementById('closeSyncGuide')
     };
 
-    const data = [...(typeof ESCALATION_DATA !== 'undefined' ? ESCALATION_DATA : (window.ESCALATION_DATA || []))];
-    // ponytail: localStorage = additions only, data.js = always fresh base
-    // migrate old full-dataset key → additions-only
-    if (!localStorage.getItem('escbot_synced_additions') && localStorage.getItem('escbot_synced_data')) {
-        try {
-            const old = JSON.parse(localStorage.getItem('escbot_synced_data'));
-            const baseTags = new Set(data.map(d => d.hashtag));
-            const additions = old.filter(d => !baseTags.has(d.hashtag));
-            localStorage.setItem('escbot_synced_additions', JSON.stringify(additions));
-        } catch(e) {}
-        localStorage.removeItem('escbot_synced_data');
+    const wizardEls = {
+        wizardModal: document.getElementById('importWizardModal'),
+        wizardStepUpload: document.getElementById('wizardStepUpload'),
+        wizardStepSelect: document.getElementById('wizardStepSelect'),
+        wizardUploadArea: document.getElementById('wizardUploadArea'),
+        wizardFileInput: document.getElementById('wizardFileInput'),
+        wizardSheetList: document.getElementById('wizardSheetList'),
+        wizardPreviewWrap: document.getElementById('wizardPreviewWrap'),
+        wizardPreviewSheetName: document.getElementById('wizardPreviewSheetName'),
+        wizardPreviewCount: document.getElementById('wizardPreviewCount'),
+        wizardPreviewBody: document.getElementById('wizardPreviewBody'),
+        wizardImportBtn: document.getElementById('wizardImportBtn'),
+        wizardCancel: document.getElementById('wizardCancel'),
+        closeWizard: document.getElementById('closeWizard'),
+        wizardTitle: document.getElementById('wizardTitle')
+    };
+    let wizardWb = null;
+    let wizardSheets = [];
+    let wizardSelectedSheet = null;
+
+    function loadData() {
+        const synced = localStorage.getItem('escbot_synced_data');
+        if (synced) {
+            try { return JSON.parse(synced); } catch (e) {}
+        }
+        return [...(typeof ESCALATION_DATA !== 'undefined' ? ESCALATION_DATA : (window.ESCALATION_DATA || []))];
     }
-    const savedAdditions = localStorage.getItem('escbot_synced_additions');
-    if (savedAdditions) {
-        try {
-            const baseTags = new Set(data.map(d => d.hashtag));
-            JSON.parse(savedAdditions).forEach(item => {
-                if (!baseTags.has(item.hashtag)) data.push(item);
-            });
-        } catch(e) {}
-    }
+    const data = loadData();
     let searchIndex = window.EscSearch.buildIndex(data);
     const corrections = window.EscCorrections.createCorrectionsManager(data);
     const history = window.EscHistory.createHistoryManager();
@@ -172,6 +179,9 @@
     renderHistoryList();
     refreshUnsavedBanner();
     maybeShowGuide();
+    if (!localStorage.getItem('escbot_import_done')) {
+        showWizard(true);
+    }
 
     function initStats() {
         els.totalEntries.textContent = data.length;
@@ -248,12 +258,11 @@
             els.unsavedBanner.hidden = true;
         });
 
-        els.syncHashtagBtn.addEventListener('click', () => els.syncFileInput.click());
-        els.syncFileInput.addEventListener('change', handleSyncImport);
+        els.syncHashtagBtn.addEventListener('click', showWizard);
         els.exportDataBtn.addEventListener('click', handleSyncExport);
         els.resetSyncBtn.addEventListener('click', () => {
-            localStorage.removeItem('escbot_synced_additions');
             localStorage.removeItem('escbot_synced_data');
+            localStorage.removeItem('escbot_import_done');
             location.reload();
         });
         els.closeSyncModal.addEventListener('click', () => { els.syncModal.hidden = true; });
@@ -1267,6 +1276,108 @@
         showToast('Riwayat dihapus', 'success');
     }
 
+    function showWizard(isFirstOpen) {
+        wizardWb = null;
+        wizardSheets = [];
+        wizardSelectedSheet = null;
+        wizardEls.wizardStepUpload.hidden = false;
+        wizardEls.wizardStepSelect.hidden = true;
+        wizardEls.wizardPreviewWrap.hidden = true;
+        wizardEls.wizardImportBtn.hidden = true;
+        wizardEls.wizardTitle.textContent = isFirstOpen ? 'Import Data Awal' : 'Re-Sync Data dari Excel';
+        wizardEls.wizardModal.hidden = false;
+    }
+
+    function closeWizard() {
+        wizardEls.wizardModal.hidden = true;
+        wizardEls.wizardFileInput.value = '';
+    }
+
+    wizardEls.closeWizard.addEventListener('click', closeWizard);
+    wizardEls.wizardCancel.addEventListener('click', closeWizard);
+    wizardEls.wizardUploadArea.addEventListener('click', () => wizardEls.wizardFileInput.click());
+    wizardEls.wizardUploadArea.addEventListener('dragover', e => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); });
+    wizardEls.wizardUploadArea.addEventListener('dragleave', e => { e.currentTarget.classList.remove('drag-over'); });
+    wizardEls.wizardUploadArea.addEventListener('drop', e => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) handleWizardFile(file);
+    });
+    wizardEls.wizardFileInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) handleWizardFile(file);
+    });
+
+    async function handleWizardFile(file) {
+        try {
+            wizardWb = await SyncHashtag.readWorkbook(file);
+            wizardSheets = SyncHashtag.detectSheets(wizardWb);
+            if (!wizardSheets.length) {
+                showToast('Tidak ditemukan sheet dengan format IMPORT yang sesuai', 'error');
+                return;
+            }
+            renderSheetList();
+            wizardEls.wizardStepUpload.hidden = true;
+            wizardEls.wizardStepSelect.hidden = false;
+        } catch (err) {
+            showToast(String(err), 'error');
+        }
+    }
+
+    function renderSheetList() {
+        wizardEls.wizardSheetList.innerHTML = wizardSheets.map((s, i) => {
+            const suggested = i === 0 ? ' <span class="badge badge-new">Paling Baru</span>' : '';
+            return `<div class="wizard-sheet-item" data-idx="${i}">
+                <div class="wizard-sheet-info">
+                    <span class="wizard-sheet-name">${escapeHtml(s.name)}${suggested}</span>
+                    <span class="wizard-sheet-count">${s.rowCount} hashtag</span>
+                </div>
+            </div>`;
+        }).join('');
+
+        wizardEls.wizardSheetList.querySelectorAll('.wizard-sheet-item').forEach(item => {
+            item.addEventListener('click', () => selectSheet(parseInt(item.dataset.idx)));
+        });
+
+        if (wizardSheets.length) selectSheet(0);
+    }
+
+    function selectSheet(idx) {
+        wizardSelectedSheet = wizardSheets[idx];
+        wizardEls.wizardSheetList.querySelectorAll('.wizard-sheet-item').forEach((el, i) => {
+            el.classList.toggle('active', i === idx);
+        });
+        const preview = SyncHashtag.previewSheet(wizardWb, wizardSelectedSheet.name, 5);
+        wizardEls.wizardPreviewSheetName.textContent = wizardSelectedSheet.name;
+        wizardEls.wizardPreviewCount.textContent = `(${wizardSelectedSheet.rowCount} total)`;
+        wizardEls.wizardPreviewBody.innerHTML = preview.rows.map(r =>
+            `<tr><td>${escapeHtml(r.group)}</td><td>${escapeHtml(r.kip)}</td><td>${escapeHtml(r.hashtag)}</td></tr>`
+        ).join('');
+        wizardEls.wizardPreviewWrap.hidden = false;
+        wizardEls.wizardImportBtn.hidden = false;
+    }
+
+    wizardEls.wizardImportBtn.addEventListener('click', handleWizardImport);
+
+    function handleWizardImport() {
+        if (!wizardWb || !wizardSelectedSheet) return;
+        const imported = SyncHashtag.parseSheet(wizardWb, wizardSelectedSheet.name);
+        if (!imported.length) {
+            showToast('Sheet kosong atau format tidak sesuai', 'error');
+            return;
+        }
+        localStorage.setItem('escbot_synced_data', JSON.stringify(imported));
+        localStorage.setItem('escbot_import_done', '1');
+        data.length = 0;
+        imported.forEach(d => data.push(d));
+        searchIndex = window.EscSearch.buildIndex(data);
+        els.totalEntries.textContent = data.length;
+        els.totalGroups.textContent = new Set(data.map(d => d.group)).size;
+        closeWizard();
+        showToast(`Berhasil import ${imported.length} hashtag dari "${wizardSelectedSheet.name}"`, 'success');
+    }
+
     let syncDiffResult = null;
     let syncNewData = null;
 
@@ -1316,9 +1427,7 @@
         const newData = SyncHashtag.applyChanges(data, syncDiffResult, selections);
         data.length = 0;
         newData.forEach(d => data.push(d));
-        const baseTags = new Set((typeof ESCALATION_DATA !== 'undefined' ? ESCALATION_DATA : []).map(d => d.hashtag));
-        const additions = data.filter(d => !baseTags.has(d.hashtag));
-        localStorage.setItem('escbot_synced_additions', JSON.stringify(additions));
+        localStorage.setItem('escbot_synced_data', JSON.stringify(data));
         searchIndex = window.EscSearch.buildIndex(data);
         els.totalEntries.textContent = data.length;
         els.totalGroups.textContent = new Set(data.map(d => d.group)).size;

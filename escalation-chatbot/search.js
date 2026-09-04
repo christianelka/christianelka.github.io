@@ -90,7 +90,7 @@
     ]);
 
     const SHORT_TOKENS_KEPT = new Set([
-        'iot', 'mec', 'sim', 'cdr', 'puk', 'apn', 'sms', 'cug', 'hlr', 'ocs',
+        'iot', 'mec', 'sim', 'cdr', 'puk', 'apn', 'sms', 'cug', 'hlr', 'ocs', 'fr',
         'b2b', 'va', 'tv', 'ip', 'dns', 'am', 'pdf', 'cs', 'ces', 'lba', 'bcp',
         'scv', 'tdc', 'usim', 'esim', 'volte', 'gprs', 'lte', 'nbp'
     ]);
@@ -121,7 +121,7 @@
         'b2b2c': 'business to business to consumer',
         'iot': 'internet of things',
         'm2m': 'machine to machine',
-        'fr': 'freedom ring',
+        'fr': 'face recognition',
         'dsc': 'device service center',
         'fa': 'faktur',
         'ifree': 'ifree',
@@ -343,15 +343,20 @@
         // Reactivation & Activation
         'reaktivasi': ['aktivasi', 'renewal', 'refresh', 'aktifkan', 'aktifkan kembali', 'reactivasi', 're-aktivasi', 'renew'],
         'aktifkan kembali': ['reaktivasi', 'renewal', 'refresh', 'reactivasi', 're-aktivasi', 'aktifkan'],
-        'aktivasi': ['activation', 'aktifkan', 'enable', 'aktif'],
+        'aktivasi': ['activation', 'aktifkan', 'enable', 'aktif', 'add', 'tambah', 'pasang'],
         'aktifkan': ['aktivasi', 'activation', 'enable'],
+        'add': ['aktivasi', 'tambah', 'pasang', 'activation'],
+        'tambah': ['add', 'aktivasi', 'pasang', 'activation'],
+        'remove': ['deaktivasi', 'hapus', 'cabut', 'disable', 'deactivation'],
+        'hapus': ['remove', 'deaktivasi', 'cabut', 'disable'],
         'resume': ['aktifkan', 'enable', 'activate', 'restore', 'aktif'],
         
         // Quota & Package
         'kuota': ['quota', 'paket', 'data', 'volume'],
         'paket': ['package', 'bundle', 'kuota', 'plan'],
         'bonus': ['ekstra', 'tambahan', 'kuota', 'gratis'],
-        'flash': ['ekstra', 'tambahan', 'bonus'],
+        'flash': ['ekstra', 'tambahan', 'bonus', 'flash corporate', 'paket flash'],
+        'paket flash': ['flash', 'flash corporate', 'aktivasi paket flash'],
         'ekstra': ['flash', 'tambahan', 'bonus'],
         
         // Errors & Issues
@@ -389,6 +394,12 @@
         'blacklist': ['blokir', 'block', 'restrict'],
         'whitelist': ['allow', 'izinkan', 'unblock'],
         
+        // Registration & Face Recognition
+        'registrasi': ['registration', 'register', 'face recognition', 'fr', 'pendaftaran'],
+        'face recognition': ['registrasi', 'fr', 'registration'],
+        'fr': ['face recognition', 'registrasi', 'registration'],
+        'pendaftaran': ['registrasi', 'registration', 'register'],
+        
         // Roaming
         'roaming': ['roamax', 'roam', 'luar negeri'],
         'roamax': ['roaming', 'roam'],
@@ -402,6 +413,9 @@
         'orbit': ['b2b2c', 'home'],
         'b2b2c': ['mepro', 'orbit'],
         'mepro': ['b2b2c'],
+        'cug': ['teamplan', 'group', 'kelompok'],
+        'teamplan': ['cug', 'team plan', 'paket team'],
+        'member': ['anggota', 'teamplan', 'cug', 'kelompok'],
         
         // IoT & M2M
         'iot': ['cmp', 'aeris', 'm2m', 'device'],
@@ -656,7 +670,7 @@
 
     const GROUP_ROUTING_HINTS = [
         { keywords: ['add offer', 'open restric', 'open restrict', 'add offering', 'tambahkan paket', 'buka blokir'], groupMatch: 'UFO', boost: 90 },
-        { keywords: ['aktivasi paket team', 'pengecekan nomor', 'pindah paket'], groupMatch: 'CUGCorporate', boost: 90 },
+        { keywords: ['aktivasi paket team', 'pengecekan nomor', 'pindah paket', 'add member', 'tambah member', 'tambah anggota', 'add anggota', 'daftar member'], groupMatch: 'CUGCorporate', boost: 90 },
         { keywords: ['iccid', ' sn ', 'serial number', 'pengecekan iccid', 'cek iccid', 'informasi iccid'], groupMatch: 'Paradise', boost: 90 },
         { keywords: ['volte', 'voice over lte', 'panggilan 4g', 'hd voice'], groupMatch: 'UniprovPaceLayer', boost: 50 },
         { keywords: ['add psb', 'psb stuck', 'stuck order', 'order macet', 'proses stuck', 'order tidak bergerak', 'psb order', 'order failed', 'gagal order'], groupMatch: 'MyEnterpriseAccess', boost: 80 },
@@ -792,6 +806,14 @@
         return dp[m][n];
     }
 
+    // ponytail: word-boundary match for routing hint keywords — prevents 'va' matching inside 'aktivasi'
+    function wordMatch(text, keyword) {
+        if (!text || !keyword) return false;
+        const escaped = escapeRegex(keyword);
+        const re = new RegExp('(?:^|[\\s,;\\-_/])' + escaped + '(?:[\\s,;\\-_/]|$)', 'i');
+        return re.test(text);
+    }
+
     function fuzzyMatch(token, target, maxDistance) {
         if (!token || !target) return false;
         maxDistance = maxDistance || 2;
@@ -849,11 +871,11 @@
         const idfFloor = Math.log(1 + index.N);
 
         const triggeredRoutingHints = GROUP_ROUTING_HINTS.filter(hint =>
-            hint.keywords.some(kw => queryNorm.includes(kw))
+            hint.keywords.some(kw => wordMatch(queryNorm, kw))
         );
 
         const triggeredKipHints = KIP_ROUTING_HINTS.filter(hint =>
-            hint.keywords.some(kw => queryNorm.includes(kw))
+            hint.keywords.some(kw => wordMatch(queryNorm, kw))
         );
 
         const results = [];
@@ -898,7 +920,7 @@
 
             expandedTokens.forEach(t => {
                 if (queryTokens.includes(t)) return;
-                const weight = (index.idf[t] || idfFloor) * 0.8;
+                const weight = (index.idf[t] || idfFloor) * 0.3;
                 if (hasWord(kipNorm, t)) {
                     score += 16 * weight;
                     matched.add(t);
@@ -926,8 +948,9 @@
                 const weight = (index.idf[t] || idfFloor) * fuzzyMultiplier;
                 const kipTokens = kipNorm.split(' ');
                 const groupTokens = groupNorm.split(' ');
-                const kipMatch = kipTokens.some(kt => fuzzyMatch(t, kt, 2));
-                const groupMatch = groupTokens.some(gt => fuzzyMatch(t, gt, 2));
+                const maxDist = t.length <= 3 ? 1 : 2;
+                const kipMatch = kipTokens.some(kt => fuzzyMatch(t, kt, maxDist));
+                const groupMatch = groupTokens.some(gt => fuzzyMatch(t, gt, maxDist));
                 if (kipMatch) {
                     score += 6 * weight;
                     matched.add(t);
@@ -977,7 +1000,17 @@
                 }
             });
 
-            if (score > 0.5) {
+            // Semantic phrase boost: "add member" in CUG context → teamplan entries
+            const hasAdd = queryTokens.some(t => ['add','aktivasi','tambah','pasang'].includes(t));
+            const hasMember = queryTokens.some(t => ['member','anggota'].includes(t));
+            if (hasAdd && hasMember) {
+                const kipLower = entry.kip.toLowerCase();
+                if (kipLower.includes('teamplan') || (kipLower.includes('aktivasi') && kipLower.includes('paket'))) {
+                    score += 72;
+                }
+            }
+
+            if (score > 5) {
                 results.push({
                     ...entry,
                     _idx: entryIdx,
@@ -1005,6 +1038,8 @@
         finalResults.sort((a, b) => {
             const diff = b.scoreRaw - a.scoreRaw;
             if (Math.abs(diff) < 0.1) {
+                const matchDiff = (b._matched || []).length - (a._matched || []).length;
+                if (matchDiff !== 0) return matchDiff;
                 return (b.skala || 0) - (a.skala || 0);
             }
             return diff;
