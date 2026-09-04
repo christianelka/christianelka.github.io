@@ -25,7 +25,12 @@
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     </button>
                     <button class="icon-btn" id="settingsBtn" title="Pengaturan AI" aria-label="Pengaturan AI">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </button>
+                    <button class="icon-btn" id="changelogBtn" title="Changelog" aria-label="Changelog">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -639,6 +644,79 @@
             <div class="modal-footer">
                 <button class="btn-ghost" id="wizardCancel">Batal</button>
                 <button class="btn-primary" id="wizardImportBtn" hidden>Import Data</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="changelogModal" hidden>
+        <div class="modal modal-changelog">
+            <div class="modal-header">
+                <h3>Changelog</h3>
+                <button class="icon-btn" id="closeChangelogBtn" aria-label="Tutup">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="changelog-entries">
+                    <div class="changelog-entry">
+                        <div class="changelog-version">4 Sep 2026</div>
+                        <ul>
+                            <li><strong>Admin route &amp; Excel generation</strong> — backend admin endpoint &amp; spreadsheet export</li>
+                            <li><strong>Import wizard</strong> — force-first-import gate, rightmost sheet auto-suggest</li>
+                            <li>Full-replace import (not merge), localStorage persistence</li>
+                            <li>Header row auto-detect scanning rows 0–10</li>
+                            <li>Search scope fix — only suggest hashtags from imported sheet</li>
+                            <li>Casing fix — preserve Excel hashtag casing exactly</li>
+                            <li>Search algorithm refinements — APN false match fix, CUG ranking, fuzzy scoring</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-entry">
+                        <div class="changelog-version">3 Sep 2026</div>
+                        <ul>
+                            <li><strong>Sync menu</strong> — import &amp; export dataset via SheetJS (.xlsx)</li>
+                            <li>Diff preview: data added, modified, deleted, unchanged</li>
+                            <li>Selective merge — pilih perubahan mana yang mau di-apply</li>
+                            <li>Export ke .xlsx atau generate kode JS langsung</li>
+                            <li>Test suite baru (test-accuracy.cjs) untuk validasi pencarian</li>
+                            <li>UI enhancements — sync modal, styling refinements</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-entry">
+                        <div class="changelog-version">16 Agu 2026</div>
+                        <ul>
+                            <li>Performance improvements &amp; code refinements</li>
+                            <li>Search engine &amp; token handling optimizations</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-entry">
+                        <div class="changelog-version">24 Jun 2026</div>
+                        <ul>
+                            <li><strong>Core search engine</strong> — hybrid TF-IDF + abbreviation expansion + synonym mapping</li>
+                            <li>Indonesian tokenization, stopword filtering, term frequency scoring</li>
+                            <li><strong>Fuzzy matching</strong> — Levenshtein distance untuk koreksi typo</li>
+                            <li><strong>Active learning</strong> — Jaccard similarity boost dari koreksi user sebelumnya</li>
+                            <li><strong>Multi-provider AI</strong> — 9router, OpenAI, Gemini, OpenRouter, Ollama (local)</li>
+                            <li>API key rotation, cooldown management, auto fallback ke local search</li>
+                            <li>Saran teks otomatis &amp; rekomendasi group/kode</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-entry">
+                        <div class="changelog-version">3-4 Jun 2026</div>
+                        <ul>
+                            <li>Escalation data configuration — 672 kasus, 664 hashtag</li>
+                            <li>Group routing &amp; KIP (Kategori/Isu/Problem) mapping</li>
+                        </ul>
+                    </div>
+                    <div class="changelog-entry">
+                        <div class="changelog-version">20-23 Mei 2026</div>
+                        <ul>
+                            <li>Project inisialisasi — chatbot UI, messaging logic, AI integration</li>
+                            <li>Password-protected auth gate &amp; modular chat architecture</li>
+                            <li>Multi-thread chat history (localStorage) — create, switch, rename, delete</li>
+                            <li>Cloudflare Pages deployment &amp; migration guide</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
