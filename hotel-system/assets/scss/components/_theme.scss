@@ -1,0 +1,517 @@
+@use '../utils' as *;
+/*-----------------------------------------------------------------------------------
+
+    Theme Name: Techor IT Solution & Technology HTML Template
+    Author: procoderca
+    Support:procoderca@gmail.com
+    Description: Techor IT Solution & Technology HTML Template
+    Version: 1.0.0
+
+-----------------------------------------------------------------------------------
+
+/************ TABLE OF CONTENTS ***************
+
+    01. THEME DEFAULT CSS
+	02. about css start
+	03. blog css start
+	04. brand css start
+	05. career css start
+	06. cart css start
+	07. Checkout css start
+	08. choose css start
+	09. contact css start
+	10. error css start
+	11. footer css start
+	12. funfact css start
+	13. header css start
+	14. hero css start
+	15. information css start
+	16. menu css start
+	17. newsletter css start
+	18. portfolio css start
+	19. price css start
+	20. menu css startrt
+	21. shop sidebar css start
+	22. shop css start
+	23. slider css start
+	24. step css start
+	25. team css start
+	26. testimonial css start
+	27. text slider css start
+	28. tracking css start
+	29. video css start
+    
+    **********************************************/
+
+/*----------------------------------------*/
+/* 01. THEME DEFAULT CSS START
+/*----------------------------------------*/
+
+@import url($font-url);
+
+@media (min-width: 1400px) {
+    .container,
+    .container-lg,
+    .container-md,
+    .container-sm,
+    .container-xl,
+    .container-xxl {
+        max-width: 1320px;
+    }
+    .container-1750 {
+        max-width: 1750px;
+    }
+    .container-1050 {
+        max-width: 1050px;
+    }
+}
+
+
+/*---------------------------------
+	typography css start 
+---------------------------------*/
+body {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 28px;
+    overflow-x: hidden;
+    font-family: var(--tv-ff-body);
+    color: var(--tv-text-body);
+}
+
+body,
+html {
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    transition: .3s;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--tv-ff-heading);
+    color: var(--tv-heading-primary);
+    font-weight: 600;
+    line-height: 1.22;
+    @include transition(.3s);
+}
+
+img {
+    max-width: 100%;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+h3 {
+    font-size: 28px;
+}
+
+h4 {
+    font-size: 24px;
+}
+
+h5 {
+    font-size: 20px;
+}
+
+h6 {
+    font-size: 16px;
+}
+
+ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+
+.z-index-1 {
+    position: relative;
+    z-index: 1;
+}
+
+.z-index-2 {
+    position: relative;
+    z-index: 2;
+}
+
+.z-index-3 {
+    position: relative;
+    z-index: 3;
+}
+
+.z-index-4 {
+    position: relative;
+    z-index: 4;
+}
+
+.z-index-5 {
+    position: relative;
+    z-index: 5;
+}
+
+
+.z-index-8 {
+    position: relative;
+    z-index: 8;
+}
+
+.z-index-9 {
+    position: relative;
+    z-index: 9;
+}
+
+.z-index-10 {
+    position: relative;
+    z-index: 10;
+}
+
+a,
+.btn,
+button,
+input,
+select,
+textarea,
+li,
+img,
+.transition-3,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @include transition(.3s);
+}
+
+a:focus,
+.button:focus {
+    text-decoration: none;
+    outline: none;
+}
+
+a:focus,
+a:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+a,
+button {
+    color: inherit;
+    outline: none;
+    border: none;
+    background: transparent;
+    color: var(--tv-theme-1);
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button:focus {
+    outline: 0;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+input {
+    height: 55px;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0 25px;
+    line-height: 50px;
+    font-size: 16px;
+    color: var(--tv-common-black);
+    background-color: #F6F7F9;
+    border: 1px solid transparent;
+    text-transform: capitalize;
+    @include tv-placeholder {
+        color: #525252;
+        text-transform: capitalize;
+    }
+
+    &:focus {
+        border-color: var(--tv-theme-1);
+    }
+}
+
+textarea {
+    outline: none;
+    width: 100%;
+    padding: 20px 25px;
+    border: none;
+    height: 200px;
+    resize: none;
+    font-size: 16px;
+    color: var(--tv-common-black);
+    background-color: #F6F7F9;
+    border: 1px solid transparent;
+    text-transform: capitalize;
+    @include tv-placeholder {
+        color: #525252;
+        text-transform: capitalize;
+    }
+
+    &:focus {
+        border-color: var(--tv-theme-1);
+    }
+}
+
+input[type="color"] {
+    appearance: none;
+    -moz-appearance: none;
+    -webktv-appearance: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    border-radius: 50%;
+}
+
+*::-moz-selection {
+    background: var(--tv-theme-1);
+    color: var(--itt-common-white);
+    text-shadow: none;
+}
+
+::-moz-selection {
+    background: var(--tv-theme-1);
+    color: var(--tv-common-white);
+    text-shadow: none;
+}
+
+::selection {
+    background: var(--tv-theme-1);
+    color: var(--tv-common-white);
+    text-shadow: none;
+}
+
+
+*::-moz-placeholder {
+    color: var(--tv-common-black);
+    font-size: var(--tv-fz-body);
+    opacity: 1;
+}
+
+*::placeholder {
+    color: var(--tv-common-black);
+    font-size: var(--tv-fz-body);
+    opacity: 1;
+}
+
+/*---------------------------------
+    common classes css start 
+---------------------------------*/
+
+.fix {
+    overflow: hidden
+}
+
+.p-relative {
+    position: relative;
+}
+
+.p-absolute {
+    position: absolute;
+}
+
+.border-line-orange {
+    display: inline;
+    background-repeat: no-repeat;
+    background-size: 0% 1px, 0 1px;
+    background-position: 100% 100%, 0 100%;
+    transition: background-size 0.3s linear;
+    background-image: linear-gradient(var(--tv-theme-1), var(--tv-theme-1)), linear-gradient(var(--tv-theme-1), var(--tv-theme-1));
+
+    &:hover {
+        background-size: 0% 1px, 100% 1px;
+    }
+}
+
+.border-line-black {
+    display: inline;
+    background-repeat: no-repeat;
+    background-size: 0% 1px, 0 1px;
+    background-position: 100% 100%, 0 100%;
+    transition: background-size 0.3s linear;
+    background-image: linear-gradient(var(--tv-common-black), var(--tv-common-black)), linear-gradient(var(--tv-common-black), var(--tv-common-black));
+
+    &:hover {
+        background-size: 0% 1px, 100% 1px;
+    }
+}
+
+.border-line-white {
+    display: inline;
+    background-repeat: no-repeat;
+    background-size: 0% 1px, 0 1px;
+    background-position: 100% 100%, 0 100%;
+    transition: background-size 0.3s linear;
+    background-image: linear-gradient(var(--tv-common-white), var(--tv-common-white)), linear-gradient(var(--tv-common-white), var(--tv-common-white));
+
+    &:hover {
+        background-size: 0% 1px, 100% 1px;
+    }
+}
+
+.section-bg {
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.title-hover {
+    transition: all .3s;
+    &:hover {
+        color: var(--tv-theme-1);
+    }
+}
+.zoom {
+    & .img-zoom {
+        overflow: hidden;
+        & img {
+            transition: 1.3s all ease;
+        }
+    }
+    &:hover {
+        & .img-zoom {
+            img {
+                transform: scale(1.15) rotate(2deg);
+            }
+        }
+    }
+}
+.gx-10 {
+    --bs-gutter-x: 10px;
+}
+.gx-15 {
+    --bs-gutter-x: 15px;
+}
+.gx-20 {
+    --bs-gutter-x: 20px;
+}
+.gx-25 {
+    --bs-gutter-x: 25px;
+}
+.gx-35 {
+    --bs-gutter-x: 35px;
+}
+.gx-40 {
+    --bs-gutter-x: 40px;
+}
+.gx-60 {
+    --bs-gutter-x: 60px;
+}
+.border-radius-30 {
+    border-radius: 30px;
+}
+.slider-transtion {
+	-webktv-transition-timing-function: linear;
+	transition-timing-function: linear;
+}
+.shine-effect {
+    position: relative;
+    &::before {
+        background: rgba(255, 255, 255, 0.3);
+        bottom: 0;
+        content: "";
+        left: 50%;
+        position: absolute;
+        right: 51%;
+        top: 0;
+        opacity: 1;
+        pointer-events: none;
+        -webktv-transition: all 400ms linear;
+        transition: all 400ms linear;
+    }	
+    &:hover {
+        &::before {
+            left: 0;
+            right: 0;
+            opacity: 0;
+            -webktv-transition: all 400ms linear;
+            transition: all 400ms linear;
+        }
+    }
+}
+.shine-effect-2 {
+    position: relative;
+    &::before {
+        background: rgba(255, 255, 255, 0.3);
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 0;
+        opacity: 1;
+        pointer-events: none;
+    }	
+    &:hover {
+        &::before {
+            height: 100%;
+            opacity: 0;
+            -webktv-transition: all 400ms linear;
+            transition: all 400ms linear;
+        }
+    }
+}
+
+.img-style {
+    overflow: hidden;
+    & img {
+        width: 100%;
+        transform: scale(1.04) translateX(-1%);
+        transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    &:hover {
+        & img {
+            transform: scale(1.04) translateX(1%);
+        }
+    }
+}
+.img-zoom-style {
+    overflow: hidden;
+    & img {
+        transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    &:hover {
+        & img {
+            transform: scale(1.04);
+        }
+    }
+}
+
+.tw-rounded-lg {
+	border-radius: 0.5rem !important;
+}
+.tw-py-10 {
+	padding-block: var(--size-10) !important;
+}
+.max-w-190-px {
+	max-width: 190px;
+}
+
+.tw-start-0 {
+	inset-inline-start: 0;
+}

@@ -1,0 +1,410 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  18. portfolio css start
+/*----------------------------------------*/
+
+.tv-portfolio {
+    &-bg {
+        position: relative;
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 65%;
+            width: 100%;
+            z-index: -2;
+            background-color: var(--tv-common-black);
+        }
+    }
+    &-content {
+        position: absolute;
+        bottom: 40px;
+        left: 40px;
+        right: 40px;
+        z-index: 1;
+        transform: perspective(400px) rotateX(-90deg);
+        transform-origin: center;
+        transition: all 0.5s ease-in-out;
+        align-items: center;
+        @media #{$xs}{
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+        }  
+        @media #{$sm}{
+            bottom: 40px;
+            left: 40px;
+            right: 40px;
+        }  
+        & span {
+            display: block;
+            font-weight: 600;
+            color: var(--tv-theme-1);
+            margin-bottom: 12px;
+        }
+    }
+    &-title {
+        font-size: 20px;
+        margin-bottom: 0;
+        margin-right: 20px;
+        color: var(--tv-common-white);
+        @media #{$xl,$lg,$md,$xs} {
+            font-size: 18px;
+        }
+        @media #{$sm}{
+            font-size: 20px;
+        }
+    }
+    &-item-arrow {
+        & a {
+            border-radius: 50%;
+            display: inline-block;
+            transition: .3s;
+            height: 50px;
+            width: 50px;
+            line-height: 50px;
+            text-align: center;
+            display: inline-block;
+            color: var(--tv-common-white);
+            background-color: var(--tv-theme-1);
+            &:hover {
+                color: var(--tv-common-black);
+                background-color: var(--tv-common-white);
+            }
+        }
+    }
+    &-item {
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 0;
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+            background: linear-gradient(180deg, rgba(15, 49, 58, 0) 0%, #0f313a 100%);
+        }
+        &:hover {
+            &::after {
+                height: 100%;
+            }
+            & .tv-portfolio-content {
+                transform: perspective(400px) rotateX(0deg);
+            }
+        }
+    }
+    &-active {
+        margin-right: -440px;
+        @media #{$xxl}{
+            margin-right: -250px;
+        }
+        @media #{$xl,$lg,$md,$xs}{
+            margin-right: 0;
+        }
+    }
+    &-arrow-box {
+        @media #{$xs}{
+            margin-top: 30px;
+            
+        }
+        & > div {
+            @media #{$xs}{
+                display: flex;                
+            }
+        }
+        & .arrow-prev {
+            margin-left: 45px;
+            @media #{$md}{
+                margin-left: 20px;
+                margin-top: 30px;
+            }
+            @media #{$xs}{
+                margin-left: 20px;
+                margin-top: 0;
+            }
+        }
+        & button {
+            padding: 0;
+            height: 60px;
+            width: 60px;
+            line-height: 60px;
+            font-weight: 400;
+            font-size: 24px;
+            transition: .3s;
+            border-radius: 50%;
+            color: var(--tv-theme-1);
+            display: block;
+            background-color: var(--tv-common-white);  
+            @media #{$md}{
+                display: inline-block;
+            }
+            @media #{$xs}{
+                display: inline-block;
+                height: 45px;
+                width: 45px;
+                line-height: 45px;
+                font-size: 20px;
+            }
+            & svg {
+                display: inline-block;
+                margin-top: -2px;
+            }       
+            &:hover{
+                color: var(--tv-common-white);
+                background-color: var(--tv-theme-1);
+            }
+        }
+    }
+    &-shape-1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+    &-active-2 {
+        margin: 0 -160px;
+        @media #{$md,$xs} {
+            margin: 0;
+        }
+    }
+    &-style-2 {
+        & .tv-portfolio-arrow-box .arrow-prev {
+            @media #{$md,$xs}{
+                margin-left: 0;
+                margin-right: 20px;
+            } 
+        }
+    }
+    &-top-wrap {
+        & .tv-portfolio-btn {
+            @media #{$md,$xs}{
+                margin-top: 25px;
+            } 
+        }
+    }
+    &-inner-style {
+        & .tv-portfolio-active {
+            margin: 0;
+        }
+        & .tv-testimonial-2-arrow-box {
+            @media #{$xs}{
+                margin-top: 25px;
+            }
+            & button {
+                @media #{$xs}{
+                    height: 40px;
+                    width: 40px;
+                    line-height: 40px;
+                }
+                & svg {
+                    @media #{$xs}{
+                        width: 18px;
+                        display: inline-block;
+                        margin-top: -4px;
+                    }
+                }
+            }
+        }
+    }
+}
+.tv-pro-details {
+    &-wrap {
+        margin-left: -30px;
+        @media #{$lg,$md,$xs}{
+            margin-left: 0;
+        }
+    }
+    &-thumb {
+        @media #{$lg,$md,$xs}{
+            width: 100%; 
+            margin-bottom: 35px;
+        }
+        & img {
+            @media #{$lg,$md,$xs}{
+                width: 100%; 
+            }
+        }
+    }
+    &-title {
+        font-weight: 600;
+        font-size: 30px;
+        @media #{$lg,$md,$xs}{
+            & br {
+                display: none;
+            }
+        }
+    }
+    &-title-sm {
+        font-weight: 700;
+        font-size: 24px;
+    }
+    &-text {
+        & p {
+            font-weight: 600;
+            font-size: 17px;
+            line-height: 1.76;
+            color: #525252;
+            @media #{$xl,$lg,$md,$xs}{
+                font-size: 15px;
+            }
+        }
+        &-2 {
+            margin-left: -55px;
+            @media #{$xl,$lg,$md,$xs}{
+                margin-left: 0;
+            }
+        }
+        &.ml {
+            margin-left: 60px;
+            @media #{$lg,$md,$xs}{
+                margin-left: 0;
+            }
+        }
+    }
+    &-list {
+        & ul {
+            & li {
+                list-style-type: none;
+                position: relative;
+                padding-left: 30px;
+                margin-bottom: 21px;
+                & svg,i {
+                    position: absolute;
+                    top: 1px;
+                    left: 0;
+                    @media #{$xl,$lg,$md,$xs}{
+                        top: 4px;
+                    }
+                }
+                & div {
+                    & span {
+                        font-weight: 600;
+                        font-size: 22px;
+                        display: block;
+                        margin-bottom: 10px;
+                        color: var(--tv-common-black);
+                    }
+                    & p {
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+        &.list-style-1 {
+            & ul {
+                & li {
+                    width: 50%;
+                    float: left;
+                    margin-bottom: 16px;
+                    @media #{$xs}{
+                        width: 100%; 
+                    }
+                    & svg,i {
+                        position: absolute;
+                        top: -2px;
+                        left: 0;
+                        @media #{$xl,$lg,$md,$xs}{
+                            top: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &-border {
+        padding-bottom: 45px;
+        margin-bottom: 60px;
+        border-bottom: 1px solid rgba($color: #525252, $alpha: .2);
+    }
+    &-left {
+        margin-right: 82px;
+        @media #{$xl}{
+            margin-right: 35px;
+        }
+        @media #{$lg}{
+            margin-right: 0;
+        }
+        @media #{$md,$xs}{
+            margin-right: 0;
+            margin-top: 50px;
+        }
+        & .tv-information-left {
+            padding: 40px 35px;
+            margin-right: 0;
+            background-color: var(--tv-gray-1);
+            @media #{$lg,$xs}{
+                padding: 40px 15px;
+            }
+        }
+        & .tv-information-textarea-box {
+            & textarea {
+                height: 160px;
+                background-color: var(--tv-common-white);
+                &::placeholder {
+                    font-weight: 400;
+                    font-size: 15px;
+                    @media #{$lg}{
+                        font-size: 12px;     
+                    }
+                }
+            }
+        }
+    }
+    &-info {
+        padding: 40px 35px;
+        background-color: var(--tv-gray-1);
+        @media #{$lg,$xs}{
+            padding: 40px 15px;
+        }
+        & ul {
+            margin-bottom: 35px;
+            & li {
+                list-style-type: none;
+                &:not(:last-child) {
+                    margin-bottom: 20px;
+                }
+                & span {
+                    font-weight: 600;
+                    font-size: 17px;
+                    display:block;
+                    margin-bottom: 6px;
+                    color: var(--tv-common-black);
+                }
+                & a {
+                    font-weight: 400;
+                    font-size: 14px;  
+                    transition: .3s;
+                    &:hover {
+                        color: var(--tv-theme-1);
+                    }
+                }
+            }
+        }
+    }
+    &-social {
+        & a {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            line-height: 52px;
+            font-size: 18px;
+            margin-right: 9px;
+            display: inline-block;
+            text-align: center;
+            transition: .3s;
+            color: var(--tv-theme-1);
+            background-color: var(--tv-common-white);
+            @media #{$xl,$lg,$md,$xs}{
+                width: 44px;
+                height: 44px;
+                line-height: 44px;
+            }
+            &:hover {
+                color: var(--tv-common-white);
+                background-color: var(--tv-theme-1);
+            }
+        }
+    }
+}

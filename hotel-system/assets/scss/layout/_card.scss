@@ -1,0 +1,124 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  05. career css start
+/*----------------------------------------*/
+
+.tv-card-box{
+  position: relative;
+    padding-left: 108px;
+    .icon{
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 80px;
+        width: 80px;
+        background-color: var(--tv-theme-1);
+        line-height: 80px;
+        text-align: center;
+        border-radius: 10px 0 10px 0;
+
+    }
+    .content{
+        p{
+            margin: 0;
+        }
+    }
+}
+
+// hero slider 4 css
+
+
+.tv-card-bottom-wrap {
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    @media #{ $md, $sm, $xs}{
+        /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+       display: none;
+    
+        
+    }
+}
+.tv-slider-card-wrap{
+    gap: 43px;
+    padding: 24px 30px;
+    background-color: var(--tv-gray-1);
+    border-radius: 18px 18px 0 0;
+    position: relative;
+    @media #{ $md, $sm, $xs}{
+        /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        gap: 20px;
+    
+        
+    }
+    .tv-slider-bottom-navigation-slider{
+        @media #{$xl, $lg, $md, $sm, $xs}{
+            /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        display: none;
+        
+            
+        }
+         position: absolute;
+         right: 0;
+         bottom: 0;
+         width: 332px;
+         .single-navigation-slider{
+            img{
+                width: 332px;
+                height: 188px;
+                object-fit: cover;
+                border-radius: 18px 18px 0 0;
+            }
+         }
+         .tv-testi-arrow-box-wrap{
+            padding: 41px 24px;
+            background-color: var(--tv-theme-1);
+            display: flex;
+            justify-content: space-between;
+            button{
+                color: var(--tv-common-white);
+                height: 36px;
+                width: 36px;
+                border: 1px solid var(--tv-common-white);
+                line-height: 36px;
+                text-align: center;
+                border-radius: 50%;
+            }
+         }
+    }
+}
+.single-card-box-2{
+    position: relative;
+    padding-left: 78px;
+    .icon{
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 64px;
+        width: 64px;
+        text-align: center;
+        line-height: 64px;
+        background-color: var(--tv-theme-1);
+        border-radius: 10px;
+    }
+    .content{
+        h4{
+            margin-bottom: 5px;
+            @media #{$lg, $md, $sm, $xs}{
+                /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+                font-size: 20px;
+            
+                
+            }
+        }
+        p{
+            margin: 0;
+            font-weight: 400;
+            font-size: 16px;
+        }
+    }
+}

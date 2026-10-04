@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 52" fill="none">
+  <defs>
+    <linearGradient id="hl-grad-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="48" height="48" rx="14" fill="url(#hl-grad-dark)"/>
+  <path d="M26 12C21.5817 12 18 15.5817 18 20V23H17C15.8954 23 15 23.8954 15 25V37C15 38.1046 15.8954 39 17 39H35C36.1046 39 37 38.1046 37 37V25C37 23.8954 36.1046 23 35 23H34V20C34 15.5817 30.4183 12 26 12ZM26 15C28.7614 15 31 17.2386 31 20V23H21V20C21 17.2386 23.2386 15 26 15ZM26 28C27.3807 28 28.5 29.1193 28.5 30.5C28.5 31.5284 27.8767 32.4111 27 32.7915V35C27 35.5523 26.5523 36 26 36C25.4477 36 25 35.5523 25 35V32.7915C24.1233 32.4111 23.5 31.5284 23.5 30.5C23.5 29.1193 24.6193 28 26 28Z" fill="#FFFFFF"/>
+  <text x="62" y="29" font-family="'Outfit', 'Inter', sans-serif" font-size="22" font-weight="800" letter-spacing="-0.5" fill="#0F172A">HOTELOCK</text>
+  <text x="63" y="42" font-family="'Inter', sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#2563EB">SYSTEMS INDONESIA</text>
+</svg>

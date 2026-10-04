@@ -1,0 +1,46 @@
+@use '../utils' as *;
+
+.technology-button-wrap{
+    .nav.nav-techs{
+        justify-content: space-between;
+        background-color: var(--tv-gray-1);
+        border-radius: 8px;
+        padding: 10px 12px;
+        .nav-link{
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--tv-heading-primary);
+            padding: 16px 18px;
+            border-radius: 6px;
+            background-color: transparent;
+            &.active{
+                background-color: var(--tv-theme-1);
+                color: var(--tv-common-white);
+                padding: 16px 18px;
+                border-radius: 6px;
+            }
+        }
+    }
+}
+
+.single-tech-box{
+    text-align: center;
+    .content{
+        background-color: var(--tv-gray-1);
+        padding: 33px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        h3{
+            margin-top: 24px;
+            margin-bottom: 0;
+            font-size: 36px;
+        }
+    }
+    p{
+        margin-bottom: 0;
+        font-size: 18px;
+        color: var(--tv-heading-primary);
+        text-transform: uppercase;
+    }
+
+}

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /assets/scss/
+Disallow: /.git/
+Disallow: /node_modules/
+Disallow: /docs/
+
+Sitemap: https://yourdomain.com/sitemap.xml

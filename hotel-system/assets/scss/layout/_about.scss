@@ -1,0 +1,431 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  02. about css start
+/*----------------------------------------*/
+.tv-about2{
+
+        &-left{
+            margin-right: 112px;
+            @media #{$xl}{
+                margin-right: 0;
+            }
+            @media #{$lg}{
+                margin-right: 0;
+            }
+            @media #{$md}{
+                margin-right: 0;
+            }
+            @media #{$xs}{
+                margin-right: 0;
+            }
+            @media #{$sm}{
+                margin-right: 0;
+            }
+            p{
+                
+            font-size: 18px;
+            line-height: 30px;
+            margin-top: 28px;
+            }
+            .tv-list-item{
+                margin-bottom: 54px;
+            }
+        }
+
+  
+    &-right{
+        position: relative;
+        text-align: center;
+      
+        @media #{$md}{
+            margin-top: 30px;
+        }
+        @media #{$xs}{
+            margin-top: 30px;
+        }
+        @media #{$sm}{
+            margin-top: 30px;
+        }
+        .thumb{
+            margin-left: 30px;
+            @media #{$md}{
+                margin-left: 0;
+            }
+            @media #{$xs}{
+                margin-left: 0;;
+            }
+            @media #{$sm}{
+                margin-left: 0;
+            }
+        }
+        .shap{
+            position: absolute;
+            left: 0;
+            top: 0;
+            @media #{$xxl}{
+            
+            }
+            @media #{$xl}{
+              
+            }
+            @media #{$lg}{
+              display: none;
+            }
+            @media #{$md}{
+                width: 70px;
+            }
+            @media #{$xs}{
+               display: none;
+            }
+            @media #{$sm}{
+                display: none;
+            }
+        }
+        .abs{
+            position: absolute;
+            right: 0;
+            bottom: -130px;
+            @media #{$xxl}{
+            
+            }
+            @media #{$xl}{
+               max-width: 180px;
+               bottom: -100px;
+            }
+            @media #{$lg}{
+                display: none;
+            }
+            @media #{$md}{
+                bottom: -80px;
+            }
+            @media #{$xs}{
+                display: none;
+            }
+            @media #{$sm}{
+                display: none;
+            }
+        }
+        .video-play{
+            position: absolute;
+            left: -15px;
+            bottom: -130px;
+            @media #{$xxl}{
+            
+            }
+            @media #{$xl}{
+              
+               bottom: -100px;
+            }
+            @media #{$lg}{
+                display: none;
+            }
+            @media #{$md}{
+                bottom: -80px;
+                left: 0;
+            }
+            @media #{$xs}{
+                position: relative;
+                bottom: 0;
+                margin-top: 30px;
+                width: 100%;
+                left: 0;
+            }
+            @media #{$sm}{
+                position: relative;
+                bottom: 0;
+                margin-top: 30px;
+                width: 100%;
+                left: 0;
+            }
+            .play-icon{
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                background: var(--tv-theme-1);
+                height: 80px;
+                width: 80px;
+                line-height: 80px;
+                border-radius: 50%;
+                margin-left: -40px;
+                margin-top: -40px;
+            }
+        }
+    }
+
+}
+
+.tv-list-item{
+    margin-bottom: 50px;
+    ul{
+        list-style: none;
+        
+        li{
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--tv-heading-primary);
+            @media #{$xxl}{
+            
+            }
+            @media #{$xl}{
+              
+              
+            }
+            @media #{$lg}{
+              font-size: 16px;
+            }
+            @media #{$md}{
+              
+            }
+            @media #{$sm}{
+                margin-bottom: 12px;
+                font-size: 18px;
+            }
+            @media #{$xs}{
+                margin-bottom: 10px;
+                font-size: 13px;
+            }
+            span{
+                margin-right:12px ;
+            }
+        }
+    }
+}
+
+.tv-about-area-3{
+.tv-about-left{
+    img{
+        border-radius: 50px 0 50px 0;
+        @media #{$lg, $md, $sm, $xs}{
+       
+           width: 100%;
+         
+         }
+    }
+    .img1{
+        height:100%;
+        object-fit: cover;
+        @media #{$lg, $md, $sm, $xs}{
+       
+           display: none;
+        
+        }
+    }
+    gap: 20px;
+    @media #{$lg, $md, $sm, $xs}{
+       
+        display: block !important;
+     
+     }
+}
+.tv-about-right{
+    margin-left: 111px;
+    @media #{$xl,$lg, $md, $sm, $xs}{
+       
+        margin-left: 30px;
+    
+    }
+    @media #{$lg, $md, $sm, $xs}{
+       
+        margin-left: 0;
+    
+    }
+    @media #{$md, $sm, $xs}{
+       
+        margin-top: 30px;
+    
+    }
+}    
+}
+.experience-area{
+    padding: 55px 50px;
+    background: var(--tv-heading-primary);
+    border-radius: 50px 0 50px 0;
+    margin-bottom: 20px;
+    h2{
+        font-size: 20px;
+        color: var(--tv-common-white);
+        span{
+        font-size: 100px;
+        -webkit-text-fill-color:transparent;
+        -webkit-text-stroke-width:1px;
+        -webkit-text-stroke-color:var(--tv-common-white);
+        color: var(--tv-common-white);
+        background: transparent;
+        margin-right: 12px;
+        }
+    }
+    h6{
+        font-size: 24px;
+        font-weight: 400;
+        color: var(--tv-common-white);
+    }
+}
+
+.tv-about-list-item{
+    margin-bottom: 50px;
+    ul{
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 27px;
+        li{
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--tv-heading-primary);
+            svg{
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+.about-btn-wrap{
+    gap: 30px;
+    @media #{$lg}{
+       
+        gap: 15px;
+    
+    }
+    @media #{$xs}{
+       
+        margin-top: 30px;
+        flex-wrap: wrap;
+    
+    }
+}
+
+.phone-contact-wrap{
+    position: relative;
+    i{
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 60px;
+        width: 60px;
+        background-color: var(--tv-theme-1);
+        color: var(--tv-common-white);
+        line-height: 60px;
+        text-align: center;
+        border-radius: 50%;
+    }
+    .contact-content{
+        padding-left: 74px;
+        p{
+            margin-bottom: 0;
+        }
+        h4{
+            margin-top: 15px;
+            a{
+                color: var(--tv-heading-primary);
+            }
+        }
+    }
+}
+
+// About Style 1 css
+
+.tv-about-middle img {
+    margin-bottom: 32px;
+    width: 100%;
+}
+
+// about us 3
+
+.arobix-hero-section-1 .hero-carousel-wraper .title-2 {
+    background: transparent;
+    font-weight: 700;
+}
+
+.experience-area2{
+    justify-content: end;
+    align-items: center;
+    gap: 19px;
+    @media #{ $sm, $xs}{
+        /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
+        justify-content: start;
+    }
+    img{
+       width: 100%; 
+    }
+    h2{
+        font-size: 80px;
+        font-weight: 700;  
+        color: transparent;
+        -webkit-text-stroke: 1px var(--tv-theme-1);
+        text-stroke: 1px var(--tv-theme-1); /* Optional for non-WebKit */
+        background: transparent;
+    }
+    p{
+        margin:0;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 30px;
+        text-align: left;
+        span{
+            display: block;
+        }
+    }
+}
+
+.tv-about-middle-content{
+    padding-right: 34px;
+    @media #{$md, $sm, $xs}{
+        /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
+        padding-right: 0;
+    }
+    @media #{ $sm, $xs}{
+        /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
+       margin: 30px 0;
+    }
+}
+.tv-about-right-thumb{
+    margin-left: -30px;
+    @media #{$md, $sm, $xs}{
+        /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
+        margin-left: 0;
+    }
+    img{
+       width: 100%; 
+    }
+}
+
+// about home five css
+.tv-about-left{
+    .tv-section-title-box{
+        p{
+            padding-right: 150px;
+            @media #{$lg, $md, $sm, $xs}{
+                /* 'only screen and (min-width: 992px) and (max-width: 1199px)' */
+            
+                padding-right: 0;
+            }
+        }
+    }
+}
+.about-thumb-5{
+    @media #{ $md, $sm, $xs}{
+        /* 'only screen and (min-width: 992px) and (max-width: 1199px)' */
+    
+        margin-top: 30px;
+    }
+}
+.about-counter-wrap{
+    gap:96px;
+    @media #{ $md, $sm, $xs}{
+        /* 'only screen and (min-width: 992px) and (max-width: 1199px)' */
+    
+        gap:30px;
+    }
+    margin-bottom: 50px;
+    .single-counter-box{
+        h2{
+            font-size: 48px;
+        }
+        p{
+            margin: 0;
+        }
+    }
+}

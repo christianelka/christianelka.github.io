@@ -1,0 +1,64 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 2705 >>
+stream
+0 0.2 0.4 rg 0 732 612 60 re f
+BT /F2 18 Tf 1 1 1 rg 30 762 Td (CUSTOM KEYCARD PRINTING GUIDELINES) Tj ET
+BT /F1 9 Tf 0.85 0.85 0.85 rg 30 745 Td (Artwork Specifications & Production Guide) Tj ET
+BT /F2 11 Tf 0 0.25 0.5 rg 30 705 Td (1. CARD SPECIFICATIONS & DIMENSIONS) Tj ET
+0.75 0.75 0.75 RG 0.5 w 30 701 m 582 701 l S
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 686 Td (Standard Card Size: CR80 Standard \(85.6 mm x 54.0 mm\)) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 673 Td (Thickness: 0.84 mm \(+/- 0.04 mm\)) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 660 Td (Design Artwork Bleed: 89.6 mm x 58.0 mm \(Include 2 mm bleed on all 4 sides\)) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 647 Td (Safe Margin: Keep all essential text, logos & icons at least 3 mm inside the cut line) Tj ET
+BT /F2 11 Tf 0 0.25 0.5 rg 30 626 Td (2. ACCEPTED FILE FORMATS & ARTWORK REQUIREMENTS) Tj ET
+0.75 0.75 0.75 RG 0.5 w 30 622 m 582 622 l S
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 607 Td (Supported Formats: Adobe Illustrator \(.AI\), Vector PDF \(.PDF\), CorelDraw \(.CDR\)) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 594 Td (Vector Requirement: All fonts MUST be converted to outlines / curves) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 581 Td (Embedded Images: Min 300 DPI resolution embedded in the vector file) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 568 Td (Color Profile: CMYK Color Mode \(Do not use RGB to prevent color shifts\)) Tj ET
+BT /F2 11 Tf 0 0.25 0.5 rg 30 547 Td (3. CHIP & TECHNOLOGY OPTIONS) Tj ET
+0.75 0.75 0.75 RG 0.5 w 30 543 m 582 543 l S
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 528 Td (Mifare 1K \(13.56 MHz\): Standard HF chip for smart hotel locks & PMS access) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 515 Td (Temic T5577 \(125 kHz\): LF chip for legacy hotel lock systems) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 502 Td (Mifare Ultralight / NTAG: High-density NFC chip options for guest interaction) Tj ET
+BT /F2 11 Tf 0 0.25 0.5 rg 30 481 Td (4. FINISHING OPTIONS & ORDERING INFORMATION) Tj ET
+0.75 0.75 0.75 RG 0.5 w 30 477 m 582 477 l S
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 462 Td (Surface Finishing: Glossy PVC, Matte Doff, Frosted Translucent, Eco Wooden, Gold Metallic Foil) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 449 Td (Special Effects: Embossed Numbering, Magnetic Stripe \(HiCo/LoCo\), QR Code / Barcode) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 436 Td (Minimum Order Quantity \(MOQ\): 500 pcs per custom design) Tj ET
+BT /F1 8.5 Tf 0.15 0.15 0.15 rg 35 423 Td (Lead Time: 7 - 10 Business Days after digital proofing approval) Tj ET
+0.8 0.8 0.8 RG 0.5 w 30 42 m 582 42 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 30 28 Td (HOTELOCK Systems Indonesia | sales@hotellock.id | +62 811-234-567 | www.hotellock.id) Tj ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000003008 00000 n 
+0000003078 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3153
+%%EOF

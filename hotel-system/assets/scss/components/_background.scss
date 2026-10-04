@@ -1,0 +1,23 @@
+@use '../utils' as *;
+
+/*---------------------------------------*/
+/*Background color
+/*-----------------------------------------*/
+
+.theme-bg {
+	background: var(--tv-theme-1);
+}
+.black-bg {
+	background: var(--tv-common-black);
+}
+.white-bg {
+	background: var(--tv-common-white);
+}
+.gray-bg {
+	background: var(--tv-gray-1);
+}
+.footer-bg {
+	background: var(--tv-heading-primary);
+}
+
+

@@ -1,0 +1,239 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  26. testimonial css start
+/*----------------------------------------*/
+
+
+
+// Testimonial 1 css
+
+.tv-testimonial-area {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background: var(--tv-gray-1);
+}
+
+.tv-testmonial-wrap {
+    margin-left: 109px;
+    background: var(--tv-common-white);
+    padding: 40px;
+    border-radius: 50px 0 50px;
+    border: 1px solid rgba(88, 91, 111, 0.3);
+    position: relative;
+    z-index: 3;
+
+    @media #{$xl, $lg, $md, $sm, $xs} {
+        /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        margin-left: 0;
+
+
+    }
+
+    @media #{$md, $sm, $xs} {
+        /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
+        margin-top: 30px;
+    }
+
+
+}
+
+.rating {
+    font-size: 24px;
+    color: var(--tv-yellow-color);
+    margin-bottom: 16px;
+}
+
+.single-testi-slider-item {
+    position: relative;
+    z-index: 1;
+}
+
+.single-testi-slider-item p {
+    font-size: 24px;
+    line-height: 40px;
+    text-align: justify;
+    color: var(--tv-heading-primary);
+    margin-bottom: 32px;
+}
+
+img.shap-icon {
+    position: absolute;
+    bottom: 50px;
+    right: 40px;
+    left: auto;
+
+    @media #{$xs} {
+        /* 'only screen and (min-width: 768px) and (max-width: 991px)' */
+        display: none;
+    }
+}
+
+.author-info {
+    position: relative;
+}
+
+.author-info h5 {
+    margin-left: 20px;
+    font-size: 20px;
+}
+
+.author-info h5 span {
+    display: block;
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 12px;
+    font-family: var(--tv-ff-body);
+}
+
+.tv-testi-arrow-box button {
+    height: 50px;
+    width: 50px;
+    background: var(--tv-common-white);
+    border-radius: 8px 0 8px 0;
+    font-size: 21px;
+    transition: .3s all;
+}
+
+.tv-testi-arrow-box .it-fade-anim:not(:last-child) {
+    margin-right: 24px;
+}
+
+.tv-testi-arrow-box button:hover {
+    background: var(--tv-theme-1);
+    color: var(--tv-common-white);
+}
+
+
+// Testimonial 2 css
+.single-testimonial-item2 {
+    padding: 50px 36px;
+    background: var(--tv-gray-1);
+    border-radius: 50px 0 50px 0;
+    position: relative;
+    z-index: 1;
+    transition: .3s all;
+
+    &:hover {
+        background: var(--tv-theme-1);
+    }
+
+    .shap {
+        position: absolute;
+        right: 36px;
+        bottom: 55px;
+        top: auto;
+
+        span {
+            height: 50px;
+            width: 50px;
+            background: var(--tv-theme-1);
+            border-radius: 50%;
+            display: block;
+            text-align: center;
+            line-height: 50px;
+        }
+    }
+
+    .icon {
+        color: var(--tv-theme-1);
+        transition: .3s all;
+
+
+    }
+
+    &:hover .icon {
+        color: var(--tv-common-white);
+    }
+
+    p {
+        margin-bottom: 40px;
+        margin-top: 30px;
+        font-size: 18px;
+        line-height: 30px;
+        transition: .3s all;
+    }
+
+    &:hover p {
+        color: var(--tv-common-white);
+    }
+
+    .author-info {
+        display: flex;
+        align-items: center;
+
+        img {
+            margin-right: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: var(--tv-ff-body);
+            transition: .3s all;
+
+            span {
+                display: block;
+                font-size: 16px;
+                font-weight: 400;
+                font-family: var(--tv-ff-body);
+                color: var(--tv-gray-2);
+                margin-top: 8px;
+
+            }
+        }
+    }
+
+    &:hover {
+        .author-info h2 {
+            color: var(--tv-common-white);
+        }
+
+        .author-info h2 span {
+            color: var(--tv-common-white);
+        }
+    }
+}
+
+.tv-testimonial-nav2 {
+    @media #{$md, $sm, $xs} {
+        display: none;
+
+    }
+
+    button {
+        height: 50px;
+        width: 50px;
+        background: var(--tv-gray-1);
+        text-align: center;
+        line-height: 50px;
+        border-radius: 50%;
+        transition: .3s all;
+
+        &:hover {
+            background: var(--tv-theme-1);
+            color: var(--tv-common-white);
+        }
+    }
+}
+
+.single-testi-slider-item.style-3 {
+    padding: 40px;
+    background-color: var(--tv-gray-1);
+    border-radius: 50px 0 50px 0;
+
+    &.style-4 {
+        background-color: var(--tv-common-white);
+    }
+}
+
+/* Swiper slides */
+.tv-testi-slider-active3 .swiper-wrapper .swiper-slide {
+    width: 746px;
+    margin-top: 50px;
+
+    &-active {
+        margin-top: 0;
+    }
+
+}

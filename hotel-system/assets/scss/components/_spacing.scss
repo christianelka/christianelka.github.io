@@ -1,0 +1,43 @@
+@use '../utils' as *;
+/*--
+    - Spacing
+-----------------------------------------*/
+
+.pb-130{
+    padding-bottom:130px;
+    @media #{$lg}{
+        /* 'only screen and (min-width: 992px) and (max-width: 1199px)' */
+    padding-bottom:80px;
+    
+    }
+    @media #{$sm, $xs}{
+        /* 'only screen and (min-width: 992px) and (max-width: 1199px)' */
+    padding-bottom:60px;
+    
+    }
+}
+
+
+.pt-130{
+    @media #{$sm, $xs}{
+        /* 'only screen and (min-width: 992px) and (max-width: 1199px)' */
+    padding-top:60px;
+    
+    }
+}
+
+.pb-421{
+    padding-bottom: 421px;
+}
+
+.mb-24{
+    margin-bottom: 24px;
+}
+
+.mb-44{
+    margin-bottom: 44px;
+}
+
+.mt-74{
+    margin-top: 74px;
+}

@@ -1,0 +1,133 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  04. brand css start
+/*----------------------------------------*/
+.tv-brand{
+    &-content{
+        padding-bottom: 8px;
+        border-top: 1px solid rgba(88, 91, 111, 0.3);
+        p{
+            color: var(--tv-heading-primary);
+            font-size: 18px;
+        }
+    }
+    &-single-item{
+        transition: .3s all;
+        
+        &:hover{
+            img{
+                opacity: 0.7;
+            }
+        }
+    }
+}
+.home-4-brand-wrap{
+    .tv-brand-slider{
+        padding: 40px 0;
+    }
+}
+.brand-info{
+    gap: 14px;
+    justify-content: space-between;
+    
+    @media #{$md, $sm, $xs}{
+        /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        justify-content:center;
+    
+        
+    }
+    p{
+        margin:0;
+        font-size: 18px;
+        color: var(--tv-heading-primary);
+        @media #{$xl}{
+            /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        width: 20%;
+        
+            
+        }
+
+        @media #{$lg}{
+            /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        width: 25%;
+        
+            
+        }
+        
+        span{
+            color: var(--tv-theme-1);
+        }
+    }
+    img{
+        @media #{$xl}{
+            /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        width: 80%;
+        
+            
+        }
+        
+        @media #{$lg}{
+            /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        width: 75%;
+        
+            
+        }
+        
+        @media #{$md, $sm, $xs}{
+            /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+        display: none;
+        
+            
+        }
+    }
+    &.two{
+        p{
+            width: 20%;
+            @media #{$xl, $lg}{
+                /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+            width: 25%;
+            
+                
+            }
+
+            @media #{$lg}{
+                /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+            width: 30%;
+            
+                
+            }
+
+            
+            @media #{$md, $sm, $xs}{
+                /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+           width: auto;
+            
+                
+            }
+        }
+        img{
+            width: 75%;
+            @media #{$xl}{
+                /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+            width: 75%;
+            
+                
+            }
+
+            @media #{$lg}{
+                /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+            width: 70%;
+            
+                
+            }
+
+            @media #{$md, $sm, $xs}{
+                /* 'only screen and (min-width: 1200px) and (max-width: 1399px)' */
+            display: none;
+            
+                
+            }
+        }
+    }
+}

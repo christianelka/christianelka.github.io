@@ -1,0 +1,96 @@
+@use '../utils' as *;
+
+.single-icon-box:not(:last-child) {
+    margin-bottom: 38px;
+  
+}
+
+.single-icon-box {
+    position: relative;
+    z-index: 1;
+    @media #{$xxl}{
+            
+    }
+    @media #{$xl}{
+       
+    }
+    @media #{$lg}{
+      
+    }
+    @media #{$md}{
+        margin-bottom: 30px;
+    }
+    @media #{$xs}{
+        margin-bottom: 30px;
+    }
+    @media #{$sm}{
+        margin-bottom: 30px;
+    }
+   
+}
+
+.single-icon-box img {
+    max-width: 48px;
+    margin-top: 24px;
+    margin-left: 24px;
+}
+
+.icon-box-content {
+    padding-left: 114px;
+}
+
+.icon-box-content  {
+    h3{
+
+        font-size: 24px;
+        text-transform: capitalize;
+        @media #{$xxl}{
+            
+        }
+        @media #{$xl}{
+            font-size: 23px;
+        }
+        @media #{$lg}{
+            font-size: 17px;
+        }
+        @media #{$md}{
+            font-size: 20px;
+        }
+        @media #{$xs}{
+           
+        }
+        @media #{$sm}{
+            
+        }
+    }
+  
+ 
+}
+
+
+.single-icon-box span {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -45px;
+}
+
+.single-icon-box span:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 90px;
+    width: 90px;
+    content: "";
+    background: var(--tv-gray-1);
+    z-index: -1;
+    border-radius: 10px 0 10px 0;
+}
+
+.single-icon-box.style-2 {
+    span::after {
+        content: "";
+        display: block; /* Ensure it takes up space */
+        background: var(--tv-common-white);
+    }
+}

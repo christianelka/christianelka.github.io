@@ -1,0 +1,89 @@
+@use '../utils' as *;
+
+.tv-breadcrumb {
+    &-ptb {
+        padding:150px 0;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        @media #{$xl}{
+            padding: 120px 0;
+        }
+        @media #{$lg}{
+            padding: 120px 0;
+        }
+        @media #{$md}{
+            padding: 100px 0;
+        }
+        @media #{$xs}{
+            padding: 70px 0;
+        }
+        @media #{$sm}{
+            padding: 110px 0;
+        }
+    }
+    &-overlay {
+        position: relative;
+        &::after {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba($color: #0A165EE5, $alpha: .9);
+            z-index: -1;
+        }
+    }
+    &-title {
+        font-weight: 700;
+        font-size: 80px;
+        color: var(--tv-common-white);  
+        @media #{$lg}{
+            font-size: 38px;
+        } 
+        @media #{$md}{
+            font-size: 40px;
+        } 
+        @media #{$xs}{
+            font-size: 28px;
+            margin-bottom: 20px;
+        } 
+        @media #{$sm}{
+            font-size: 37px;
+            margin-bottom: 20px;
+        } 
+    }
+    &-list{
+        & span {
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 1.71;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: capitalize;
+            a{
+                color: rgba(255, 255, 255, 0.6);
+            }
+            @media #{$lg,$md,$xs}{
+                font-size: 12px;
+            }
+            &.dvdr{
+                margin: 0 14px;
+                color: var(--tv-common-white);
+            }
+        }
+        & i {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 1.71;
+            color: #fff;
+            text-transform: capitalize;
+            font-style: normal;
+            @media #{$lg,$md,$xs}{
+                font-size: 12px;
+            }
+            
+        }
+    }
+}
+
