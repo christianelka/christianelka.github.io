@@ -190,17 +190,11 @@ function initProductFilter() {
       filterButtons.forEach(function(b) { b.classList.remove('active'); });
       this.classList.add('active');
       var filterValue = this.getAttribute('data-filter');
+      var className = filterValue.replace('.', '');
 
       gridItems.forEach(function(item) {
-        if (filterValue === '*' || item.classList.contains(filterValue.replace('.', ''))) {
-          item.style.display = 'block';
-          item.style.opacity = '1';
-          item.style.transform = 'scale(1)';
-        } else {
-          item.style.display = 'none';
-          item.style.opacity = '0';
-          item.style.transform = 'scale(0.95)';
-        }
+        var match = filterValue === '*' || item.classList.contains(className);
+        item.style.display = match ? 'block' : 'none';
       });
     });
   });

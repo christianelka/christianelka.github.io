@@ -12,26 +12,22 @@
 		var encoders = parseInt(document.getElementById('bom-encoders').value, 10);
 		var buffer = parseFloat(document.getElementById('bom-spare').value) / 100;
 
-		var spareUnits = Math.round(rooms * buffer);
 		return {
 			rooms: rooms,
 			ratio: ratio,
 			encoders: encoders,
 			bufferPct: buffer,
 			coveragePct: Math.round(coverage * 100),
-			locks: rooms,
-			modules: rooms,
 			cards: Math.round(rooms * ratio),
 			switches: Math.round(rooms * coverage),
-			encoders: encoders,
-			spare: spareUnits
+			spare: Math.round(rooms * buffer)
 		};
 	}
 
 	function bomRows(s) {
 		return [
-			{ label: 'Smart lock unit pintu', qty: s.locks, note: '1 unit per kamar' },
-			{ label: 'Mortise + reader module', qty: s.modules, note: '1 set per unit pintu' },
+			{ label: 'Smart lock unit pintu', qty: s.rooms, note: '1 unit per kamar' },
+			{ label: 'Mortise + reader module', qty: s.rooms, note: '1 set per unit pintu' },
 			{ label: 'RFID keycard custom printing', qty: s.cards, note: 'Rasio ' + s.ratio + ':1 dari jumlah kamar' },
 			{ label: 'USB card encoder resepsionis', qty: s.encoders, note: 'Per workstation front desk' },
 			{ label: 'Sakelar hemat energi', qty: s.switches, note: 'Untuk kamar tamu' },
