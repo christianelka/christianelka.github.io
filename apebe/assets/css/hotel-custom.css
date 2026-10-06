@@ -739,8 +739,7 @@ header.tv-header-height {
   border: 3px solid #FFFFFF;
 }
 
-.hl-bom-panel .nice-select,
-.hl-bom-panel select {
+.hl-bom-panel .nice-select {
   width: 100% !important;
   float: none !important;
   height: 48px !important;
@@ -1021,7 +1020,6 @@ header.tv-header-height {
 }
 
 .hl-form-control,
-.hl-rfq-card select,
 .hl-rfq-card .nice-select {
   width: 100% !important;
   height: 48px !important;

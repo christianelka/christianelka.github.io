@@ -76,8 +76,11 @@
 	document.addEventListener('DOMContentLoaded', function () {
 		if (!document.getElementById('bom-rooms')) return;
 		['bom-rooms', 'bom-card-ratio', 'bom-switch-coverage', 'bom-encoders', 'bom-spare'].forEach(function (id) {
-			document.getElementById(id).addEventListener('input', bomRender);
-			document.getElementById(id).addEventListener('change', bomRender);
+			var el = document.getElementById(id);
+			el.addEventListener('input', bomRender);
+			el.addEventListener('change', bomRender);
+			// nice-select memicu change via jQuery .trigger() yang tidak sampai ke listener native
+			if (window.jQuery) window.jQuery(el).on('change', bomRender);
 		});
 		bomRender();
 	});
