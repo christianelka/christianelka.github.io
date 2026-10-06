@@ -478,7 +478,7 @@ header.tv-header-height {
   }
 }
 
-.scroll-top {
+.scroll-top.open {
   bottom: 104px !important;
   right: 28px !important;
   z-index: 800 !important;
@@ -614,7 +614,7 @@ header.tv-header-height {
   .wa-fab .fa-whatsapp {
     font-size: 28px !important;
   }
-  .scroll-top {
+  .scroll-top.open {
     bottom: 82px !important;
     right: 18px !important;
     width: 44px !important;
