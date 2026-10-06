@@ -1,7 +1,7 @@
 /* Aksa Pena Bengawan — visualizer keycard 3D (Forest Emerald) */
 .hl-viz-stage {
   background: radial-gradient(circle at center, #12291F 0%, #0C1F1A 100%);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 48px 24px;
   display: flex;
   align-items: center;
@@ -14,7 +14,7 @@
 .hl-viz-card {
   width: 320px;
   height: 202px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   position: relative;
   overflow: hidden;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
@@ -138,7 +138,7 @@
   width: 100%;
   padding: 10px 14px;
   border: 1px solid #CBD5E1;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: #FFFFFF;
   font-size: 14px;
   color: #12291F;
@@ -151,7 +151,7 @@
 .hl-card-bezel {
   background: #F1F5F9;
   padding: 8px;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   border: 1px solid rgba(15, 23, 42, 0.06);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative !important;
@@ -168,7 +168,7 @@
 }
 .hl-card-inner {
   background: #FFFFFF;
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   padding: 28px;
   border: 1px solid rgba(15, 23, 42, 0.04);
   height: 100%;
@@ -178,7 +178,7 @@
 }
 .hl-card-thumb {
   position: relative !important;
-  border-radius: 14px;
+  border-radius: var(--radius);
   overflow: hidden;
   margin-bottom: 22px;
   background: #0C1F1A;
@@ -198,7 +198,7 @@
   top: 14px;
   left: 14px;
   padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -238,7 +238,7 @@
 .viz-group-title{font-size:1rem;margin:0;color:var(--ink);letter-spacing:.2px;padding-bottom:.55rem;border-bottom:2px solid var(--line)}
 .viz-controls{display:grid;gap:1.05rem;align-content:start}
 .viz-controls label{font-weight:600;font-size:.92rem;margin-bottom:.35rem;display:block}
-.viz-controls input[type=text],.viz-controls input[type=number],.viz-controls select{width:100%;padding:.85rem 1rem;border:1.5px solid var(--line);border-radius:12px;font:inherit;background:#fff}
+.viz-controls input[type=text],.viz-controls input[type=number],.viz-controls select{width:100%;padding:.85rem 1rem;border:1.5px solid var(--line);border-radius:var(--radius-md);font:inherit;background:#fff}
 .viz-controls input:focus,.viz-controls select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,.14)}
 .viz-hint{font-size:.88rem;color:var(--muted)}
 #viz-bg-custom-actions{display:flex;gap:1rem;margin-top:.55rem}
@@ -247,6 +247,8 @@
 .viz-logo-backpos-lbl,.viz-logo-backpos{display:none}
 #viz-logos-list.show-backpos .viz-logo-backpos-lbl{display:block}
 #viz-logos-list.show-backpos .viz-logo-backpos{display:block}
+/* ---- anti-ai-slop: row logo visualizer sebagai class, bukan cssText inline ---- */
+.viz-logo-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius-sm);padding:.6rem .7rem}
 @media(max-width:1200px){
   .viz-wrap{grid-template-columns:1fr 1fr;gap:2rem}
   .viz-stage{grid-column:1/-1;position:static}
@@ -280,7 +282,7 @@
 .hl-viz-hotel-logo img{max-width:64px;max-height:40px;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
 .hl-viz-hotel-logo #viz-logo-ph{font-size:1.6rem;opacity:.9}
 .viz-controls input[type=file]{padding:.6rem .8rem;font-size:.9rem;cursor:pointer}
-.viz-controls input[type=file]::file-selector-button{background:var(--emerald-500);color:#fff;border:0;border-radius:8px;padding:.5rem .9rem;font-weight:600;cursor:pointer;margin-right:.7rem}
+.viz-controls input[type=file]::file-selector-button{background:var(--emerald-500);color:#fff;border:0;border-radius:var(--radius-sm);padding:.5rem .9rem;font-weight:600;cursor:pointer;margin-right:.7rem}
 .viz-controls input[type=file]::file-selector-button:hover{background:var(--emerald-600)}
 
 /* ---- v3: flip 2 sisi ---- */
@@ -288,7 +290,7 @@
 .hl-viz-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.16,1,.3,1)}
 .hl-viz-card.flipped .hl-viz-flip{transform:rotateY(180deg)}
 .hl-viz-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
+  border-radius:var(--radius-md);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
   padding:18px 20px}
 .hl-viz-back{transform:rotateY(180deg)}
 .hl-viz-back-text{font-size:11px;line-height:1.65;opacity:.92;margin:0}
@@ -308,7 +310,7 @@
 
 /* ---- v3: custom bg upload ---- */
 .hl-bg-custom .hl-viz-card-bg{background-size:cover;background-position:center}
-.viz-controls textarea{width:100%;padding:.85rem 1rem;border:1.5px solid var(--line);border-radius:12px;font:inherit;background:#fff;resize:vertical;min-height:64px}
+.viz-controls textarea{width:100%;padding:.85rem 1rem;border:1.5px solid var(--line);border-radius:var(--radius-md);font:inherit;background:#fff;resize:vertical;min-height:64px}
 .viz-controls textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,.14)}
 
 /* ---- v4: logo multi-posisi ---- */

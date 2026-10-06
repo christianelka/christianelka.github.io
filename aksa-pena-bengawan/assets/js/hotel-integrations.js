@@ -1,4 +1,4 @@
-var WA_PHONE = '62811234567';
+const WA_PHONE = '62811234567';
 
 function rfqShowError(fieldId, message) {
   var field = document.getElementById(fieldId);
@@ -121,10 +121,8 @@ function rfqSubmitFallback() {
   if (cpField) cpField.value = customPrint;
 
   var data = new FormData(fallback);
-  fetch('https://api.web3forms.com/submit', {
-    method: 'POST',
-    body: data
-  }).catch(function() {});
+  // Web3Forms belum dikonfigurasi (butuh API key asli) — jangan tembak endpoint mati.
+  console.warn('Fallback Web3Forms tidak terkonfigurasi: data RFQ hanya dikirim via WhatsApp.');
 }
 
 function rfqFireAnalyticsLead(method) {

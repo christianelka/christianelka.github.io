@@ -107,7 +107,6 @@
       var row = document.createElement('div');
       row.className = 'viz-logo-row';
       row.setAttribute('data-idx', idx);
-      row.style.cssText = 'display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;background:var(--bg-soft,#f7faf9);border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;';
       row.innerHTML =
         '<span style="font-size:.85rem;font-weight:600;">Logo ' + (idx + 1) + '</span>' +
         '<button type="button" class="viz-logo-rm" aria-label="Hapus logo ' + (idx + 1) + '" style="background:none;border:0;color:var(--muted);font-size:1.3rem;line-height:1;cursor:pointer;padding:.1rem .4rem;">×</button>' +
