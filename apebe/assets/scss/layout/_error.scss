@@ -1,0 +1,15 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  10. error css start
+/*----------------------------------------*/
+.tv-error {
+    &-thumb {
+        @media #{$lg}{
+            margin-bottom: 90px;
+        }
+        @media #{$md,$xs}{
+            margin-bottom: 50px;
+        }
+    }
+}

@@ -1,0 +1,184 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  14. hero css start
+/*----------------------------------------*/
+
+.tv-hero{
+    &-area{
+        z-index: 1;
+        color: var(--tv-common-white);
+        padding-top: 238px;
+        
+    &.hero-style-2{
+        &:after{content: '';
+            position: absolute;
+            bottom: -1px; /* slight overlap to prevent gap */
+            left: 0;
+            width: 100%;
+            height: 100%; /* adjust as needed */
+            background-image: url("../img/slider/slider-5.svg");
+            background-size: cover;
+            background-position: bottom;
+            z-index: -1;
+            pointer-events: none;
+            background-color: transparent;
+            
+          
+        }
+    }
+       
+    }
+    &-area::after{
+        position:absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        content: "";
+        background: rgba(10, 22, 94, 0.95);
+        z-index: -1;
+    }
+    @media #{$xxl}{
+       
+    }
+    @media #{$xl}{
+       
+    }
+    @media #{$lg}{
+      
+    }
+    @media #{$md}{
+        &-banner-thumbnail{
+            margin-right:0;
+            text-align:center;
+            margin-top: 30px;
+        }
+    }
+    @media #{$xs}{
+        &-banner-thumbnail{
+            margin-right:0;
+            text-align:center;
+            margin-top: 30px;
+        }
+    }
+    @media #{$sm}{
+        &-banner-thumbnail{
+            margin-right:0;
+            text-align:center;
+            margin-top: 30px;
+        }
+    }
+    &-subtitle{
+        font-size: 20px;
+        text-transform: uppercase;
+        line-height: 30px;
+        font-weight: 500;
+        padding-left: 55px;
+        position: relative;
+        color: var(--tv-common-white);
+        z-index: 1;
+        @media #{$md}{
+            font-size: 18px;
+        }
+    }
+    &-subtitle:after{
+        position: absolute;
+        left: 0;
+        top: 50%;
+        height:1px;
+        width: 45px;
+        content: "";
+        background:var(--tv-common-white);
+    }
+    &-title{
+        font-weight: 700;
+        font-size: 80px;
+        line-height: 1.13;
+        color: var(--tv-common-white);
+        margin-bottom: 32px;
+        margin-top: 22px; 
+            
+        @media #{$xxl}{
+            font-size: 70px;
+        }
+        @media #{$xl}{
+            font-size: 72px;
+        }
+        @media #{$lg}{
+            font-size: 64px;
+        }
+        @media #{$md}{
+            font-size: 48px;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+        @media #{$xs}{
+            font-size: 33px;
+        }
+        @media #{$sm}{
+            font-size: 48px;
+        }
+    }
+    
+    &-area p{
+        margin-bottom: 34px;
+    }
+}
+
+.tv-hero-area{
+  &.tv-hero-two{
+    .tv-hero-banner-thumbnail{
+        position: relative;
+        img{
+            width: 600px;
+            height: 650px;
+            object-fit: cover;
+            border-radius: 50px 0 50px;
+        }
+        .experience-wrapper{
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            background: var(--tv-heading-primary);
+            padding: 20px 0 0 20px;
+            border-radius: 10px 10px 0 0;
+            width: 220px;
+            .experience-content{
+                padding: 25px 28px;
+                border:3px solid var(--tv-theme-1);
+                border-radius: 10px;
+                text-align: center;
+                h2{
+                   font-size: 70px;
+                   color: var(--tv-common-white);
+                }
+                P{
+                    font-size: 18px;
+                    margin-bottom: 0;
+                    span{
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+    .tv-hero-btn-wrap{
+        gap: 28px;
+        .tv-video-icon{
+            position: relative;
+            top: 0;
+            transform: translateY(0);
+            a{
+                height: 60px;
+                width: 60px;
+                line-height: 60px;
+            }
+        }
+    }
+  }
+}
+
+
+
+

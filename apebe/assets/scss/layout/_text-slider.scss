@@ -1,0 +1,38 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  27. text slider css start
+/*----------------------------------------*/
+.tv-text {
+    &-slider{
+        &-ptb {
+            padding: 29px 0;
+        }
+        &-item {
+            display: flex;
+            align-items: center;
+            & span {
+                font-weight: 600;
+                font-size: 30px;
+                line-height: 1;
+                color: var(--tv-common-white);
+                font-family: var(--tv-ff-body);
+                text-transform: capitalize;
+                display: inline-block;
+            }
+            & img {
+                margin: 0 35px;
+            }
+        }
+    
+        &-active{
+            & .slider-transtion {
+                -webktv-transition-timing-function: linear;
+                transition-timing-function: linear;
+            }
+            & .swiper-slide{
+                width: auto;
+            }
+        }
+    }
+}

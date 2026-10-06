@@ -1,0 +1,125 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  24. step css start
+/*----------------------------------------*/
+.tv-step {
+    &-title {
+        font-weight: 600;
+        font-size: 22px;
+        margin-bottom: 25px;
+        transition: .3s;
+    }
+    &-icon {
+        border-radius: 50%;
+        display: inline-block;
+        height: 80px;
+        width: 80px;
+        line-height: 80px;
+        text-align: center;
+        display: inline-block;
+        margin-bottom: 35px;
+        color: var(--tv-common-white);
+        background-color: var(--tv-theme-1);
+        position: relative;
+        & svg {
+            transition: .3s;
+            -webktv-transition: all 300ms ease;
+            transition: all 300ms ease;
+        }
+        & > span {
+            position: absolute;
+            top: 3%;
+            right: -8%;
+            display: inline-block;
+            font-weight: 400;
+            font-size: 14px;
+            color: var(--tv-common-black);
+            border-radius: 50%;
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            line-height: 27px;
+            text-align: center;
+            background-color: var(--tv-common-white);
+            border: 1px solid var(--tv-common-black);
+        }
+    }
+    &-item {
+        transition: .3s;
+        padding: 40px 20px;
+        position: relative;
+        background-color: var(--tv-gray-1);
+        &::after {
+            position: absolute;
+            content: "";
+            top: 50%;
+            right: -100%;
+            width: 100%;
+            transform: translateY(-50%);
+            border: 1px dashed var(--tv-common-black);
+            @media #{$xl,$lg,$md,$xs}{
+                display: none;
+            }
+        }
+        &::before {
+            position: absolute;
+            content: "";
+            top: 50%;
+            right: -36%;
+            width: 17px;
+            height: 15px;
+            transform: translateY(-50%);
+            background-color: var(--tv-common-black);
+            clip-path: polygon(0 0, 0% 100%, 100% 50%);
+            @media #{$xl,$lg,$md,$xs}{
+                display: none;
+            }
+            
+        }
+        & p {
+            margin-bottom: 0;
+            transition: .3s;
+        }
+        &:hover {
+            background-color: var(--tv-common-black);
+            & p {
+                color: rgba($color: #fff, $alpha: .78);
+            }
+            & .tv-step-title {
+                color: var(--tv-common-white);
+            }
+            & .tv-step-icon svg {
+                color: var(--tv-common-white);
+                -webktv-transform: scaleX(-1);
+                transform: scaleX(-1);
+            }
+        }
+    }
+    &-area {
+        & .row{
+            [class*="col-"]{
+                &:last-child{
+                    & .tv-step-item {
+                        &::after{
+                            display: none;
+                        }
+                        &::before{
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &-bg {
+        background-repeat: no-repeat;
+        background-size: cover;
+        & .tv-step-item {
+            background-color: var(--tv-common-white);
+            &:hover {
+                background-color: var(--tv-common-black);
+            }
+        }
+    }
+}

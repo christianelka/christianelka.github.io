@@ -1,0 +1,111 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  08. choose css start
+/*----------------------------------------*/
+.tv-why-choose{
+    &-area{
+        position: relative;
+      
+    }
+    &-left{
+        img{
+           width: 100%;
+        }
+    }
+    &-right{
+        margin-left:52px ;
+        position: relative;
+        z-index: 1;
+        @media #{$lg}{
+            margin-left: 0;
+          }
+          @media #{$md, $sm, $xs}{
+            margin-left: 0;
+            margin-top: 30px;
+          }
+        p{
+           font-size: 18px;
+           font-weight: 400;
+           line-height: 30px;
+           margin-top: 30px;
+           margin-bottom: 30px;
+           @media #{$lg}{
+            margin-bottom: 0;
+          }
+           @media #{$md, $sm, $xs}{
+            margin-bottom: 0;
+          }
+          @media #{$sm}{
+            font-size: 17px;
+        }
+            @media #{$xs}{
+                font-size: 17px;
+            }
+          
+        }
+        img{
+            @media #{$xl}{
+               max-width: 150px;
+            }
+
+            @media #{$lg}{
+               display: none;
+             }
+             @media #{$md, $sm, $xs}{
+                display: none;
+              }
+        }
+       
+        .abs{
+            position: absolute;
+            right: 0;
+            bottom: auto;
+            z-index: -1;
+
+           
+           
+           
+        }
+    }
+  
+}
+
+.single-icon-box2{
+    @media #{$xxl}{
+   
+    }
+    @media #{$xl}{
+        
+    }
+    @media #{$lg}{
+        
+    }
+    @media #{$md}{
+        margin-bottom: 30px;
+    }
+    
+    @media #{$sm}{
+        margin-bottom: 30px;
+    }
+    @media #{$xs}{
+        margin-bottom: 30px;
+    }
+    .icon span{
+        height: 70px;
+        width: 70px;
+        background: var(--tv-common-white);
+        border-radius: 10px 0 10px 0;
+        display: block;
+        text-align: center;
+        line-height: 70px;
+        margin-right: 16px;
+    }
+    .content{
+        p{
+            font-size: 15px;
+            line-height:28px ;
+            margin-bottom: 0;
+        }
+    }
+}

@@ -1,0 +1,106 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  29. video css start
+/*----------------------------------------*/
+.tv-video {
+    &-thumb {
+        & img {
+            width: 100%;
+        }
+    }
+    &-icon {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        transform: translateY(-50%);
+        
+        & a {
+            display: inline-block;
+            height: 102px;
+            width: 102px;
+            text-align: center;
+            line-height: 102px;
+            border-radius: 50%;
+            background-color: var(--tv-theme-1);
+            span{
+                svg{
+                    width: 100% !important;
+                }
+            }
+            @media #{$xs}{
+                height: 50px;
+                width: 50px;
+                line-height: 48px;
+            }
+            & svg,i {
+                display: inline-block;
+                padding-left: 4px;
+                color: var(--tv-common-red);
+                @media #{$xs}{
+                    padding-left: 1px;
+                    width: 15px;
+                }
+            }
+        }
+    }
+    &-text {
+        & p {
+            font-weight: 600;
+            font-size: 17px;
+            line-height: 1.76;
+            color: #fff;
+            margin-left: 195px;
+            letter-spacing: -1px;
+            @media #{$xl}{
+                margin-left: 30px;
+            } 
+            @media #{$lg}{
+                margin-left: 45px;
+            } 
+            @media #{$md,$xs}{
+                margin-left: 0;
+                margin-top: 25px;
+            } 
+        }
+    }
+}
+
+.tv-video-icon{
+    &.popup{
+        position: relative;
+        top:auto;
+        left: auto;
+        right: auto;
+        transform: translateY(0%);
+        a{
+            height: auto;
+            width: auto;
+            background-color: transparent;
+        }
+    }
+}
+
+.tv-video-popup-wrap{
+    padding: 163px 0;
+    position: relative;
+    z-index: 1;
+    border-radius: 50px 0 50px 0;
+    margin-top: -361px;
+    &:after{
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(10, 22, 94, 0.5);
+        content: "";
+        z-index: -1;
+        border-radius: 50px 0 50px 0;
+    }
+}
+
+
+
