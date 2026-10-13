@@ -252,13 +252,33 @@ h3 { font-size: 1.25rem; font-weight: 700; }
 
 /* ---------- gallery ---------- */
 .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
-.g-item { border-radius: var(--radius); overflow: hidden; position: relative; aspect-ratio: 4/3; background: var(--forest-900); box-shadow: var(--shadow-sm); }
+.g-item { border-radius: var(--radius); overflow: hidden; position: relative; aspect-ratio: 4/3; background: var(--forest-900); box-shadow: var(--shadow-sm); cursor: zoom-in; }
+.g-item:focus-visible { outline: 3px solid var(--emerald-400); outline-offset: 3px; }
 .g-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
 .g-item:hover img { transform: scale(1.06); }
 .g-item figcaption {
   position: absolute; inset: auto 0 0 0; padding: 2.2rem 1.1rem .95rem;
   background: linear-gradient(transparent, rgba(12,31,26,.88));
   color: #fff; font-weight: 700; font-size: .95rem;
+}
+
+/* ---------- lightbox ---------- */
+.lightbox { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: rgba(12,31,26,.94); opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s; }
+.lightbox.open { opacity: 1; visibility: visible; }
+.lightbox[hidden] { display: none; }
+.lb-figure { margin: 0; max-width: min(92vw, 1100px); text-align: center; }
+.lb-figure img { max-width: 100%; max-height: 76vh; width: auto; height: auto; border-radius: 12px; box-shadow: var(--shadow-lg); }
+.lb-figure figcaption { color: #fff; margin-top: .9rem; display: flex; justify-content: center; align-items: baseline; gap: 1rem; font-weight: 700; }
+.lb-counter { color: rgba(255,255,255,.6); font-size: .85rem; font-weight: 400; }
+.lb-btn { position: absolute; width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background .2s ease; }
+.lb-btn:hover { background: rgba(255,255,255,.25); }
+.lb-close { top: 1.2rem; right: 1.2rem; }
+.lb-prev { left: 1.2rem; top: 50%; transform: translateY(-50%); }
+.lb-next { right: 1.2rem; top: 50%; transform: translateY(-50%); }
+@media (max-width: 600px) {
+  .lb-prev { left: .5rem; }
+  .lb-next { right: .5rem; }
+  .lb-btn { width: 42px; height: 42px; }
 }
 
 /* ---------- forms ---------- */

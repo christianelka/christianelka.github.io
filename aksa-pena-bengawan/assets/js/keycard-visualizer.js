@@ -325,7 +325,9 @@
 
     if (flipBtn) {
       flipBtn.addEventListener('click', function () {
-        cardEl.classList.toggle('flipped');
+        var flipped = cardEl.classList.toggle('flipped');
+        var hint = flipBtn.querySelector('.muted');
+        if (hint) hint.textContent = flipped ? '(lihat sisi depan)' : '(lihat sisi belakang)';
       });
     }
 
@@ -410,6 +412,9 @@
         if (faces.length === 2) {
           faces[isBack ? 0 : 1].style.display = 'none';
           faces[isBack ? 1 : 0].style.transform = 'none';
+          // netralkan visibility-swap anti-ghosting WebKit agar face yang
+          // ditangkap tidak ikut tersembunyi / tertunda transisinya
+          faces.forEach(function (f) { f.style.transition = 'none'; f.style.visibility = 'visible'; });
         }
         document.body.appendChild(clone);
         html2canvas(clone, { backgroundColor: null, scale: DL_SCALE, useCORS: true }).then(function (canvas) {

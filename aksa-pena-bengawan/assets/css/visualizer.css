@@ -18,12 +18,23 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
   transform: rotateX(8deg) rotateY(-8deg);
   flex-shrink: 0;
 }
-.hl-viz-card:hover {
-  transform: rotateX(0deg) rotateY(0deg) scale(1.03);
+/* Tilt & hover-scale hanya untuk perangkat ber-pointer (desktop):
+   di layar sentuh hover jadi sticky dan 3D-transform pada kartu
+   memicu glitch compositing GPU saat flip (teks terlihat tertinggal). */
+@media (hover: hover) {
+  .hl-viz-card:hover {
+    transform: rotateX(0deg) rotateY(0deg) scale(1.03);
+  }
+}
+@media (hover: none) {
+  .hl-viz-card {
+    transform: none;
+    transition: box-shadow 0.4s;
+  }
 }
 
 .hl-finish-glossy {
@@ -285,13 +296,24 @@
 .viz-controls input[type=file]::file-selector-button{background:var(--emerald-500);color:#fff;border:0;border-radius:var(--radius-sm);padding:.5rem .9rem;font-weight:600;cursor:pointer;margin-right:.7rem}
 .viz-controls input[type=file]::file-selector-button:hover{background:var(--emerald-600)}
 
+/* ---- v5.1: input file disembunyikan visual tapi tetap di-layout ----
+   (display:none membuat iOS Safari menolak .click() programmatic,
+   sehingga file picker tidak muncul) */
+.viz-file-hidden{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0}
+
 /* ---- v3: flip 2 sisi ---- */
 .hl-viz-card{perspective:1400px}
-.hl-viz-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.16,1,.3,1)}
+.hl-viz-flip{position:absolute;inset:0;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .75s cubic-bezier(.16,1,.3,1)}
 .hl-viz-card.flipped .hl-viz-flip{transform:rotateY(180deg)}
 .hl-viz-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
   border-radius:var(--radius-md);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
-  padding:18px 20px}
+  padding:18px 20px;transition:visibility 0s linear .38s}
+/* WebKit (Safari iOS) tidak menerapkan backface-visibility ke descendant
+   ber-stacking-context, sehingga teks sisi depan bocor saat melihat sisi
+   belakang. Cadangan: sembunyikan face yang tidak aktif tepat di tengah
+   animasi flip (kartu sedang edge-on, pergantian tidak terlihat). */
+.hl-viz-card:not(.flipped) .hl-viz-back{visibility:hidden}
+.hl-viz-card.flipped .hl-viz-front{visibility:hidden}
 .hl-viz-back{transform:rotateY(180deg)}
 .hl-viz-back-text{font-size:11px;line-height:1.65;opacity:.92;margin:0}
 .viz-stage{flex-direction:column;gap:1.1rem;align-items:center}

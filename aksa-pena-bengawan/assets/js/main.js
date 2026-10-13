@@ -73,6 +73,73 @@
     revealEls.forEach(function (el) { el.classList.add('visible'); });
   }
 
+  // ---- Lightbox galeri portofolio ----
+  var galleryItems = Array.prototype.slice.call(document.querySelectorAll('.gallery .g-item'));
+  var lightbox = document.getElementById('lightbox');
+  if (galleryItems.length && lightbox) {
+    var lbImg = document.getElementById('lbImg');
+    var lbCaption = document.getElementById('lbCaption');
+    var lbCounter = document.getElementById('lbCounter');
+    var lbClose = document.getElementById('lbClose');
+    var lbPrev = document.getElementById('lbPrev');
+    var lbNext = document.getElementById('lbNext');
+    var lbIndex = 0, lastFocus = null;
+
+    function showLb(i) {
+      lbIndex = (i + galleryItems.length) % galleryItems.length;
+      var img = galleryItems[lbIndex].querySelector('img');
+      var cap = galleryItems[lbIndex].querySelector('figcaption');
+      lbImg.src = img.currentSrc || img.src;
+      lbImg.alt = img.alt;
+      lbCaption.textContent = cap ? cap.textContent : '';
+      lbCounter.textContent = (lbIndex + 1) + ' / ' + galleryItems.length;
+    }
+    function openLb(i) {
+      lastFocus = document.activeElement;
+      showLb(i);
+      lightbox.hidden = false;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { lightbox.classList.add('open'); });
+      });
+      document.body.style.overflow = 'hidden';
+      lbClose.focus();
+    }
+    function closeLb() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(function () { lightbox.hidden = true; }, 260);
+      if (lastFocus) lastFocus.focus();
+    }
+    galleryItems.forEach(function (item, i) {
+      var cap = item.querySelector('figcaption');
+      item.setAttribute('tabindex', '0');
+      item.setAttribute('role', 'button');
+      item.setAttribute('aria-label', 'Lihat detail: ' + (cap ? cap.textContent : 'foto portofolio'));
+      item.addEventListener('click', function () { openLb(i); });
+      item.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(i); }
+      });
+    });
+    lbClose.addEventListener('click', closeLb);
+    lbPrev.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIndex - 1); });
+    lbNext.addEventListener('click', function (e) { e.stopPropagation(); showLb(lbIndex + 1); });
+    lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLb(); });
+    document.addEventListener('keydown', function (e) {
+      if (lightbox.hidden) return;
+      if (e.key === 'Escape') closeLb();
+      else if (e.key === 'ArrowLeft') showLb(lbIndex - 1);
+      else if (e.key === 'ArrowRight') showLb(lbIndex + 1);
+    });
+    var touchX = null;
+    lightbox.addEventListener('touchstart', function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+    lightbox.addEventListener('touchend', function (e) {
+      if (touchX === null) return;
+      var dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) showLb(lbIndex + (dx < 0 ? 1 : -1));
+      touchX = null;
+    }, { passive: true });
+  }
+
   // ---- FAB WhatsApp ----
   var fab = document.getElementById('wa-fab');
   if (fab) fab.addEventListener('click', function () {
