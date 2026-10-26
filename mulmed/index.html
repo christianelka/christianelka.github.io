@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poster Pelayan Ibadah Raya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Outfit', 'Geist', sans-serif; background: #F9FAFB; color: #18181B; line-height: 1.6; }
+header.top { background: #111111; color: #fff; padding: 32px 24px; }
+header.top h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -0.025em; }
+header.top p { margin: 0; opacity: .9; line-height: 1.5; color: #d4d4d4; }
+.wrap { display: grid; grid-template-columns: 430px 1fr; gap: 20px; padding: 20px; align-items: start; }
+@media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } }
+.panel { background: #fff; border: 1px solid #EAEAEA; border-radius: 12px; padding: 24px; }
+.panel h2 { margin: 4px 0 12px; font-size: 18px; }
+.panel h3 { margin: 18px 0 8px; font-size: 15px; }
+label { display: block; font-size: 13px; font-weight: bold; margin: 10px 0 4px; }
+input[type="text"], input[type="date"], input[type="password"], textarea, select { width: 100%; padding: 9px 10px; border: 1px solid #EAEAEA; border-radius: 6px; font-size: 14px; font-family: inherit; }
+input:focus, textarea:focus, select:focus { outline: 2px solid #10B981; outline-offset: 2px; }
+textarea { min-height: 52px; resize: vertical; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+button { cursor: pointer; border: 0; border-radius: 6px; padding: 10px 14px; font-size: 14px; font-weight: bold; transition: transform 200ms cubic-bezier(0.32,0.72,0,1), background 200ms cubic-bezier(0.32,0.72,0,1); }
+button:active { transform: scale(0.98); }
+.btn-main { background: #111111; color: #fff; }
+.btn-main:hover { background: #333333; }
+.btn-dark { background: #111111; color: #fff; }
+.btn-light { background: #F7F6F3; color: #18181B; border: 1px solid #EAEAEA; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.theme-btn { border: 1px solid #EAEAEA; background: #fff; color: #18181B; }
+.theme-btn.active { border-color: #10B981; background: #EDF3EC; color: #346538; }
+.note { font-size: 12.5px; color: #71717A; line-height: 1.5; }
+.status { font-size: 13px; margin-top: 8px; line-height: 1.5; }
+.preview-box { position: sticky; top: 16px; }
+canvas#poster { width: 100%; max-width: 540px; height: auto; display: block; margin: 0 auto; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); background: #fff; }
+.checkline { display: flex; gap: 8px; align-items: flex-start; font-weight: normal; font-size: 14px; }
+.checkline input { margin-top: 3px; }
+</style>
+</head>
+<body>
+<header class="top">
+<h1>Poster Pelayan Ibadah Raya</h1>
+<p>Isi petugas sekali, ganti tema, lalu download PNG. Teks poster dibuat template supaya nama tidak typo.</p>
+</header>
+<div class="wrap">
+<div class="panel">
+<h2>1. Data Umum</h2>
+<div id="devSample" style="display:none">
+<div class="btn-row">
+<button type="button" class="btn-dark" id="loadSample">Isi Data Contoh (Untuk Testing)</button>
+</div>
+<p class="note">Tombol ini hanya untuk dev, disembunyikan dari tampilan normal. Buka tool dengan ?dev=1 di akhir alamat untuk menampilkannya lagi. Tombol ini mengisi semua form dengan data contoh Sola Gratia, Minggu 1 November 2026, supaya kamu bisa langsung tes preview, tema, dan download tanpa ketik manual. Setelah dites, ubah saja datanya dengan jadwal asli, atau tekan Kosongkan Form.</p>
+</div>
+<label for="church">Nama Gereja (Opsional)</label>
+<input id="church" type="text" placeholder="mis. GMS Makassar" autocomplete="off">
+<label for="serviceDate">Tanggal Ibadah</label>
+<input id="serviceDate" type="date">
+<p class="note">Default otomatis Minggu yang akan datang. Kalau dibuka hari Minggu, defaultnya Minggu berikutnya. Tanggal tetap bisa diubah manual. Kalau tanggal itu Minggu pertama bulan itu, kolom Perjamuan Kudus otomatis aktif.</p>
+<div class="row2">
+<div><label for="time1">Jam Ibadah Raya 1</label><input id="time1" type="text" placeholder="mis. 09.00"></div>
+<div><label for="time2">Jam Ibadah Raya 2</label><input id="time2" type="text" placeholder="mis. 17.00"></div>
+</div>
+<label for="footerText">Info Bawah Poster (Opsional)</label>
+<input id="footerText" type="text" placeholder="mis. Instagram atau kontak gereja">
+<label class="checkline"><input id="showCommunion" type="checkbox"> <span>Tampilkan Perjamuan Kudus (otomatis aktif kalau Minggu pertama, bisa diubah manual)</span></label>
+
+<h2>2. Ibadah Raya 1 (Pagi)</h2>
+<label for="ir1_wl">Worship Leader (WL)</label>
+<input id="ir1_wl" type="text" list="roster" placeholder="mis. Mbak Shinta">
+<label for="ir1_singer">Singer (Satu Nama Per Baris)</label>
+<textarea id="ir1_singer" placeholder="Mas Broto&#10;Bu Tri"></textarea>
+<label for="ir1_music">Pemusik (Opsional)</label>
+<input id="ir1_music" type="text" placeholder="mis. Mas Gama dkk.">
+<label for="ir1_usher">Penerima Tamu / Usher</label>
+<input id="ir1_usher" type="text" placeholder="mis. Tim Usher">
+<label for="ir1_offering">Petugas Kolekte</label>
+<input id="ir1_offering" type="text" placeholder="mis. Tim Kolekte">
+<label for="ir1_communion">Petugas Perjamuan Kudus</label>
+<input id="ir1_communion" type="text" placeholder="Diisi kalau Perjamuan Kudus aktif">
+
+<h2>3. Ibadah Raya 2 (Sore)</h2>
+<label for="ir2_wl">Worship Leader (WL)</label>
+<input id="ir2_wl" type="text" list="roster" placeholder="mis. Mas Sopater">
+<label for="ir2_singer">Singer (Satu Nama Per Baris)</label>
+<textarea id="ir2_singer" placeholder="Satu nama per baris"></textarea>
+<label for="ir2_music">Pemusik (Opsional)</label>
+<input id="ir2_music" type="text" placeholder="mis. Keyboard Tunggal">
+<label for="ir2_usher">Penerima Tamu / Usher</label>
+<input id="ir2_usher" type="text" placeholder="mis. Tim Usher">
+<label for="ir2_offering">Petugas Kolekte</label>
+<input id="ir2_offering" type="text" placeholder="mis. Tim Kolekte">
+<label for="ir2_communion">Petugas Perjamuan Kudus</label>
+<input id="ir2_communion" type="text" placeholder="Diisi kalau Perjamuan Kudus aktif">
+<datalist id="roster"></datalist>
+
+<h2>4. Tema Poster</h2>
+<div class="btn-row" id="themeRow">
+<button type="button" class="theme-btn active" data-theme="taste">Taste (3 Skill)</button>
+<button type="button" class="theme-btn" data-theme="gms">Sunday Services</button>
+<button type="button" class="theme-btn" data-theme="dark">Ungu Gelap Modern</button>
+<button type="button" class="theme-btn" data-theme="light">Terang Elegan</button>
+<button type="button" class="theme-btn" data-theme="colorful">Kartu Warna-Warni</button>
+<button type="button" class="theme-btn" data-theme="blue">Biru Foto</button>
+<button type="button" class="theme-btn" data-theme="cream">Krem Klasik</button>
+<button type="button" class="theme-btn" data-theme="green">Hijau Tua Agenda</button>
+</div>
+<p class="note">Sunday Services tidak diubah. 6 tema lama diperbaiki masing-masing dengan 1 skill utama: Ungu Gelap = High-End Ethereal Glass, Terang Elegan = Minimalist, Kartu Warna-Warni = Stitch Bento, Biru Foto = High-End Editorial Split, Krem Klasik = High-End Editorial Luxury, Hijau Tua = Stitch Agenda. Boleh dikombinasikan kalau perlu, tapi tiap tema punya 1 arah yang jelas, bukan semua aturan ditumpuk.</p>
+<label for="posterSize">Ukuran Poster</label>
+<select id="posterSize">
+<option value="auto" selected>Otomatis (Lebar 1080, Tinggi Menyesuaikan Isi, Minimal 1350)</option>
+<option value="fixed">Tetap 1080 x 1350 (Instagram Portrait)</option>
+</select>
+<p class="note">Mode Otomatis: kalau nama gereja, sosmed, dan semua peran terisi sampai kartu terasa sempit, tinggi poster otomatis memanjang sampai maksimal 1920, jadi tidak ada lagi baris yang nabrak. Mode Tetap: tinggi dikunci 1350, cocok untuk feed Instagram.</p>
+
+<h2>5. Simpan dan Download</h2>
+<div class="btn-row">
+<button type="button" class="btn-main" id="downloadPng">Download PNG</button>
+<button type="button" class="btn-dark" id="saveArchive">Simpan Arsip Minggu Ini</button>
+<button type="button" class="btn-light" id="exportJson">Export JSON</button>
+<button type="button" class="btn-light" id="importBtn">Import JSON</button>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+</div>
+<label for="archiveSelect">Arsip Tersimpan</label>
+<select id="archiveSelect"><option value="">Pilih arsip untuk dimuat</option></select>
+<div class="btn-row">
+<button type="button" class="btn-light" id="loadArchive">Muat Arsip</button>
+<button type="button" class="btn-light" id="deleteArchive">Hapus Arsip</button>
+<button type="button" class="btn-light" id="resetForm">Kosongkan Form</button>
+</div>
+<div class="status" id="appStatus">Data form tersimpan otomatis di browser ini.</div>
+<p class="note">Ukuran poster 1080 x 1350, cocok untuk Instagram portrait dan WhatsApp. Nama yang kosong tidak ditampilkan di poster.</p>
+</div>
+
+<div class="panel preview-box">
+<h2>Preview Poster</h2>
+<canvas id="poster" width="1080" height="1350"></canvas>
+<p class="note" id="posterSizeLabel">Ukuran poster saat ini: 1080 x 1350.</p>
+<p class="note">Preview ini persis hasil download PNG-nya. Ganti tema atau isi form, preview langsung berubah.</p>
+</div>
+</div>
+<script>
+var MONTHS = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+var DAYS = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+function pad(n){ return (n < 10 ? "0" : "") + n; }
+function toISO(d){ return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+function nextSunday(from){
+  var d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  var diff = (7 - d.getDay()) % 7;
+  if (diff === 0) diff = 7;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+function parseDateInput(v){
+  if (!v) return null;
+  var p = v.split("-");
+  if (p.length !== 3) return null;
+  return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+}
+function formatDateID(d){
+  if (!d || isNaN(d.getTime())) return "Minggu Depan";
+  return DAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear();
+}
+function isFirstSunday(d){
+  return d && d.getDay() === 0 && d.getDate() <= 7;
+}
+function esc(s){ return String(s == null ? "" : s); }
+function splitNames(v){
+  return String(v || "").split(/[\n,;]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+}
+function getVal(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+function setVal(id, v){ var el = document.getElementById(id); if (el) el.value = v || ""; }
+
+var THEMES = {
+  taste: {
+    name: "Taste (3 Skill)",
+    bg1: "#F9FAFB", bg2: "#F7F6F3", bg3: "#F9FAFB",
+    card: "#ffffff", cardBorder: "#EAEAEA", card2: "#ffffff",
+    text: "#18181B", muted: "#71717A", accent: "#10B981", accent2: "#EDF3EC",
+    pill: "#EDF3EC", pillText: "#346538", headerText: "#18181B",
+    titleFont: "'Instrument Serif', serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(255,255,255,0.45)"
+  },
+  gms: {
+    name: "Sunday Services",
+    bg1: "#f8f6f0", bg2: "#f4f1e8", bg3: "#efe9dc",
+    card: "#ffffff", cardBorder: "#d8d2c2", card2: "#ffffff",
+    text: "#1f2937", muted: "#6b7280", accent: "#0f766e", accent2: "#0e7490",
+    pill: "#0f766e", pillText: "#ffffff", headerText: "#1f2937",
+    titleFont: "'Outfit', sans-serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(255,255,255,0.45)"
+  },
+  dark: {
+    name: "Ungu Gelap Modern",
+    bg1: "#050505", bg2: "#0a0a0a", bg3: "#050505",
+    card: "#0a0a0a", cardBorder: "#262626", card2: "#111111",
+    text: "#ffffff", muted: "#a1a1aa", accent: "#10b981", accent2: "#34d399",
+    pill: "#10b981", pillText: "#050505", headerText: "#ffffff",
+    titleFont: "'Outfit', sans-serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(0,0,0,0.55)"
+  },
+  light: {
+    name: "Terang Elegan",
+    bg1: "#fdf8ee", bg2: "#f5efe0", bg3: "#fdf8ee",
+    card: "#fffdf5", cardBorder: "#d8cdb8", card2: "#fffdf5",
+    text: "#3b2f2f", muted: "#8a7a5b", accent: "#0f766e", accent2: "#881337",
+    pill: "#0f766e", pillText: "#ffffff", headerText: "#3b2f2f",
+    titleFont: "'Instrument Serif', serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(255,255,255,0.55)"
+  },
+  colorful: {
+    name: "Kartu Warna-Warni",
+    bg1: "#f9fafb", bg2: "#f9fafb", bg3: "#f9fafb",
+    card: "#ffffff", cardBorder: "#e2e8f0", card2: "#ffffff",
+    text: "#18181b", muted: "#71717a", accent: "#10b981", accent2: "#edf3ec",
+    pill: "#edf3ec", pillText: "#346538", headerText: "#18181b",
+    titleFont: "'Outfit', sans-serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(255,255,255,0.45)"
+  },
+  blue: {
+    name: "Biru Foto",
+    bg1: "#eff6ff", bg2: "#dbeafe", bg3: "#eff6ff",
+    card: "#ffffff", cardBorder: "#bfdbfe", card2: "#1d4ed8",
+    text: "#1e3a5f", muted: "#64748b", accent: "#1d4ed8", accent2: "#0ea5e9",
+    pill: "#1d4ed8", pillText: "#ffffff", headerText: "#ffffff",
+    titleFont: "'Outfit', sans-serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(15,23,42,0.55)"
+  },
+  cream: {
+    name: "Krem Klasik",
+    bg1: "#fdfbf7", bg2: "#fdfbf7", bg3: "#fdfbf7",
+    card: "#ffffff", cardBorder: "#e7e5e4", card2: "#f5f5f4",
+    text: "#292524", muted: "#78716c", accent: "#6b7c6e", accent2: "#e7e5e4",
+    pill: "#292524", pillText: "#ffffff", headerText: "#292524",
+    titleFont: "'Instrument Serif', serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(41,37,36,0.45)"
+  },
+  green: {
+    name: "Hijau Tua Agenda",
+    bg1: "#052e22", bg2: "#064e3b", bg3: "#052e22",
+    card: "#0f3d2a", cardBorder: "#22c55e", card2: "#0f3d2a",
+    text: "#ecfdf5", muted: "#a7f3d0", accent: "#f97316", accent2: "#fbbf24",
+    pill: "#f97316", pillText: "#ffffff", headerText: "#ecfdf5",
+    titleFont: "'Outfit', sans-serif", bodyFont: "'Outfit', sans-serif", overlay: "rgba(255,255,255,0.55)"
+  },
+};
+var currentTheme = "dark";
+var aiBgImage = null;
+var aiBgUrl = "";
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+function wrapText(ctx, text, maxWidth){
+  var words = String(text).split(/\s+/).filter(Boolean);
+  var lines = [], line = "";
+  for (var i = 0; i < words.length; i++){
+    var test = line ? line + " " + words[i] : words[i];
+    if (ctx.measureText(test).width > maxWidth && line){
+      lines.push(line); line = words[i];
+    } else { line = test; }
+  }
+  if (line) lines.push(line);
+  return lines.length ? lines : [""];
+}
+function serviceData(prefix){
+  var roles = [];
+  var wl = getVal(prefix + "_wl");
+  if (wl) roles.push(["Worship Leader", wl]);
+  var singers = splitNames(document.getElementById(prefix + "_singer").value);
+  if (singers.length) roles.push(["Singer", singers.join(", ")]);
+  var music = getVal(prefix + "_music");
+  if (music) roles.push(["Pemusik", music]);
+  var usher = getVal(prefix + "_usher");
+  if (usher) roles.push(["Penerima Tamu", usher]);
+  var offering = getVal(prefix + "_offering");
+  if (offering) roles.push(["Kolekte", offering]);
+  var showCom = document.getElementById("showCommunion").checked;
+  var comm = getVal(prefix + "_communion");
+  if (showCom && comm) roles.push(["Perjamuan Kudus", comm]);
+  return roles;
+}
+function collectData(){
+  return {
+    church: getVal("church"),
+    date: getVal("serviceDate"),
+    time1: getVal("time1"),
+    time2: getVal("time2"),
+    footer: getVal("footerText"),
+    showCommunion: document.getElementById("showCommunion").checked,
+    theme: currentTheme,
+    posterSize: posterSizeMode(),
+    ir1: { wl: getVal("ir1_wl"), singer: document.getElementById("ir1_singer").value, music: getVal("ir1_music"), usher: getVal("ir1_usher"), offering: getVal("ir1_offering"), communion: getVal("ir1_communion") },
+    ir2: { wl: getVal("ir2_wl"), singer: document.getElementById("ir2_singer").value, music: getVal("ir2_music"), usher: getVal("ir2_usher"), offering: getVal("ir2_offering"), communion: getVal("ir2_communion") }
+  };
+}
+function applyData(d){
+  if (!d) return;
+  setVal("church", d.church); setVal("serviceDate", d.date); setVal("time1", d.time1); setVal("time2", d.time2); setVal("footerText", d.footer);
+  document.getElementById("showCommunion").checked = !!d.showCommunion;
+  if (d.ir1){ setVal("ir1_wl", d.ir1.wl); document.getElementById("ir1_singer").value = d.ir1.singer || ""; setVal("ir1_music", d.ir1.music); setVal("ir1_usher", d.ir1.usher); setVal("ir1_offering", d.ir1.offering); setVal("ir1_communion", d.ir1.communion); }
+  if (d.ir2){ setVal("ir2_wl", d.ir2.wl); document.getElementById("ir2_singer").value = d.ir2.singer || ""; setVal("ir2_music", d.ir2.music); setVal("ir2_usher", d.ir2.usher); setVal("ir2_offering", d.ir2.offering); setVal("ir2_communion", d.ir2.communion); }
+  if (d.theme && THEMES[d.theme]) setTheme(d.theme);
+  if (d.posterSize){ var ps = document.getElementById("posterSize"); if (ps) ps.value = d.posterSize; }
+}
+function saveForm(){
+  try { localStorage.setItem("posterPelayanForm", JSON.stringify(collectData())); } catch (e) {}
+  refreshRoster();
+}
+function refreshRoster(){
+  var names = {};
+  ["ir1_wl","ir2_wl"].forEach(function(id){ var v = getVal(id); if (v) names[v] = true; });
+  ["ir1_singer","ir2_singer"].forEach(function(id){ splitNames(document.getElementById(id).value).forEach(function(n){ names[n] = true; }); });
+  ["ir1_music","ir2_music","ir1_usher","ir2_usher","ir1_offering","ir2_offering","ir1_communion","ir2_communion"].forEach(function(id){ splitNames(getVal(id)).forEach(function(n){ names[n] = true; }); });
+  var dl = document.getElementById("roster");
+  dl.innerHTML = "";
+  Object.keys(names).sort().forEach(function(n){ var o = document.createElement("option"); o.value = n; dl.appendChild(o); });
+}
+var themeOverride = {};
+var aiBackgroundPrompt = "";
+var aiDesignNote = "";
+function isHexColor(s){ return /^#[0-9a-fA-F]{6}$/.test(String(s || "")); }
+function effectiveTheme(name){
+  var base = THEMES[name] || THEMES.dark;
+  var t = {};
+  for (var k in base) t[k] = base[k];
+  if (isHexColor(themeOverride.accent)) t.accent = themeOverride.accent;
+  if (isHexColor(themeOverride.accent2)) t.accent2 = themeOverride.accent2;
+  if (isHexColor(themeOverride.pill)) t.pill = themeOverride.pill;
+  return t;
+}
+function fitLines(ctx, text, maxWidth, fontFamily){
+  var sizes = [31, 28, 25, 22];
+  var result = null;
+  for (var i = 0; i < sizes.length; i++){
+    ctx.font = "700 " + sizes[i] + "px " + fontFamily;
+    var lines = wrapText(ctx, text, maxWidth);
+    result = { lines: lines, size: sizes[i], lineH: sizes[i] + 6 };
+    if (lines.length <= 3) break;
+  }
+  return result;
+}
+var posterHeight = 1350;
+var posterOverflowPx = 0;
+function posterSizeMode(){
+  var el = document.getElementById("posterSize");
+  return el ? el.value : "auto";
+}
+function drawPoster(){
+  var canvas = document.getElementById("poster");
+  posterHeight = 1350;
+  if (canvas) canvas.height = 1350;
+  posterOverflowPx = 0;
+  drawOnce();
+  var attempts = 0;
+  while (posterSizeMode() === "auto" && posterOverflowPx > 0 && posterHeight < 1920 && attempts < 5){
+    posterHeight = Math.min(1920, posterHeight + posterOverflowPx + 60);
+    if (canvas) canvas.height = posterHeight;
+    posterOverflowPx = 0;
+    drawOnce();
+    attempts++;
+  }
+  /* Frame tebal 20px dihapus untuk semua tema: itu yang membuat tema lain terlihat burik dan menutupi aturan skill. */
+  var label = document.getElementById("posterSizeLabel");
+  if (label) label.textContent = "Ukuran poster saat ini: 1080 x " + posterHeight + (posterSizeMode() === "auto" ? " (otomatis, tinggi menyesuaikan isi)." : " (tetap).");
+}
+function drawOnce(){
+  if (currentTheme === "taste") { drawTasteLayout(); return; }
+  if (currentTheme === "gms") { drawGmsLayout(); return; }
+  if (currentTheme === "dark") { drawDarkV2(); return; }
+  if (currentTheme === "light") { drawLightV2(); return; }
+  if (currentTheme === "colorful") { drawColorfulV2(); return; }
+  if (currentTheme === "blue") { drawBlueV2(); return; }
+  if (currentTheme === "cream") { drawCreamV2(); return; }
+  if (currentTheme === "green") { drawGreenV2(); return; }
+}
+function drawBg(ctx, t, W, H){
+  var grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, t.bg1); grad.addColorStop(0.55, t.bg2); grad.addColorStop(1, t.bg3);
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+  if (aiBgImage){
+    var iw = aiBgImage.width, ih = aiBgImage.height;
+    var scale = Math.max(W / iw, H / ih);
+    var dw = iw * scale, dh = ih * scale;
+    ctx.drawImage(aiBgImage, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    ctx.save(); ctx.globalAlpha = 0.35; ctx.fillStyle = t.overlay; ctx.fillRect(0, 0, W, H); ctx.restore();
+    ctx.save(); ctx.globalAlpha = 0.55; ctx.fillStyle = t.overlay; ctx.fillRect(0, H * 0.35, W, H * 0.65); ctx.restore();
+  }
+}
+function drawRoleRowsV2(ctx, rows, x, y, w, t, labelColor, textColor){
+  var list = rows.length ? rows : [["Info", "Belum diisi"]];
+  ctx.font = "700 29px " + t.bodyFont;
+  var maxLabelW = 0;
+  list.forEach(function(r){ maxLabelW = Math.max(maxLabelW, ctx.measureText(r[0]).width); });
+  var nameOff = Math.min(360, Math.max(280, Math.ceil(maxLabelW) + 36));
+  var yy = y;
+  list.forEach(function(row){
+    ctx.font = "700 29px " + t.bodyFont; ctx.fillStyle = labelColor; ctx.textAlign = "left";
+    ctx.fillText(row[0], x, yy + 30);
+    var fit = fitLines(ctx, row[1], w - nameOff, t.bodyFont);
+    ctx.fillStyle = textColor;
+    fit.lines.slice(0, 3).forEach(function(ln, li){ ctx.fillText(ln, x + nameOff, yy + 30 + li * fit.lineH); });
+    yy += Math.max(48, fit.lines.slice(0, 3).length * fit.lineH + 14);
+    if (yy > posterHeight - 70) posterOverflowPx = Math.max(posterOverflowPx, yy - (posterHeight - 70) + 60);
+  });
+  return yy;
+}
+function drawRoleStackV2(ctx, rows, x, y, w, t, labelColor, textColor){
+  var list = rows.length ? rows : [["Info", "Belum diisi"]];
+  var yy = y;
+  list.forEach(function(row){
+    ctx.font = "700 24px " + t.bodyFont; ctx.fillStyle = labelColor; ctx.textAlign = "left";
+    ctx.fillText(row[0].toUpperCase(), x, yy + 26);
+    var fit = fitLines(ctx, row[1], w, t.bodyFont);
+    ctx.fillStyle = textColor;
+    fit.lines.slice(0, 3).forEach(function(ln, li){ ctx.fillText(ln, x, yy + 26 + (li + 1) * fit.lineH); });
+    yy += 26 + fit.lines.slice(0, 3).length * fit.lineH + 18;
+    if (yy > posterHeight - 70) posterOverflowPx = Math.max(posterOverflowPx, yy - (posterHeight - 70) + 60);
+  });
+  return yy;
+}
+function drawDarkV2(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("dark");
+  var W = 1080, H = posterHeight;
+  ctx.fillStyle = "#050505"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(16,185,129,0.18)"; ctx.beginPath(); ctx.arc(920, 90, 190, 0, Math.PI * 2); ctx.fill();
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  ctx.textAlign = "left";
+  var y = 64;
+  if (church){
+    ctx.font = "700 20px " + t.bodyFont; var tw = ctx.measureText(church.toUpperCase()).width + 36;
+    ctx.fillStyle = "#10b981"; roundRect(ctx, 60, y, tw, 40, 20); ctx.fill();
+    ctx.fillStyle = "#050505"; ctx.fillText(church.toUpperCase(), 78, y + 27); y += 72;
+  }
+  ctx.fillStyle = "#ffffff"; ctx.font = "900 118px " + t.bodyFont;
+  ctx.fillText("IBADAH", 60, y + 96); ctx.fillText("RAYA", 60, y + 208);
+  y += 248;
+  if (dateObj && !isNaN(dateObj.getTime())){
+    ctx.fillStyle = "#a1a1aa"; ctx.font = "700 30px " + t.bodyFont;
+    ctx.fillText(formatDateID(dateObj).toUpperCase(), 60, y + 28);
+  }
+  y += 64;
+  if (aiBgImage){
+    ctx.fillStyle = "#111111"; roundRect(ctx, 60, y, W - 120, 284, 32); ctx.fill();
+    ctx.save(); roundRect(ctx, 72, y + 12, W - 144, 260, 24); ctx.clip();
+    var iw = aiBgImage.width, ih = aiBgImage.height; var sc = Math.max((W - 144) / iw, 260 / ih);
+    ctx.drawImage(aiBgImage, 72 + ((W - 144) - iw * sc) / 2, y + 12 + (260 - ih * sc) / 2, iw * sc, ih * sc); ctx.restore();
+    y += 324;
+  }
+  var services = [
+    { title: "IBADAH RAYA 1", sub: "PAGI", time: getVal("time1"), roles: serviceData("ir1") },
+    { title: "IBADAH RAYA 2", sub: "SORE", time: getVal("time2"), roles: serviceData("ir2") }
+  ];
+  services.forEach(function(svc){
+    var rows = svc.roles.length ? svc.roles : [["Info", "Belum diisi"]];
+    ctx.font = "400 29px " + t.bodyFont;
+    var est = 24 + 60;
+    rows.forEach(function(r){ var f = fitLines(ctx, r[1], W - 120 - 360, t.bodyFont); est += Math.max(48, f.lines.slice(0,3).length * f.lineH + 14); });
+    var cardH = est + 24;
+    ctx.fillStyle = "#111111"; roundRect(ctx, 60, y, W - 120, cardH, 32); ctx.fill();
+    ctx.fillStyle = "#0a0a0a"; roundRect(ctx, 72, y + 12, W - 144, cardH - 24, 24); ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.font = "700 34px " + t.bodyFont; ctx.fillText(svc.title, 100, y + 62);
+    if (svc.time){ ctx.fillStyle = "#10b981"; ctx.textAlign = "right"; ctx.fillText(svc.time, W - 100, y + 62); ctx.textAlign = "left"; }
+    drawRoleRowsV2(ctx, svc.roles, 100, y + 84, W - 200, t, "#a1a1aa", "#ffffff");
+    y += cardH + 28;
+  });
+  if (footer){ ctx.fillStyle = "#a1a1aa"; ctx.font = "400 24px " + t.bodyFont; ctx.fillText(footer, 60, H - 36); }
+  if (y > H - 60) posterOverflowPx = Math.max(posterOverflowPx, y - (H - 60) + 60);
+}
+
+function drawLightV2(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("light");
+  var W = 1080, H = posterHeight;
+  ctx.fillStyle = "#fdf8ee"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(139,122,91,0.08)";
+  for (var px = 40; px < W; px += 52){ for (var py = 30; py < H; py += 52){ ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2); ctx.fill(); } }
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  ctx.textAlign = "left";
+  var y = 64;
+  if (dateObj && !isNaN(dateObj.getTime())){
+    ctx.fillStyle = "#8a7a5b"; ctx.font = "700 22px " + t.bodyFont;
+    ctx.fillText((DAYS[dateObj.getDay()] + ", " + formatDateID(dateObj)).toUpperCase(), 60, y + 20);
+  }
+  y += 56;
+  ctx.fillStyle = "#3b2f2f"; ctx.font = "400 104px " + t.titleFont;
+  ctx.fillText("Ibadah Raya", 60, y + 88);
+  y += 128;
+  if (church){ ctx.fillStyle = "#8a7a5b"; ctx.font = "400 30px " + t.bodyFont; ctx.fillText(church, 60, y + 28); y += 48; }
+  ctx.fillStyle = "#d8cdb8"; ctx.fillRect(60, y, W - 120, 1); y += 48;
+  var services = [
+    { title: "Ibadah Raya 1", time: getVal("time1"), roles: serviceData("ir1") },
+    { title: "Ibadah Raya 2", time: getVal("time2"), roles: serviceData("ir2") }
+  ];
+  services.forEach(function(svc){
+    ctx.fillStyle = "#3b2f2f"; ctx.font = "700 36px " + t.bodyFont; ctx.fillText(svc.title, 60, y + 32);
+    if (svc.time){
+      ctx.font = "700 22px " + t.bodyFont; var tw = ctx.measureText(svc.time).width + 28;
+      ctx.fillStyle = "#edf3ec"; roundRect(ctx, W - 60 - tw, y, tw, 36, 18); ctx.fill();
+      ctx.fillStyle = "#346538"; ctx.fillText(svc.time, W - 60 - tw + 14, y + 25);
+    }
+    y += 64;
+    y = drawRoleStackV2(ctx, svc.roles, 60, y, W - 120, t, "#8a7a5b", "#3b2f2f");
+    y += 20;
+    ctx.fillStyle = "#d8cdb8"; ctx.fillRect(60, y, W - 120, 1); y += 48;
+  });
+  if (footer){ ctx.fillStyle = "#8a7a5b"; ctx.font = "400 24px " + t.bodyFont; ctx.fillText(footer, 60, H - 36); }
+  if (y > H - 60) posterOverflowPx = Math.max(posterOverflowPx, y - (H - 60) + 60);
+}
+
+function drawColorfulV2(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("colorful");
+  var W = 1080, H = posterHeight;
+  ctx.fillStyle = "#fef9e7"; ctx.fillRect(0, 0, W, H);
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  ctx.textAlign = "left";
+  var y = 60;
+  if (church){ ctx.fillStyle = "#71717a"; ctx.font = "700 22px " + t.bodyFont; ctx.fillText(church.toUpperCase(), 60, y + 20); y += 44; }
+  ctx.font = "900 88px " + t.bodyFont;
+  ctx.fillStyle = "#16a34a"; ctx.fillText("PELAYAN", 60, y + 76);
+  ctx.fillStyle = "#2563eb"; ctx.fillText("IBADAH", 60, y + 160);
+  var dateX = 700, dateW = 320;
+  ctx.fillStyle = "#f59e0b";
+  roundRect(ctx, dateX, 60, dateW, 220, 40); ctx.fill();
+  if (dateObj && !isNaN(dateObj.getTime())){
+    ctx.fillStyle = "#ffffff"; ctx.font = "900 96px " + t.bodyFont; ctx.fillText(String(dateObj.getDate()), dateX + 28, 60 + 96);
+    ctx.fillStyle = "#ffffff"; ctx.font = "700 28px " + t.bodyFont; ctx.fillText(MONTHS[dateObj.getMonth()].toUpperCase(), dateX + 28, 60 + 140);
+    ctx.fillStyle = "#fff7ed"; ctx.font = "400 26px " + t.bodyFont; ctx.fillText(String(dateObj.getFullYear()), dateX + 28, 60 + 176);
+  }
+  y += 260;
+  var cols = [
+    { x: 60, w: 470, title: "IBADAH RAYA 1", time: getVal("time1"), roles: serviceData("ir1"), stack: true, color: "#16a34a", labelColor: "#bbf7d0" },
+    { x: 550, w: 470, title: "IBADAH RAYA 2", time: getVal("time2"), roles: serviceData("ir2"), stack: true, color: "#2563eb", labelColor: "#bfdbfe" }
+  ];
+  var maxBottom = y;
+  cols.forEach(function(col){
+    var rows = col.roles.length ? col.roles : [["Info", "Belum diisi"]];
+    ctx.font = "400 29px " + t.bodyFont;
+    var est = 72 + (col.time ? 44 : 0);
+    rows.forEach(function(r){
+      var f = fitLines(ctx, r[1], col.w - 56, t.bodyFont);
+      if (col.stack) est += 26 + f.lines.slice(0,3).length * f.lineH + 18;
+      else est += Math.max(48, f.lines.slice(0,3).length * f.lineH + 14);
+    });
+    var cardH = est + 28;
+    ctx.fillStyle = col.color;
+    roundRect(ctx, col.x, y, col.w, cardH, 40); ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.font = "700 32px " + t.bodyFont; ctx.textAlign = "left"; ctx.fillText(col.title, col.x + 28, y + 46);
+    var yy = y + 72;
+    if (col.time){ ctx.fillStyle = "#ffffff"; ctx.font = "700 24px " + t.bodyFont; ctx.fillText(col.time, col.x + 28, yy + 20); yy += 44; }
+    if (col.stack) drawRoleStackV2(ctx, col.roles, col.x + 28, yy, col.w - 56, t, col.labelColor, "#ffffff");
+    else drawRoleRowsV2(ctx, col.roles, col.x + 28, yy, col.w - 56, t, "#71717a", "#18181b");
+    maxBottom = Math.max(maxBottom, y + cardH);
+  });
+  if (footer){ ctx.fillStyle = "#71717a"; ctx.font = "400 24px " + t.bodyFont; ctx.fillText(footer, 60, H - 36); }
+  if (maxBottom > H - 60) posterOverflowPx = Math.max(posterOverflowPx, maxBottom - (H - 60) + 60);
+}
+
+function drawBlueV2(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("blue");
+  var W = 1080, H = posterHeight;
+  ctx.fillStyle = "#eff6ff"; ctx.fillRect(0, 0, W, H);
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#1d4ed8"; ctx.fillRect(0, 0, W, 64);
+  if (church){ ctx.fillStyle = "#ffffff"; ctx.font = "700 24px " + t.bodyFont; ctx.fillText(church.toUpperCase(), 60, 40); }
+  var photoY = 64, photoH = 360;
+  if (aiBgImage){
+    var iw = aiBgImage.width, ih = aiBgImage.height; var sc = Math.max(W / iw, photoH / ih);
+    ctx.drawImage(aiBgImage, (W - iw * sc) / 2, photoY + (photoH - ih * sc) / 2, iw * sc, ih * sc);
+    ctx.fillStyle = "rgba(29,78,216,0.35)"; ctx.fillRect(0, photoY, W, photoH);
+  } else {
+    ctx.fillStyle = "#1d4ed8"; ctx.fillRect(0, photoY, W, photoH);
+    ctx.fillStyle = "rgba(255,255,255,0.15)"; ctx.beginPath(); ctx.arc(900, photoY + 80, 120, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.fillStyle = "#ffffff"; ctx.font = "900 96px " + t.bodyFont; ctx.textAlign = "center";
+  ctx.fillText("IBADAH RAYA", 540, photoY + 160);
+  ctx.font = "700 32px " + t.bodyFont;
+  if (dateObj && !isNaN(dateObj.getTime())) ctx.fillText(formatDateID(dateObj), 540, photoY + 220);
+  ctx.textAlign = "left";
+  var y = photoY + photoH + 40;
+  var cols = [
+    { x: 60, w: 470, title: "IBADAH RAYA 1", time: getVal("time1"), roles: serviceData("ir1") },
+    { x: 550, w: 470, title: "IBADAH RAYA 2", time: getVal("time2"), roles: serviceData("ir2") }
+  ];
+  var maxBottom = y;
+  cols.forEach(function(col){
+    var rows = col.roles.length ? col.roles : [["Info", "Belum diisi"]];
+    ctx.font = "400 29px " + t.bodyFont;
+    var est = 96 + (col.time ? 44 : 0);
+    rows.forEach(function(r){ var f = fitLines(ctx, r[1], col.w - 80, t.bodyFont); est += 26 + f.lines.slice(0,3).length * f.lineH + 18; });
+    var cardH = est + 28;
+    ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#bfdbfe"; ctx.lineWidth = 1;
+    roundRect(ctx, col.x, y, col.w, cardH, 32); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#1d4ed8"; roundRect(ctx, col.x, y, col.w, 96, 32); ctx.fill(); ctx.fillRect(col.x, y + 64, col.w, 32);
+    ctx.fillStyle = "#ffffff"; ctx.font = "700 32px " + t.bodyFont; ctx.fillText(col.title, col.x + 40, y + 42);
+    if (col.time){ ctx.fillStyle = "#ffffff"; ctx.font = "700 24px " + t.bodyFont; ctx.fillText(col.time, col.x + 40, y + 78); }
+    drawRoleStackV2(ctx, col.roles, col.x + 40, y + 120, col.w - 80, t, "#64748b", "#1e3a5f");
+    maxBottom = Math.max(maxBottom, y + cardH);
+  });
+  if (footer){ ctx.fillStyle = "#64748b"; ctx.font = "400 24px " + t.bodyFont; ctx.fillText(footer, 60, H - 36); }
+  if (maxBottom > H - 60) posterOverflowPx = Math.max(posterOverflowPx, maxBottom - (H - 60) + 60);
+}
+
+function drawCreamV2(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("cream");
+  var W = 1080, H = posterHeight;
+  ctx.fillStyle = "#fdfbf7"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(41,37,36,0.04)";
+  for (var gx = 40; gx < W; gx += 48){ for (var gy = 30; gy < H; gy += 48){ ctx.beginPath(); ctx.arc(gx, gy, 1.5, 0, Math.PI * 2); ctx.fill(); } }
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  ctx.textAlign = "left";
+  var y = 64;
+  if (church){ ctx.fillStyle = "#78716c"; ctx.font = "700 22px " + t.bodyFont; ctx.fillText(church.toUpperCase(), 60, y + 20); y += 48; }
+  ctx.fillStyle = "#292524"; ctx.font = "italic 400 64px " + t.titleFont; ctx.fillText("Jadwal", 60, y + 56);
+  ctx.font = "700 108px " + t.titleFont; ctx.fillText("Pelayan Ibadah", 60, y + 156);
+  y += 192;
+  if (dateObj && !isNaN(dateObj.getTime())){
+    ctx.fillStyle = "#6b7c6e"; ctx.font = "700 32px " + t.bodyFont; ctx.fillText(formatDateID(dateObj), 60, y + 28);
+  }
+  y += 64;
+  var services = [
+    { title: "IBADAH RAYA 1", sub: "PAGI", time: getVal("time1"), roles: serviceData("ir1") },
+    { title: "IBADAH RAYA 2", sub: "SORE", time: getVal("time2"), roles: serviceData("ir2") }
+  ];
+  services.forEach(function(svc){
+    var rows = svc.roles.length ? svc.roles : [["Info", "Belum diisi"]];
+    ctx.font = "400 29px " + t.bodyFont; var est = 24 + 60;
+    rows.forEach(function(r){ var f = fitLines(ctx, r[1], W - 120 - 360, t.bodyFont); est += Math.max(48, f.lines.slice(0,3).length * f.lineH + 14); });
+    var cardH = est + 24;
+    ctx.fillStyle = "#f5f5f4"; roundRect(ctx, 60, y, W - 120, cardH, 32); ctx.fill();
+    ctx.fillStyle = "#ffffff"; roundRect(ctx, 72, y + 12, W - 144, cardH - 24, 24); ctx.fill();
+    ctx.fillStyle = "#292524"; ctx.font = "700 34px " + t.bodyFont; ctx.fillText(svc.title + "  " + svc.sub, 100, y + 62);
+    if (svc.time){ ctx.fillStyle = "#6b7c6e"; ctx.textAlign = "right"; ctx.fillText(svc.time, W - 100, y + 62); ctx.textAlign = "left"; }
+    drawRoleRowsV2(ctx, svc.roles, 100, y + 84, W - 200, t, "#78716c", "#292524");
+    y += cardH + 28;
+  });
+  if (footer){ ctx.fillStyle = "#78716c"; ctx.font = "400 24px " + t.bodyFont; ctx.fillText(footer, 60, H - 36); }
+  if (y > H - 60) posterOverflowPx = Math.max(posterOverflowPx, y - (H - 60) + 60);
+}
+
+function drawGreenV2(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("green");
+  var W = 1080, H = posterHeight;
+  ctx.fillStyle = "#052e22"; ctx.fillRect(0, 0, W, H);
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  ctx.textAlign = "left";
+  var sideX = 60, sideW = 320, mainX = 420, mainW = 600;
+  var y = 64;
+  if (church){ ctx.fillStyle = "#a7f3d0"; ctx.font = "700 22px " + t.bodyFont; ctx.fillText(church.toUpperCase(), sideX, y + 20); y += 56; }
+  if (dateObj && !isNaN(dateObj.getTime())){
+    ctx.fillStyle = "#f97316"; ctx.font = "900 140px " + t.bodyFont; ctx.fillText(String(dateObj.getDate()), sideX, y + 116);
+    ctx.fillStyle = "#ecfdf5"; ctx.font = "700 32px " + t.bodyFont; ctx.fillText(MONTHS[dateObj.getMonth()].toUpperCase(), sideX, y + 164);
+    ctx.fillStyle = "#a7f3d0"; ctx.font = "400 28px " + t.bodyFont; ctx.fillText(String(dateObj.getFullYear()), sideX, y + 200);
+  }
+  y += 240;
+  ctx.fillStyle = "#ecfdf5"; ctx.font = "900 56px " + t.bodyFont; ctx.fillText("AGENDA", sideX, y + 48);
+  y += 80;
+  ctx.fillStyle = "#a7f3d0"; ctx.font = "400 28px " + t.bodyFont;
+  ctx.fillText("IBADAH RAYA 1  " + (getVal("time1") || "-"), sideX, y + 28);
+  ctx.fillText("IBADAH RAYA 2  " + (getVal("time2") || "-"), sideX, y + 68);
+  var services = [
+    { title: "IBADAH RAYA 1", time: getVal("time1"), roles: serviceData("ir1") },
+    { title: "IBADAH RAYA 2", time: getVal("time2"), roles: serviceData("ir2") }
+  ];
+  var my = 64;
+  services.forEach(function(svc){
+    var rows = svc.roles.length ? svc.roles : [["Info", "Belum diisi"]];
+    ctx.font = "400 29px " + t.bodyFont; var est = 64;
+    rows.forEach(function(r){ var f = fitLines(ctx, r[1], mainW - 76, t.bodyFont); est += 26 + f.lines.slice(0,3).length * f.lineH + 18; });
+    var cardH = est + 28;
+    ctx.fillStyle = "#ffffff";
+    roundRect(ctx, mainX, my, mainW, cardH, 40); ctx.fill();
+    ctx.fillStyle = "#f97316"; ctx.fillRect(mainX, my, 24, cardH);
+    ctx.fillStyle = "#052e22"; ctx.font = "700 32px " + t.bodyFont; ctx.textAlign = "left"; ctx.fillText(svc.title, mainX + 48, my + 40);
+    if (svc.time){ ctx.fillStyle = "#ea580c"; ctx.font = "700 24px " + t.bodyFont; ctx.textAlign = "right"; ctx.fillText(svc.time, mainX + mainW - 28, my + 40); ctx.textAlign = "left"; }
+    drawRoleStackV2(ctx, svc.roles, mainX + 48, my + 64, mainW - 76, t, "#059669", "#052e22");
+    my = my + cardH + 28;
+  });
+  if (footer){ ctx.fillStyle = "#a7f3d0"; ctx.font = "400 24px " + t.bodyFont; ctx.fillText(footer, sideX, H - 36); }
+  if (my > H - 60) posterOverflowPx = Math.max(posterOverflowPx, my - (H - 60) + 60);
+}
+
+function drawGmsLayout(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("gms");
+  var W = 1080, H = posterHeight;
+  drawBg(ctx, t, W, H);
+  ctx.fillStyle = "rgba(0,0,0,0.03)";
+  for (var px = 40; px < W; px += 52){ for (var py = 30; py < H; py += 52){ ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2); ctx.fill(); } }
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  var cx = W / 2;
+  var y = 60;
+  ctx.textAlign = "center";
+  if (church){
+    ctx.font = "700 26px " + t.bodyFont;
+    var pw = ctx.measureText(church.toUpperCase()).width + 100;
+    ctx.fillStyle = t.pill;
+    roundRect(ctx, cx - pw / 2, y, pw, 52, 26); ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(church.toUpperCase(), cx, y + 34);
+    y += 80;
+  } else {
+    ctx.fillStyle = t.pill; roundRect(ctx, cx - 140, y, 280, 52, 26); ctx.fill();
+    ctx.fillStyle = "#ffffff"; ctx.font = "700 26px " + t.bodyFont; ctx.fillText("IBADAH RAYA", cx, y + 34);
+    y += 80;
+  }
+  var titleText = "MINGGU";
+  var titleSize = 210;
+  ctx.font = "900 " + titleSize + "px " + t.bodyFont;
+  while (ctx.measureText(titleText).width > 960 && titleSize > 120){ titleSize -= 10; ctx.font = "900 " + titleSize + "px " + t.bodyFont; }
+  var titleY = y + titleSize;
+  ctx.fillStyle = t.accent; ctx.font = "900 " + titleSize + "px " + t.bodyFont; ctx.textAlign = "center";
+  ctx.fillText(titleText, cx, titleY);
+  var drawn = false;
+  try {
+    var tmp = document.createElement("canvas");
+    tmp.width = 1080; tmp.height = titleSize + 40;
+    var tctx = tmp.getContext("2d");
+    tctx.font = "900 " + titleSize + "px " + t.bodyFont; tctx.textAlign = "center";
+    tctx.fillText(titleText, 540, titleSize);
+    tctx.globalCompositeOperation = "source-in";
+    if (aiBgImage){
+      var iw = aiBgImage.width, ih = aiBgImage.height;
+      var scale = Math.max(1080 / iw, (titleSize + 40) / ih);
+      tctx.drawImage(aiBgImage, (1080 - iw * scale) / 2, ((titleSize + 40) - ih * scale) / 2, iw * scale, ih * scale);
+    } else {
+      var tg = tctx.createLinearGradient(0, 0, 1080, titleSize);
+      tg.addColorStop(0, "#0f766e"); tg.addColorStop(0.5, "#0f766e"); tg.addColorStop(1, "#155e75");
+      tctx.fillStyle = tg; tctx.fillRect(0, 0, 1080, titleSize + 40);
+      tctx.fillStyle = "rgba(255,255,255,0.25)";
+      tctx.beginPath(); tctx.arc(820, 40, 90, 0, Math.PI * 2); tctx.fill();
+      tctx.beginPath(); tctx.arc(180, titleSize - 20, 70, 0, Math.PI * 2); tctx.fill();
+    }
+    ctx.drawImage(tmp, 0, y);
+    drawn = true;
+  } catch (e) { drawn = false; }
+  if (!drawn){
+    ctx.fillStyle = t.accent; ctx.font = "900 " + titleSize + "px " + t.bodyFont; ctx.textAlign = "center";
+    ctx.fillText(titleText, cx, titleY);
+  }
+  y += titleSize + 24;
+  ctx.fillStyle = t.accent; ctx.font = "italic 88px 'Instrument Serif', serif"; ctx.textAlign = "center";
+  ctx.fillText("Pelayan Ibadah", cx, y + 80);
+  y += 140;
+  if (dateObj && !isNaN(dateObj.getTime())){
+    ctx.textAlign = "left";
+    ctx.fillStyle = t.accent; ctx.font = "700 110px 'Instrument Serif', serif";
+    var numW = ctx.measureText(String(dateObj.getDate())).width;
+    ctx.fillText(String(dateObj.getDate()), 110, y + 88);
+    var monthX = 110 + numW + 24;
+    ctx.fillStyle = t.text; ctx.font = "700 36px " + t.bodyFont;
+    ctx.fillText(MONTHS[dateObj.getMonth()].toUpperCase(), monthX, y + 42);
+    ctx.fillText(String(dateObj.getFullYear()), monthX, y + 84);
+    ctx.fillStyle = t.accent; ctx.fillRect(monthX, y + 6, 90, 6);
+    ctx.textAlign = "right";
+    ctx.fillStyle = t.text; ctx.font = "700 28px " + t.bodyFont;
+    ctx.fillText("IBADAH RAYA 1  " + (getVal("time1") || "-"), W - 110, y + 42);
+    ctx.fillText("IBADAH RAYA 2  " + (getVal("time2") || "-"), W - 110, y + 84);
+    ctx.textAlign = "left";
+  }
+  y += 150;
+  ctx.fillStyle = "#d8d2c2"; ctx.fillRect(110, y, W - 220, 1); y += 28;
+  var services = [
+    { title: "IBADAH RAYA 1", time: getVal("time1"), roles: serviceData("ir1") },
+    { title: "IBADAH RAYA 2", time: getVal("time2"), roles: serviceData("ir2") }
+  ];
+  services.forEach(function(svc){
+    ctx.fillStyle = t.text; ctx.font = "700 36px " + t.bodyFont; ctx.textAlign = "left";
+    ctx.fillText(svc.title, 110, y + 32);
+    if (svc.time){ ctx.textAlign = "right"; ctx.fillText(svc.time, W - 110, y + 32); ctx.textAlign = "left"; }
+    y += 54;
+    var rows = svc.roles.length ? svc.roles : [["Info", "Belum diisi"]];
+    rows.forEach(function(row){
+      ctx.font = "700 30px " + t.bodyFont; ctx.fillStyle = t.text;
+      ctx.fillText(row[0], 110, y + 30);
+      ctx.font = "400 30px " + t.bodyFont;
+      var lines = wrapText(ctx, row[1], W - 110 - 430);
+      lines.slice(0, 3).forEach(function(ln, li){ ctx.fillText(ln, 430, y + 30 + li * 38); });
+      y += Math.max(50, lines.slice(0, 3).length * 38 + 12);
+      if (y > H - 90) posterOverflowPx = Math.max(posterOverflowPx, y - (H - 90) + 60);
+    });
+    y += 32;
+  });
+  if (footer){
+    ctx.fillStyle = t.muted; ctx.font = "400 24px " + t.bodyFont; ctx.textAlign = "center";
+    ctx.fillText(footer, cx, H - 38);
+  }
+}
+function drawTasteLayout(){
+  var canvas = document.getElementById("poster");
+  var ctx = canvas.getContext("2d");
+  var t = effectiveTheme("taste");
+  var W = 1080, H = posterHeight;
+  ctx.fillStyle = "#F9FAFB"; ctx.fillRect(0, 0, W, H);
+  var church = getVal("church");
+  var dateObj = parseDateInput(getVal("serviceDate"));
+  var footer = getVal("footerText");
+  var leftX = 60, rightX = 640, rightW = 380, leftW = 540;
+  var y = 56;
+  ctx.textAlign = "left";
+  var tagText = (church ? church.toUpperCase() : "IBADAH RAYA");
+  ctx.font = "700 20px " + t.bodyFont;
+  var tagW = ctx.measureText(tagText).width + 40;
+  ctx.fillStyle = "#EDF3EC"; roundRect(ctx, leftX, y, tagW, 40, 20); ctx.fill();
+  ctx.fillStyle = "#346538"; ctx.fillText(tagText, leftX + 20, y + 27);
+  y += 72;
+  var titleSize = 150;
+  ctx.font = "400 " + titleSize + "px " + t.titleFont;
+  while (ctx.measureText("MINGGU").width > leftW && titleSize > 100){ titleSize -= 10; ctx.font = "400 " + titleSize + "px " + t.titleFont; }
+  ctx.fillStyle = "#18181B";
+  ctx.fillText("MINGGU", leftX, y + titleSize - 20);
+  y += titleSize + 8;
+  ctx.fillStyle = "#18181B"; ctx.font = "700 44px " + t.bodyFont;
+  ctx.fillText("Pelayan Ibadah Raya", leftX, y + 32);
+  y += 72;
+  ctx.fillStyle = "#10B981"; ctx.fillRect(leftX, y, 72, 6); y += 36;
+  if (dateObj && !isNaN(dateObj.getTime())){
+    ctx.fillStyle = "#18181B"; ctx.font = "900 96px " + t.bodyFont;
+    ctx.fillText(String(dateObj.getDate()), leftX, y + 76);
+    ctx.fillStyle = "#71717A"; ctx.font = "700 30px " + t.bodyFont;
+    ctx.fillText(MONTHS[dateObj.getMonth()].toUpperCase() + " " + dateObj.getFullYear(), leftX + 150, y + 40);
+    ctx.fillText("MINGGU", leftX + 150, y + 76);
+  }
+  var heroBottom = y + 120;
+  var rightTop = 56;
+  if (aiBgImage){
+    ctx.fillStyle = "rgba(0,0,0,0.05)"; roundRect(ctx, rightX, rightTop, rightW, 430, 32); ctx.fill();
+    ctx.save();
+    roundRect(ctx, rightX + 12, rightTop + 12, rightW - 24, 406, 24); ctx.clip();
+    var iw = aiBgImage.width, ih = aiBgImage.height;
+    var sc = Math.max((rightW - 24) / iw, 406 / ih);
+    ctx.drawImage(aiBgImage, rightX + 12 + ((rightW - 24) - iw * sc) / 2, rightTop + 12 + (406 - ih * sc) / 2, iw * sc, ih * sc);
+    ctx.restore();
+    ctx.strokeStyle = "rgba(255,255,255,0.15)"; ctx.lineWidth = 1;
+    roundRect(ctx, rightX + 12, rightTop + 12, rightW - 24, 406, 24); ctx.stroke();
+  } else {
+    ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#EAEAEA"; ctx.lineWidth = 1;
+    roundRect(ctx, rightX, rightTop, rightW, 300, 12); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#18181B"; ctx.font = "700 32px " + t.bodyFont;
+    ctx.fillText("IBADAH RAYA 1", rightX + 32, rightTop + 56);
+    ctx.fillStyle = "#346538"; ctx.font = "700 28px " + t.bodyFont;
+    ctx.fillText(getVal("time1") || "-", rightX + 32, rightTop + 96);
+    ctx.fillStyle = "#EAEAEA"; ctx.fillRect(rightX + 32, rightTop + 128, rightW - 64, 1);
+    ctx.fillStyle = "#18181B"; ctx.font = "700 32px " + t.bodyFont;
+    ctx.fillText("IBADAH RAYA 2", rightX + 32, rightTop + 184);
+    ctx.fillStyle = "#346538"; ctx.font = "700 28px " + t.bodyFont;
+    ctx.fillText(getVal("time2") || "-", rightX + 32, rightTop + 224);
+  }
+  y = Math.max(heroBottom, rightTop + 300) + 64;
+  var services = [
+    { title: "IBADAH RAYA 1", time: getVal("time1"), roles: serviceData("ir1"), w: 470 },
+    { title: "IBADAH RAYA 2", time: getVal("time2"), roles: serviceData("ir2"), w: 470 }
+  ];
+  var cards = services.map(function(svc){
+    var rows = svc.roles.length ? svc.roles : [["Info", "Belum diisi"]];
+    var innerW = svc.w - 64;
+    var prepared = rows.map(function(row){
+      ctx.font = "400 30px " + t.bodyFont;
+      var lines = wrapText(ctx, row[1], innerW);
+      return { label: row[0], lines: lines.slice(0, 3) };
+    });
+    var h = 32 + 124 + 24;
+    prepared.forEach(function(r){ h += 28 + r.lines.length * 38 + 16; });
+    h += 16;
+    return { svc: svc, rows: prepared, h: h };
+  });
+  var maxH = Math.max(cards[0].h, cards[1].h);
+  var cx2 = leftX;
+  cards.forEach(function(card){
+    ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#EAEAEA"; ctx.lineWidth = 1;
+    roundRect(ctx, cx2, y, card.svc.w, maxH, 12); ctx.fill(); ctx.stroke();
+    var ty = y + 32;
+    ctx.fillStyle = "#18181B"; ctx.font = "700 32px " + t.bodyFont; ctx.textAlign = "left";
+    ctx.fillText(card.svc.title, cx2 + 32, ty + 28);
+    if (card.svc.time){
+      ctx.font = "700 22px " + t.bodyFont;
+      var tw = ctx.measureText(card.svc.time).width + 28;
+      ctx.fillStyle = "#EDF3EC"; roundRect(ctx, cx2 + 32, ty + 44, tw, 36, 18); ctx.fill();
+      ctx.fillStyle = "#346538"; ctx.fillText(card.svc.time, cx2 + 32 + 14, ty + 44 + 25);
+    }
+    ty += 124;
+    card.rows.forEach(function(r){
+      ctx.fillStyle = "#71717A"; ctx.font = "700 20px " + t.bodyFont;
+      ctx.fillText(r.label.toUpperCase(), cx2 + 32, ty + 20);
+      ty += 28;
+      ctx.fillStyle = "#18181B"; ctx.font = "400 30px " + t.bodyFont;
+      r.lines.forEach(function(ln){ ctx.fillText(ln, cx2 + 32, ty + 30); ty += 38; });
+      ty += 16;
+    });
+    cx2 += card.svc.w + 20;
+  });
+  y += maxH + 48;
+  if (footer){
+    ctx.fillStyle = "#71717A"; ctx.font = "400 24px " + t.bodyFont; ctx.textAlign = "left";
+    ctx.fillText(footer, leftX, y + 24);
+  }
+  if (y > H - 60) posterOverflowPx = Math.max(posterOverflowPx, y - (H - 60) + 60);
+}
+function setTheme(name){
+  currentTheme = name;
+  document.querySelectorAll(".theme-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-theme") === name); });
+  drawPoster(); saveForm();
+}
+function refreshArchiveSelect(){
+  var sel = document.getElementById("archiveSelect");
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem("posterPelayanArchive") || "[]"); } catch (e) { list = []; }
+  sel.innerHTML = '<option value="">Pilih arsip untuk dimuat</option>';
+  list.forEach(function(a, i){
+    var o = document.createElement("option"); o.value = String(i);
+    o.textContent = (a.date || "Tanpa tanggal") + " - " + (a.church || "Tanpa nama gereja");
+    sel.appendChild(o);
+  });
+}
+function loadSampleData(){
+  var sample = {
+    church: "sola gratia",
+    date: "2026-11-01",
+    time1: "08.00",
+    time2: "17.30",
+    footer: "@youthgpiasg",
+    showCommunion: true,
+    ir1: { wl: "Ibu Sinta", singer: "Bapak Broto\nIbu Tri", music: "Mas Gama dkk", usher: "Keluarga Bapak Sugeng", offering: "Ibu Ambar, Ibu Vonny", communion: "Bapak Handoko, Bapak Sugeng" },
+    ir2: { wl: "Sdri Vira", singer: "Ibu Elly\nIbu Firma", music: "Keyboard Tunggal", usher: "Ibu Candra", offering: "Ibu Candra, Ibu Dewi", communion: "Bapak Agus, Bapak Sunu" }
+  };
+  applyData(sample);
+  document.getElementById("showCommunion").checked = true;
+  drawPoster(); saveForm();
+  document.getElementById("appStatus").textContent = "Data contoh dimuat (Sola Gratia, Minggu 1 November 2026). Silakan ganti tema, tes download, lalu ubah dengan jadwal asli.";
+}
+function init(){
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem("posterPelayanForm") || "null"); } catch (e) {}
+  if (saved){ applyData(saved); }
+  if (!getVal("serviceDate")){ setVal("serviceDate", toISO(nextSunday(new Date()))); }
+  var d = parseDateInput(getVal("serviceDate"));
+  document.getElementById("showCommunion").checked = isFirstSunday(d);
+  refreshArchiveSelect();
+  try { if (window.location.search.indexOf("dev=1") !== -1){ var ds = document.getElementById("devSample"); if (ds) ds.style.display = "block"; } } catch (e) {}
+  document.querySelectorAll("input, textarea, select").forEach(function(el){
+    el.addEventListener("input", function(){ drawPoster(); saveForm(); });
+    el.addEventListener("change", function(){ drawPoster(); saveForm(); });
+  });
+  document.getElementById("serviceDate").addEventListener("change", function(){
+    var dd = parseDateInput(getVal("serviceDate"));
+    document.getElementById("showCommunion").checked = isFirstSunday(dd);
+    drawPoster(); saveForm();
+  });
+  document.querySelectorAll(".theme-btn").forEach(function(b){
+    b.addEventListener("click", function(){ setTheme(b.getAttribute("data-theme")); });
+  });
+  document.getElementById("loadSample").addEventListener("click", function(){
+    if (!confirm("Isi form dengan data contoh? Form yang sedang diisi akan ditimpa.")) return;
+    loadSampleData();
+  });
+  document.getElementById("downloadPng").addEventListener("click", function(){
+    drawPoster();
+    var a = document.createElement("a");
+    a.download = "poster-pelayan-" + (getVal("serviceDate") || "minggu-depan") + "-" + currentTheme + "-1080x" + posterHeight + ".png";
+    a.href = document.getElementById("poster").toDataURL("image/png");
+    a.click();
+    document.getElementById("appStatus").textContent = "PNG berhasil dibuat. Cek folder download di perangkat kamu.";
+  });
+  document.getElementById("saveArchive").addEventListener("click", function(){
+    var list = [];
+    try { list = JSON.parse(localStorage.getItem("posterPelayanArchive") || "[]"); } catch (e) {}
+    list.unshift(collectData());
+    try { localStorage.setItem("posterPelayanArchive", JSON.stringify(list.slice(0, 52))); } catch (e) {}
+    refreshArchiveSelect();
+    document.getElementById("appStatus").textContent = "Arsip minggu ini tersimpan. Total arsip: " + Math.min(list.length, 52) + ".";
+  });
+  document.getElementById("loadArchive").addEventListener("click", function(){
+    var idx = document.getElementById("archiveSelect").value;
+    if (idx === "") return;
+    var list = JSON.parse(localStorage.getItem("posterPelayanArchive") || "[]");
+    if (list[idx]){ applyData(list[idx]); drawPoster(); saveForm(); document.getElementById("appStatus").textContent = "Arsip dimuat. Silakan ubah nama petugas untuk minggu baru."; }
+  });
+  document.getElementById("deleteArchive").addEventListener("click", function(){
+    var idx = document.getElementById("archiveSelect").value;
+    if (idx === "") return;
+    var list = JSON.parse(localStorage.getItem("posterPelayanArchive") || "[]");
+    list.splice(parseInt(idx, 10), 1);
+    localStorage.setItem("posterPelayanArchive", JSON.stringify(list));
+    refreshArchiveSelect();
+  });
+  document.getElementById("exportJson").addEventListener("click", function(){
+    var blob = new Blob([JSON.stringify(collectData(), null, 2)], { type: "application/json" });
+    var a = document.createElement("a"); a.download = "poster-pelayan.json"; a.href = URL.createObjectURL(blob); a.click();
+  });
+  document.getElementById("importBtn").addEventListener("click", function(){ document.getElementById("importFile").click(); });
+  document.getElementById("importFile").addEventListener("change", function(ev){
+    var f = ev.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function(){ try { applyData(JSON.parse(r.result)); drawPoster(); saveForm(); } catch (e) { document.getElementById("appStatus").textContent = "File JSON tidak bisa dibaca."; } };
+    r.readAsText(f);
+  });
+  document.getElementById("resetForm").addEventListener("click", function(){
+    if (!confirm("Kosongkan semua form? Arsip yang tersimpan tidak ikut terhapus.")) return;
+    document.querySelectorAll("input[type='text'], textarea").forEach(function(el){ el.value = ""; });
+    setVal("serviceDate", toISO(nextSunday(new Date())));
+    document.getElementById("showCommunion").checked = isFirstSunday(parseDateInput(getVal("serviceDate")));
+    drawPoster(); saveForm();
+  });
+  drawPoster(); saveForm();
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
