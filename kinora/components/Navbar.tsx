@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 const NAV_LINKS = ["About", "Solutions", "Community", "Contact"] as const;
 
 function LeafMark() {
@@ -30,17 +34,32 @@ function LeafMark() {
 }
 
 export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 32);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="anim-navbar absolute inset-x-0 top-0 z-20">
+    <header
+      className={`anim-navbar fixed inset-x-0 top-0 z-20 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#397C50]/90 shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-md"
+          : "bg-transparent"
+      }`}
+    >
       <nav
         aria-label="Main navigation"
         className="relative flex items-center justify-between px-5 py-[18px] md:px-8 md:py-5 lg:px-12"
       >
         {/* Brand */}
         <a
-          href="#"
+          href="#top"
           className="flex items-center gap-[7px] text-white"
-          aria-label="KINORA — home"
+          aria-label="KINORA — back to top"
         >
           <LeafMark />
           <span

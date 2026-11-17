@@ -2,7 +2,9 @@
 
 A production-quality recreation of the GreenGuard hero reference, rebranded
 as **KINORA**: a full-screen immersive hero with the supplied waving-characters
-video as the background, centered headline, feature icons, and a black pill CTA.
+video as the background, centered headline, feature icons, and a black pill CTA —
+plus the full one-page landing sections (About, Solutions, Community, Contact)
+so the navigation scrolls to real content.
 
 ## Tech stack
 
@@ -35,10 +37,16 @@ app/
   icon.svg            # KINORA leaf favicon
 components/
   HeroVideoBackground.tsx   # autoplay/muted/loop video + green overlay + fallback
-  Navbar.tsx                # leaf logo, center links, Get Started pill
+  Navbar.tsx                # leaf logo, center links, Get Started pill (sticky, solid on scroll)
   HeroContent.tsx           # icon row, headline, subheading, CTA
   FeatureIcons.tsx          # Users, Heart, ShieldCheck, Sparkles, Globe
-  HeroCTA.tsx               # black pill button with circular arrow
+  HeroCTA.tsx               # pill button with circular arrow (dark / light variants)
+  SectionHeader.tsx         # shared eyebrow + title + description
+  AboutSection.tsx          # story + three values
+  SolutionsSection.tsx      # three solution cards
+  CommunitySection.tsx      # dark green band + join CTA
+  ContactSection.tsx        # contact info + demo form with success state
+  Footer.tsx                # slim dark footer
 ```
 
 ## Notes

@@ -21,6 +21,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   height: 100%;
@@ -31,7 +35,7 @@ body {
   font-family: var(--font-body);
   background: #397c50;
   color: #ffffff;
-  overflow: hidden;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -91,6 +95,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .anim-navbar,
   .anim-feature-icons,
   .anim-headline,
